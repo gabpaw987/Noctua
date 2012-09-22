@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  22 SEP 2012 16:27
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  22 SEP 2012 18:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**C:/Users/Josefs/Dropbox/Diplomprojekt/Dokumentation/Diplomarbeit/Diplomarbeit
-_KOPG_TGM.tex
+**C:/Users/Josefs/Documents/Schule/PPM/noctua/Dokumentation/Diplomarbeit/Diplom
+arbeit_KOPG_TGM.tex
 
-(c:/Users/Josefs/Dropbox/Diplomprojekt/Dokumentation/Diplomarbeit/Diplomarbeit_
-KOPG_TGM.tex
+(c:/Users/Josefs/Documents/Schule/PPM/noctua/Dokumentation/Diplomarbeit/Diploma
+rbeit_KOPG_TGM.tex
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
@@ -408,6 +408,9 @@ Package: rotating 2009/03/28 v2.16a rotated objects in LaTeX
 \rot@float@box=\box35
 \rot@mess@toks=\toks34
 )
+(c:/texlive/2011/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen135
+)
 (./tex/acronyms.tex)
 (c:/texlive/2011/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2011/04/17 v6.82g Hypertext links for LaTeX
@@ -459,7 +462,7 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 (c:/texlive/2011/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2010/12/23 v3.10 Keyval support for LaTeX options (HO)
 )
-\@linkdim=\dimen135
+\@linkdim=\dimen136
 \Hy@linkcounter=\count127
 \Hy@pagecounter=\count128
 
@@ -494,8 +497,8 @@ Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4617.
 \Fld@menulength=\count131
-\Field@Width=\dimen136
-\Fld@charsize=\dimen137
+\Field@Width=\dimen137
+\Fld@charsize=\dimen138
 Package hyperref Info: Hyper figures OFF on input line 5701.
 Package hyperref Info: Link nesting OFF on input line 5706.
 Package hyperref Info: Hyper index ON on input line 5709.
@@ -554,12 +557,12 @@ Writing nomenclature file Diplomarbeit_KOPG_TGM.nlo
 \openout6 = `Diplomarbeit_KOPG_TGM.glo'.
 
 Package glossaries Info: Writing glossary file Diplomarbeit_KOPG_TGM.glo on inp
-ut line 193.
+ut line 194.
 \glo@acronym@file=\write7
 \openout7 = `Diplomarbeit_KOPG_TGM.acn'.
 
 Package glossaries Info: Writing glossary file Diplomarbeit_KOPG_TGM.acn on inp
-ut line 193.
+ut line 194.
 (./Diplomarbeit_KOPG_TGM.aux (./tex/title.aux) (./tex/prefacea.aux)
 (./tex/abstracta.aux) (./tex/kurzzfsg.aux) (./tex/nomenclature.aux)
 (./tex/chapter1.aux) (./tex/chapter2.aux)
@@ -571,31 +574,31 @@ ut line 193.
 (./tex/appendix.aux) (./tex/eid.aux))
 \openout1 = `Diplomarbeit_KOPG_TGM.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 199.
-LaTeX Font Info:    ... okay on input line 199.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 200.
+LaTeX Font Info:    ... okay on input line 200.
 
 (c:/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count158
-\scratchdimen=\dimen138
+\scratchdimen=\dimen139
 \scratchbox=\box36
 \nofMPsegments=\count159
 \nofMParguments=\count160
 \everyMPshowfont=\toks35
 \MPscratchCnt=\count161
-\MPscratchDim=\dimen139
+\MPscratchDim=\dimen140
 \MPnumerator=\count162
 \makeMPintoPDFobject=\count163
 \everyMPtoPDFconversion=\toks36
@@ -619,7 +622,7 @@ Dictionary: glossaries-dictionary, Language: English
 )
 \c@lstlisting=\count164
 \AtBeginShipoutBox=\box37
-Package hyperref Info: Link coloring ON on input line 199.
+Package hyperref Info: Link coloring ON on input line 200.
  (c:/texlive/2011/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2010/04/30 v2.40 Cross-referencing by name of section
 
@@ -628,9 +631,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count165
 )
-LaTeX Info: Redefining \ref on input line 199.
-LaTeX Info: Redefining \pageref on input line 199.
-LaTeX Info: Redefining \nameref on input line 199.
+LaTeX Info: Redefining \ref on input line 200.
+LaTeX Info: Redefining \pageref on input line 200.
+LaTeX Info: Redefining \nameref on input line 200.
 
 (./Diplomarbeit_KOPG_TGM.out) (./Diplomarbeit_KOPG_TGM.out)
 \@outlinefile=\write8
@@ -669,7 +672,7 @@ l.88 \end{titlepage}
 ifier (name{page.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.204 \frontmatter
+l.205 \frontmatter
                   %   %% front matter will be numbered in small Roman letters
 [2
 
@@ -857,14 +860,38 @@ Underfull \hbox (badness 10000) in paragraph at lines 166--166
 ) [13]
 \openout2 = `tex/machbarkeitsstudie/tmachbarkeit.aux'.
 
- (./tex/machbarkeitsstudie/tmachbarkeit.tex) [14
+ (./tex/machbarkeitsstudie/tmachbarkeit.tex
+Underfull \hbox (badness 10000) in paragraph at lines 11--11
+[]\T1/cmr/m/n/12 C++
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 12--12
+[]\T1/cmr/m/n/12 Aufwand
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 13--13
+[]\T1/cmr/m/n/12 Bedinung
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 13--13
+\T1/cmr/m/n/12 / War-
+ []
+
+
+Overfull \hbox (63.71602pt too wide) in paragraph at lines 9--20
+ [] |
+ []
+
+) [14
 
 
 ]
 \openout2 = `tex/machbarkeitsstudie/wirmachbarkeit.aux'.
 
-
-(./tex/machbarkeitsstudie/wirmachbarkeit.tex
+ (./tex/machbarkeitsstudie/wirmachbarkeit.tex
 Underfull \hbox (badness 10000) in paragraph at lines 11--13
 
  []
@@ -983,15 +1010,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 54--61
 \openout2 = `tex/eid.aux'.
 
  (./tex/eid.tex)
-Underfull \hbox (badness 10000) in paragraph at lines 12--300
+Underfull \hbox (badness 10000) in paragraph at lines 12--301
 
  []
 
 [28
 
 ] [29]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 304.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 304.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 305.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 305.
  (./Diplomarbeit_KOPG_TGM.aux (./tex/title.aux) (./tex/prefacea.aux)
 (./tex/abstracta.aux) (./tex/kurzzfsg.aux) (./tex/nomenclature.aux)
 (./tex/chapter1.aux) (./tex/chapter2.aux)
@@ -1001,19 +1028,19 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 304.
 (./tex/machbarkeitsstudie/wirmachbarkeit.aux) (./tex/chapter3.aux)
 (./tex/chapter4.aux) (./tex/chapter5.aux) (./tex/chapter6.aux)
 (./tex/appendix.aux) (./tex/eid.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 304.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 304.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 305.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 305.
 Package rerunfilecheck Info: File `Diplomarbeit_KOPG_TGM.out' has not changed.
 (rerunfilecheck)             Checksum: 31650EDEDA3FFC9AAC520E01A4CDB8F3;1882.
  ) 
 Here is how much of TeX's memory you used:
- 11956 strings out of 493633
- 168636 string characters out of 3146745
- 312029 words of memory out of 3000000
- 14781 multiletter control sequences out of 15000+200000
+ 11968 strings out of 493633
+ 168930 string characters out of 3146745
+ 312228 words of memory out of 3000000
+ 14789 multiletter control sequences out of 15000+200000
  24588 words of font info for 59 fonts, out of 3000000 for 9000
  845 hyphenation exceptions out of 8191
- 31i,8n,43p,1494b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 31i,8n,43p,1500b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
 {c:/texlive/2011/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}<c:/texl
 ive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2011/
 texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb><c:/texlive/2011/texmf-dist
@@ -1029,7 +1056,7 @@ fonts/type1/public/cm-super/sfss1440.pfb><c:/texlive/2011/texmf-dist/fonts/type
 m-super/sfss2074.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sf
 ss2488.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfsx2074.pfb
 ><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on Diplomarbeit_KOPG_TGM.pdf (45 pages, 772548 bytes).
+Output written on Diplomarbeit_KOPG_TGM.pdf (45 pages, 773704 bytes).
 PDF statistics:
  465 PDF objects out of 1000 (max. 8388607)
  394 compressed objects within 4 object streams
