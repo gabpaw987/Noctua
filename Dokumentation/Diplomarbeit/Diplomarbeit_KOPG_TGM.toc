@@ -18,18 +18,19 @@
 \contentsline {subsubsection}{\numberline {2.1.2.2}Algorithmen}{9}{subsubsection.2.1.2.2}
 \contentsline {section}{\numberline {2.2}Produktfunktionen}{10}{section.2.2}
 \contentsline {section}{\numberline {2.3}Technische Machbarkeit}{14}{section.2.3}
-\contentsline {section}{\numberline {2.4}Wirtschaftliche Machbarkeit}{15}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Aufwandsabsch\"atzung}{15}{subsection.2.4.1}
-\contentsline {subsection}{\numberline {2.4.2}Nutzen}{15}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}Pr\"ufen der Risiken}{15}{subsection.2.4.3}
-\contentsline {subsubsection}{\numberline {2.4.3.1}Personenausfall}{15}{subsubsection.2.4.3.1}
-\contentsline {subsubsection}{\numberline {2.4.3.2}Zetiliche Risiken}{15}{subsubsection.2.4.3.2}
-\contentsline {subsubsection}{\numberline {2.4.3.3}Technische Risiken}{16}{subsubsection.2.4.3.3}
-\contentsline {chapter}{\numberline {3}The Proposed Architecture}{17}{chapter.3}
-\contentsline {section}{\numberline {3.1}Introduction}{17}{section.3.1}
-\contentsline {chapter}{\numberline {4}Implementation}{19}{chapter.4}
-\contentsline {chapter}{\numberline {5}\'Evaluation}{21}{chapter.5}
-\contentsline {chapter}{\numberline {6}Conclusion and Outlook}{23}{chapter.6}
-\contentsline {chapter}{Glossary}{24}{chapter.6}
-\contentsline {chapter}{\numberline {A}Appendix}{25}{appendix.A}
-\contentsline {chapter}{Literaturverzeichnis}{27}{section*.7}
+\contentsline {subsection}{\numberline {2.3.1}Variantenbildung}{14}{subsection.2.3.1}
+\contentsline {section}{\numberline {2.4}Wirtschaftliche Machbarkeit}{16}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Aufwandsabsch\"atzung}{16}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Nutzen}{16}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Pr\"ufen der Risiken}{16}{subsection.2.4.3}
+\contentsline {subsubsection}{\numberline {2.4.3.1}Personenausfall}{16}{subsubsection.2.4.3.1}
+\contentsline {subsubsection}{\numberline {2.4.3.2}Zetiliche Risiken}{16}{subsubsection.2.4.3.2}
+\contentsline {subsubsection}{\numberline {2.4.3.3}Technische Risiken}{17}{subsubsection.2.4.3.3}
+\contentsline {chapter}{\numberline {3}The Proposed Architecture}{19}{chapter.3}
+\contentsline {section}{\numberline {3.1}Introduction}{19}{section.3.1}
+\contentsline {chapter}{\numberline {4}Implementation}{21}{chapter.4}
+\contentsline {chapter}{\numberline {5}\'Evaluation}{23}{chapter.5}
+\contentsline {chapter}{\numberline {6}Conclusion and Outlook}{25}{chapter.6}
+\contentsline {chapter}{Glossary}{26}{chapter.6}
+\contentsline {chapter}{\numberline {A}Appendix}{27}{appendix.A}
+\contentsline {chapter}{Literaturverzeichnis}{29}{section*.7}

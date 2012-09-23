@@ -1,21 +1,36 @@
-\section{Technische Machbarkeit}
-\label{section:Technische Machbarkeit}
-
-
+\section{Technische Machbarkeit}\label{section:Technische Machbarkeit}
+\subsection{Variantenbildung}
+Größtenteils gibt es derzeit für Programme dieser Art marktweit einen üblichen Lösungsansatz:
+Hierbei wird in C++ sowohl die Konsolenapplikation als auch die graphische Benutzeroberfläche entworfen, gecodet und schlussendlich implementiert. Dies ermöglicht einerseits ein sehr zentrales Arbeiten, da alles am selben Rechner erfolgt. Andererseits muss man jedoch oft auf C-Befehle zurückgreifen, um auf eine annehmbare Arbeitsgeschwindigkeit zu kommen.
+Eine weitere Möglichkeit um die Applikation zu realisieren, ist ein ähnlicher Aufbau wie der in der C++-Variante. Das Ganze wird hierbei jedoch in Java umgesetzt. Das heißt Konsole und GUI werden in Java gecodet und ermöglichen somit vollkommen plattformunabhängiges Arbeiten. Jedoch gibt es hier erhebliche Probleme mit der Geschwindigkeit, da Java über die JVM arbeitet und somit relativ hardwarefern agiert.
+Die dritte Möglichkeit wäre, das Ganze über ein Programmiersprachen-\"Comboteam\" von C\# und F\# umzusetzen. Hierbei agiert C\# als Handlungs- und Steuerkern und F\# als funktionale Programmiersprache, als Rechenkern und \"Mastermind\" der Applikation, welches die Entscheidungen trifft. Hierbei wird einerseits eine enorm hohe Arbeitsgeschwindigkeit ermöglicht, da die beiden Sprachen relativ hardwarenah agieren und andererseits besteht der nicht zu unterschätzende Vorteil bzw. die Möglichkeit, den Rechenkern auf ein externes System outzusourcen, welches zum Beispiel enorme Rechenkapazitäten aufweisen könnte und somit viel komplexere und effizientere Algorithmen in annehmbarer Zeit durchrechnen und abhängig davon mehr gewinnbringende Entscheidungen treffen könnte. Dabei sollte es auch bei späteren Erweiterungen des Programms zu keinem signifikanten Geschwindigkeitsabfall kommen.
 
 
 \begin{center}
 
-\begin{tabular}{ | c | p{1.8cm} | r | p{1.9cm} |r|p{1.9cm}|r|p{1.9cm}|r|}
+\begin{tabular}{ | c | p{2.6cm} | c | p{0.5cm} |p{0.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}|}
 \hline 
- & & Gewichtung & C++ Rang R*G && Java Rang R * G && C/F Rang R * G\\ \hline 
-\multirow{6}{*}{Einfachheit} & Aufwand Coding & 10\% & 3 & 30 & 1 & 10 & 2 & 20 \\ 
-& Bedinung / Wartung & 6\% &3&9&2&6&1&3\\ 
-& \\ 
-& \\  
-& \\ 
-& \\ 
-& \\ \hline
+ & & Gewicht & \multicolumn{2}{p{1.5cm}|}{\textbf{C++ R*G}} & \multicolumn{2}{p{1.5cm}|}{\textbf{Java R*G}} & \multicolumn{2}{p{1.5cm}|}{\textbf{C/F R*G}}\\ \hline
+\multirow{6}{*}{Einfachheit} & Aufwand Coding & 10\% & 3 & 30 & 1 & 10 & 2 & 20 \\ \cline{2-9}
+& Bedinung/ Wartung & 6\% &3&9&2&6&1&3\\ \cline{2-9}
+& Update &3\%&3&9&2&6&1&3\\ \cline{2-9}
+& Integration &5\%&3&15&2&10&1&5\\  \cline{2-9}
+& Kenntnisse &6\%&3&18&1&6&2&12\\ \cline{2-9}
+& \textbf{Gesamt}&30\%&3&90&2&44&1&46\\ \hline
+\multirow{5}{*}{Leistung}& Übertragungs-zeit &6\%&1&6&3&18&2&12\\ \cline{2-9}
+& Absturz-sicherheit &5\%&1&5&2&10&3&15\\ \cline{2-9}
+& Ressourcen-verbrauch &3\%&1&3&3&9&2&6\\ \cline{2-9}
+& Datenumfang &1\%&1&1&3&3&2&2\\ \cline{2-9}
+& \textbf{Gesamt} &15\%&1&15&3&50&2&35\\ \hline
+\multirow{5}{*}{Kosten}& Lizenzen &10\%&1&10&1&10&&\\ \cline{2-9}
+& Support &5\%&3&15&1&5&2&10\\ \cline{2-9}
+& Betriebs-kosten &\%&&&&&&\\ \cline{2-9}
+& Dokumen-tation &5\%&1&5&2&20&3&15\\ \cline{2-9}
+& \textbf{Gesamt} &\%&&&&&&\\ \hline
+\multirow{4}{*}{Dokumentation}& Verfügbarkeit &10\%&3&30&2&20&1&10\\ \cline{2-9}
+& Voll-ständigkeit &10\%&3&30&2&20&1&10\\ \cline{2-9}
+& Qualität &10\%&2&20&1&10&1&10\\ \cline{2-9}
+& \textbf{Gesamt} &30\%&3&80&2&50&1&30\\ \hline
 \end{tabular}
 
 \end{center} 
