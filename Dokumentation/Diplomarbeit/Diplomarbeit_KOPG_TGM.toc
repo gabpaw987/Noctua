@@ -24,7 +24,7 @@
 \contentsline {subsection}{\numberline {2.4.2}Nutzen}{16}{subsection.2.4.2}
 \contentsline {subsection}{\numberline {2.4.3}Pr\"ufen der Risiken}{16}{subsection.2.4.3}
 \contentsline {subsubsection}{\numberline {2.4.3.1}Personenausfall}{16}{subsubsection.2.4.3.1}
-\contentsline {subsubsection}{\numberline {2.4.3.2}Zetiliche Risiken}{16}{subsubsection.2.4.3.2}
+\contentsline {subsubsection}{\numberline {2.4.3.2}Zeitliche Risiken}{16}{subsubsection.2.4.3.2}
 \contentsline {subsubsection}{\numberline {2.4.3.3}Technische Risiken}{17}{subsubsection.2.4.3.3}
 \contentsline {chapter}{\numberline {3}The Proposed Architecture}{19}{chapter.3}
 \contentsline {section}{\numberline {3.1}Introduction}{19}{section.3.1}

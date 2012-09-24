@@ -4,8 +4,8 @@ Version=2
 
 [SessionInfo]
 ActiveTab=2
-FrameCount=17
-ActiveFrame=16
+FrameCount=19
+ActiveFrame=11
 
 [Frame0]
 Columns=1
@@ -34,7 +34,7 @@ cxMin=10
 [Frame0_View0,0]
 Cursor.row=0
 Cursor.column=0
-TopSubLine=38
+TopSubLine=158
 
 [Frame1]
 Columns=1
@@ -329,8 +329,8 @@ TopSubLine=118
 [Frame11]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -343,15 +343,15 @@ Class=CLatexEdit
 Document=tex\chapter4.tex
 
 [Frame11_Row0]
-cyCur=411
+cyCur=393
 cyMin=10
 
 [Frame11_Col0]
-cxCur=1345
+cxCur=1155
 cxMin=10
 
 [Frame11_View0,0]
-Cursor.row=0
+Cursor.row=2
 Cursor.column=0
 TopSubLine=0
 
@@ -409,9 +409,9 @@ cxCur=835
 cxMin=10
 
 [Frame13_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=183
+Cursor.column=61
+TopSubLine=190
 
 [Frame14]
 Columns=1
@@ -438,9 +438,9 @@ cxCur=1345
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=8
-Cursor.column=13
-TopSubLine=1
+Cursor.row=60
+Cursor.column=65
+TopSubLine=48
 
 [Frame15]
 Columns=1
@@ -467,15 +467,15 @@ cxCur=1345
 cxMin=10
 
 [Frame15_View0,0]
-Cursor.row=35
-Cursor.column=26
-TopSubLine=38
+Cursor.row=16
+Cursor.column=404
+TopSubLine=5
 
 [Frame16]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -488,15 +488,73 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame16_Row0]
-cyCur=379
+cyCur=144
 cyMin=10
 
 [Frame16_Col0]
-cxCur=456
+cxCur=1023
 cxMin=10
 
 [Frame16_View0,0]
-Cursor.row=3
-Cursor.column=180
+Cursor.row=55
+Cursor.column=0
+TopSubLine=62
+
+[Frame17]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-30
+NormalPos.left=125
+NormalPos.top=125
+NormalPos.right=1176
+NormalPos.bottom=414
+Class=CLatexEdit
+Document=Diplomarbeit_KOPG_TGM.bbl
+
+[Frame17_Row0]
+cyCur=230
+cyMin=10
+
+[Frame17_Col0]
+cxCur=1014
+cxMin=10
+
+[Frame17_View0,0]
+Cursor.row=0
+Cursor.column=0
+TopSubLine=0
+
+[Frame18]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-30
+NormalPos.left=0
+NormalPos.top=0
+NormalPos.right=1051
+NormalPos.bottom=289
+Class=CLatexEdit
+Document=tex\eid.tex
+
+[Frame18_Row0]
+cyCur=230
+cyMin=10
+
+[Frame18_Col0]
+cxCur=1014
+cxMin=10
+
+[Frame18_View0,0]
+Cursor.row=0
+Cursor.column=0
 TopSubLine=0
 

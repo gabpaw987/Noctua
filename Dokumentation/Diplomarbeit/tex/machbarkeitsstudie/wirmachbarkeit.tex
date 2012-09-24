@@ -9,7 +9,7 @@
 \subsection{Prüfen der Risiken}
 \subsubsection{Personenausfall}
 Eintrittswahrscheinlichkeit:  gering \\
-Auswirkungen:  								gering \\
+Auswirkungen:  								hoch   \\
 
 In dem unerwarteten Fall, dass ein Teammitglied längerfristig ausfällt, muss es möglich sein die Arbeitsaufgaben dementsprechend neu aufteilen zu können.
 Folgende Fälle könnten auftreten:
@@ -17,8 +17,9 @@ Folgende Fälle könnten auftreten:
 	\item Streit im Team
 	\item Ausfall durch Krankheit oder Tod eines Teammitglieds
 	\item Austritt eines Teammitglieds aus dem Projekt
-	\item Der Auftraggeber könnte aufgrud von Unklarheiten den Projektabbruch initiieren 
+	\item Der Auftraggeber könnte aufgrund von Unklarheiten den Projektabbruch initiieren 
 	\item Es kann passieren, dass von Seite des Auftragsgebers plötzlich kein Interesse an der Umsetzung des Produktes mehr gegeben ist, und es dadurch zu extremem Zeitverzug kommt, was bis zum Abbruch führen kann
+	\item Interessensverlusst eines Teammitglieds, und damit verbundene minderwertigere Arbeit 
 \end{itemize}
 
 Folgende präventive Maßnahmen werden eingeführt:
@@ -28,7 +29,7 @@ Folgende präventive Maßnahmen werden eingeführt:
 	\item Gutes Verhältnis mit den Auftraggebern
 \end{itemize}
 
-\subsubsection{Zetiliche Risiken}
+\subsubsection{Zeitliche Risiken}
 
 Eintrittswahrscheinlichkeit:  gering \\
 Auswirkungen:  								mittel \\
@@ -41,12 +42,23 @@ Die Aufwands- und Zeitschätzung basiert auf dem derzeitigen Lastenheft des Auftr
 Eintrittswahrscheinlichkeit:  gering \\
 Auswirkungen:  								mittel \\
 
-Aufgrund der nicht auszuschließenden Gefahr des Datenverlusts, muss dafür gesorgt werden die Sicherheit der Daten, sowie auch die Verfügbarkeit dieser zu garantieren. Dieses Problem wird mithilfe eines \gls{git} gelößt, durch diesen Server ist es möglich die Versionen der Software immer zugänglich zu machen und zusätzlich die Daten auf den Computern der Projektmitgliedern zu speichern. \\ \\
+Aufgrund der nicht auszuschließenden Gefahr des Datenverlusts, muss dafür gesorgt werden die Sicherheit der Daten, sowie auch die Verfügbarkeit dieser zu garantieren. Dieses Problem wird mithilfe eines \gls{git} gelöst, durch diesen Server ist es möglich die Versionen der Software immer zugänglich zu machen und zusätzlich die Daten auf den Computern der Projektmitgliedern zu speichern. \\ \\
 
 \textbf{Hardwareausfall} \\
 Eintrittswahrscheinlichkeit: gering \\
 Auswirkung: mittel \\
 
-Es kann ohne jede Vorwarnung immer und überall ein Hardwareausfall passieren, dies selbstverschuldet, aber auch plötzlich passieren. 
-Um mit einem solchen Ausfall zurecht zu kommen besitzt das Projektteam einen Ersatzlaptop um das gezielte Arbeiten auch nach dem 
-Ausfall garantieren zu können.
+Es kann ohne jede Vorwarnung immer und überall ein Hardwareausfall passieren, dies kann selbst verschuldet, aber auch plötzlich passieren. Um mit einem solchen Ausfall zurecht zu kommen besitzt das Projektteam einen Ersatzlaptop um das gezielte Arbeiten auch nach dem 
+Ausfall garantieren zu können. \\ \\
+
+\textbf{Versionsverlust} \\
+Eintrittswahrscheinlichkeit: sehr gering \\
+Auswirkung: mittel \\
+
+Bei den Versuchen mit dem Algorithmus wird andauernd etwas in der Datei verändert. Bei dieser Tätigkeit kann es passieren das die Zusammenhänge zwischen 1 oder mehreren Versionen des Algorithmus verloren gehen. Bei so einem Verlust kann auch das grundliegende Verständnis für die jeweilige Version verloren gehen.\\
+Folgende präventive Maßnahmen werden eingeführt:
+\begin{itemize}
+	\item Verwendung eines \gls{git}, für die automatische Versionierung
+	\item Zwingende Benutzung der Bugtrackingsoftware
+	\item Kommunikation im Team über die Änderungen am Algorithmus
+\end{itemize}

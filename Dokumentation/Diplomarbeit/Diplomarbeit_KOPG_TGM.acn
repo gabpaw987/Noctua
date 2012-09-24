@@ -16,6 +16,8 @@
 (indexentry :tkey (("MA" "\\glossaryentryfield{ma}{\\glsnamefont{MA}}{Moving Average}{\\relax }") ) :locref "{}{11}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("MA" "\\glossaryentryfield{ma}{\\glsnamefont{MA}}{Moving Average}{\\relax }") ) :locref "{}{11}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("MA" "\\glossaryentryfield{ma}{\\glsnamefont{MA}}{Moving Average}{\\relax }") ) :locref "{}{12}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("BTS" "\\glossaryentryfield{bts}{\\glsnamefont{BTS}}{Backtesting-Software}{\\relax }") ) :locref "{}{14}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("GIT" "\\glossaryentryfield{git}{\\glsnamefont{GIT}}{GIT-Server}{\\relax }") ) :locref "{}{17}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("GIT" "\\glossaryentryfield{git}{\\glsnamefont{GIT}}{GIT-Server}{\\relax }") ) :locref "{}{17}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("TGM" "\\glossaryentryfield{tgm}{\\glsnamefont{TGM}}{Technologischem Gewerbemuseum}{\\relax }") ) :locref "{}{26}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("MA" "\\glossaryentryfield{ma}{\\glsnamefont{MA}}{Moving Average}{\\relax }") ) :locref "{}{26}" :attr "pageglsnumberformat" ) 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  23 SEP 2012 12:00
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  24 SEP 2012 11:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -563,7 +563,15 @@ ut line 194.
 
 Package glossaries Info: Writing glossary file Diplomarbeit_KOPG_TGM.acn on inp
 ut line 194.
-(./Diplomarbeit_KOPG_TGM.aux)
+(./Diplomarbeit_KOPG_TGM.aux (./tex/title.aux) (./tex/prefacea.aux)
+(./tex/abstracta.aux) (./tex/kurzzfsg.aux) (./tex/nomenclature.aux)
+(./tex/chapter1.aux) (./tex/chapter2.aux)
+(./tex/machbarkeitsstudie/voruntersuchung.aux)
+(./tex/machbarkeitsstudie/pfunktionen.aux)
+(./tex/machbarkeitsstudie/tmachbarkeit.aux)
+(./tex/machbarkeitsstudie/wirmachbarkeit.aux) (./tex/chapter3.aux)
+(./tex/chapter4.aux) (./tex/chapter5.aux) (./tex/chapter6.aux)
+(./tex/appendix.aux) (./tex/eid.aux))
 \openout1 = `Diplomarbeit_KOPG_TGM.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 200.
@@ -694,37 +702,40 @@ l.205 \frontmatter
 
 
 
-]
+] (./Diplomarbeit_KOPG_TGM.toc
+LaTeX Font Info:    Try loading font information for U+msa on input line 7.
 
-Package hyperref Warning: old toc file detected, not used; run LaTeX again.
+(c:/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 7.
 
+(c:/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+) [7])
 \tf@toc=\write9
 \openout9 = `Diplomarbeit_KOPG_TGM.toc'.
 
-[7] [8
-
-
-]
-
-Package hyperref Warning: old lof file detected, not used; run LaTeX again.
-
+ [8]
+(./Diplomarbeit_KOPG_TGM.lof)
 \tf@lof=\write10
 \openout10 = `Diplomarbeit_KOPG_TGM.lof'.
 
-[9] [10
+ [9
 
 
-]
+] [10
 
-Package hyperref Warning: old lol file detected, not used; run LaTeX again.
 
+] (./Diplomarbeit_KOPG_TGM.lol)
 \tf@lol=\write11
 \openout11 = `Diplomarbeit_KOPG_TGM.lol'.
 
-[11]
+ [11]
 \openout2 = `tex/nomenclature.aux'.
 
- (./tex/nomenclature.tex)
+
+(./tex/nomenclature.tex)
 No file Diplomarbeit_KOPG_TGM.nls.
 [12
 
@@ -795,16 +806,6 @@ Kapitel 2.
 \openout2 = `tex/machbarkeitsstudie/voruntersuchung.aux'.
 
  (./tex/machbarkeitsstudie/voruntersuchung.tex
-LaTeX Font Info:    Try loading font information for U+msa on input line 16.
-
-(c:/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2009/06/22 v3.00 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 16.
-
-(c:/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2009/06/22 v3.00 AMS symbols B
-)
 Underfull \hbox (badness 10000) in paragraph at lines 5--18
 
  []
@@ -813,11 +814,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 5--18
 
 
 ]
-
-LaTeX Warning: Reference `fig:metatrader5_overview' on page 7 undefined on inpu
-t line 25.
-
-<graphics/chapter2/metatrader5_overview.png, id=243, 373.395pt x 236.082pt>
+<graphics/chapter2/metatrader5_overview.png, id=281, 373.395pt x 236.082pt>
 File: graphics/chapter2/metatrader5_overview.png Graphic file (type png)
 
 <use graphics/chapter2/metatrader5_overview.png>
@@ -825,7 +822,7 @@ Package pdftex.def Info: graphics/chapter2/metatrader5_overview.png used on inp
 ut line 29.
 (pdftex.def)             Requested size: 373.39409pt x 236.0814pt.
 
-<graphics/chapter2/metaeditor_robot_modification.jpg, id=245, 594.22pt x 532.99
+<graphics/chapter2/metaeditor_robot_modification.jpg, id=283, 594.22pt x 532.99
 126pt>
 File: graphics/chapter2/metaeditor_robot_modification.jpg Graphic file (type jp
 g)
@@ -833,13 +830,8 @@ g)
 Package pdftex.def Info: graphics/chapter2/metaeditor_robot_modification.jpg us
 ed on input line 36.
 (pdftex.def)             Requested size: 411.93877pt x 369.50478pt.
-
-
-LaTeX Warning: Reference `fig:metaeditor_robot_modification.jpg' on page 7 unde
-fined on input line 41.
-
-[7 <./graphics/chapter2/metatrader5_overview.png>] [8 <./graphics/chapter2/meta
-editor_robot_modification.jpg>]) [9]
+ [7 <./graphics/chapter2/metatrader5_overview.png>] [8 <./graphics/chapter2/met
+aeditor_robot_modification.jpg>]) [9]
 \openout2 = `tex/machbarkeitsstudie/pfunktionen.aux'.
 
  (./tex/machbarkeitsstudie/pfunktionen.tex
@@ -861,57 +853,62 @@ Underfull \hbox (badness 10000) in paragraph at lines 166--166
 \openout2 = `tex/machbarkeitsstudie/tmachbarkeit.aux'.
 
  (./tex/machbarkeitsstudie/tmachbarkeit.tex
-Underfull \hbox (badness 10000) in paragraph at lines 13--13
+Underfull \hbox (badness 10000) in paragraph at lines 12--12
+[]\T1/cmr/m/n/12 Gewicht-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 12--12
 []\T1/cmr/bx/n/12 C++
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 13--13
+Underfull \hbox (badness 10000) in paragraph at lines 12--12
 []\T1/cmr/bx/n/12 Java
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 13--13
+Underfull \hbox (badness 10000) in paragraph at lines 12--12
 []\T1/cmr/bx/n/12 C/F
  []
 
 
-Underfull \hbox (badness 2573) in paragraph at lines 14--14
+Underfull \hbox (badness 2573) in paragraph at lines 13--13
 []\T1/cmr/m/n/12 Aufwand Co-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 15--15
+Underfull \hbox (badness 10000) in paragraph at lines 14--14
 []\T1/cmr/m/n/12 Bedinung/
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 20--20
+Underfull \hbox (badness 10000) in paragraph at lines 19--19
 []\T1/cmr/m/n/12 Übertragungs-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 21--21
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
 []\T1/cmr/m/n/12 Absturz-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 22--22
+Underfull \hbox (badness 10000) in paragraph at lines 21--21
 []\T1/cmr/m/n/12 Ressourcen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--27
+Underfull \hbox (badness 10000) in paragraph at lines 26--26
 []\T1/cmr/m/n/12 Betriebs-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 28--28
+Underfull \hbox (badness 10000) in paragraph at lines 27--27
 []\T1/cmr/m/n/12 Dokumen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 31--31
+Underfull \hbox (badness 10000) in paragraph at lines 30--30
 []\T1/cmr/m/n/12 Voll-
  []
 
@@ -931,7 +928,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 11--13
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 33--35
+Underfull \hbox (badness 10000) in paragraph at lines 34--36
 
  []
 
@@ -939,35 +936,50 @@ Underfull \hbox (badness 10000) in paragraph at lines 33--35
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 40--43
+Underfull \hbox (badness 10000) in paragraph at lines 41--44
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 44--45
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 44--45
+Underfull \hbox (badness 10000) in paragraph at lines 45--46
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--49
+Underfull \hbox (badness 10000) in paragraph at lines 47--50
 
  []
 
-) [17]
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--53
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--53
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--57
+
+ []
+
+[17]) [18]
 \openout2 = `tex/chapter3.aux'.
 
- (./tex/chapter3.tex [18
+ (./tex/chapter3.tex
+Kapitel 3.
+) [19
 
 
 
 ]
-Kapitel 3.
-) [19]
 \openout2 = `tex/chapter4.aux'.
 
  (./tex/chapter4.tex [20
@@ -1065,23 +1077,16 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 305.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 305.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 305.
 Package rerunfilecheck Info: File `Diplomarbeit_KOPG_TGM.out' has not changed.
-(rerunfilecheck)             Checksum: 9EF45FB12D975C89F9BFA6B6F523DF87;2025.
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
+(rerunfilecheck)             Checksum: 43F2D278BED5965DEB87AC2E326426A5;2025.
  ) 
 Here is how much of TeX's memory you used:
- 11922 strings out of 493633
- 167793 string characters out of 3146745
- 327542 words of memory out of 3000000
- 14778 multiletter control sequences out of 15000+200000
+ 11977 strings out of 493633
+ 169047 string characters out of 3146745
+ 352228 words of memory out of 3000000
+ 14793 multiletter control sequences out of 15000+200000
  24588 words of font info for 59 fonts, out of 3000000 for 9000
  845 hyphenation exceptions out of 8191
- 31i,8n,43p,1609b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 31i,9n,43p,1609b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
 {c:/texlive/2011/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}<c:/texl
 ive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2011/
 texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb><c:/texlive/2011/texmf-dist
@@ -1097,10 +1102,10 @@ fonts/type1/public/cm-super/sfss1440.pfb><c:/texlive/2011/texmf-dist/fonts/type
 m-super/sfss2074.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sf
 ss2488.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfsx2074.pfb
 ><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on Diplomarbeit_KOPG_TGM.pdf (47 pages, 776669 bytes).
+Output written on Diplomarbeit_KOPG_TGM.pdf (47 pages, 783679 bytes).
 PDF statistics:
- 449 PDF objects out of 1000 (max. 8388607)
- 376 compressed objects within 4 object streams
+ 486 PDF objects out of 1000 (max. 8388607)
+ 412 compressed objects within 5 object streams
  90 named destinations out of 1000 (max. 500000)
  272 words of extra memory for PDF output out of 10000 (max. 10000000)
 
