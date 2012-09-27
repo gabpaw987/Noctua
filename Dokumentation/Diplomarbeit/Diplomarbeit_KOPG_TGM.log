@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  27 SEP 2012 14:17
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  27 SEP 2012 15:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1095,10 +1095,10 @@ Package rerunfilecheck Info: File `Diplomarbeit_KOPG_TGM.out' has not changed.
 (rerunfilecheck)             Checksum: 486E075695C397CE8A6126A6827037C0;2173.
  ) 
 Here is how much of TeX's memory you used:
- 12039 strings out of 493633
- 169939 string characters out of 3146745
- 354983 words of memory out of 3000000
- 14851 multiletter control sequences out of 15000+200000
+ 12040 strings out of 493633
+ 169962 string characters out of 3146745
+ 355026 words of memory out of 3000000
+ 14852 multiletter control sequences out of 15000+200000
  24588 words of font info for 59 fonts, out of 3000000 for 9000
  845 hyphenation exceptions out of 8191
  31i,9n,43p,2393b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1117,7 +1117,7 @@ fonts/type1/public/cm-super/sfss1440.pfb><c:/texlive/2011/texmf-dist/fonts/type
 m-super/sfss2074.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sf
 ss2488.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfsx2074.pfb
 ><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on Diplomarbeit_KOPG_TGM.pdf (49 pages, 790091 bytes).
+Output written on Diplomarbeit_KOPG_TGM.pdf (49 pages, 790104 bytes).
 PDF statistics:
  506 PDF objects out of 1000 (max. 8388607)
  430 compressed objects within 5 object streams
