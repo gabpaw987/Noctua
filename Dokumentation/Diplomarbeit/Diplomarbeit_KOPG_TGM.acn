@@ -38,7 +38,7 @@
 (indexentry :tkey (("GUI" "\\glossaryentryfield{gui}{\\glsnamefont{GUI}}{Graphical User Interface}{\\relax }") ) :locref "{}{16}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("DLL" "\\glossaryentryfield{dll}{\\glsnamefont{DLL}}{Dynamic Link Library}{\\relax }") ) :locref "{}{16}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("GIT" "\\glossaryentryfield{git}{\\glsnamefont{GIT}}{GIT-Server}{\\relax }") ) :locref "{}{19}" :attr "pageglsnumberformat" ) 
-(indexentry :tkey (("GIT" "\\glossaryentryfield{git}{\\glsnamefont{GIT}}{GIT-Server}{\\relax }") ) :locref "{}{19}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("GIT" "\\glossaryentryfield{git}{\\glsnamefont{GIT}}{GIT-Server}{\\relax }") ) :locref "{}{20}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("TGM" "\\glossaryentryfield{tgm}{\\glsnamefont{TGM}}{Technologischem Gewerbemuseum}{\\relax }") ) :locref "{}{28}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("MA" "\\glossaryentryfield{ma}{\\glsnamefont{MA}}{Moving Average}{\\relax }") ) :locref "{}{28}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("BTS" "\\glossaryentryfield{bts}{\\glsnamefont{BTS}}{Backtesting-Software}{\\relax }") ) :locref "{}{28}" :attr "pageglsnumberformat" ) 
