@@ -1,0 +1,70 @@
+\section{Finanzwirtschaftliche Grundlagen}
+
+\label{chapter:finanzgrundlagen}
+
+Aufgabe dieses Kapitels ist es zunächst ein Fundament für die Verständnis dieser Arbeit zu legen und Funktionsweisen, Vorgänge, sowie verschiedene Ansätze zu erläutern.\\
+
+\subsection{Börse}
+
+Eine Börse ist ein Handelsmarkt auf dem sich Preise durch Angebot und Nachfrage von Handelspartners bilden und Handel nicht direkt zwischen Käufern und Verkäufern, sondern über berechtigte Händler, abgewickelt wird. Wichtig ist dabei, dass immer für ausreichend Liquidität gesorgt werden muss, so dass jederzeit Wertpapiere gekauft und auch verkauft werden können.\\
+Handelsvorgänge oder \emph{Trades} resultieren aus einer Erwartungshaltung der Marktteilnehmer. \cite{boerse_wien_funktion} \cite{boerse_frankfurt_funktion} 
+Unter der Annahme von steigenden Kursen werden Einheiten gekauft, i.e. es wird \emph{long} gegangen, werden fallende Kurse erwartet, werden entweder existierende Stückzahlen verkauft oder es wird sogar ein Leerverkauf getätigt, i.e. eine \emph{short}-Position eröffnet. Damit wird der Verkauf von geborgten Wertpapieren bezeichnet, die zu einem späteren Zeitpunkt beim Schließen der short-Position erst gekauft werden. Sinken die Kurse dazwischen wird daher zu einem höheren Preis verkauft, als später gekauft wird und es entsteht die Differenz als Gewinn. \cite{gabler_leerverkauf}\\
+Wollen mehr Handelsteilnehmer oder \emph{Trader} kaufen, als verkaufen steigt der Preis aufgrund der hohen Nachfrage, man spricht auch von einem Bullenmarkt. \cite{duden_bullenmarkt}
+Ist es andersherum so, dass die Verkäufer überwiegen und der Preis sinkt handelt es sich um einen Bärenmarkt. \cite{duden_baerenmarkt}\\
+\\
+
+\subsubsection{Bid/Ask}
+
+Für jedes Wertpapier wird ein sogenanntes Orderbuch geführt, das die aktuellen Kauf- und Verkaufaufträge beinhaltet. Investoren interessieren sich meist für die sogenannte Quote-Zeile, die Informationen zu den günstigsten Konditionen sowohl auf Käufer-, als auch auf Verkäuferseite bietet.\\
+Eine Quote-Zeile von Apple (AAPL) könnte dabei folgendermaßen aussehen.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Bid & Bid Size & Ask & Ask Size \\ \hline
+691.52 & 700 & 691.66 & 300 \\ \hline
+\end{tabular}
+\end{center}
+
+Der Bid-Preis von \textdollar{691.52} ist das höchste vorhandene Gebot für eine Apple-Aktie. Die Bid-Size gibt die Information über die Anzahl an Aktien, die Käufer zu diesem Preis erstehen wollen. Die Anzahl wird in \emph{round lots} angegeben; meist entspricht ein round lot 100 Stück der Aktie. Die Bid-Seite beschreit somit die Käuferseite.\\
+Der Ask-Preis und die Ask-Size beschreibt hingegen das beste Angebot auf der Verkäuferseite. In diesem Fall werden 300 round lots für den Stückpreis von \textdollar{691.66} angeboten.\\
+Soll ein Handel so schnell als möglich abgewickelt werden muss zum Ask-Preis gekauft und zum Bid-Preis verkauft werden. In diesem Fall verändert sich die Quote-Zeile so, dass der nächstbeste Auftrag angezeigt wird. Diese Hintereinanderreihung von Angeboten wird auch als Orderbuchtiefe bezeichnet.\\
+Angenommen ein Käufer ist nicht bereit zum aktuellen Ask-Preis zu kaufen. Er will bessere Konditionen und schickt eine \emph{Limit-Order}, d.h. zu gegebenem Preis oder besser \footnote{IB-Ordertypen siehe: http://www.interactivebrokers.com/de/p.php?f=orderTypes}, mit einem Limit, das zwischen Ask- und Bid-Preis liegt. Sein Kaufgebot ist damit höher als der zuvor höchste und wird daher sofort in der Quote-Zeile auf der Bid-Seite angezeigt.\\
+\\
+Der Aktienkurs wird mithilfe dieser vorhandenen Orders so gebildet, dass stets der höchste Umsatz entsteht.
+\cite{charttec_kursfeststellung}
+
+\subsubsection{Support/Resistance}
+
+Die Kurse von Aktien unterliegen, wie bereits erwähnt gewissen Trends, die entweder auf-, ab- oder auch seitwärts verlaufen, wenn weder das eine, noch das andere klar feststellbar ist. Bei steigenden Kursen erreichen diese irgendwann ein Level, bei dem der Preis nicht mehr als billig angesehen wird und der Kurs dreht um. Der Trend verliert also seine Nachhaltigkeit. Dieses Level wird als \emph{Widerstand} oder \emph{Resistance} bezeichnet, da dieser nur schwer überwunden wird. Sinkt der Kurs eine Weile wieder und sonstige Bewertungskriterien des Handelsgutes haben sich nicht signifikant verändert, erreicht der Kurs einen Punkt, bei dem er wieder interessant für etwaige Käufer wird. Diese Schwelle wird als \emph{Unterstützung} oder \emph{Support} bezeichnet. Am Beispiel von Microsoft kann diese Funktion in der Grafik \ref{fig:msft_sup_res} über einen längeren Zeitraum beobachtet werden.\\
+Diese beiden Schwellen sind temporäre Hilfsmittel und lassen Wendepunkte erahnen. Bei Durchbruch eines Levels, kann hingegen mit einer Fortsetzung dieses Trends gerechnet werden und ggf. wird ein alter Widerstand zur Unterstützung. \cite{godmode_supp_res} Das Chart \ref{fig:payx_sup_res} von Paychex Inc. veranschaulicht diesen Wechsel von Unterstützungs- zu Widerstands- und wieder zurück zu Unterstützungslevel.
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/chapter2/msft_sup_res.JPG}
+	\caption[Microsoft Support Resistance]{Microsoft 5-Jahres-Chart mit 1-Wochen-Intervallen und eingezeichneten Support- und Resistance-Level}
+	\label{fig:msft_sup_res}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/chapter2/payx_sup_res.JPG}
+	\caption[Paychex Inc. Support Resistance]{Paychex Inc. 5-Jahres-Chart mit 1-Wochen-Intervallen; Level wechselt zwischen Support- und Restistance-Funktion}
+	\label{fig:payx_sup_res}
+\end{figure}
+
+\subsection{Markt}
+
+Aktienpreise setzten sich vollständig durch Angebot und Nachfrage zusammen. Nachfrage entsteht wenn Handelsteilnehmer annehmen, dass die Preise steigen, Angebot durch die Erwartung von negativen Kursveräufen.\\
+Diese Annahmen beruhen auf einer Vielzahl von Informationen, die zur Verfügung stehen. Somit haben diese Informationen einen direkten Einfluss auf die Aktienkurse. Veröffentlicht ein Unternehmen seine Bilanz und fallen darin die Gewinne höher aus als erwartet, wird die Aktie aufgrund dieser Information steigen. Die Preise reflektieren aber nicht nur realisierte Gewinne, sondern auch potentielle zukünftige. Wären in der Theorie alle möglichen Informationen allen Handelsteilnehmern bekannt, würde sich der Kurs nur mehr durch das Auftauchen von neuen Informationen verändern. In der Praxis verhält es sich anders, da weder alle Informationen vorhanden sind, noch Handelsteilnehmer absolut rational agieren.\\
+Diese in den 1960ern entwickelte Theorie wird als \emph{Efficient Market Hypothesis} bezeichnet und besagt kurzgefasst, dass Marktpreise alle verfügbaren Informationen vollständig widerspiegeln.\\
+Außer der Schlussfolgerung, dass Nachrichten und Ereignisse für Preisentwicklungen höchst relevant sind, lässt sich ebenfalls folgern, dass positive Informationen, z.B. eine Wachstumsprognose, keinen Kursanstieg bedeuten muss, weil diese schon in dem aktuellen Marktpreis inbegriffen sein kann. \cite{lo_efficient_market_hypothesis}\\
+\\
+Da ein Marktpreis bei erhöhter Nachfrage steigt, ist es für Aktienanleger sinnvoll Geld dort anzulegen, wo auch andere investieren. Gewinn liegt daher darin herauszufinden was die Mehrheit oder der Markt denkt und nicht in der persönlichen Einschätzung der Information. John Maynard Keynes beschreibt diese Theorie schon 1936 in seiner \emph{General Theory}.\\
+In dieser Theorie lässt sich eine Rückkopplung an Information erahnen. Nicht nur die ursprüngliche Information selbst spielt eine Rolle, sonder auch die Reaktion darauf, im Falle von Aktien also die Kursentwicklung. Dieser iterative Prozess benötigt aufgrund von menschlichem Handeln aber auch seine Zeit. Dadurch entstehen durch Kursschwankungen und die verursachten Reaktionen Trendbewegungen in den Märkten. Erst durch diesen, eigentlich psychologischen Effekt, funktionieren Charttechniken und technische Analysen.\\
+Für jene, die sich zusätzlich noch mit makroökonomischen Zusammenhängen befassen besteht trotzdem weiterhin ein Vorteil. Marktrückkopplungen unterliegen einem "Herdentrieb" und können zu Spekulationsblasen führen. Übergeordnete Vorgänge können somit frühzeitige Hinweise liefern und bei der korrekten Interpretation von den resultierenden Kursverläufen helfen. \cite{singer_herdentrieb}
+
+\subsubsection{Marktzustände}
+
+Um die Performance von Trendfolgemethoden zu optimieren sollen verschiedene \emph{Marktzustände} unterschieden werden, die sich auf den Kursverlauf auswirken. Zu diesem Zweck können diverse Kriterien untersucht werden. Angefangen bei längeren Trendverläufen, die nicht zum aktiven Handel genutzt werden, über Währungswechselkurse bis zu Zinssätzen.\\
+Beispielsweise könnte sich herausstellen, dass bei einem langfristigen Aufwärtstrend bei Kaufsignalen die long-Positionen immer größer ausfallen sollten, als die short-Positionen bei Verkaufssignalen oder dass erhöhte Volatilität und steigende Zinsen einen Kurseinbruch ankündigen.
