@@ -488,7 +488,7 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame16_Row0]
-cyCur=353
+cyCur=272
 cyMin=10
 
 [Frame16_Col0]
@@ -497,8 +497,8 @@ cxMin=10
 
 [Frame16_View0,0]
 Cursor.row=55
-Cursor.column=169
-TopSubLine=0
+Cursor.column=566
+TopSubLine=114
 
 [Frame17]
 Columns=1
