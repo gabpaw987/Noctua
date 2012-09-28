@@ -5,7 +5,7 @@ Version=2
 [SessionInfo]
 ActiveTab=2
 FrameCount=19
-ActiveFrame=1
+ActiveFrame=14
 
 [Frame0]
 Columns=1
@@ -14,8 +14,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=125
 NormalPos.top=125
 NormalPos.right=457
@@ -34,13 +34,13 @@ cxMin=10
 [Frame0_View0,0]
 Cursor.row=0
 Cursor.column=0
-TopSubLine=158
+TopSubLine=0
 
 [Frame1]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -53,11 +53,11 @@ Class=CLatexEdit
 Document=tex\chapter2.tex
 
 [Frame1_Row0]
-cyCur=641
+cyCur=185
 cyMin=10
 
 [Frame1_Col0]
-cxCur=1670
+cxCur=293
 cxMin=10
 
 [Frame1_View0,0]
@@ -237,7 +237,7 @@ cxMin=10
 [Frame7_View0,0]
 Cursor.row=14
 Cursor.column=42
-TopSubLine=3
+TopSubLine=6
 
 [Frame8]
 Columns=1
@@ -416,8 +416,8 @@ TopSubLine=0
 [Frame14]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -430,16 +430,16 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\wirmachbarkeit.tex
 
 [Frame14_Row0]
-cyCur=402
+cyCur=641
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1339
+cxCur=1670
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=2
-Cursor.column=69
+Cursor.row=5
+Cursor.column=0
 TopSubLine=0
 
 [Frame15]
@@ -488,7 +488,11 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame16_Row0]
+<<<<<<< HEAD
+cyCur=272
+=======
 cyCur=135
+>>>>>>> origin/master
 cyMin=10
 
 [Frame16_Col0]
@@ -496,9 +500,15 @@ cxCur=1017
 cxMin=10
 
 [Frame16_View0,0]
+<<<<<<< HEAD
+Cursor.row=55
+Cursor.column=566
+TopSubLine=114
+=======
 Cursor.row=0
 Cursor.column=58
 TopSubLine=0
+>>>>>>> origin/master
 
 [Frame17]
 Columns=1
