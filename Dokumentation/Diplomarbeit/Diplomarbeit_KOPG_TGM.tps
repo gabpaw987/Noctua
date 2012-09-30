@@ -235,9 +235,9 @@ cxCur=992
 cxMin=10
 
 [Frame7_View0,0]
-Cursor.row=14
-Cursor.column=42
-TopSubLine=6
+Cursor.row=15
+Cursor.column=34
+TopSubLine=4
 
 [Frame8]
 Columns=1
@@ -438,7 +438,7 @@ cxCur=1670
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=5
+Cursor.row=14
 Cursor.column=0
 TopSubLine=0
 
@@ -488,11 +488,7 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame16_Row0]
-<<<<<<< HEAD
-cyCur=272
-=======
 cyCur=135
->>>>>>> origin/master
 cyMin=10
 
 [Frame16_Col0]
@@ -500,15 +496,9 @@ cxCur=1017
 cxMin=10
 
 [Frame16_View0,0]
-<<<<<<< HEAD
-Cursor.row=55
-Cursor.column=566
-TopSubLine=114
-=======
 Cursor.row=0
 Cursor.column=58
 TopSubLine=0
->>>>>>> origin/master
 
 [Frame17]
 Columns=1
