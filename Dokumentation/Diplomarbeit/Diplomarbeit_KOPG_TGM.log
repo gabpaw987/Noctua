@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  28 SEP 2012 01:45
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  28 SEP 2012 08:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**C:/Users/Gabriel/Documents/Schule/PPM/Noctua/Dokumentation/Diplomarbeit/Diplo
-marbeit_KOPG_TGM.tex
-
-(c:/Users/Gabriel/Documents/Schule/PPM/Noctua/Dokumentation/Diplomarbeit/Diplom
+**C:/Users/Josefs/Documents/Schule/PPM/noctua/Dokumentation/Diplomarbeit/Diplom
 arbeit_KOPG_TGM.tex
+
+(c:/Users/Josefs/Documents/Schule/PPM/noctua/Dokumentation/Diplomarbeit/Diploma
+rbeit_KOPG_TGM.tex
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman-x-2009-06-19, ngerman-x-2009-06-19, afrikaans, ancientgreek, ibycus, arabi
@@ -869,7 +869,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 13--13
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 13--13
-[]\T1/cmr/bx/n/12 C/F
+[]\T1/cmr/bx/n/12 C#F#
  []
 
 
@@ -1105,12 +1105,12 @@ Package rerunfilecheck Info: File `Diplomarbeit_KOPG_TGM.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  12048 strings out of 493633
- 170263 string characters out of 3146745
+ 170259 string characters out of 3146745
  355081 words of memory out of 3000000
  14857 multiletter control sequences out of 15000+200000
  24588 words of font info for 59 fonts, out of 3000000 for 9000
  845 hyphenation exceptions out of 8191
- 31i,9n,43p,2393b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 31i,9n,43p,2392b,491s stack positions out of 5000i,500n,10000p,200000b,50000s
 {c:/texlive/2011/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}<c:/texl
 ive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2011/
 texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb><c:/texlive/2011/texmf-dist
@@ -1126,7 +1126,7 @@ fonts/type1/public/cm-super/sfss1440.pfb><c:/texlive/2011/texmf-dist/fonts/type
 m-super/sfss2074.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sf
 ss2488.pfb><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfsx2074.pfb
 ><c:/texlive/2011/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on Diplomarbeit_KOPG_TGM.pdf (49 pages, 907494 bytes).
+Output written on Diplomarbeit_KOPG_TGM.pdf (49 pages, 907501 bytes).
 PDF statistics:
  507 PDF objects out of 1000 (max. 8388607)
  430 compressed objects within 5 object streams

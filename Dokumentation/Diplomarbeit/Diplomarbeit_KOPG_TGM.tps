@@ -4,8 +4,8 @@ Version=2
 
 [SessionInfo]
 ActiveTab=2
-FrameCount=19
-ActiveFrame=14
+FrameCount=21
+ActiveFrame=10
 
 [Frame0]
 Columns=1
@@ -24,11 +24,11 @@ Class=CLatexEdit
 Document=Diplomarbeit_KOPG_TGM.tex
 
 [Frame0_Row0]
-cyCur=205
+cyCur=214
 cyMin=10
 
 [Frame0_Col0]
-cxCur=289
+cxCur=295
 cxMin=10
 
 [Frame0_View0,0]
@@ -43,8 +43,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=0
 NormalPos.top=0
 NormalPos.right=336
@@ -53,11 +53,11 @@ Class=CLatexEdit
 Document=tex\chapter2.tex
 
 [Frame1_Row0]
-cyCur=185
+cyCur=194
 cyMin=10
 
 [Frame1_Col0]
-cxCur=293
+cxCur=299
 cxMin=10
 
 [Frame1_View0,0]
@@ -82,11 +82,11 @@ Class=CLatexEdit
 Document=tex\kurzzfsg.tex
 
 [Frame2_Row0]
-cyCur=225
+cyCur=234
 cyMin=10
 
 [Frame2_Col0]
-cxCur=992
+cxCur=998
 cxMin=10
 
 [Frame2_View0,0]
@@ -101,8 +101,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=75
 NormalPos.top=75
 NormalPos.right=1110
@@ -111,11 +111,11 @@ Class=CLatexEdit
 Document=tex\abstracta.tex
 
 [Frame3_Row0]
-cyCur=225
+cyCur=234
 cyMin=10
 
 [Frame3_Col0]
-cxCur=992
+cxCur=998
 cxMin=10
 
 [Frame3_View0,0]
@@ -130,8 +130,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=100
 NormalPos.top=100
 NormalPos.right=1135
@@ -140,17 +140,17 @@ Class=CLatexEdit
 Document=tex\prefacea.tex
 
 [Frame4_Row0]
-cyCur=225
+cyCur=234
 cyMin=10
 
 [Frame4_Col0]
-cxCur=992
+cxCur=998
 cxMin=10
 
 [Frame4_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=14
+Cursor.column=8
+TopSubLine=3
 
 [Frame5]
 Columns=1
@@ -159,8 +159,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=125
 NormalPos.top=125
 NormalPos.right=1160
@@ -169,17 +169,17 @@ Class=CLatexEdit
 Document=tex\title.tex
 
 [Frame5_Row0]
-cyCur=225
+cyCur=234
 cyMin=10
 
 [Frame5_Col0]
-cxCur=992
+cxCur=998
 cxMin=10
 
 [Frame5_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=14
+Cursor.column=12
+TopSubLine=88
 
 [Frame6]
 Columns=1
@@ -188,8 +188,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=50
 NormalPos.top=50
 NormalPos.right=1085
@@ -198,11 +198,11 @@ Class=CLatexEdit
 Document=tex\chapter5.tex
 
 [Frame6_Row0]
-cyCur=225
+cyCur=234
 cyMin=10
 
 [Frame6_Col0]
-cxCur=992
+cxCur=998
 cxMin=10
 
 [Frame6_View0,0]
@@ -217,8 +217,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=25
 NormalPos.top=25
 NormalPos.right=1060
@@ -227,17 +227,17 @@ Class=CLatexEdit
 Document=tex\acronyms.tex
 
 [Frame7_Row0]
-cyCur=255
+cyCur=264
 cyMin=10
 
 [Frame7_Col0]
-cxCur=992
+cxCur=998
 cxMin=10
 
 [Frame7_View0,0]
 Cursor.row=14
 Cursor.column=42
-TopSubLine=6
+TopSubLine=1
 
 [Frame8]
 Columns=1
@@ -246,8 +246,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=28
 NormalPos.top=28
 NormalPos.right=1410
@@ -256,11 +256,11 @@ Class=CLatexEdit
 Document=tex\chapter3.tex
 
 [Frame8_Row0]
-cyCur=402
+cyCur=411
 cyMin=10
 
 [Frame8_Col0]
-cxCur=1339
+cxCur=1345
 cxMin=10
 
 [Frame8_View0,0]
@@ -275,8 +275,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=56
 NormalPos.top=56
 NormalPos.right=1438
@@ -285,11 +285,11 @@ Class=CLatexEdit
 Document=tex\appendix.tex
 
 [Frame9_Row0]
-cyCur=402
+cyCur=411
 cyMin=10
 
 [Frame9_Col0]
-cxCur=1339
+cxCur=1345
 cxMin=10
 
 [Frame9_View0,0]
@@ -300,12 +300,12 @@ TopSubLine=0
 [Frame10]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=84
 NormalPos.top=84
 NormalPos.right=1466
@@ -314,11 +314,11 @@ Class=CLatexEdit
 Document=tex\chapter1.tex
 
 [Frame10_Row0]
-cyCur=402
+cyCur=361
 cyMin=10
 
 [Frame10_Col0]
-cxCur=1339
+cxCur=1091
 cxMin=10
 
 [Frame10_View0,0]
@@ -333,8 +333,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=112
 NormalPos.top=112
 NormalPos.right=1494
@@ -343,11 +343,11 @@ Class=CLatexEdit
 Document=tex\chapter4.tex
 
 [Frame11_Row0]
-cyCur=402
+cyCur=411
 cyMin=10
 
 [Frame11_Col0]
-cxCur=1339
+cxCur=1345
 cxMin=10
 
 [Frame11_View0,0]
@@ -362,8 +362,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=140
 NormalPos.top=140
 NormalPos.right=1522
@@ -372,11 +372,11 @@ Class=CLatexEdit
 Document=tex\chapter6.tex
 
 [Frame12_Row0]
-cyCur=402
+cyCur=411
 cyMin=10
 
 [Frame12_Col0]
-cxCur=1339
+cxCur=1345
 cxMin=10
 
 [Frame12_View0,0]
@@ -391,8 +391,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=56
 NormalPos.top=56
 NormalPos.right=928
@@ -401,11 +401,11 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\pfunktionen.tex
 
 [Frame13_Row0]
-cyCur=85
+cyCur=94
 cyMin=10
 
 [Frame13_Col0]
-cxCur=829
+cxCur=835
 cxMin=10
 
 [Frame13_View0,0]
@@ -416,12 +416,12 @@ TopSubLine=0
 [Frame14]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=168
 NormalPos.top=168
 NormalPos.right=1550
@@ -430,11 +430,11 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\wirmachbarkeit.tex
 
 [Frame14_Row0]
-cyCur=641
+cyCur=411
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1670
+cxCur=1345
 cxMin=10
 
 [Frame14_View0,0]
@@ -449,8 +449,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=196
 NormalPos.top=196
 NormalPos.right=1578
@@ -459,11 +459,11 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame15_Row0]
-cyCur=402
+cyCur=411
 cyMin=10
 
 [Frame15_Col0]
-cxCur=1339
+cxCur=1345
 cxMin=10
 
 [Frame15_View0,0]
@@ -478,8 +478,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=25
 NormalPos.top=25
 NormalPos.right=1085
@@ -488,27 +488,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame16_Row0]
-<<<<<<< HEAD
-cyCur=272
-=======
-cyCur=135
->>>>>>> origin/master
+cyCur=144
 cyMin=10
 
 [Frame16_Col0]
-cxCur=1017
+cxCur=1023
 cxMin=10
 
 [Frame16_View0,0]
-<<<<<<< HEAD
-Cursor.row=55
-Cursor.column=566
-TopSubLine=114
-=======
-Cursor.row=0
-Cursor.column=58
-TopSubLine=0
->>>>>>> origin/master
+Cursor.row=12
+Cursor.column=186
+TopSubLine=18
 
 [Frame17]
 Columns=1
@@ -517,8 +507,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=125
 NormalPos.top=125
 NormalPos.right=1176
@@ -527,11 +517,11 @@ Class=CLatexEdit
 Document=Diplomarbeit_KOPG_TGM.bbl
 
 [Frame17_Row0]
-cyCur=221
+cyCur=230
 cyMin=10
 
 [Frame17_Col0]
-cxCur=1008
+cxCur=1014
 cxMin=10
 
 [Frame17_View0,0]
@@ -546,8 +536,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
+MaxPos.x=-8
+MaxPos.y=-30
 NormalPos.left=0
 NormalPos.top=0
 NormalPos.right=1051
@@ -556,15 +546,73 @@ Class=CLatexEdit
 Document=tex\eid.tex
 
 [Frame18_Row0]
-cyCur=221
+cyCur=230
 cyMin=10
 
 [Frame18_Col0]
-cxCur=1008
+cxCur=1014
 cxMin=10
 
 [Frame18_View0,0]
+Cursor.row=9
+Cursor.column=24
+TopSubLine=9
+
+[Frame19]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-30
+NormalPos.left=25
+NormalPos.top=25
+NormalPos.right=1012
+NormalPos.bottom=282
+Class=CLatexEdit
+Document=tex\nomenclature.tex
+
+[Frame19_Row0]
+cyCur=198
+cyMin=10
+
+[Frame19_Col0]
+cxCur=950
+cxMin=10
+
+[Frame19_View0,0]
 Cursor.row=0
 Cursor.column=0
 TopSubLine=0
+
+[Frame20]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-8
+MaxPos.y=-30
+NormalPos.left=50
+NormalPos.top=50
+NormalPos.right=1037
+NormalPos.bottom=307
+Class=CLatexEdit
+Document=tex\bib_file.bib
+
+[Frame20_Row0]
+cyCur=198
+cyMin=10
+
+[Frame20_Col0]
+cxCur=950
+cxMin=10
+
+[Frame20_View0,0]
+Cursor.row=116
+Cursor.column=17
+TopSubLine=206
 
