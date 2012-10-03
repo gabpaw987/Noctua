@@ -4,8 +4,8 @@ Version=2
 
 [SessionInfo]
 ActiveTab=2
-FrameCount=21
-ActiveFrame=15
+FrameCount=19
+ActiveFrame=17
 
 [Frame0]
 Columns=1
@@ -43,8 +43,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=0
 NormalPos.top=0
 NormalPos.right=336
@@ -101,8 +101,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=75
 NormalPos.top=75
 NormalPos.right=1110
@@ -130,8 +130,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=100
 NormalPos.top=100
 NormalPos.right=1135
@@ -150,7 +150,7 @@ cxMin=10
 [Frame4_View0,0]
 Cursor.row=0
 Cursor.column=0
-TopSubLine=3
+TopSubLine=0
 
 [Frame5]
 Columns=1
@@ -159,8 +159,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=125
 NormalPos.top=125
 NormalPos.right=1160
@@ -179,7 +179,7 @@ cxMin=10
 [Frame5_View0,0]
 Cursor.row=0
 Cursor.column=0
-TopSubLine=88
+TopSubLine=0
 
 [Frame6]
 Columns=1
@@ -188,8 +188,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=50
 NormalPos.top=50
 NormalPos.right=1085
@@ -217,8 +217,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=25
 NormalPos.top=25
 NormalPos.right=1060
@@ -235,9 +235,9 @@ cxCur=998
 cxMin=10
 
 [Frame7_View0,0]
-Cursor.row=14
-Cursor.column=42
-TopSubLine=1
+Cursor.row=15
+Cursor.column=34
+TopSubLine=4
 
 [Frame8]
 Columns=1
@@ -246,8 +246,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=28
 NormalPos.top=28
 NormalPos.right=1406
@@ -275,8 +275,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=56
 NormalPos.top=56
 NormalPos.right=1434
@@ -304,8 +304,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=84
 NormalPos.top=84
 NormalPos.right=1462
@@ -333,8 +333,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=112
 NormalPos.top=112
 NormalPos.right=1490
@@ -362,8 +362,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=140
 NormalPos.top=140
 NormalPos.right=1518
@@ -391,8 +391,8 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
+MaxPos.x=-9
+MaxPos.y=-34
 NormalPos.left=56
 NormalPos.top=56
 NormalPos.right=928
@@ -438,15 +438,15 @@ cxCur=1341
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=5
+Cursor.row=14
 Cursor.column=0
-TopSubLine=0
+TopSubLine=2
 
 [Frame15]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -459,17 +459,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame15_Row0]
-cyCur=321
+cyCur=411
 cyMin=10
 
 [Frame15_Col0]
-cxCur=392
+cxCur=1341
 cxMin=10
 
 [Frame15_View0,0]
 Cursor.row=47
 Cursor.column=0
-TopSubLine=195
+TopSubLine=71
 
 [Frame16]
 Columns=1
@@ -496,15 +496,15 @@ cxCur=1023
 cxMin=10
 
 [Frame16_View0,0]
-Cursor.row=12
-Cursor.column=186
-TopSubLine=18
+Cursor.row=0
+Cursor.column=58
+TopSubLine=0
 
 [Frame17]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-8
@@ -517,11 +517,11 @@ Class=CLatexEdit
 Document=Diplomarbeit_KOPG_TGM.bbl
 
 [Frame17_Row0]
-cyCur=230
+cyCur=361
 cyMin=10
 
 [Frame17_Col0]
-cxCur=1014
+cxCur=1091
 cxMin=10
 
 [Frame17_View0,0]
@@ -554,64 +554,6 @@ cxCur=1014
 cxMin=10
 
 [Frame18_View0,0]
-Cursor.row=9
-Cursor.column=24
-TopSubLine=9
-
-[Frame19]
-Columns=1
-Rows=1
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=25
-NormalPos.top=25
-NormalPos.right=1012
-NormalPos.bottom=282
-Class=CLatexEdit
-Document=tex\nomenclature.tex
-
-[Frame19_Row0]
-cyCur=198
-cyMin=10
-
-[Frame19_Col0]
-cxCur=950
-cxMin=10
-
-[Frame19_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
-
-[Frame20]
-Columns=1
-Rows=1
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=50
-NormalPos.top=50
-NormalPos.right=1037
-NormalPos.bottom=307
-Class=CLatexEdit
-Document=tex\bib_file.bib
-
-[Frame20_Row0]
-cyCur=198
-cyMin=10
-
-[Frame20_Col0]
-cxCur=950
-cxMin=10
-
-[Frame20_View0,0]
 Cursor.row=0
 Cursor.column=0
 TopSubLine=0
