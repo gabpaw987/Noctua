@@ -3,40 +3,11 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=2
+ActiveTab=0
 FrameCount=19
-ActiveFrame=17
+ActiveFrame=13
 
 [Frame0]
-Columns=1
-Rows=1
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=125
-NormalPos.top=125
-NormalPos.right=457
-NormalPos.bottom=398
-Class=CLatexEdit
-Document=Diplomarbeit_KOPG_TGM.tex
-
-[Frame0_Row0]
-cyCur=214
-cyMin=10
-
-[Frame0_Col0]
-cxCur=295
-cxMin=10
-
-[Frame0_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
-
-[Frame1]
 Columns=1
 Rows=1
 Flags=0
@@ -52,20 +23,20 @@ NormalPos.bottom=253
 Class=CLatexEdit
 Document=tex\chapter2.tex
 
-[Frame1_Row0]
-cyCur=194
+[Frame0_Row0]
+cyCur=185
 cyMin=10
 
-[Frame1_Col0]
-cxCur=299
+[Frame0_Col0]
+cxCur=293
 cxMin=10
 
-[Frame1_View0,0]
+[Frame0_View0,0]
 Cursor.row=6
 Cursor.column=0
 TopSubLine=0
 
-[Frame2]
+[Frame1]
 Columns=1
 Rows=1
 Flags=0
@@ -81,12 +52,41 @@ NormalPos.bottom=343
 Class=CLatexEdit
 Document=tex\kurzzfsg.tex
 
+[Frame1_Row0]
+cyCur=225
+cyMin=10
+
+[Frame1_Col0]
+cxCur=992
+cxMin=10
+
+[Frame1_View0,0]
+Cursor.row=0
+Cursor.column=0
+TopSubLine=0
+
+[Frame2]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=75
+NormalPos.top=75
+NormalPos.right=1110
+NormalPos.bottom=368
+Class=CLatexEdit
+Document=tex\abstracta.tex
+
 [Frame2_Row0]
-cyCur=234
+cyCur=225
 cyMin=10
 
 [Frame2_Col0]
-cxCur=998
+cxCur=992
 cxMin=10
 
 [Frame2_View0,0]
@@ -103,35 +103,6 @@ MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
 MaxPos.y=-34
-NormalPos.left=75
-NormalPos.top=75
-NormalPos.right=1110
-NormalPos.bottom=368
-Class=CLatexEdit
-Document=tex\abstracta.tex
-
-[Frame3_Row0]
-cyCur=234
-cyMin=10
-
-[Frame3_Col0]
-cxCur=998
-cxMin=10
-
-[Frame3_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
-
-[Frame4]
-Columns=1
-Rows=1
-Flags=0
-ShowCmd=1
-MinPos.x=-1
-MinPos.y=-1
-MaxPos.x=-9
-MaxPos.y=-34
 NormalPos.left=100
 NormalPos.top=100
 NormalPos.right=1135
@@ -139,20 +110,20 @@ NormalPos.bottom=393
 Class=CLatexEdit
 Document=tex\prefacea.tex
 
-[Frame4_Row0]
-cyCur=234
+[Frame3_Row0]
+cyCur=225
 cyMin=10
 
-[Frame4_Col0]
-cxCur=998
+[Frame3_Col0]
+cxCur=992
 cxMin=10
 
-[Frame4_View0,0]
-Cursor.row=0
+[Frame3_View0,0]
+Cursor.row=5
 Cursor.column=0
 TopSubLine=0
 
-[Frame5]
+[Frame4]
 Columns=1
 Rows=1
 Flags=0
@@ -168,20 +139,20 @@ NormalPos.bottom=418
 Class=CLatexEdit
 Document=tex\title.tex
 
-[Frame5_Row0]
-cyCur=234
+[Frame4_Row0]
+cyCur=225
 cyMin=10
 
-[Frame5_Col0]
-cxCur=998
+[Frame4_Col0]
+cxCur=992
 cxMin=10
 
-[Frame5_View0,0]
-Cursor.row=0
+[Frame4_View0,0]
+Cursor.row=9
 Cursor.column=0
-TopSubLine=0
+TopSubLine=9
 
-[Frame6]
+[Frame5]
 Columns=1
 Rows=1
 Flags=0
@@ -197,20 +168,20 @@ NormalPos.bottom=343
 Class=CLatexEdit
 Document=tex\chapter5.tex
 
-[Frame6_Row0]
-cyCur=234
+[Frame5_Row0]
+cyCur=225
 cyMin=10
 
-[Frame6_Col0]
-cxCur=998
+[Frame5_Col0]
+cxCur=992
 cxMin=10
 
-[Frame6_View0,0]
+[Frame5_View0,0]
 Cursor.row=10
 Cursor.column=0
 TopSubLine=0
 
-[Frame7]
+[Frame6]
 Columns=1
 Rows=1
 Flags=0
@@ -226,20 +197,20 @@ NormalPos.bottom=348
 Class=CLatexEdit
 Document=tex\acronyms.tex
 
-[Frame7_Row0]
-cyCur=264
+[Frame6_Row0]
+cyCur=255
 cyMin=10
 
-[Frame7_Col0]
-cxCur=998
+[Frame6_Col0]
+cxCur=992
 cxMin=10
 
-[Frame7_View0,0]
-Cursor.row=15
-Cursor.column=34
-TopSubLine=4
+[Frame6_View0,0]
+Cursor.row=22
+Cursor.column=29
+TopSubLine=11
 
-[Frame8]
+[Frame7]
 Columns=1
 Rows=1
 Flags=0
@@ -255,20 +226,20 @@ NormalPos.bottom=498
 Class=CLatexEdit
 Document=tex\chapter3.tex
 
-[Frame8_Row0]
-cyCur=411
+[Frame7_Row0]
+cyCur=402
 cyMin=10
 
-[Frame8_Col0]
-cxCur=1341
+[Frame7_Col0]
+cxCur=1335
 cxMin=10
 
-[Frame8_View0,0]
-Cursor.row=1
+[Frame7_View0,0]
+Cursor.row=2
 Cursor.column=0
 TopSubLine=0
 
-[Frame9]
+[Frame8]
 Columns=1
 Rows=1
 Flags=0
@@ -284,20 +255,20 @@ NormalPos.bottom=526
 Class=CLatexEdit
 Document=tex\appendix.tex
 
-[Frame9_Row0]
-cyCur=411
+[Frame8_Row0]
+cyCur=402
 cyMin=10
 
-[Frame9_Col0]
-cxCur=1341
+[Frame8_Col0]
+cxCur=1335
 cxMin=10
 
-[Frame9_View0,0]
+[Frame8_View0,0]
 Cursor.row=0
 Cursor.column=0
 TopSubLine=0
 
-[Frame10]
+[Frame9]
 Columns=1
 Rows=1
 Flags=0
@@ -313,20 +284,20 @@ NormalPos.bottom=554
 Class=CLatexEdit
 Document=tex\chapter1.tex
 
-[Frame10_Row0]
-cyCur=411
+[Frame9_Row0]
+cyCur=402
 cyMin=10
 
-[Frame10_Col0]
-cxCur=1341
+[Frame9_Col0]
+cxCur=1335
 cxMin=10
 
-[Frame10_View0,0]
-Cursor.row=124
+[Frame9_View0,0]
+Cursor.row=0
 Cursor.column=0
 TopSubLine=118
 
-[Frame11]
+[Frame10]
 Columns=1
 Rows=1
 Flags=0
@@ -342,20 +313,20 @@ NormalPos.bottom=582
 Class=CLatexEdit
 Document=tex\chapter4.tex
 
-[Frame11_Row0]
-cyCur=411
+[Frame10_Row0]
+cyCur=402
 cyMin=10
 
-[Frame11_Col0]
-cxCur=1341
+[Frame10_Col0]
+cxCur=1335
 cxMin=10
 
-[Frame11_View0,0]
+[Frame10_View0,0]
 Cursor.row=2
 Cursor.column=0
 TopSubLine=0
 
-[Frame12]
+[Frame11]
 Columns=1
 Rows=1
 Flags=0
@@ -371,20 +342,20 @@ NormalPos.bottom=610
 Class=CLatexEdit
 Document=tex\chapter6.tex
 
-[Frame12_Row0]
-cyCur=411
+[Frame11_Row0]
+cyCur=402
 cyMin=10
 
-[Frame12_Col0]
-cxCur=1341
+[Frame11_Col0]
+cxCur=1335
 cxMin=10
 
-[Frame12_View0,0]
+[Frame11_View0,0]
 Cursor.row=0
 Cursor.column=0
 TopSubLine=0
 
-[Frame13]
+[Frame12]
 Columns=1
 Rows=1
 Flags=0
@@ -400,17 +371,46 @@ NormalPos.bottom=209
 Class=CLatexEdit
 Document=tex\machbarkeitsstudie\pfunktionen.tex
 
+[Frame12_Row0]
+cyCur=85
+cyMin=10
+
+[Frame12_Col0]
+cxCur=829
+cxMin=10
+
+[Frame12_View0,0]
+Cursor.row=6
+Cursor.column=0
+TopSubLine=3
+
+[Frame13]
+Columns=1
+Rows=1
+Flags=2
+ShowCmd=3
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=168
+NormalPos.top=168
+NormalPos.right=1546
+NormalPos.bottom=638
+Class=CLatexEdit
+Document=tex\machbarkeitsstudie\wirmachbarkeit.tex
+
 [Frame13_Row0]
-cyCur=94
+cyCur=641
 cyMin=10
 
 [Frame13_Col0]
-cxCur=835
+cxCur=1670
 cxMin=10
 
 [Frame13_View0,0]
-Cursor.row=0
-Cursor.column=43
+Cursor.row=16
+Cursor.column=11
 TopSubLine=0
 
 [Frame14]
@@ -420,27 +420,27 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=168
-NormalPos.top=168
-NormalPos.right=1546
-NormalPos.bottom=638
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=196
+NormalPos.top=196
+NormalPos.right=1574
+NormalPos.bottom=666
 Class=CLatexEdit
-Document=tex\machbarkeitsstudie\wirmachbarkeit.tex
+Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame14_Row0]
-cyCur=411
+cyCur=402
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1341
+cxCur=1335
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=14
+Cursor.row=0
 Cursor.column=0
-TopSubLine=2
+TopSubLine=0
 
 [Frame15]
 Columns=1
@@ -449,27 +449,27 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=196
-NormalPos.top=196
-NormalPos.right=1574
-NormalPos.bottom=666
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=25
+NormalPos.top=25
+NormalPos.right=1085
+NormalPos.bottom=228
 Class=CLatexEdit
-Document=tex\machbarkeitsstudie\voruntersuchung.tex
+Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame15_Row0]
-cyCur=411
+cyCur=135
 cyMin=10
 
 [Frame15_Col0]
-cxCur=1341
+cxCur=1017
 cxMin=10
 
 [Frame15_View0,0]
-Cursor.row=47
+Cursor.row=0
 Cursor.column=0
-TopSubLine=71
+TopSubLine=0
 
 [Frame16]
 Columns=1
@@ -478,55 +478,55 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=25
-NormalPos.top=25
-NormalPos.right=1085
-NormalPos.bottom=228
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=0
+NormalPos.top=0
+NormalPos.right=1051
+NormalPos.bottom=289
 Class=CLatexEdit
-Document=tex\machbarkeitsstudie\tmachbarkeit.tex
+Document=tex\eid.tex
 
 [Frame16_Row0]
-cyCur=144
+cyCur=221
 cyMin=10
 
 [Frame16_Col0]
-cxCur=1023
+cxCur=1008
 cxMin=10
 
 [Frame16_View0,0]
 Cursor.row=0
-Cursor.column=58
+Cursor.column=0
 TopSubLine=0
 
 [Frame17]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=125
-NormalPos.top=125
-NormalPos.right=1176
-NormalPos.bottom=414
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=28
+NormalPos.top=28
+NormalPos.right=1527
+NormalPos.bottom=498
 Class=CLatexEdit
-Document=Diplomarbeit_KOPG_TGM.bbl
+Document=tex\machbarkeitsstudie\fingrundlagen.tex
 
 [Frame17_Row0]
-cyCur=361
+cyCur=402
 cyMin=10
 
 [Frame17_Col0]
-cxCur=1091
+cxCur=1456
 cxMin=10
 
 [Frame17_View0,0]
-Cursor.row=0
-Cursor.column=0
+Cursor.row=10
+Cursor.column=347
 TopSubLine=0
 
 [Frame18]
@@ -536,25 +536,25 @@ Flags=0
 ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
-MaxPos.x=-8
-MaxPos.y=-30
-NormalPos.left=0
-NormalPos.top=0
-NormalPos.right=1051
-NormalPos.bottom=289
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=56
+NormalPos.top=56
+NormalPos.right=1555
+NormalPos.bottom=526
 Class=CLatexEdit
-Document=tex\eid.tex
+Document=Noctua_Diplomarbeit.tex
 
 [Frame18_Row0]
-cyCur=230
+cyCur=402
 cyMin=10
 
 [Frame18_Col0]
-cxCur=1014
+cxCur=1456
 cxMin=10
 
 [Frame18_View0,0]
-Cursor.row=0
-Cursor.column=0
+Cursor.row=31
+Cursor.column=20
 TopSubLine=0
 
