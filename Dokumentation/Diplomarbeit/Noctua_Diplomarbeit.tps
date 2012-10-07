@@ -409,9 +409,9 @@ cxCur=1670
 cxMin=10
 
 [Frame13_View0,0]
-Cursor.row=24
-Cursor.column=87
-TopSubLine=19
+Cursor.row=29
+Cursor.column=0
+TopSubLine=0
 
 [Frame14]
 Columns=1
