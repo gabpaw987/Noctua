@@ -154,6 +154,32 @@ Prozentbänder sind eine andere Möglichkeit Nachhaltigkeit bzw. Überkauft- oder Ü
 Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikator, wie die Prozentbänder. Es wird ebenso ein Bereich oberhalb und unterhalb des \gls{ma} aufgespannt, aber anstatt ihn einfach um einen fixen Prozentwert zu verschieben, wird die Durchschnittslinie um die \emph{Doppelte Standardabweichung}, die meist auf Länge des \gls{ma} berechnet wird, nach oben und nach unten verschoben.\\
 	Dabei dienen die Bänder meist als Kursziele, so dass beim ansteigen des Kurses vom unteren Bollinger-Band, das obere als Ziel angenommen wird. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler.
 
+\subsubsection{Aroon}
+
+Der 1995 von Tushar S. Chande entwickelte Aroon ist ein zweigeteilter Trendindikator, der zwar nicht die Stärke eines Trends anzeigt, aber gut die Marktlage erfasst. So kann beispielsweise erkannt werden, ob es sich um eine Trend- oder eher um eine Seitwärtsphase handelt. Die Signale sind dabei sehr einfach abzulesen und fluktuieren sehr wenig, da die Trendstärke, wie bereits erwähnt, nicht direkt erfasst wird, sondern nur zeitlich, sodass ein Verlust des Momentums feststellbar wird. Die Stärke des Indikators ist es, schnell einen Trendwechsel bzw. Marktzustandswandel anzuzeigen. Die klaren Signale eignen sich außerdem gut für algorithmische Handelssysteme, wenn die Stärke des Trends durch eine andere Komponente erfasst wird.\\
+	Aroon besteht aus einem Aroon-Up und einem Aroon-Down, die jeweils die vergange Zeit zu einem Kursextrem anzeigen und zwischen 0 und 100 variieren. Bei einem 14-Tage-Aroon hat der Aroon-Up bei einem aktuellen 14-Tages-Hoch einen Wert von 100.\\
+	Zur Interpretation ist eine Signallinie sehr wichtig, die von Chande bei einem Wert von 75 angesetzt wurde, aus anderen Quellen sind auch Werte um die 90 zu finden. Liegt der Aroon-Up über dem Aroon-Down und steigt zusätzlich noch über die Signallinie ist dies als Aufwärtstrend zu identifizieren. Da der Indikator häufig kurzfristig unter die Signallinie fällt (s. \ref{fig:aroon}), ist es noch nicht ratsam zu diesem Zeitpunkt die Positionen zu liquidieren, sondern noch zu warten bis sich die Up- und Down-Linien ebenfalls überkreuzen.\\
+	Ein Seitwärtstrend wird angezeigt, wenn sich Aroon-Up und -Down unter der Signallinie befinden, was bei liquiden Positionen nur kurzfristig auftritt. \cite{charttec_aroon}\\
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/chapter2/fingrundlagen/aroon.png}
+	\caption[Aroon Indicator]{14-Tage Aroon über 7 Monate des DAX-Kurses}
+	\label{fig:aroon}
+\end{figure}
+
+Die Berechnung des Aroon-Up und Aroon-Down ist mit den folgenden Formeln beschrieben. Wobei $high_{n+1}$ in \ref{Aroon-Up} die Zeit seit dem höchstem Hoch innerhalb von $n+1$ Perioden und $low_{n+1}$ in \ref{Aroon-Down} die Zeit seit dem tiefstem Tief innerhalb von $n+1$ Perioden bezeichnet.
+
+\begin{equation}
+	\label{Aroon-Up}
+	\frac{n-high_{n+1}}{n}*100
+\end{equation}
+
+\begin{equation}
+	\label{Aroon-Down}
+	\frac{n-low_{n+1}}{n}*100
+\end{equation}
+
 \subsection{Handelsstrategien}
 
 In diesem Punkt sollen verbreitete Handelsstrategien erläutert werden, um einerseits potentiell zu testende Algorithmen festzustellen und andererseits eine Grundlage für Weiterentwicklung und Kombinationsmöglichkeiten aufzuzeigen.
