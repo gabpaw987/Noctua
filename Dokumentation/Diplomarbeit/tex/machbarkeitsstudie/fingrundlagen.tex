@@ -53,6 +53,10 @@ Da ein Marktpreis bei erhöhter Nachfrage steigt, ist es für Aktienanleger sinnvo
 Um die Performance von Trendfolgemethoden zu optimieren sollen verschiedene \emph{Marktzustände} unterschieden werden, die sich auf den Kursverlauf auswirken. Zu diesem Zweck können diverse Kriterien untersucht werden. Angefangen bei längeren Trendverläufen, die nicht zum aktiven Handel genutzt werden, über Währungswechselkurse bis zu Zinssätzen.\\
 	Beispielsweise könnte sich herausstellen, dass bei einem langfristigen Aufwärtstrend bei Kaufsignalen die long-Positionen immer größer ausfallen sollten, als die short-Positionen bei Verkaufssignalen oder dass erhöhte Volatilität und steigende Zinsen einen Kurseinbruch ankündigen.
 
+\subsubsection{Momentum}
+
+TODO
+
 \subsection{Trends und Gleitende Durchschnitte}
 
 \subsubsection{Trends}
@@ -126,34 +130,6 @@ Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berech
 
 \cite{etf_hq_dema_tema}
 
-\subsection{Unterstützung und Widerstand}
-
-Die Kurse von Aktien unterliegen, wie bereits erwähnt gewissen Trends, die entweder auf-, ab- oder auch seitwärts verlaufen, wenn weder das eine, noch das andere klar feststellbar ist. Bei steigenden Kursen erreichen diese irgendwann ein Level, bei dem der Preis nicht mehr als billig angesehen wird und der Kurs dreht um. Der Trend verliert also seine Nachhaltigkeit. Dieses Level wird als \emph{Widerstand} oder \emph{Resistance} bezeichnet, da dieser nur schwer überwunden wird. Sinkt der Kurs eine Weile wieder und sonstige Bewertungskriterien des Handelsgutes haben sich nicht signifikant verändert, erreicht der Kurs einen Punkt, bei dem er wieder interessant für etwaige Käufer wird. Diese Schwelle wird als \emph{Unterstützung} oder \emph{Support} bezeichnet. Am Beispiel von Microsoft kann diese Funktion in der Grafik \ref{fig:msft_sup_res} über einen längeren Zeitraum beobachtet werden.\\
-	Diese beiden Schwellen sind temporäre Hilfsmittel und lassen Wendepunkte erahnen. Bei Durchbruch eines Levels, kann hingegen mit einer Fortsetzung dieses Trends gerechnet werden und ggf. wird ein alter Widerstand zur Unterstützung. \cite{godmode_supp_res} Das Chart \ref{fig:payx_sup_res} von Paychex Inc. veranschaulicht diesen Wechsel von Unterstützungs- zu Widerstands- und wieder zurück zu Unterstützungslevel.
-
-\begin{figure}
-	\centering
-		\includegraphics[width=0.8\textwidth]{graphics/chapter2/msft_sup_res.JPG}
-	\caption[Microsoft Support Resistance]{Microsoft 5-Jahres-Chart mit 1-Wochen-Intervallen und eingezeichneten Support- und Resistance-Level}
-	\label{fig:msft_sup_res}
-\end{figure}
-
-\begin{figure}
-	\centering
-		\includegraphics[width=0.8\textwidth]{graphics/chapter2/payx_sup_res.JPG}
-	\caption[Paychex Inc. Support Resistance]{Paychex Inc. 5-Jahres-Chart mit 1-Wochen-Intervallen; Level wechselt zwischen Support- und Restistance-Funktion}
-	\label{fig:payx_sup_res}
-\end{figure}
-
-\subsubsection{Prozentbänder}
-
-Prozentbänder sind eine andere Möglichkeit Nachhaltigkeit bzw. Überkauft- oder Überverkauft-Level festzustellen. Dazu wird ein \gls{ma} um einen festgelegten Prozentwert nach unten und oben verschoben, so dass ein Kanal bzw. ein Band entsteht, in dem der Kurs die meiste Zeit verläuft. Wenn der Kurs über dem oberen Band notiert, wird dieser meist als überkauft angesehen, da er im Vergleich zum Durchschnitt sehr schnell gestiegen ist. Um wie viel Prozent die Bänder nach oben und unten verschoben werden, hängt von der Länge des \gls{ma} und somit dem Tradingzeitraum ab. Oft gebraucht werden 3\%-Bänder und eine 21-Tage-Linie oder 10\%-Bänder mit einem 40-Wochen-\gls{ma}.
-
-\subsubsection{Bollinger Bänder}
-
-Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikator, wie die Prozentbänder. Es wird ebenso ein Bereich oberhalb und unterhalb des \gls{ma} aufgespannt, aber anstatt ihn einfach um einen fixen Prozentwert zu verschieben, wird die Durchschnittslinie um die \emph{Doppelte Standardabweichung}, die meist auf Länge des \gls{ma} berechnet wird, nach oben und nach unten verschoben.\\
-	Dabei dienen die Bänder meist als Kursziele, so dass beim ansteigen des Kurses vom unteren Bollinger-Band, das obere als Ziel angenommen wird. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler.
-
 \subsubsection{Aroon}
 
 Der 1995 von Tushar S. Chande entwickelte Aroon ist ein zweigeteilter Trendindikator, der zwar nicht die Stärke eines Trends anzeigt, aber gut die Marktlage erfasst. So kann beispielsweise erkannt werden, ob es sich um eine Trend- oder eher um eine Seitwärtsphase handelt. Die Signale sind dabei sehr einfach abzulesen und fluktuieren sehr wenig, da die Trendstärke, wie bereits erwähnt, nicht direkt erfasst wird, sondern nur zeitlich, sodass ein Verlust des Momentums feststellbar wird. Die Stärke des Indikators ist es, schnell einen Trendwechsel bzw. Marktzustandswandel anzuzeigen. Die klaren Signale eignen sich außerdem gut für algorithmische Handelssysteme, wenn die Stärke des Trends durch eine andere Komponente erfasst wird.\\
@@ -180,6 +156,54 @@ Die Berechnung des Aroon-Up und Aroon-Down ist mit den folgenden Formeln beschri
 	\frac{n-low_{n+1}}{n}*100
 \end{equation}
 
+\subsubsection{Commodity Channel Index}
+
+Entwickelt wurde der \gls{cci}, wie der Name bereits andeutet, für Commodities, also Handelsgüter, kann heutzutage aber ebenso gut für Wertpapiere und Derivate verwendet werden. Im Prinzip ist er ein Trendfolger, der sowohl Momentum, als auch Preis berücksichtigt.
+Der \gls{cci} zeigt den Handelspreis im Verhältnis zu einem \gls{ma} über eine bestimmte Zeitdauer und wurde vom Erfinder Donald R. Lambert mithilfe eines Divisors, der auf der Standardabweichung basiert, normalisiert. Daher bewegt sich der \gls{cci} zwischen den Werten -100 und +100. Wenn sich der Preis stärker verändert als es im Zeitraum des \gls{ma} passiert ist, bewegt sich der \gls{cci} über diese Grenzen hinweg. Vom Erfinder wurde eine long-Position bei Werten über +100 und eine short-Position unter -100 empfohlen. Heutzutage benutzen viele Trader diese Grenzen in umgekehrter Manier als Support- und Resistance-Level, wodurch sie bevor sich ein Trend umkehrt auf einen möglichen Umschwung hingewiesen werden. Solange sich der \gls{cci} zwischen den beiden signifikanten Werten bewegt spricht man von einem trendlosen Markt.\\
+	Berechnet wird der CCI, indem vom typischen Preis (s. \ref{typical_price}) der \gls{sma} abgezogen wird und die Differenz, wie in Formel \ref{cci} beschrieben, durch die Standardabweichung dividiert wird. Der Gewichtungsfaktor von $frac{1}{0.015}$ wird gewählt damit die Hauptzahl der Werte zwischen -100 und 100 liegt.
+
+\begin{equation}
+	\label{typical_price}
+	TP_t = \frac{H+L+C}{3}
+\end{equation}
+
+\begin{equation}
+	\label{cci}
+	CCI = \frac{TP_t - SMA(TP_t)}{\sigma(TP)} * \frac{1}{0.015}
+\end{equation}
+
+\cite{asiapac_finance_cci}
+
+\subsubsection{Relative Strength Index}
+
+\subsection{Unterstützung und Widerstand}
+
+Die Kurse von Aktien unterliegen, wie bereits erwähnt gewissen Trends, die entweder auf-, ab- oder auch seitwärts verlaufen, wenn weder das eine, noch das andere klar feststellbar ist. Bei steigenden Kursen erreichen diese irgendwann ein Level, bei dem der Preis nicht mehr als billig angesehen wird und der Kurs dreht um. Der Trend verliert also seine Nachhaltigkeit. Dieses Level wird als \emph{Widerstand} oder \emph{Resistance} bezeichnet, da dieser nur schwer überwunden wird. Sinkt der Kurs eine Weile wieder und sonstige Bewertungskriterien des Handelsgutes haben sich nicht signifikant verändert, erreicht der Kurs einen Punkt, bei dem er wieder interessant für etwaige Käufer wird. Diese Schwelle wird als \emph{Unterstützung} oder \emph{Support} bezeichnet. Am Beispiel von Microsoft kann diese Funktion in der Grafik \ref{fig:msft_sup_res} über einen längeren Zeitraum beobachtet werden.\\
+	Diese beiden Schwellen sind temporäre Hilfsmittel und lassen Wendepunkte erahnen. Bei Durchbruch eines Levels, kann hingegen mit einer Fortsetzung dieses Trends gerechnet werden und ggf. wird ein alter Widerstand zur Unterstützung. \cite{godmode_supp_res} Das Chart \ref{fig:payx_sup_res} von Paychex Inc. veranschaulicht diesen Wechsel von Unterstützungs- zu Widerstands- und wieder zurück zu Unterstützungslevel.
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/chapter2/msft_sup_res.JPG}
+	\caption[Microsoft Support Resistance]{Microsoft 5-Jahres-Chart mit 1-Wochen-Intervallen und eingezeichneten Support- und Resistance-Level}
+	\label{fig:msft_sup_res}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/chapter2/payx_sup_res.JPG}
+	\caption[Paychex Inc. Support Resistance]{Paychex Inc. 5-Jahres-Chart mit 1-Wochen-Intervallen; Level wechselt zwischen Support- und Resistance-Funktion}
+	\label{fig:payx_sup_res}
+\end{figure}
+
+\subsubsection{Prozentbänder}
+
+Prozentbänder sind eine andere Möglichkeit Nachhaltigkeit bzw. Überkauft- oder Überverkauft-Level festzustellen. Dazu wird ein \gls{ma} um einen festgelegten Prozentwert nach unten und oben verschoben, so dass ein Kanal bzw. ein Band entsteht, in dem der Kurs die meiste Zeit verläuft. Wenn der Kurs über dem oberen Band notiert, wird dieser meist als überkauft angesehen, da er im Vergleich zum Durchschnitt sehr schnell gestiegen ist. Um wie viel Prozent die Bänder nach oben und unten verschoben werden, hängt von der Länge des \gls{ma} und somit dem Tradingzeitraum ab. Oft gebraucht werden 3\%-Bänder und eine 21-Tage-Linie oder 10\%-Bänder mit einem 40-Wochen-\gls{ma}.
+
+\subsubsection{Bollinger Bänder}
+
+Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikator, wie die Prozentbänder. Es wird ebenso ein Bereich oberhalb und unterhalb des \gls{ma} aufgespannt, aber anstatt ihn einfach um einen fixen Prozentwert zu verschieben, wird die Durchschnittslinie um die \emph{Doppelte Standardabweichung}, die meist auf Länge des \gls{ma} berechnet wird, nach oben und nach unten verschoben.\\
+	Dabei dienen die Bänder meist als Kursziele, so dass beim ansteigen des Kurses vom unteren Bollinger-Band, das obere als Ziel angenommen wird. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler.
+
 \subsection{Handelsstrategien}
 
 In diesem Punkt sollen verbreitete Handelsstrategien erläutert werden, um einerseits potentiell zu testende Algorithmen festzustellen und andererseits eine Grundlage für Weiterentwicklung und Kombinationsmöglichkeiten aufzuzeigen.
@@ -200,3 +224,4 @@ Dieses System kann noch um einen weiteren \gls{ma} raffiniert werden. Der Einsat
 
 \subsubsection{Moving Average Convergence/Divergence}
 
+TODO
