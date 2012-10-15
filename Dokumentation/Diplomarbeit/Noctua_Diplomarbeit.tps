@@ -3,9 +3,9 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=0
-FrameCount=19
-ActiveFrame=13
+ActiveTab=2
+FrameCount=20
+ActiveFrame=14
 
 [Frame0]
 Columns=1
@@ -206,9 +206,9 @@ cxCur=992
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=22
-Cursor.column=29
-TopSubLine=11
+Cursor.row=20
+Cursor.column=12
+TopSubLine=9
 
 [Frame7]
 Columns=1
@@ -380,15 +380,15 @@ cxCur=829
 cxMin=10
 
 [Frame12_View0,0]
-Cursor.row=6
+Cursor.row=0
 Cursor.column=0
-TopSubLine=3
+TopSubLine=0
 
 [Frame13]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -401,23 +401,23 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\wirmachbarkeit.tex
 
 [Frame13_Row0]
-cyCur=641
+cyCur=402
 cyMin=10
 
 [Frame13_Col0]
-cxCur=1670
+cxCur=1335
 cxMin=10
 
 [Frame13_View0,0]
 Cursor.row=29
 Cursor.column=0
-TopSubLine=0
+TopSubLine=11
 
 [Frame14]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -430,16 +430,16 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame14_Row0]
-cyCur=402
+cyCur=641
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1335
+cxCur=1670
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=0
-Cursor.column=0
+Cursor.row=4
+Cursor.column=137
 TopSubLine=0
 
 [Frame15]
@@ -555,6 +555,35 @@ cxMin=10
 
 [Frame18_View0,0]
 Cursor.row=0
+Cursor.column=0
+TopSubLine=0
+
+[Frame19]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=140
+NormalPos.top=140
+NormalPos.right=1639
+NormalPos.bottom=610
+Class=CLatexEdit
+Document=tex\machbarkeitsstudie\Projektorganisation.tex
+
+[Frame19_Row0]
+cyCur=402
+cyMin=10
+
+[Frame19_Col0]
+cxCur=1456
+cxMin=10
+
+[Frame19_View0,0]
+Cursor.row=4
 Cursor.column=0
 TopSubLine=0
 
