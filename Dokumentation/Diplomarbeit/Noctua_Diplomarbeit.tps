@@ -3,9 +3,9 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=2
+ActiveTab=0
 FrameCount=20
-ActiveFrame=14
+ActiveFrame=15
 
 [Frame0]
 Columns=1
@@ -416,8 +416,8 @@ TopSubLine=11
 [Frame14]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -430,23 +430,23 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame14_Row0]
-cyCur=641
+cyCur=402
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1670
+cxCur=1335
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=4
-Cursor.column=137
-TopSubLine=0
+Cursor.row=15
+Cursor.column=24
+TopSubLine=15
 
 [Frame15]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -459,17 +459,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame15_Row0]
-cyCur=135
+cyCur=641
 cyMin=10
 
 [Frame15_Col0]
-cxCur=1017
+cxCur=1670
 cxMin=10
 
 [Frame15_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=75
+Cursor.column=1851
+TopSubLine=99
 
 [Frame16]
 Columns=1
