@@ -1,3 +1,5 @@
+% !TeX root = ../../Noctua_Diplomarbeit.tex
+
 % Wirtschaftliche Machbarkeit
 
 \section{Wirtschaftliche Machbarkeit} \label{section:wirtschaftlichemachbarkeit}
@@ -55,16 +57,28 @@ Dadurch beläuft sich das gesamte benötigte Investitionskapital auf ca. \EUR{6.68
 \subsection{Nutzen}
 
 Der Algorithmus kann in bestehende Tradingsoftware intergriert werden, um dadurch die Entscheidungen in Form von Orders über einen Online-Broker an die Börse weiterzuleiten.\\
-	Angenommen es wird mit dem Algorithmus ein Fond mit einem angestellten Trader gemanged. Der Trader erhält ein Bruttogehalt von \EUR{3.200} im Monat und eine Provision von 10\% des erwirtschafteten Gewinns. Daher ist festzustellen, ab welcher Fondgröße es sich auszahlt diesen Trader einzustellen und ab welcher Größe zusätzlich ein Programmierer wirtschaftlich ist, um den Algorithmus weiter zu entwickeln.
+	Angenommen es wird mithilfe des Algorithmus ein Fond mit einem angestellten Trader eröffnet. Der Trader erhält ein Bruttogehalt von \EUR{3.200} im Monat und eine Provision von 10\% des erwirtschafteten Umsatzes. Daraus ist festzustellen, wie viel Kapital der Fond verwalten müsste, damit es sich auszahlt diesen Trader einzustellen und ab welcher Größe zusätzlich ein Programmierer wirtschaftlich ist, um den Algorithmus weiter zu entwickeln und zu verbessern.
 
 \begin{figure}[h]
 	\centering
-		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/maxima_nutzen.png}
-	\caption[Break Even Point Analyse]{Break Even Point Analyse bei 8\% Gewinn mit Trader und zusätzlichem Programmierer}
-	\label{fig:maxima_nutzen}
+		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/nutzen_bea_full.png}
+	\caption[Break Even Point Analyse bei Vollzeit]{Break Even Point Analyse bei 8\% Gewinn mit vollzeitbeschäftigtem Trader und zusätzlichem Programmierer}
+	\label{fig:nutzen_bea_full}
 \end{figure}
 
-In der Grafik \ref{fig:maxima_nutzen} ist ersichtlich, dass der Fonds für einen profitablen Betrieb bei einem durchschnittlichen jährlichen Gewinn von \emph{8\%} mindestens ein Volumen von \EUR{1.185.185,2} verwalten muss, um einen Gewinn zu erwirtschaften. Wenn zusätzlich noch ein Programmierer zur Weiterentwicklung angestellt werden soll muss das Volumen auf \EUR{2.296.296,33} steigen. Dabei werden \emph{20\%} des Gewinns als Provision berechnet und zusätzlich noch \emph{2\%} gewinnunabhängig.
+In der Abbildung \ref{fig:nutzen_bea_full} ist ersichtlich, dass der Fonds für einen profitablen Betrieb bei einem durchschnittlichen jährlichen Gewinn von \emph{8\%} mindestens ein Volumen von \EUR{1.185.185,2} verwalten müsste, um einen Gewinn zu erwirtschaften. Wenn zusätzlich noch ein Programmierer zur Weiterentwicklung angestellt werden soll muss das Volumen auf \EUR{2.296.296,33} steigen. Dabei werden \emph{20\%} des Gewinns als Provision berechnet und zusätzlich noch \emph{2\%} unabhängig vom Gewinn. Die entsprechenden Umsätze liegen bei \EUR{42.666,67} und \EUR{82.666,67}.\\
+	Diese Berechnungen gelten für Vollzeitanstellungen für den alleinigen Einsatz des Algorithmus. Angestrebt wird jedoch eine weitgehende Autonomie des Algorithmus, wodurch die Zeit, die zum Überwachen und Steuern aufgewendet werden muss, weit geringer ist. Geht man davon aus, dass der Trader mit diesem Handelsalgorithmus nur $1/3$ seiner Zeit verbringt und der Programmierer nur die Hälfte, ergeben sich Break Even Points bei \EUR{395.061,73} mit einem Trader und \EUR{950.617,29} mit dem zusätzlichen Programmierer.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/nutzen_bea_part.png}
+	\caption[Break Even Point Analyse bei Teilzeit]{Break Even Point Analyse bei 8\% Gewinn mit Trader und zusätzlichem Programmierer}
+	\label{fig:nutzen_bea_part}
+\end{figure}
+
+Die Auswahl der Papiere, die der Algorithmus automatisiert handeln soll, muss vom Trader vorgenommen werden, weshalb es kein maximales oder minimales empfohlenes Volumen gibt. Dies liegt daran, dass die Risikobewertung und die dementsprechende Streuung manuell vorgenommen wird. Die Ergebnisse der \gls{bts} können hier als Anhaltspunkt verwendet werden, wobei sich die Risikobewertung aber jedenfalls von Aktie zu Aktie unterscheidet.\\
+\\
+Zusätzlich zu dem direkten finanziellen Nutzen entstehenden ebenfalls latente Vorteile durch die Fortbildung der Projektteammitglieder.
 
 \subsection{Prüfen der Risiken}
 \subsubsection{Personenausfall}
