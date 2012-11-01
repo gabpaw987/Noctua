@@ -1,6 +1,6 @@
-\section{Technische Machbarkeit}\label{section:technischemachbarkeit}
-\subsection{Variantenbildung}
-\subsubsection{Programmiersprachen}
+\chapter{Technische Machbarkeit}\label{chapter:technischemachbarkeit}
+\section{Variantenbildung}
+\subsection{Programmiersprachen}
 Die \gls{bts} kann man in jeder erdenklichen Programmiersprache schreiben, allerdings ist es wichtig daran zu denken, dass das Programm einerseits effizient arbeiten soll und deswegen hardwarenahe rechnet, und andererseits hat das Projektteam mit manchen Programmiersprachen keinerlei Erfahrung.\\
 Die allgemeine Funktionalität muss das lesen und schreiben von Dateien sein, aber auch das algorithmische Rechnen soll effizient funktionieren. Für das Team kommen daher 3 Möglichkeiten in Frage: Eine Lösung in reinem C++, welches sehr hardwarenahe arbeitet, eine Mischung aus F\# und C\#, mit der eine parallelisierte Berechnung möglich wäre, und eine Java-Lösung, bei der das Team die größte Erfahrung mitbringt. \\
 Bei der Kombination agiert C\# als Handlungs- und Steuerkern und F\# als funktionale Programmiersprache, als Rechenkern und \"Mastermind\" der Applikation, welches die Entscheidungen trifft. Hierbei wird einerseits eine enorm hohe Arbeitsgeschwindigkeit ermöglicht, da die beiden Sprachen relativ hardwarenah agieren und andererseits besteht der nicht zu unterschätzende Vorteil bzw. die Möglichkeit, den Rechenkern auf ein externes System outzusourcen, welches zum Beispiel enorme Rechenkapazitäten aufweisen könnte und somit viel komplexere und effizientere Algorithmen in annehmbarer Zeit durchrechnen und abhängig davon mehr gewinnbringende Entscheidungen treffen könnte. Dabei sollte es auch bei späteren Erweiterungen des Programms zu keinem signifikanten Geschwindigkeitsabfall kommen.
@@ -58,7 +58,7 @@ Aus der Nutzwertanalyse kann man entnehmen, dass die C\#/F\# Kombination als die
 
 Nach dem Festlegen der verwendeten Programmiersprachen ist es nun auch möglich in C\# zwischen zwei verschiedenen Grafikframeworks für die GUI der \gls{bts} auszuwählen, weil Windows Presentation Foundation (WPF) neuer ist und Windows Forms (WF) nicht auf dem Model-View-Control-Pattern (MVC) basiert, wird das Framework WPF angewendet.
 
-\subsubsection{Backtesting-Software}
+\subsection{Backtesting-Software}
 Bei der \gls{bts} handelt es sich wie bereits erwaehnt, um eine Software, die Algorithmen auf ihre Performance und weitere wichtige Kriterien testet.
 Um diese Aufgabe zu lösen, müssen drei wichtige Entscheidungen zur Art der Realisierung getroffen werden:
 

@@ -1,6 +1,5 @@
-\section{Voruntersuchung}\label{section:voruntersuchung}
-
-\subsection{IST-Erhebung}
+\chapter{Voruntersuchung}\label{chapter:voruntersuchung}
+\section{IST-Erhebung}
 
 Es wird bereits ein Großteil des Kapitals in Wertpapieren algorithmisch verwaltet. Daher existiert eine Unmenge an Wissen über den Aufbau
 von Börsenalgorithmen und die Anwendung von Indikatoren zur Einschätzung von zukünftigen Kurswerten. Die meisten dieser Algorithmen basieren auf technischer
@@ -16,11 +15,11 @@ historische Daten zum Backtesting dar Algorithmen beziehen kann. Das Projektteam
 e-Signal \footnote{http://www.esignal.com/default.aspx?tc=} und nahezu unbegrenzten Zugriff auf weitere Daten vom selben Anbieter.
 Dadurch ist es ihm möglich Algorithmen über ein weites Spektrum von Marktphasen und -zuständen hinweg zu testen und die Performance verschiedener Algorithmen in unterschiedlichen Situationen akkurat festzustellen. Dies ist besonders wichtig, da Algorithmen die in der nahen Vergangenheit guten Entscheidungen trafen, meist weiterhin sehr erfolgreich handeln und den Anleger möglicherweise mit einem Kapitalzuwachs belohnen.
 
-\subsection{IST-Zustand}
+\section{IST-Zustand}
 
 Aufgrund der riesigen Industrie die diesem Projekt zu Grunde liegt gibt es natürlich bereits eine Vielzahl an Konkurrenzprodukten auf dem Markt. Einige davon spezialisieren sich auf das Backtesting bzw. die Bereitstellung einer Plattform zur Entwicklung von Algorithmen. Andere sind eher proprietärer Natur und versuchen lediglich durch Korruption der Konkurrenz, selbst den wirtschaftlich rentabelsten Algorithmus zu betreiben. Doch alle haben ihre Vor- und Nachteile. Daher finden sich auch immer wieder neue Nieschen für Neueinsteiger am Markt, die durch ausgeklügelte Algorithmen viel erreichen können. Im folgenden werden nun die bekanntesten dieser Konkurrenzprodukte beschrieben.
 
-\subsubsection{MetaTrader 5}
+\subsection{MetaTrader 5}
 
 Hierbei\footnote{http://www.metatrader5.com/} handelt es sich um ein ziemlich umfangreiches, ein wenig älteres Produkt, dass Futures, Options und Aktiendaten anbietet, aber eigentlich auf \gls{forex}-Daten anbietet. MetaTrader 5 ist die neue verbesserte Version von Metatrader 4 und bietet neben den alten Funktionen, Neuerungen wie die Einbindung von News. Außerdem bietet der MetaTrader ein weites Spektrum an Indikatoren, die einfach in den laufenden Betrieb eingebunden werden können. Dieses wurde mit der Version 5 auch noch weiter vergrößert, was viele langjährige Nutzer ausdrücklich loben. Die Oberfläche des MetaTraders sieht in etwa aus, wie in Abbildung \ref{fig:metatrader5_overview} dargestellt.
 
@@ -40,23 +39,23 @@ Hierbei\footnote{http://www.metatrader5.com/} handelt es sich um ein ziemlich um
 
 Doch das größte Feature des MetaTraders ist die eingebaute IDE (siehe Abbildung \ref{fig:metaeditor_robot_modification.jpg}), die es mittels einer eigenen MetaTrader-spezifischen Sprache, der \gls{mql5}, ermöglicht eigene Algorithmen zu programmieren und diese dann auch direkt in den laufenden Betrieb zu übernehmen. Der MetaTrader bietet sogar einen jährlichen Wettbewerb an, bei dem er jedes Jahr einen der besten Algorithmen zum Sieger kürt. Die neue Sprache \gls{mql5} ist sogar ebenfalls noch weiter gegenüber der MQL4 verbessert. Dies führt uns allerdings auch schon zum Problem beim MetaTrader 5, da nur ein geringer Teil der Software Entwickler gewillt ist, wirklich eine neue Programmiersprache zu lernen, nur einen Algorithmus entwickeln und testen zu können, der dann selbst wiederum auch an den MetaTrader gebunden ist nicht in den normalen operativen Betrieb portiert werden kann. Außerdem ist der MetaTrader eines der sehr wenigen Produkte am Markt, die es Nutzern wirklich ermöglicht einen Algorithmus zu entwickeln und zu testen ohne die gesamte Struktur rundherum zuerst aufzubauen. Daher ist es nötig diesem Mangel Abhilfe zu schaffen und eine \gls{bts} zu entwickeln, die genau dies ermöglicht und ohne den Nutzer dabei an das Unternehmen in dem er seinen Algorithmus testet zu binden.
 
-\subsubsection{Algorithmen}
+\subsection{Algorithmen}
 
 Es existieren wie bereits des öfteren erwähnt Unmengen an proprietären Algorithmen, die Zahl der Open Source Algorithmen hält sich allerdings in Grenzen. Daher ist es relativ schwierig die Konkurrenzalgorithmen fundiert zu analysieren. Ein guter Ansatz, um herauszufinden wie diese proprietären Algorithmen wirklich handeln, ist sich die bekanntesten Einzelmethoden anzusehen, da höchstwahrscheinlich ein Großteil der proprietären Algorithmen aus diesen Einzelmethoden unterschiedlichster Art aufgebaut sind. Wahrscheinlich beachten sehr viele Konkurrenzprodukte die unterschiedlichsten Kombinationen aus \glspl{ma} und schmücken diese mit einer Kombination aus den verschiedensten Börsenindikatoren der technischen Analyse aus. Doch die Wenigsten betrachten den genauen Marktzustand in dem sie sich momentan zur Zeit des Handelns befinden. Wie bereits erwähnt sind nur die simpelsten Marktzustände öffentlich bekannt und zugänglich und diese sind schon sehr benützt. Sie werden von einer so großen Anzahl an Softwareprodukten benutzt, dass man keinen oder nur mehr wenig Vorteil mehr daraus zieht, sie zu beachten. Deswegen liegt die einzige Möglichkeit in der Verbesserung von Software in diesem Punkt in der Entwicklung von eigenen Klassen von Marktzuständen. Wählt man hier richtig aus und investiert ausreichend Zeit in die Forschung, so kann man hiermit leicht an der Konkurrenz vorbeiziehen und performantere Algorithmen kreieren.
 
 \newpage
 
 
-\subsection{SOLL-Zustand}
+\section{SOLL-Zustand}
 
 Man muss also mehrere Problemstellungen ins Auge fassen, es gibt viele Algorithmen, allerdings wenige die zugänglich sind. Weil man also die nicht veröffentlichten nicht kennt, ist es schwer, Aussagen darüber zu treffen wie performant diese sind. Allerdings gibt es auch bereits Software die jedem ermöglicht den eigenen Algorithmus zu testen, dies jedoch nicht in kurzer Zeit und mit einer Analyse. Außerdem müsste man dazu eine neue Programmiersprache erlernen. Natürlich kann man nicht sagen, dass die \"eine\" Programmiersprache jedem bekannt ist, aber es ist möglich sagen zu können das C, Java oder eine .net-Sprache bekannter ist als eine Software eigene Programmiersprache namens \gls{mql5}.
 Mit einer \gls{bts} die nur mit historischen Daten funktioniert kann man logischerweise den Vergleich zu anderen Algorithmen in dem gleichen Zeitraum klarer erkennen, aber auch die Einwirkung der verschiedenen Marktzustand die zu verschiedenen Zeitpunkten in den Daten stattgefunden haben identifizieren und vergleichen. Mit dieser Möglichkeit und Art Algorithmen zu vergleichen und zu testen, soll es dem Projektteam möglich gemacht werden eine Reihe an Algorithmen auszuwählen, die zu gewissen Marktzustandn verschiedene Performances gezeigt haben zu implementieren und durch die frühe Zustandserkennung eine Möglichkeit zu entwickeln zwischen den Algorithmen zu wechseln. Um dies realisieren zu können ist es notwendig das Risiko des getesteten Algorithmus zu bestimmen und zu beschreiben. Zu diesen Beschreibungen muss man dann auch eine Performancemessung (e.g. sharpe ratio) angeben, die je nach Marktzustand gegliedert ist, anführen. Eine Schwierigkeit dabei ist die Bestimmung der Zeit einer Klassifizierung, also wie lange zum Beispiel die Klassifizierung als Seitwärtstrend zutrifft und damit gerechnet wird.
 
-\subsubsection{Möglichst geringes Risiko}
+\subsection{Möglichst geringes Risiko}
 
 Durch die Entwicklung eines eigenen Algorithmus soll das Risiko das einem  Aktionär zu Grunde liegt, möglichst gering gehalten werden. Deswegen ist es notwendig einen Algorithmus mit Werten einer \gls{bts} zu unterlegen. Dies sichert nicht nur den möglichen Verkauf oder die Funktionalität des Algorithmus, es erzeugt auch eine Vertrautheit mit der Funktion, die sonst nur sehr Wage erhofft werden kann. Im Prinzip entsteht also eine Art Möglichkeit unterschiedliche Algorithmen zu unterschiedlichen Marktzuständen miteinander zu vergleichen und deren Performance zu messen.
 
 
-\subsubsection{Weiterbildung der Projektteammitglieder}
+\subsection{Weiterbildung der Projektteammitglieder}
 
 Im Laufe des Projekts wird die Teamfähigkeit und soziale Kompetenz aller Projektteammitglieder gestärkt. Das Projektteam ist an einer großen Erfahrungssammlung im Bereich der Finanzwirtschaft interessiert und wird diese auch während der Projektdurchführung gewinnen. Außerdem werden ihnen das Konzept der Börse und die damit verbundenen Algorithmen näher gebracht. Es ist außerdem nicht zu übersehen, dass bei der erfolgreichen Entwicklung eines sich selbst regelnden Algorithmus, der Eigengebrauch für die Projektteammitglieder nicht untersagt sein wird.
