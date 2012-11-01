@@ -3,9 +3,9 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=0
-FrameCount=20
-ActiveFrame=15
+ActiveTab=2
+FrameCount=22
+ActiveFrame=21
 
 [Frame0]
 Columns=1
@@ -32,9 +32,9 @@ cxCur=293
 cxMin=10
 
 [Frame0_View0,0]
-Cursor.row=6
-Cursor.column=0
-TopSubLine=0
+Cursor.row=19
+Cursor.column=44
+TopSubLine=23
 
 [Frame1]
 Columns=1
@@ -177,7 +177,7 @@ cxCur=992
 cxMin=10
 
 [Frame5_View0,0]
-Cursor.row=10
+Cursor.row=2
 Cursor.column=0
 TopSubLine=0
 
@@ -208,7 +208,7 @@ cxMin=10
 [Frame6_View0,0]
 Cursor.row=20
 Cursor.column=12
-TopSubLine=9
+TopSubLine=11
 
 [Frame7]
 Columns=1
@@ -295,7 +295,7 @@ cxMin=10
 [Frame9_View0,0]
 Cursor.row=0
 Cursor.column=0
-TopSubLine=118
+TopSubLine=0
 
 [Frame10]
 Columns=1
@@ -351,7 +351,7 @@ cxCur=1335
 cxMin=10
 
 [Frame11_View0,0]
-Cursor.row=0
+Cursor.row=2
 Cursor.column=0
 TopSubLine=0
 
@@ -440,13 +440,13 @@ cxMin=10
 [Frame14_View0,0]
 Cursor.row=15
 Cursor.column=24
-TopSubLine=15
+TopSubLine=24
 
 [Frame15]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -459,17 +459,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame15_Row0]
-cyCur=641
+cyCur=135
 cyMin=10
 
 [Frame15_Col0]
-cxCur=1670
+cxCur=1017
 cxMin=10
 
 [Frame15_View0,0]
-Cursor.row=75
-Cursor.column=1851
-TopSubLine=99
+Cursor.row=0
+Cursor.column=0
+TopSubLine=0
 
 [Frame16]
 Columns=1
@@ -585,5 +585,63 @@ cxMin=10
 [Frame19_View0,0]
 Cursor.row=4
 Cursor.column=0
+TopSubLine=0
+
+[Frame20]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=112
+NormalPos.top=112
+NormalPos.right=1611
+NormalPos.bottom=582
+Class=CLatexEdit
+Document=tex\machbarkeitsstudie\management_summary.tex
+
+[Frame20_Row0]
+cyCur=402
+cyMin=10
+
+[Frame20_Col0]
+cxCur=1456
+cxMin=10
+
+[Frame20_View0,0]
+Cursor.row=7
+Cursor.column=20
+TopSubLine=0
+
+[Frame21]
+Columns=1
+Rows=1
+Flags=2
+ShowCmd=3
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=140
+NormalPos.top=140
+NormalPos.right=1639
+NormalPos.bottom=610
+Class=CLatexEdit
+Document=tex\machbarkeitsstudie\Projektplanung.tex
+
+[Frame21_Row0]
+cyCur=641
+cyMin=10
+
+[Frame21_Col0]
+cxCur=1670
+cxMin=10
+
+[Frame21_View0,0]
+Cursor.row=13
+Cursor.column=105
 TopSubLine=0
 
