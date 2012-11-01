@@ -1,0 +1,53 @@
+\select@language {ngerman}
+\select@language {ngerman}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of symbols}{vi}{chapter*.3}
+\contentsline {section}{\numberline {0.1}Einleitung}{1}{section.0.1}
+\contentsline {section}{\numberline {0.2}Finanzwirtschaftliche Grundlagen}{2}{section.0.2}
+\contentsline {subsection}{\numberline {0.2.1}B\"orse}{2}{subsection.0.2.1}
+\contentsline {subsubsection}{\numberline {0.2.1.1}Preise}{2}{subsubsection.0.2.1.1}
+\contentsline {subsection}{\numberline {0.2.2}Markt}{3}{subsection.0.2.2}
+\contentsline {subsubsection}{\numberline {0.2.2.1}Marktzust\"ande}{4}{subsubsection.0.2.2.1}
+\contentsline {subsection}{\numberline {0.2.3}Trends und Gleitende Durchschnitte}{4}{subsection.0.2.3}
+\contentsline {subsubsection}{\numberline {0.2.3.1}Trends}{4}{subsubsection.0.2.3.1}
+\contentsline {subsubsection}{\numberline {0.2.3.2}Simple Moving Average}{5}{subsubsection.0.2.3.2}
+\contentsline {subsubsection}{\numberline {0.2.3.3}Linear Weighted Moving Average}{5}{subsubsection.0.2.3.3}
+\contentsline {subsubsection}{\numberline {0.2.3.4}Exponential Moving Average}{6}{subsubsection.0.2.3.4}
+\contentsline {subsubsection}{\numberline {0.2.3.5}Momentum}{7}{subsubsection.0.2.3.5}
+\contentsline {subsubsection}{\numberline {0.2.3.6}Relative Strength Index}{8}{subsubsection.0.2.3.6}
+\contentsline {subsubsection}{\numberline {0.2.3.7}Aroon}{8}{subsubsection.0.2.3.7}
+\contentsline {subsubsection}{\numberline {0.2.3.8}Commodity Channel Index}{10}{subsubsection.0.2.3.8}
+\contentsline {subsection}{\numberline {0.2.4}Unterst\"utzung und Widerstand}{10}{subsection.0.2.4}
+\contentsline {subsubsection}{\numberline {0.2.4.1}Prozentb\"ander}{11}{subsubsection.0.2.4.1}
+\contentsline {subsubsection}{\numberline {0.2.4.2}Bollinger B\"ander}{13}{subsubsection.0.2.4.2}
+\contentsline {subsection}{\numberline {0.2.5}Handelsstrategien}{13}{subsection.0.2.5}
+\contentsline {subsubsection}{\numberline {0.2.5.1}Preiskreuzung des Gleitenden Durchschnitts}{13}{subsubsection.0.2.5.1}
+\contentsline {subsubsection}{\numberline {0.2.5.2}Verwendung Mehrerer Gleitender Durchschnitte}{13}{subsubsection.0.2.5.2}
+\contentsline {subsubsection}{\numberline {0.2.5.3}Moving Average Convergence/Divergence}{14}{subsubsection.0.2.5.3}
+\contentsline {section}{\numberline {0.3}Voruntersuchung}{15}{section.0.3}
+\contentsline {subsection}{\numberline {0.3.1}IST-Erhebung}{15}{subsection.0.3.1}
+\contentsline {subsection}{\numberline {0.3.2}IST-Zustand}{15}{subsection.0.3.2}
+\contentsline {subsubsection}{\numberline {0.3.2.1}MetaTrader 5}{16}{subsubsection.0.3.2.1}
+\contentsline {subsubsection}{\numberline {0.3.2.2}Algorithmen}{18}{subsubsection.0.3.2.2}
+\contentsline {subsection}{\numberline {0.3.3}SOLL-Zustand}{19}{subsection.0.3.3}
+\contentsline {subsubsection}{\numberline {0.3.3.1}M\"oglichst geringes Risiko}{19}{subsubsection.0.3.3.1}
+\contentsline {subsubsection}{\numberline {0.3.3.2}Weiterbildung der Projektteammitglieder}{19}{subsubsection.0.3.3.2}
+\contentsline {section}{\numberline {0.4}Produktfunktionen}{21}{section.0.4}
+\contentsline {subsection}{\numberline {0.4.1}Must-Have}{21}{subsection.0.4.1}
+\contentsline {section}{\numberline {0.5}Technische Machbarkeit}{25}{section.0.5}
+\contentsline {subsection}{\numberline {0.5.1}Variantenbildung}{25}{subsection.0.5.1}
+\contentsline {subsubsection}{\numberline {0.5.1.1}Programmiersprachen}{25}{subsubsection.0.5.1.1}
+\contentsline {subsubsection}{\numberline {0.5.1.2}Backtesting-Software}{27}{subsubsection.0.5.1.2}
+\contentsline {section}{\numberline {0.6}Wirtschaftliche Machbarkeit}{30}{section.0.6}
+\contentsline {subsection}{\numberline {0.6.1}Aufwandsabsch\"atzung}{30}{subsection.0.6.1}
+\contentsline {subsubsection}{\numberline {0.6.1.1}Personalaufwand}{30}{subsubsection.0.6.1.1}
+\contentsline {subsubsection}{\numberline {0.6.1.2}Materialaufwand}{31}{subsubsection.0.6.1.2}
+\contentsline {subsubsection}{\numberline {0.6.1.3}Investitionskapital}{31}{subsubsection.0.6.1.3}
+\contentsline {subsection}{\numberline {0.6.2}Nutzen}{32}{subsection.0.6.2}
+\contentsline {subsection}{\numberline {0.6.3}Pr\"ufen der Risiken}{32}{subsection.0.6.3}
+\contentsline {subsubsection}{\numberline {0.6.3.1}Personenausfall}{32}{subsubsection.0.6.3.1}
+\contentsline {subsubsection}{\numberline {0.6.3.2}Zeitliche Risiken}{33}{subsubsection.0.6.3.2}
+\contentsline {subsubsection}{\numberline {0.6.3.3}Technische Risiken}{33}{subsubsection.0.6.3.3}
+\contentsline {section}{\numberline {0.7}Projektorganisation}{35}{section.0.7}
+\contentsline {chapter}{Glossary}{36}{figure.0.10}
+\contentsline {chapter}{\numberline {A}Appendix}{37}{appendix.A}
+\contentsline {chapter}{Literaturverzeichnis}{39}{section*.4}

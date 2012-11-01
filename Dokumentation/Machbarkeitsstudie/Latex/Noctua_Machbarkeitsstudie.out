@@ -1,0 +1,51 @@
+\BOOKMARK [0][]{chapter*.3}{List of symbols}{}% 1
+\BOOKMARK [1][]{section.0.1}{Einleitung}{chapter*.3}% 2
+\BOOKMARK [1][]{section.0.2}{Finanzwirtschaftliche Grundlagen}{chapter*.3}% 3
+\BOOKMARK [2][]{subsection.0.2.1}{B\366rse}{section.0.2}% 4
+\BOOKMARK [3][]{subsubsection.0.2.1.1}{Preise}{subsection.0.2.1}% 5
+\BOOKMARK [2][]{subsection.0.2.2}{Markt}{section.0.2}% 6
+\BOOKMARK [3][]{subsubsection.0.2.2.1}{Marktzust\344nde}{subsection.0.2.2}% 7
+\BOOKMARK [2][]{subsection.0.2.3}{Trends und Gleitende Durchschnitte}{section.0.2}% 8
+\BOOKMARK [3][]{subsubsection.0.2.3.1}{Trends}{subsection.0.2.3}% 9
+\BOOKMARK [3][]{subsubsection.0.2.3.2}{Simple Moving Average}{subsection.0.2.3}% 10
+\BOOKMARK [3][]{subsubsection.0.2.3.3}{Linear Weighted Moving Average}{subsection.0.2.3}% 11
+\BOOKMARK [3][]{subsubsection.0.2.3.4}{Exponential Moving Average}{subsection.0.2.3}% 12
+\BOOKMARK [3][]{subsubsection.0.2.3.5}{Momentum}{subsection.0.2.3}% 13
+\BOOKMARK [3][]{subsubsection.0.2.3.6}{Relative Strength Index}{subsection.0.2.3}% 14
+\BOOKMARK [3][]{subsubsection.0.2.3.7}{Aroon}{subsection.0.2.3}% 15
+\BOOKMARK [3][]{subsubsection.0.2.3.8}{Commodity Channel Index}{subsection.0.2.3}% 16
+\BOOKMARK [2][]{subsection.0.2.4}{Unterst\374tzung und Widerstand}{section.0.2}% 17
+\BOOKMARK [3][]{subsubsection.0.2.4.1}{Prozentb\344nder}{subsection.0.2.4}% 18
+\BOOKMARK [3][]{subsubsection.0.2.4.2}{Bollinger B\344nder}{subsection.0.2.4}% 19
+\BOOKMARK [2][]{subsection.0.2.5}{Handelsstrategien}{section.0.2}% 20
+\BOOKMARK [3][]{subsubsection.0.2.5.1}{Preiskreuzung des Gleitenden Durchschnitts}{subsection.0.2.5}% 21
+\BOOKMARK [3][]{subsubsection.0.2.5.2}{Verwendung Mehrerer Gleitender Durchschnitte}{subsection.0.2.5}% 22
+\BOOKMARK [3][]{subsubsection.0.2.5.3}{Moving Average Convergence/Divergence}{subsection.0.2.5}% 23
+\BOOKMARK [1][]{section.0.3}{Voruntersuchung}{chapter*.3}% 24
+\BOOKMARK [2][]{subsection.0.3.1}{IST-Erhebung}{section.0.3}% 25
+\BOOKMARK [2][]{subsection.0.3.2}{IST-Zustand}{section.0.3}% 26
+\BOOKMARK [3][]{subsubsection.0.3.2.1}{MetaTrader 5}{subsection.0.3.2}% 27
+\BOOKMARK [3][]{subsubsection.0.3.2.2}{Algorithmen}{subsection.0.3.2}% 28
+\BOOKMARK [2][]{subsection.0.3.3}{SOLL-Zustand}{section.0.3}% 29
+\BOOKMARK [3][]{subsubsection.0.3.3.1}{M\366glichst geringes Risiko}{subsection.0.3.3}% 30
+\BOOKMARK [3][]{subsubsection.0.3.3.2}{Weiterbildung der Projektteammitglieder}{subsection.0.3.3}% 31
+\BOOKMARK [1][]{section.0.4}{Produktfunktionen}{chapter*.3}% 32
+\BOOKMARK [2][]{subsection.0.4.1}{Must-Have}{section.0.4}% 33
+\BOOKMARK [1][]{section.0.5}{Technische Machbarkeit}{chapter*.3}% 34
+\BOOKMARK [2][]{subsection.0.5.1}{Variantenbildung}{section.0.5}% 35
+\BOOKMARK [3][]{subsubsection.0.5.1.1}{Programmiersprachen}{subsection.0.5.1}% 36
+\BOOKMARK [3][]{subsubsection.0.5.1.2}{Backtesting-Software}{subsection.0.5.1}% 37
+\BOOKMARK [1][]{section.0.6}{Wirtschaftliche Machbarkeit}{chapter*.3}% 38
+\BOOKMARK [2][]{subsection.0.6.1}{Aufwandsabsch\344tzung}{section.0.6}% 39
+\BOOKMARK [3][]{subsubsection.0.6.1.1}{Personalaufwand}{subsection.0.6.1}% 40
+\BOOKMARK [3][]{subsubsection.0.6.1.2}{Materialaufwand}{subsection.0.6.1}% 41
+\BOOKMARK [3][]{subsubsection.0.6.1.3}{Investitionskapital}{subsection.0.6.1}% 42
+\BOOKMARK [2][]{subsection.0.6.2}{Nutzen}{section.0.6}% 43
+\BOOKMARK [2][]{subsection.0.6.3}{Pr\374fen der Risiken}{section.0.6}% 44
+\BOOKMARK [3][]{subsubsection.0.6.3.1}{Personenausfall}{subsection.0.6.3}% 45
+\BOOKMARK [3][]{subsubsection.0.6.3.2}{Zeitliche Risiken}{subsection.0.6.3}% 46
+\BOOKMARK [3][]{subsubsection.0.6.3.3}{Technische Risiken}{subsection.0.6.3}% 47
+\BOOKMARK [1][]{section.0.7}{Projektorganisation}{chapter*.3}% 48
+\BOOKMARK [0][]{figure.0.10}{Glossary}{}% 49
+\BOOKMARK [0][]{appendix.A}{Appendix}{}% 50
+\BOOKMARK [0][]{section*.4}{Literaturverzeichnis}{}% 51
