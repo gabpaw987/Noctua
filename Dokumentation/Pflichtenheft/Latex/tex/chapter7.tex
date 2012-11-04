@@ -1,2 +1,22 @@
-\chapter{Benutzerschnittstelle}
-\label{chapter:Benutzerschnittstelle}
+% !TeX root = ../Noctua_Pflichtenheft.tex
+
+% Chapter7
+\chapter{Benutzungsschnittstelle} \label{chapter:benutzerschnittstelle}
+
+Die Schnittstelle des Projektes, die den Benutzer am meisten betrifft, ist die der \gls{bts}. Diese soll zur Erleichterung der Bedienung eine simple grafisches Benutzerschnittstelle (GUI) aufweisen, über die sämtliche Funktionen verfügbar sind.\\
+	Die \gls{bts} soll möglichst übersichtlich diverse Kennzahlen des implementierten Handelssystems berechnen und diese so anzeigen, dass sie dem Anwender folglich als Vergleichswerte dienen. Für diesen Zweck ist eine übersichtliche tabellarische Aufführung bestens geeignet. Diese Kennwerte können daraufhin mit der Software als Textdatei gespeichert werden, um etwaige Berechnungen durchzuführen oder die Kennzahlen mit anderen Algorithmen zu vergleichen. Eine grafische Aufbereitung der Daten ist nicht vorgesehen, da die Software primär dazu dient Programmierer bei ihrer Umsetzung mehrerer unterschiedlicher Systeme zu unterstützen und diese einfach vergleichbar zu machen, was durch die Kennzahlen wesentlich einfacher möglich ist, als durch Charts.\\
+\\
+Neben der Benutzungsschnittstelle spielt außerdem noch die Schnittstelle zwischen der \gls{bts} und dem Algorithmus eine Rolle, genauer gesagt wie dieser an die \gls{bts} angebunden oder integriert wird.\\
+	Der Algorithmus soll eine eigenständige Komponente sein, die modular aufgebaut wird, damit sie einfach ausgetauscht werden kann. Daher übernimmt die \gls{bts} die Aufgabe, dieses Modul anzuwenden. Aus der Sicht des Benutzers ist der Algorithmus eine Datei, die in der Oberfläche der \gls{bts} ausgewählt wird und auf diese Art und Weise auch gewechselt werden kann.\\
+\\
+/B10/\\
+\emph{Algorithmusintegration}\\
+Der Benutzer soll den Algorithmus in der \gls{bts} als Datei aus dem Dateisystem über eine GUI auswählen können.\\
+\\
+/B20/\\
+\emph{Kenndatenanzeige}\\
+Kenndaten des Algorithmus sollen in tabellarischer Form übersichtlich gegliedert dem Benutzer angezeigt werden.\\
+\\
+/B30/\\
+\emph{Datenspeicherung}\\
+Sämtliche berechneten Kenndaten sollen über die GUI in menschenlesbarer Form als Textdatei abgespeichert werden können.\\
