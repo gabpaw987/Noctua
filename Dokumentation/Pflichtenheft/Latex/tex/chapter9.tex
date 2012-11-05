@@ -1,17 +1,19 @@
+% !TeX root = ../Noctua_Pflichtenheft.tex
+
+% Chapter 9
 \chapter{Globale Testfälle}
 \label{chapter:Globale_Testfälle}
-/T010/ Auswählen von historischen Daten \\
-Es soll möglich sein, seine eigenen historischen Daten auszuwählen und mit diesen den Algorithmus zu testen. Um dies zu bewerkstelligen soll der Benutzer seine eigenen historischen Daten in das Programm auswählen und einfügen. Diese historischen Daten befinden sich in einer CSV-Datei und werden von dem Programm selbst ausgelesen. \\ \\
-
-/T020/ Auswählen eines eigenen Algorithmus \\
-Es soll möglich sein, seinen eigenen Algorithmus in den Programmablauf einzufügen. Damit das funktioniert muss man diesen Algorithmus in F\# programmieren und über die GUI einfügen. Dieser Algorithmus kann nur dann richtig funktionieren, wenn er die Anforderungen des Interfaces adaptiert und damit umgehen kann. \\ \\
-
-/T030/ Erhalten der Ausgaben der \gls{bts} \\
-Es soll der gesamte Programmablauf einmal durchgeführt werden können, um das Endprodukt testen zu können. Der Durchlauf ist nur dann funktionstüchtig und richtig abgelaufen, wenn die Grundfunktion der Software erfüllt ist. Diese sind die Ausgabe der berechneten Performance und des Gewinn/Risiko-Verhältnis. Diese Ausgaben sind die essentiellen Messwerte mit denen man dann verschiedene Algorithmen vergleichen kann. \\ \\
-
-/T040/ Fehlermeldung bei fehlerhaften historischen Daten \\
-Wenn der \gls{bts} falsche oder fehlerhafte historische Daten in Bezug auf die Datenstruktur, nicht im Hinblick auf deren Inhalt, soll das Programm eine Fehlermeldung ausgeben. Diese soll den Benutzer davor warnen, dass seine Eingabe fehlerhaft ist und mit dieser nicht gearbeitet werden kann. \\ \\
-
-/T050/ Fehlermeldung bei falschen Algorithmus \\
+/T010/ \textbf{Auswählen von historischen Daten} \\
+Es soll möglich sein, seine eigenen historischen Daten auszuwählen und mit diesen den Algorithmus zu testen. Um dies zu bewerkstelligen soll der Benutzer seine eigenen historischen Daten in das Programm auswählen und einfügen. Diese historischen Daten befinden sich in einer CSV-Datei und werden von dem Programm selbst ausgelesen. \\
+\\
+/T020/ \textbf{Auswählen eines eigenen Algorithmus} \\
+Es soll möglich sein, seinen eigenen Algorithmus in den Programmablauf einzufügen. Damit das funktioniert muss man diesen Algorithmus in F\# programmieren und über die GUI einfügen. Dieser Algorithmus kann nur dann richtig funktionieren, wenn er die Anforderungen des Interfaces adaptiert und damit umgehen kann. \\
+\\
+/T030/ \textbf{Erhalten der Ausgaben der \gls{bts}} \\
+Es soll der gesamte Programmablauf einmal durchgeführt werden können, um das Endprodukt testen zu können. Der Durchlauf ist nur dann funktionstüchtig und richtig abgelaufen, wenn die Grundfunktion der Software erfüllt ist. Diese sind die Ausgabe der berechneten Performance und des Gewinn/Risiko-Verhältnis. Diese Ausgaben sind die essentiellen Messwerte mit denen man dann verschiedene Algorithmen vergleichen kann. \\
+\\
+/T040/ \textbf{Fehlermeldung bei fehlerhaften historischen Daten} \\
+Wenn der \gls{bts} falsche oder fehlerhafte historische Daten in Bezug auf die Datenstruktur, nicht im Hinblick auf deren Inhalt, soll das Programm eine Fehlermeldung ausgeben. Diese soll den Benutzer davor warnen, dass seine Eingabe fehlerhaft ist und mit dieser nicht gearbeitet werden kann. \\
+\\
+/T050/ \textbf{Fehlermeldung bei falschen Algorithmus} \\
 Es soll der \gls{bts} möglich sein den Algorithmus, der eingefügt wurde, so weit zu überprüfen, dass es erreichbar wird, die F\#-Datei nach der Implementation des Interfaces zu testen. Dieser Test darf nur dann positiv erfolgen, wenn die Datei das gesamte, notwendige Interface implementiert und somit vollständig arbeitsfähig ist. Falls dies nicht der Fall ist soll das Programm eine Fehlermeldung ausgeben.
-

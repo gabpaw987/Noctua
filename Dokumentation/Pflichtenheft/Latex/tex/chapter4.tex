@@ -1,15 +1,17 @@
+% !TeX root = ../Noctua_Pflichtenheft.tex
+
+% Chapter4
 \chapter{Produktfunktionen}\label{chapter:Produktfunktionen}
 
 \section{Funktionen der Marktszustandsbestimmung}
 
-/LF10/\\
-\textit{Vergangene Marktzustände bestimmen}
+/LF010/ \textbf{Vergangene Marktzustände bestimmen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Es sollen historische Marktzustände (innerhalb der letzten Jahre), auf transparenten
+Beschreibung & Es sollen historische Marktzustände (innerhalb der letzten Jahre), auf transparenten
 Aktienmärkten, für die ein ausreichender Datenbestand vorhanden ist, automatisch bestimmt
 werden. Sollten sich verschiedene große Märkte entgegen Erwartung entsprechend
 unterschiedlich verhalten, dass diese keiner einheitlichen Analyse unterzogen werden können,
@@ -25,14 +27,13 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF20/\\
-\textit{Aktuellen Marktzustand bestimmen}
+/LF020/ \textbf{Aktuellen Marktzustand bestimmen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Dabei soll darauf geachtet werden, dass für eine frühe Erkennung möglicherweise nur ein Teil
+Beschreibung & Dabei soll darauf geachtet werden, dass für eine frühe Erkennung möglicherweise nur ein Teil
 der Daten vorhanden ist, die für die historische Analyse herangezogen werden.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & Algorithmus \\ \hline
@@ -46,14 +47,13 @@ Nachbedingungen & - \\ \hline
 
 \section{Funktionen des Trading-Algorithmus}
 
-/LF110/\\
-\textit{Trends erkennen}
+/LF110/ \textbf{Trends erkennen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Durch \glspl{ma} soll es möglich sein Trends in Aktienkursen zu identifizieren. Dazu
+Beschreibung & Durch \glspl{ma} soll es möglich sein Trends in Aktienkursen zu identifizieren. Dazu
 kommen verschiedene Crossover-Verfahren (double- / triple-crossover) oder Indikatoren, wie
 der MACD (Moving Average Convergence Divergence) in Frage. Es soll eine statistisch
 möglichst profitable Variante hierfür gefunden werden, die aufscheinende nachhaltige Trends
@@ -68,14 +68,13 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF120/\\
-\textit{\gls{ma}-Dauer bestimmen}
+/LF120/ \textbf{\gls{ma}-Dauer bestimmen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Je nachdem, wie lange ein Trend andauert, bedingt eine Trenderkennung andere \gls{ma}(-Paare)
+Beschreibung & Je nachdem, wie lange ein Trend andauert, bedingt eine Trenderkennung andere \gls{ma}(-Paare)
 mit unterschiedlichen Laufzeiten. Durch Backtesting sollen viele verschiedene Varianten
 automatisch getestet werden können, um den statistisch besten Parametersatz zu ermitteln.\\  \hline
 Akteure & System \\ \hline
@@ -88,14 +87,13 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF130/\\
-\textit{An Marktzustand anpassen}
+/LF130/ \textbf{An Marktzustand anpassen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Der Algorithmus soll sich durch Parameterveränderung an den erkannten Marktzustand zur
+Beschreibung & Der Algorithmus soll sich durch Parameterveränderung an den erkannten Marktzustand zur
 Optimierung der Performance anpassen. Dies kann beispielsweise durch verändern der \gls{ma}-Paare
 oder durch Anpassung der Market Exposure und damit des Risikos erfolgen.
 Dazu \textit{können} die Implikationen durch Nachforschung bekannt sein, woraufhin ein Modell
@@ -112,14 +110,13 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF140/\\
-\textit{Signale generieren}
+/LF140/ \textbf{Signale generieren}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Signalgeben bei potentiellen Einstiegspunkten (long signal) und Ausstiegspunkten (short
+Beschreibung & Signalgeben bei potentiellen Einstiegspunkten (long signal) und Ausstiegspunkten (short
 signal).\\  \hline
 Akteure & System \\ \hline
 Teilsystem & Algorithmus \\ \hline
@@ -131,14 +128,13 @@ Nachbedingungen & /LF160/ Signale filtern \\ \hline
 
 \end{center}
 
-/LF150/\\
-\textit{Trend-Nachhaltigkeit bestimmen}
+/LF150/ \textbf{Trend-Nachhaltigkeit bestimmen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Durch geeignete Support- und Resistance-Indikatoren soll die Nachhaltigkeit eines Trends
+Beschreibung & Durch geeignete Support- und Resistance-Indikatoren soll die Nachhaltigkeit eines Trends
 bestimmt werden (beispielsweise Pivot Points, RSI, CCI oder MAs), um den Ausstiegspunkt zu
 optimieren.\\  \hline
 Akteure & System \\ \hline
@@ -151,14 +147,13 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF160/\\
-\textit{Signale filtern}
+/LF160/ \textbf{Signale filtern}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Zur Verminderung von unprofitablen, zu kurzen Trades sollen insbesondere Kaufsignale
+Beschreibung & Zur Verminderung von unprofitablen, zu kurzen Trades sollen insbesondere Kaufsignale
 gefiltert werden. Die Trenderkennung könnte des Öfteren zu kurz anhaltende Trends
 erkennen, indem beispielsweise ein MA-Crossover nur für kurze Zeit besteht. Durch das
 Einführen eines Schwellenwertes (threshold), der überschritten werden muss, oder eine
@@ -176,14 +171,13 @@ Nachbedingungen & - \\ \hline
 
 \section{Funktionen der Backtesting-Software}
 
-/LF210/\\
-\textit{Performance berechnen}
+/LF210/ \textbf{Performance berechnen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Die relative Performance eines Algorithmus soll in Prozent der Kapitalveränderung berechnet
+Beschreibung & Die relative Performance eines Algorithmus soll in Prozent der Kapitalveränderung berechnet
 werden.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & \gls{bts} \\ \hline
@@ -195,14 +189,13 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF220/\\
-\textit{Gewinn/Risiko-Verhältnis berechnen}
+/LF220/ \textbf{Gewinn/Risiko-Verhältnis berechnen}
 
 \begin{center}
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Bestimmung des Risikos des Algorithmus (beispielsweise anhand der Volatilität) in
+Beschreibung & Bestimmung des Risikos des Algorithmus (beispielsweise anhand der Volatilität) in
 Verbindung mit der Performance (e.g. sharpe ratio).\\  \hline
 Akteure & System \\ \hline
 Teilsystem & \gls{bts} \\ \hline
