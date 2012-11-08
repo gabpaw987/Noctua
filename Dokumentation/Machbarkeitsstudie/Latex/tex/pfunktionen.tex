@@ -2,7 +2,7 @@
 
 \section{Must-Have}
 
-/LF10/\\
+/F010/\\
 \textit{Vergangene Marktzustände bestimmen}
 
 \begin{center}
@@ -25,7 +25,7 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF20/\\
+/F020/\\
 \textit{Aktuellen Marktzustand bestimmen}
 
 \begin{center}
@@ -37,14 +37,14 @@ der Daten vorhanden ist, die für die historische Analyse herangezogen werden.\\ 
 Aufwand & Mittel \\ \hline
 Nutzen & Hoch \\ \hline
 Ziel & Zuordnung des aktuellen Marktzustandes zu einem bereits Bekannten. \\ \hline
-Vorbedingungen & /LF10/ Vergangene Marktzustände bestimmen \\ \hline
+Vorbedingungen & /F010/ Vergangene Marktzustände bestimmen \\ \hline
 Nachbedingungen & - \\ \hline
 
 \end{tabular}
 
 \end{center}
 
-/LF110/\\
+/F110/\\
 \textit{Trends erkennen}
 
 \begin{center}
@@ -66,7 +66,7 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF120/\\
+/F120/\\
 \textit{\gls{ma}-Dauer bestimmen}
 
 \begin{center}
@@ -74,8 +74,8 @@ Nachbedingungen & - \\ \hline
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
 Beschreibung & Je nachdem, wie lange ein Trend andauert, bedingt eine Trenderkennung andere \gls{ma}(-Paare)
-mit unterschiedlichen Laufzeiten. Durch Backtesting sollen viele verschiedene Varianten
-automatisch getestet werden können, um den statistisch besten Parametersatz zu ermitteln.\\  \hline
+mit unterschiedlichen Laufzeiten. Aus z.B. bewährten Wertepaaren oder adaptiven Methoden sollen
+automatisch die optimalen Laufzeiten gewählt werden.\\  \hline
 Aufwand & Niedrig \\ \hline
 Nutzen & Mittel \\ \hline
 Ziel & Erarbeitung eines optimalen Parametersatzes für ein \gls{ma}-Paar. \\ \hline
@@ -86,7 +86,7 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF130/\\
+/F130/\\
 \textit{An Marktzustand anpassen}
 
 \begin{center}
@@ -103,14 +103,14 @@ unterschiedlichen Markzustände verschiedene Parametersätze durchprobiert.\\  \hl
 Aufwand & Hoch \\ \hline
 Nutzen & Hoch \\ \hline
 Ziel & Anpassung der Hauptfunktionen des Algorithmus an den aktuellen Marktzustand. \\ \hline
-Vorbedingungen & /LF020/ Aktuellen Marktzustand bestimmen \\ \hline
+Vorbedingungen & /F020/ Aktuellen Marktzustand bestimmen \\ \hline
 Nachbedingungen & - \\ \hline
 
 \end{tabular}
 
 \end{center}
 
-/LF140/\\
+/F140/\\
 \textit{Signale generieren}
 
 \begin{center}
@@ -122,14 +122,14 @@ signal).\\  \hline
 Aufwand & Niedrig \\ \hline
 Nutzen & Hoch \\ \hline
 Ziel & Rückgabe von Handelssignalen. \\ \hline
-Vorbedingungen & /LF110/ Trends erkennen, /LF130/ An Marktzustand anpassen, /LF120/ \gls{ma}-Dauer bestimmen \\ \hline
-Nachbedingungen & /LF160/ Signale filtern \\ \hline
+Vorbedingungen & /F110/ Trends erkennen, /F130/ An Marktzustand anpassen, /F120/ \gls{ma}-Dauer bestimmen \\ \hline
+Nachbedingungen & /F160/ Signale filtern \\ \hline
 
 \end{tabular}
 
 \end{center}
 
-/LF150/\\
+/F150/\\
 \textit{Trend-Nachhaltigkeit bestimmen}
 
 \begin{center}
@@ -142,14 +142,14 @@ optimieren.\\  \hline
 Aufwand & Mittel \\ \hline
 Nutzen & Hoch \\ \hline
 Ziel & Festellen der Nachhaltigkeit erkannter Trends. \\ \hline
-Vorbedingungen & /LF140 Signale generieren \\ \hline
+Vorbedingungen & /F140 Signale generieren \\ \hline
 Nachbedingungen & - \\ \hline
 
 \end{tabular}
 
 \end{center}
 
-/LF160/\\
+/F160/\\
 \textit{Signale filtern}
 
 \begin{center}
@@ -165,14 +165,14 @@ werden, wenn sich im Backtesting dadurch ein Vorteil herausgestellt hat.\\  \hli
 Aufwand & Mittel \\ \hline
 Nutzen & Hoch \\ \hline
 Ziel & Filterung der unbrauchbaren Signale. \\ \hline
-Vorbedingungen & /LF140/ Signale generieren, /LF150/ Trend-Nachhaltigkeit bestimmen \\ \hline
+Vorbedingungen & /F140/ Signale generieren, /F150/ Trend-Nachhaltigkeit bestimmen \\ \hline
 Nachbedingungen & - \\ \hline
 
 \end{tabular}
 
 \end{center}
 
-/LF210/\\
+/F210/\\
 \textit{Performance berechnen}
 
 \begin{center}
@@ -191,7 +191,7 @@ Nachbedingungen & - \\ \hline
 
 \end{center}
 
-/LF220/\\
+/F220/\\
 \textit{Gewinn/Risiko-Verhältnis berechnen}
 
 \begin{center}
@@ -203,7 +203,7 @@ Verbindung mit der Performance (e.g. sharpe ratio).\\  \hline
 Aufwand & Niedrig \\ \hline
 Nutzen & Mittel \\ \hline
 Ziel & Bestimmung des Gewinn/Risiko-Verhältnisses eines Algorithmus \\ \hline
-Vorbedingungen & /LF210/ Performance berechnen \\ \hline
+Vorbedingungen & /F210/ Performance berechnen \\ \hline
 Nachbedingungen & - \\ \hline
 
 \end{tabular}

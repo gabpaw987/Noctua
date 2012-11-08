@@ -3,9 +3,9 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=2
+ActiveTab=0
 FrameCount=22
-ActiveFrame=21
+ActiveFrame=12
 
 [Frame0]
 Columns=1
@@ -358,8 +358,8 @@ TopSubLine=0
 [Frame12]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -372,17 +372,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\pfunktionen.tex
 
 [Frame12_Row0]
-cyCur=85
+cyCur=641
 cyMin=10
 
 [Frame12_Col0]
-cxCur=829
+cxCur=1670
 cxMin=10
 
 [Frame12_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=193
+Cursor.column=1
+TopSubLine=194
 
 [Frame13]
 Columns=1
@@ -619,8 +619,8 @@ TopSubLine=0
 [Frame21]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -633,15 +633,15 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\Projektplanung.tex
 
 [Frame21_Row0]
-cyCur=641
+cyCur=402
 cyMin=10
 
 [Frame21_Col0]
-cxCur=1670
+cxCur=1456
 cxMin=10
 
 [Frame21_View0,0]
-Cursor.row=13
-Cursor.column=105
+Cursor.row=0
+Cursor.column=0
 TopSubLine=0
 
