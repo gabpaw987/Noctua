@@ -24,12 +24,12 @@ Für jedes Wertpapier wird ein sogenanntes Orderbuch geführt, das die aktuellen K
 \begin{tabular}{|c|c|c|c|}
 \hline 
 Bid & Bid Size & Ask & Ask Size \\ \hline
-691.52 & 700 & 691.66 & 300 \\ \hline
+691.52 & 7 & 691.66 & 3 \\ \hline
 \end{tabular}
 \end{center}
 
 Der Bid-Preis von \textdollar{691.52} ist das höchste vorhandene Gebot für eine Apple-Aktie. Die Bid-Size gibt die Information über die Anzahl an Aktien, die Käufer zu diesem Preis erstehen wollen. Die Anzahl wird in \emph{round lots} angegeben; meist entspricht ein round lot 100 Stück der Aktie. Die Bid-Seite beschreit somit die Käuferseite.\\
-Der Ask-Preis und die Ask-Size beschreibt hingegen das beste Angebot auf der Verkäuferseite. In diesem Fall werden 300 round lots für den Stückpreis von \textdollar{691.66} angeboten.\\
+Der Ask-Preis und die Ask-Size beschreibt hingegen das beste Angebot auf der Verkäuferseite. In diesem Fall werden 3 round lots für den Stückpreis von \textdollar{691.66} pro Aktie angeboten. Ein round lot würde in diesem Fall also \textdollar{69166} kosten.\\
 	Soll ein Handel so schnell als möglich abgewickelt werden muss zum Ask-Preis gekauft und zum Bid-Preis verkauft werden. In diesem Fall verändert sich die Quote-Zeile so, dass der nächstbeste Auftrag angezeigt wird. Diese Hintereinanderreihung von Angeboten wird auch als Orderbuchtiefe bezeichnet.\\
 	Angenommen ein Käufer ist nicht bereit zum aktuellen Ask-Preis zu kaufen. Er will bessere Konditionen und schickt eine \emph{Limit-Order}, d.h. zu gegebenem Preis oder besser \footnote{IB-Ordertypen siehe: http://www.interactivebrokers.com/de/p.php?f=orderTypes}, mit einem Limit, das zwischen Ask- und Bid-Preis liegt. Sein Kaufgebot ist damit höher als der zuvor höchste und wird daher sofort in der Quote-Zeile auf der Bid-Seite angezeigt.\\
 \\
