@@ -5,7 +5,7 @@ Version=2
 [SessionInfo]
 ActiveTab=0
 FrameCount=22
-ActiveFrame=12
+ActiveFrame=15
 
 [Frame0]
 Columns=1
@@ -358,8 +358,8 @@ TopSubLine=0
 [Frame12]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -372,17 +372,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\pfunktionen.tex
 
 [Frame12_Row0]
-cyCur=641
+cyCur=85
 cyMin=10
 
 [Frame12_Col0]
-cxCur=1670
+cxCur=829
 cxMin=10
 
 [Frame12_View0,0]
 Cursor.row=193
 Cursor.column=1
-TopSubLine=194
+TopSubLine=227
 
 [Frame13]
 Columns=1
@@ -440,13 +440,13 @@ cxMin=10
 [Frame14_View0,0]
 Cursor.row=15
 Cursor.column=24
-TopSubLine=24
+TopSubLine=26
 
 [Frame15]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -459,17 +459,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame15_Row0]
-cyCur=135
+cyCur=641
 cyMin=10
 
 [Frame15_Col0]
-cxCur=1017
+cxCur=1583
 cxMin=10
 
 [Frame15_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=87
+Cursor.column=14
+TopSubLine=117
 
 [Frame16]
 Columns=1
