@@ -284,15 +284,16 @@
 
 
 \addcontentsline{toc}{chapter}{Glossary} 
-\printglossary[type=\acronymtype]
-\glsaddall
+%\printglossary[type=\acronymtype]
+%\glsaddall
 
-\printglossary[type=\acronymtype]
+%\printglossary[type=\acronymtype]
 %\printglossary[type=\acronymtype,style=listwithwidth]
 
 %% include appendix
 \begin{appendix}
-\include{tex/appendix}%
+%\include{tex/appendix}%
+\printglossary[type=\acronymtype]
 \end{appendix}
 
 % Use of the sorted IEEE style, with changes:
