@@ -14,6 +14,7 @@
 \usepackage[english,noprefix]{nomencl}%  %% Nomenclature (Symbolverzeichnis)
 \usepackage{makeidx}%                   %% Index
 \usepackage{graphicx}%                  %% Graphiken
+%\usepackage[acronym]{glossaries}
 \graphicspath{{img/}}
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
 \usepackage{psfrag}%                    %% Tex-Schriftarten und Formeln in EPS-Grafiken
@@ -22,7 +23,7 @@
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \usepackage{subfigure}
-\usepackage[xindy, acronym, toc]{glossaries}
+%\usepackage[xindy, acronym, toc]{glossaries}
 \usepackage{cite}
 \usepackage{listings}
 \usepackage{color}
@@ -31,7 +32,7 @@
 \usepackage{multirow}
 \usepackage{eurosym}
 \usepackage{capt-of}
-
+\usepackage{glossaries}
 
 \input{tex/acronyms}
 %%-----------------------------------------------------------------------
@@ -245,10 +246,6 @@
 \clearpage%
 
 
-\include{tex/nomenclature}
-\markboth{\nomname}{\nomname}%
-\addcontentsline{toc}{chapter}{\numberline{}\nomname}%
-\printnomenclature
 
 
 \mainmatter%   %% main part will be numbered in Arabic letter
@@ -259,6 +256,7 @@
 \include{tex/chapter2}%
 % INCLUDES (\input) FOR CHAPTER 2 SUBFILES MOVED TO chapter2.tex
 %\include{tex/machbarkeitsstudie/voruntersuchung}%
+
 %\include{tex/machbarkeitsstudie/pfunktionen}%
 %\include{tex/machbarkeitsstudie/tmachbarkeit}%
 %\include{tex/machbarkeitsstudie/wirmachbarkeit}%
@@ -268,17 +266,15 @@
 \include{tex/chapter6}%
 
 
-\addcontentsline{toc}{chapter}{Glossary} 
-\printglossary[type=\acronymtype]
-\glsaddall
-
-\printglossary[type=\acronymtype]
-%\printglossary[type=\acronymtype,style=listwithwidth]
-
 %% include appendix
 \begin{appendix}
 \include{tex/appendix}%
 \end{appendix}
+
+\include{tex/nomenclature}
+\markboth{\nomname}{\nomname}%
+\addcontentsline{toc}{chapter}{\numberline{}\nomname}%
+\printnomenclature
 
 % Use of the sorted IEEE style, with changes:
 % "dashification" was disabled
