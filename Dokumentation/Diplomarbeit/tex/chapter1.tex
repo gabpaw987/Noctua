@@ -5,61 +5,61 @@
 
 \subsection{Hintergrund}
 
-Seit dem Beginn des 17. Jhdt., wo die ersten Anteilsscheine von Unternehmen ausgegeben wurden
-hat sich der Finanzmarkt in Riesenschritten vorwärts bewegt und ist heutzutage eine Multi-
-Milliarden-Dollar Industrie. Aktien sind längst nicht mehr die einzigen Wertpapiere, die auf dem
-Finanzmarkt gehandelt werden. Instrumente wie Optionsscheine oder Future-Contracts sind dabei
+Seit dem Beginn des 17. Jahrhunderts, in dem die ersten Anteilsscheine von Unternehmen ausgegeben wurden,
+hat sich der Finanzmarkt in Riesenschritten vorwärts bewegt und ist heutzutage eine Multi-Milliarden-Dollar
+Industrie. Aktien sind längst nicht mehr die einzigen Wertpapiere, die auf dem
+Finanzmarkt gehandelt werden. Instrumente wie Optionsscheine oder Future-Contracts sind
 noch etabliertere Handelsgüter.\\
 \\
 Der Handel mit Wertpapieren ist in den letzten Jahren und Jahrzehnten zunehmend systematisiert
-und automatisiert worden. Kaum jemand trifft Handelsentscheidungen leichtfertig aus dem Bauch
-heraus ohne fundierte Analyse. Diese Analyse unterwirft sich aber damit einem programmatischen
+und automatisiert worden. Kaum jemand trifft Handelsentscheidungen ohne fundierte Analyse leichtfertig aus dem Bauch
+heraus. Diese Analyse unterwirft sich aber damit einem programmatischen
 Schema, das ebenso gut auch automatisch, algorithmisch angewandt werden kann: trifft ein Mensch
-Entscheidungen nach einem genauen Schema, kann ein Computer dies ebenso und dabei sogar
+Entscheidungen nach einem genauen Schema, kann ein Computer dies ebenso und sogar
 schneller und genauer.\\
 Besonders gut geeignet dafür scheinen die technische Analyse, besonders die Trendbestimmung und
-das Trendfolgen. Auch wenn es reichlich Kritik an solchen Systemen gibt (besonders, darauf
-basierend, dass sich Aktienkurse nach keiner bekannten statistischen Verteilung bewegen), wenden
+das Trendfolgen. Auch wenn es reichlich Kritik an solchen Systemen gibt (etwa, dass sich
+Aktienkurse nach keiner bekannten statistischen Verteilung bewegen), wenden
 sehr viele Marktteilnehmer solche Systeme an. Das führt zumindest teilweise aber zu einer
 selbsterfüllenden Prophezeiung, da sich die Kurse am Verhalten der Majorität der Marktteilnehmer
 orientieren.\\
-Ein weiterer Vorteil des Algorithmischen Trading ist die Geschwindigkeit, sowie Genauigkeit mit
+Ein weiterer Vorteil des algorithmischen Trading sind die Geschwindigkeit und die Genauigkeit, mit
 der Computer arbeiten können, an die Menschen nicht heranreichen. Durch systematische und
 statistische Entscheidungen können menschliche Emotionen aus dem Spiel gelassen und dadurch
 auch das Risiko besser abgeschätzt werden.\\
 \\
-Die Informationsflut, die schon für normale Aktien existiert, sind längst nicht mehr manuell zu
+Die Informationsflut, die schon für normale Aktien existiert, ist längst nicht mehr manuell zu
 bewältigen. Räume voller Server rechnen ununterbrochen mit den Kursdaten und versuchen jeden
 möglichen Vorteil auszunutzen, um den Gewinn zu optimieren. Die verwendeten Modelle, Ansätze
-und Algorithmen werden in der Regel geheim gehalten, da viel Geld von Entscheidungen der
+und Algorithmen werden in der Regel geheim gehalten, da viel Geld von den Entscheidungen der
 Software abhängt. Wären verwendete Algorithmen publik, würden diese nicht mehr lange profitabel
 funktionieren. Ergo bleiben die Vorgangsweisen, die besser funktionieren und großen Unternehmen
-reale Gewinne einbringen geheim. Im Internet gibt es viele Quellen, die verschiedene Ansätze
+reale Gewinne einbringen, geheim. Im Internet gibt es viele Quellen, die verschiedene Ansätze
 erklären, wie mit vorhandenen Daten Handelsentscheidungen berechnet werden können, die in
 Tradingsoftware implementiert werden könnten. Diese Standardalgorithmen sind au mass
 vorhanden, ein objektiver Vergleich ist aber entweder sehr umständlich oder gar nicht möglich. Ein
-besonderer Fokus dieses Projektes soll daher darauf liegen entwickelte Algorithmen auf ihre
+besonderer Fokus dieses Projektes soll daher darauf liegen, entwickelte Algorithmen auf ihre
 Performance zu prüfen. Zu diesem Zweck wird eine \gls{bts} programmiert, welche
 die Signale eines Algorithmus für einen historischen Datenbestand generiert und die resultierenden
 virtuellen Trades analysiert.\\
 \\
 Momentan haben sowohl Börseninteressierte als auch professionelle Trader ein Problem damit, die
-Performance unterschiedlicher Algorithmen adäquat zu klassifizieren und damit auch zu
-vergleichen. Das riesige Spektrum an algorithmischer Tradingsoftware, das derzeit angeboten wird,
+Performance unterschiedlicher Algorithmen zu vergleichen und adäquat zu klassifizieren.
+Das riesige Spektrum an algorithmischer Tradingsoftware, das derzeit angeboten wird,
 ist zudem auch noch sehr undurchsichtig, da es sich bei fast allen arbeitenden Algorithmen um
-closed Source Produkte handelt. Der normale Benutzer kann beim Kauf einer solchen Software also nur die
+Closed-Source Produkte handelt. Der normale Benutzer kann beim Kauf einer solchen Software also nur die
 Kompetenz des anbietenden Unternehmens einschätzen und hat keine schriftliche und überprüfbare
 Grundlage, die die Qualität des Algorithmus aufzeigt, in dessen Hände er sein Geld legt.\\
 \\
 Am einfachsten kann hierbei durch die Entwicklung eines eigenen oder durch den Kauf des Source
 Codes eines anderen Algorithmus Abhilfe geschafft werden. Ohne die Noctua-\gls{bts}
 wäre es jedoch trotzdem nicht möglich, solche Algorithmen auf ihre Performance oder auch auf die
-Arbeitsweise während unterschiedlichen Marktzuständen zu testen.\\
+Arbeitsweise bei unterschiedlichen Marktzuständen zu testen.\\
 Zusätzlich fixiert sich die absolute Mehrheit der derzeit vorherrschenden Algorithmen zu stark auf
 die reine Kursentwicklung und beachtet nicht den aktuellen Marktzustand, obwohl dieser einer der
-wichtigsten Grundsteine zur Vorhersage der Kurse ist.\\
-Natürlich ist es außerdem zurzeit nicht möglich sein Kapital so fixverzinst anzulegen, dass man
-einen Jahreszinssatz von 10\% erhält. Am nächsten kann man dem nur durch die sehr risikoarme
+wichtigsten Grundbausteine zur Vorhersage der Kurse ist.\\
+Natürlich ist es außerdem zurzeit nicht möglich, sein Kapital so fixverzinst anzulegen, dass man
+einen Jahreszinssatz von 10\% erhält. Am nächsten kann man dem nur durch eine sehr risikoarme
 Verwaltung seines Kapitals durch einen ausgeklügelten Algorithmus kommen, der genau dies
 verspricht.
 
@@ -67,30 +67,30 @@ verspricht.
 
 Für ein automatisiertes Handeln mit Wertpapieren an der Börse soll ein Algorithmus
 entwickelt werden, der die optimalen Handelsentscheidungen berechnet. Damit man den
-fertigen Algorithmus, sowie dessen Vorgängerversionen, als auch andere Standartalgorithmen
-(wie zum Beispiel: ) miteinander vergleichen kann, ist es erforderlich eine Software zu
-implementieren die automatisch mit historischen Daten, ergo bereits vergangene Bewegungen
+fertigen Algorithmus, sowie seine Vorgängerversionen, als auch andere Standardalgorithmen
+miteinander vergleichen kann, ist es erforderlich eine Software zu
+implementieren, die automatisch mit historischen Daten, ergo bereits vergangenen Bewegungen
 an der Börse, rechnet und eine vernünftige Testumgebung erzeugt.\\
 \\
 Die Bestandteile des Projektes werden in 3 Bereiche gegliedert:
 \begin{itemize}
 	\item Der Algorithmus soll Trends möglichst früh identifizieren und diesen solange folgen
 				bis sie durch Support- und Resistance-Level ihre Nachhaltigkeit verlieren.
-				Diese Identifikation soll, mithilfe historischer Daten funktionieren. Damit mit man die
-				Qualität der Algorithmen in verschiedenen Marktzuständen die jeweilige Qualität der
+				Diese Identifikation soll mithilfe historischer Daten funktionieren. Damit mit man die
+				Qualität der Algorithmen bei verschiedenen Marktzuständen und die jeweilige Qualität der
 				Berechnungen feststellen kann, ist es notwendig den Markttrend zu gewissen Zeiten
 				bereits zu kennen. Das bedeutet, dass die vorhandenen Daten analysiert werden
-				müssen, um die verschiedenen Marktumschwünge und deren Auswirkungen auf den
-				Algorithmus zu erkennen und auslesen zu können.
+				müssen, um Marktumschwünge und deren Auswirkungen auf den
+				Algorithmus erkennen und auslesen zu können.
 	\item Um die verschiedenen Kursmuster bei diversen Marktstimmungen in den Algorithmus
 				zu integrieren, unterscheidet dieser zwischen Marktzuständen, die durch
 				gesamtwirtschaftliche Zusammenhänge (Währungswechselkurse, Commodity-Preise,
 				Leitindizes, u.Ä.) bestimmt werden können. Hierbei muss besonders vorsichtig mit
 				den Änderungen an dem Algorithmus vorgegangen werden, sonst kann es leicht
 				passieren, dass eine kleine Änderung der Grundberechnung die Entscheidung bei einer
-				völlig unerwarteten Trendänderung beeinträchtigt. Deswegen ist es wichtig jede
+				völlig unerwarteten Trendänderung beeinträchtigt. Deswegen ist es wichtig, jede
 				Änderung zu dokumentieren und zu versionieren. Dies soll einerseits das Endergebnis
-				der Entwicklung verbessern und qualitativ hochwertiger halten und andererseits eine
+				der Entwicklung verbessern und qualitativ hochwertig halten und andererseits eine
 				signifikante Geschwindigkeitssteigerung in der Algorithmuskodierung erzeugen.
 	\item Damit die Performance auch über mehrere Versionen des Algorithmus verglichen
 				werden kann, soll eine \gls{bts} entwickelt werden, diese wird mithilfe
