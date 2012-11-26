@@ -40,34 +40,34 @@ Austauschbarkeit & & & X & \\ \hline
 \textbf{Funktionalität}
 \\
 \\
-Die Funktionalität des Produkts ist das wichtigste Ziel der \gls{bts}, sie soll genau das tun wozu sie konzipiert ist. Sie soll dem Entwicklern helfen und eine beratende Position einnehmen, deswegen wird auf die Richtigkeit der Daten sehr viel Wert gelegt. Die Sicherheit und die Interoperabilität ist kein großes Thema weil das Programm nicht mit dem System oder anderen Programmen interagiert und mit keinen vertraulichen Daten arbeitet oder diese Überträgt. Das liegt daran, dass die Software nie eine Verbindung zu einem anderen Programm öffnet. Dies ist ein weiterer Grund warum die historischen Daten benutzt werden.
+Die Funktionalität des Produkts ist das wichtigste Ziel der \gls{bts}, sie soll genau das tun wozu sie konzipiert ist. Sie soll den Entwicklern helfen und eine beratende Position einnehmen, deswegen wird auf die Richtigkeit der Daten sehr viel Wert gelegt. Die Sicherheit und die Interoperabilität sind kein großes Thema, weil das Programm nicht mit dem System oder anderen Programmen interagiert und mit keinen vertraulichen Daten arbeitet oder diese überträgt. Das liegt daran, dass die Software nie eine Verbindung zu einem anderen Programm öffnet. Dies ist ein weiterer Grund, warum die historischen Daten benutzt werden.
 \\
 \\
 \textbf{Zuverlässigkeit}
 \\
 \\
-Auf Fehlertoleranz wird kein Wert gelegt, weil die meisten groben Fehlerquellen bereits im Vorhinein eliminiert worden sind. Ein Beispiel wäre eine Internetverbindung während des Programmablaufs, diese sind nie besonders sicher und mit einem einzigen nicht angekommenen Paket könnte ein Fehler ausgelöst werden, auf den geachtet werden muss. Dies ist bei der \gls{bts} jedoch nicht notwendig. \\ Der entwickelte Algorithmus ist kein Erzeugnis aus wahllos zusammengewürfelten Teilalgorithmen. Er soll wohl überlegt und durchdacht sein. Gut dokumentiert und vernünftig ausprogrammiert. Um das zu erreichen wird während der Entwicklung bereits auf eine sehr genaue und gute Versionierung geachtet um immer jeden Zwischenschritt mit allen vorher gewesenen Überlegungen zu vergleichen.
+Auf Fehlertoleranz wird kein Wert gelegt, weil die meisten groben Fehlerquellen bereits im Vorhinein eliminiert worden sind. Ein Beispiel wäre eine Internetverbindung während des Programmablaufs; diese sind nie besonders sicher und mit einem einzigen nicht angekommenen Paket könnte ein Fehler ausgelöst werden, auf den geachtet werden muss. Dies ist bei der \gls{bts} jedoch nicht notwendig. \\ Der entwickelte Algorithmus ist kein Erzeugnis aus wahllos zusammengewürfelten Teilalgorithmen. Er soll wohl überlegt und durchdacht sein, gut dokumentiert und vernünftig ausprogrammiert. Um das zu erreichen, wird während der Entwicklung bereits auf eine sehr genaue und gute Versionierung geachtet, jeder Zwischenschritt mit allen vorherigen Überlegungen verglichen werden kann.
 \\
 \\
 \textbf{Benutzbarkeit}
 \\
 \\
-Die Benutzbarkeit der \gls{bts} soll im herkömmlichen Sinn soll sehr einfach gehalten werden. Es soll den Benutzer nicht überfordern und in schnell mit dem Wissen beliefern, welches dieser benötigt. Mit der Entwicklung dieser Software wurde keine neue Programmiersprache entwickelt, die Sprache die zur Anwendung kommt ist F\#, falls diese Sprache noch nicht bekannt ist, ist es wichtig diese zu erlernen. Die Bedienbarkeit soll einfach und schnell möglich sein und den Benutzer nicht übermäßig belästigen.
+Die Benutzbarkeit der \gls{bts} soll im herkömmlichen Sinn sehr einfach gehalten werden. Es soll den Benutzer nicht überfordern und ihn schnell mit dem Wissen beliefern, das er benötigt. Mit der Entwicklung dieser Software wurde keine neue Programmiersprache entwickelt, die Sprache, die zur Anwendung kommt, ist F\#; falls diese Sprache noch nicht bekannt ist, ist es wichtig sie zu erlernen. Die Bedienbarkeit soll einfach und schnell sein und den Benutzer nicht übermäßig belästigen.
 \\
 \\
 \textbf{Effizienz}
 \\
 \\
-Darauf zu achten, dass die Software einwandfrei und möglichst Output-orientiert arbeitet ist eine Sache, allerdings ist es nicht im Ermessen des Projektteams eine mögliche Endlosschleifenerkennung einzubauen oder sonstige Fehlererkennungstools. Wenn der User einen falschen oder schlecht programmierten Algorithmus in das System einspeist wird dieses möglicherweise Abstürzen oder nicht mehr aufhören zu rechnen. \\Trotzdem wird bei der Entwicklung der Software bedacht, einen möglichst schnellen Durchlauf zu ermöglichen. Das Programm soll schnell und effizient ablaufen können.
+Darauf zu achten, dass die Software einwandfrei und möglichst Output-orientiert arbeitet, ist eine Sache, allerdings ist es nicht im Sinn des Projektteams, eine mögliche Endlosschleifenerkennung einzubauen oder sonstige Fehlererkennungstools. Wenn der User einen falschen oder schlecht programmierten Algorithmus in das System einspeist, wird dieses möglicherweise abstürzen oder nicht mehr aufhören zu rechnen. \\Trotzdem wird bei der Entwicklung der Software bedacht, einen möglichst schnellen Durchlauf zu ermöglichen. Das Programm soll schnell und effizient ablaufen können.
 \\
 \\
 \textbf{Änderbarkeit}
 \\
 \\
-Es ist sehr wichtig diese Software ändern zu können. Allerdings nicht im gesamten sondern an einer speziellen Stelle im System. Es existiert ein Interface (Schnittstelle) mit der es möglich ist seine eigenen Algorithmen einfach und problemlos in das System einzuladen. Außerdem ist es auch noch möglich beliebige historische Daten als Grundlage der Berechnung auszuführen. Die Prüfbarkeit der Ausgabe ist deswegen so relevant, weil man anhand der Ausgabe der \gls{bts} einen Vergleich anstellen können soll.
+Es ist sehr wichtig, diese Software ändern zu können. Allerdings nicht im gesamten, sondern an einer speziellen Stelle im System. Es existiert ein Interface (Schnittstelle) mit der es möglich ist, die  eigenen Algorithmen einfach und problemlos in das System einzuspeisen. Außerdem ist es auch noch möglich, beliebige historische Daten als Grundlage der Berechnung auszuführen. Die Prüfbarkeit der Ausgabe ist deswegen so relevant, weil man anhand der Ausgabe der \gls{bts} einen Vergleich anstellen können soll.
 \\
 \\
 \textbf{Übertragbarkeit}
 \\
 \\ 
-Das Produkt soll in einer Windows-Umgebung mit einer installierten Instanz des .NET-Frameworks lauffähig sein. Es soll nicht sehr aufwendig sein das Produkt zu übertragen. Allerdings wird auf die Anpassbarkeit einen hohen Wert gesetzt, weil es dem Benutzer einfach gemacht werden soll den Algorithmus und die historischen Daten austauschen zu können.
+Das Produkt soll in einer Windows-Umgebung mit einer installierten Instanz des .NET-Frameworks lauffähig sein. Es soll nicht sehr aufwendig sein, das Produkt zu übertragen. Allerdings wird auf die Anpassbarkeit einen hohen Wert gesetzt, weil es dem Benutzer einfach gemacht werden soll, den Algorithmus und die historischen Daten austauschen zu können.
