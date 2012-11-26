@@ -11,9 +11,9 @@
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Es sollen historische Marktzustände (innerhalb der letzten Jahre), auf transparenten
+Beschreibung & Es sollen historische Marktzustände (innerhalb der letzten Jahre) auf transparenten
 Aktienmärkten, für die ein ausreichender Datenbestand vorhanden ist, automatisch bestimmt
-werden. Sollten sich verschiedene große Märkte entgegen Erwartung entsprechend
+werden. Sollten sich verschiedene große Märkte entgegen der Erwartung entsprechend
 unterschiedlich verhalten, dass diese keiner einheitlichen Analyse unterzogen werden können,
 soll primär der US-amerikanische Aktienmarkt untersucht werden. Hierbei handelt es sich um
 eine Gruppierung von Zeitabschnitten nach gemeinsamen Kriterien.\\  \hline
@@ -34,10 +34,10 @@ Nachbedingungen & - \\ \hline
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
 Beschreibung & Dabei soll darauf geachtet werden, dass für eine frühe Erkennung möglicherweise nur ein Teil
-der Daten vorhanden ist, die für die historische Analyse herangezogen werden.\\  \hline
+der Daten vorhanden ist, die für die historische Analyse herangezogen werden können.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & Algorithmus \\ \hline
-Ziel & Zuordnung des aktuellen Marktzustandes zu einem bereits Bekannten. \\ \hline
+Ziel & Zuordnung des aktuellen Marktzustandes zu einem bereits bekannten. \\ \hline
 Vorbedingungen & /F010/ Vergangene Marktzustände bestimmen \\ \hline
 Nachbedingungen & - \\ \hline
 
@@ -53,7 +53,7 @@ Nachbedingungen & - \\ \hline
 
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
-Beschreibung & Durch \glspl{ma} soll es möglich sein Trends in Aktienkursen zu identifizieren. Dazu
+Beschreibung & Durch \glspl{ma} soll es möglich sein, Trends in Aktienkursen zu identifizieren. Dazu
 kommen verschiedene Crossover-Verfahren (double- / triple-crossover) oder Indikatoren, wie
 der MACD (Moving Average Convergence Divergence) in Frage. Es soll eine statistisch
 möglichst profitable Variante hierfür gefunden werden, die aufscheinende nachhaltige Trends
@@ -75,7 +75,7 @@ Nachbedingungen & - \\ \hline
 \begin{tabular}{ | l | p{10cm} |}
 \hline 
 Beschreibung & Je nachdem, wie lange ein Trend andauert, bedingt eine Trenderkennung andere \gls{ma}(-Paare)
-mit unterschiedlichen Laufzeiten. Aus z.B. bewährten Wertepaaren oder adaptiven Methoden sollen
+mit unterschiedlichen Laufzeiten. Aus zum Beispiel bewährten Wertepaaren oder adaptiven Methoden sollen
 automatisch die optimalen Laufzeiten gewählt werden.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & Algorithmus \\ \hline
@@ -140,7 +140,7 @@ optimieren.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & Algorithmus \\ \hline
 Ziel & Festellen der Nachhaltigkeit erkannter Trends. \\ \hline
-Vorbedingungen & /F140 Signale generieren \\ \hline
+Vorbedingungen & /F140/ Signale generieren \\ \hline
 Nachbedingungen & - \\ \hline
 
 \end{tabular}
@@ -155,9 +155,9 @@ Nachbedingungen & - \\ \hline
 \hline 
 Beschreibung & Zur Verminderung von unprofitablen, zu kurzen Trades sollen insbesondere Kaufsignale
 gefiltert werden. Die Trenderkennung könnte des Öfteren zu kurz anhaltende Trends
-erkennen, indem beispielsweise ein MA-Crossover nur für kurze Zeit besteht. Durch das
+erkennen, wenn etwa ein MA-Crossover nur für kurze Zeit besteht. Durch das
 Einführen eines Schwellenwertes (threshold), der überschritten werden muss, oder eine
-bestimmte Zeitspanne, die ein Signal überdauern muss können zu kurze Trades vermindert
+bestimmte Zeitspanne, die ein Signal überdauern muss, kann die Auswahl zu kurzer Trades vermindert
 werden, wenn sich im Backtesting dadurch ein Vorteil herausgestellt hat.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & Algorithmus \\ \hline
@@ -181,7 +181,7 @@ Beschreibung & Die relative Performance eines Algorithmus soll in Prozent der Ka
 werden.\\  \hline
 Akteure & System \\ \hline
 Teilsystem & \gls{bts} \\ \hline
-Ziel & Berechnung der relativen Performance eines Algorithmus \\ \hline
+Ziel & Berechnung der relativen Performance eines Algorithmus. \\ \hline
 Vorbedingungen & - \\ \hline
 Nachbedingungen & - \\ \hline
 
@@ -217,12 +217,12 @@ Nutzung der \gls{bts} (Erfolg)
 \hline 
 \textbf{Schritt} & \textbf{Akteur} & \textbf{Beschreibung}\\  \hline
 1 & Benutzer & Startet die \gls{bts}\\  \hline
-2 & System & Bietet dem Benutzer an einen Algorithmus und eine Datei mit historischen Daten, zur Berechnung in die \gls{bts} zu integrieren.\\  \hline
-3 & Benutzer & Wählt die beiden Dateien aus.\\  \hline
+2 & System & Bietet dem Benutzer an, einen Algorithmus und eine Datei mit historischen Daten zur Berechnung in die \gls{bts} zu integrieren\\  \hline
+3 & Benutzer & Wählt die beiden Dateien aus\\  \hline
 4 & Benutzer & Startet den Programmablauf\\  \hline
 5 & System & Integriert den Algorithmus und die historischen Daten\\  \hline
 6 & System & Berechnet mit Hilfe des Algorithmus alle nötigen Signale und Entscheidungen\\  \hline
-7 & System & Ermittelt mit Hilfe der Ergebnisse aus den Berechnungen des Algorithmus, die Performance und das Gewinn/Risiko-Verhältnis\\  \hline
+7 & System & Ermittelt mit Hilfe der Ergebnisse aus den Berechnungen die Performance und das Gewinn/Risiko-Verhältnis des Algorithmus\\  \hline
 8 & System & Stellt die Ergebnisse der Berechnung dar\\  \hline
 
 \end{tabular}
