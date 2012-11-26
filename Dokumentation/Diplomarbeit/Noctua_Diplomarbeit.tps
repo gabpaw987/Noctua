@@ -3,9 +3,9 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=0
-FrameCount=22
-ActiveFrame=15
+ActiveTab=2
+FrameCount=23
+ActiveFrame=6
 
 [Frame0]
 Columns=1
@@ -119,7 +119,7 @@ cxCur=992
 cxMin=10
 
 [Frame3_View0,0]
-Cursor.row=5
+Cursor.row=0
 Cursor.column=0
 TopSubLine=0
 
@@ -177,15 +177,15 @@ cxCur=992
 cxMin=10
 
 [Frame5_View0,0]
-Cursor.row=2
+Cursor.row=0
 Cursor.column=0
 TopSubLine=0
 
 [Frame6]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -198,17 +198,17 @@ Class=CLatexEdit
 Document=tex\acronyms.tex
 
 [Frame6_Row0]
-cyCur=255
+cyCur=554
 cyMin=10
 
 [Frame6_Col0]
-cxCur=992
+cxCur=1583
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=20
-Cursor.column=12
-TopSubLine=11
+Cursor.row=21
+Cursor.column=45
+TopSubLine=0
 
 [Frame7]
 Columns=1
@@ -293,9 +293,9 @@ cxCur=1335
 cxMin=10
 
 [Frame9_View0,0]
-Cursor.row=0
-Cursor.column=0
-TopSubLine=0
+Cursor.row=112
+Cursor.column=13
+TopSubLine=91
 
 [Frame10]
 Columns=1
@@ -380,9 +380,9 @@ cxCur=829
 cxMin=10
 
 [Frame12_View0,0]
-Cursor.row=193
-Cursor.column=1
-TopSubLine=227
+Cursor.row=0
+Cursor.column=0
+TopSubLine=0
 
 [Frame13]
 Columns=1
@@ -409,9 +409,9 @@ cxCur=1335
 cxMin=10
 
 [Frame13_View0,0]
-Cursor.row=29
-Cursor.column=0
-TopSubLine=11
+Cursor.row=25
+Cursor.column=45
+TopSubLine=4
 
 [Frame14]
 Columns=1
@@ -438,15 +438,15 @@ cxCur=1335
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=15
-Cursor.column=24
-TopSubLine=26
+Cursor.row=44
+Cursor.column=42
+TopSubLine=68
 
 [Frame15]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -459,17 +459,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\tmachbarkeit.tex
 
 [Frame15_Row0]
-cyCur=641
+cyCur=135
 cyMin=10
 
 [Frame15_Col0]
-cxCur=1583
+cxCur=1017
 cxMin=10
 
 [Frame15_View0,0]
-Cursor.row=87
-Cursor.column=14
-TopSubLine=117
+Cursor.row=79
+Cursor.column=338
+TopSubLine=173
 
 [Frame16]
 Columns=1
@@ -525,9 +525,9 @@ cxCur=1456
 cxMin=10
 
 [Frame17_View0,0]
-Cursor.row=10
-Cursor.column=347
-TopSubLine=0
+Cursor.row=241
+Cursor.column=418
+TopSubLine=382
 
 [Frame18]
 Columns=1
@@ -554,9 +554,9 @@ cxCur=1456
 cxMin=10
 
 [Frame18_View0,0]
-Cursor.row=0
+Cursor.row=227
 Cursor.column=0
-TopSubLine=0
+TopSubLine=213
 
 [Frame19]
 Columns=1
@@ -583,8 +583,8 @@ cxCur=1456
 cxMin=10
 
 [Frame19_View0,0]
-Cursor.row=4
-Cursor.column=0
+Cursor.row=2
+Cursor.column=356
 TopSubLine=0
 
 [Frame20]
@@ -612,9 +612,9 @@ cxCur=1456
 cxMin=10
 
 [Frame20_View0,0]
-Cursor.row=7
-Cursor.column=20
-TopSubLine=0
+Cursor.row=28
+Cursor.column=38
+TopSubLine=13
 
 [Frame21]
 Columns=1
@@ -644,4 +644,33 @@ cxMin=10
 Cursor.row=0
 Cursor.column=0
 TopSubLine=0
+
+[Frame22]
+Columns=1
+Rows=1
+Flags=0
+ShowCmd=1
+MinPos.x=-1
+MinPos.y=-1
+MaxPos.x=-9
+MaxPos.y=-34
+NormalPos.left=28
+NormalPos.top=28
+NormalPos.right=1468
+NormalPos.bottom=439
+Class=CLatexEdit
+Document=tex\machbarkeitsstudie\einleitung.tex
+
+[Frame22_Row0]
+cyCur=343
+cyMin=10
+
+[Frame22_Col0]
+cxCur=1397
+cxMin=10
+
+[Frame22_View0,0]
+Cursor.row=10
+Cursor.column=244
+TopSubLine=6
 

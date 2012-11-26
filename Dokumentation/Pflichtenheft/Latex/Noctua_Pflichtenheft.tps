@@ -198,7 +198,7 @@ Class=CLatexEdit
 Document=tex\chapter11.tex
 
 [Frame6_Row0]
-cyCur=641
+cyCur=554
 cyMin=10
 
 [Frame6_Col0]
@@ -206,7 +206,7 @@ cxCur=1583
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=5
-Cursor.column=258
+Cursor.row=0
+Cursor.column=0
 TopSubLine=0
 
