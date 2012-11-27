@@ -3,9 +3,9 @@ Type=TeXnicCenterProjectSessionInformation
 Version=2
 
 [SessionInfo]
-ActiveTab=2
+ActiveTab=0
 FrameCount=23
-ActiveFrame=6
+ActiveFrame=14
 
 [Frame0]
 Columns=1
@@ -184,8 +184,8 @@ TopSubLine=0
 [Frame6]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -198,16 +198,16 @@ Class=CLatexEdit
 Document=tex\acronyms.tex
 
 [Frame6_Row0]
-cyCur=554
+cyCur=255
 cyMin=10
 
 [Frame6_Col0]
-cxCur=1583
+cxCur=992
 cxMin=10
 
 [Frame6_View0,0]
-Cursor.row=21
-Cursor.column=45
+Cursor.row=0
+Cursor.column=0
 TopSubLine=0
 
 [Frame7]
@@ -416,8 +416,8 @@ TopSubLine=4
 [Frame14]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -430,17 +430,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame14_Row0]
-cyCur=402
+cyCur=554
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1335
+cxCur=1583
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=44
-Cursor.column=42
-TopSubLine=68
+Cursor.row=62
+Cursor.column=492
+TopSubLine=80
 
 [Frame15]
 Columns=1
@@ -527,7 +527,7 @@ cxMin=10
 [Frame17_View0,0]
 Cursor.row=241
 Cursor.column=418
-TopSubLine=382
+TopSubLine=366
 
 [Frame18]
 Columns=1
@@ -614,7 +614,7 @@ cxMin=10
 [Frame20_View0,0]
 Cursor.row=28
 Cursor.column=38
-TopSubLine=13
+TopSubLine=14
 
 [Frame21]
 Columns=1
