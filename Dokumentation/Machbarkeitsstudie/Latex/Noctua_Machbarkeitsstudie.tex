@@ -32,6 +32,8 @@
 \usepackage{multirow}
 \usepackage{eurosym}
 \usepackage{array}
+\usepackage{capt-of}
+\usepackage{glossaries}
 
 %%-----------------------------------------------------------------------
 % Makro for thick table lines
@@ -219,6 +221,8 @@
 \include{tex/title}
 \frontmatter%   %% front matter will be numbered in small Roman letters
 
+\include{tex/versionierung}%
+
 %%-----------------------------------------------------------------------
 
 
@@ -244,7 +248,7 @@
 \clearpage
 \listoffigures
 \clearpage
-\lstlistoflistings %\listoftables
+% \lstlistoflistings %\listoftables
 \clearpage 
 \markboth{Contents}{Contents}
 
@@ -266,14 +270,15 @@
 
 
 % include chapters
-\include{tex/Einleitung}%
+\include{tex/einleitung}%
 \include{tex/fingrundlagen}%
 \include{tex/voruntersuchung}%
 \include{tex/pfunktionen}%
 \include{tex/tmachbarkeit}%
 \include{tex/wirmachbarkeit}%
 \include{tex/Projektorganisation}%
-
+\include{tex/Projektplanung}%
+\include{tex/management_summary}%
 
 \addcontentsline{toc}{chapter}{Glossary} 
 \printglossary[type=\acronymtype]

@@ -1,68 +1,68 @@
-% !TeX root = ../Noctua_Machbarkeitsstudie.tex
+% !TEX root = ../Noctua_Machbarkeitsstudie.tex
 
 \chapter{Finanzwirtschaftliche Grundlagen} \label{chapter:fingrundlagen}
 
-Aufgabe dieses Kapitels ist es zunächst ein Fundament für die Verständnis dieser Arbeit zu legen und Funktionsweisen, Vorgänge, sowie verschiedene Ansätze zu erläutern.\\
+Aufgabe dieses Kapitels ist es zunächst ein Fundament für das Verständnis dieser Arbeit zu legen und Funktionsweisen, Vorgänge sowie verschiedene Ansätze zu erläutern.\\
 
 \section{Börse}
 
-Eine Börse ist ein Handelsmarkt auf dem sich Preise durch Angebot und Nachfrage von Handelspartners bilden und Handel nicht direkt zwischen Käufern und Verkäufern, sondern über berechtigte Händler, abgewickelt wird. Wichtig ist dabei, dass immer für ausreichend Liquidität gesorgt werden muss, so dass jederzeit Wertpapiere gekauft und auch verkauft werden können.\\
-	Handelsvorgänge oder \emph{Trades} resultieren aus einer Erwartungshaltung der Marktteilnehmer. \cite{boerse-wien-funktion} \cite{boerse-frankfurt-funktion} 
-Unter der Annahme von steigenden Kursen werden Einheiten gekauft, i.e. es wird \emph{long} gegangen, werden fallende Kurse erwartet, werden entweder existierende Stückzahlen verkauft oder es wird sogar ein Leerverkauf getätigt, i.e. eine \emph{short}-Position eröffnet. Damit wird der Verkauf von geborgten Wertpapieren bezeichnet, die zu einem späteren Zeitpunkt beim Schließen der short-Position erst gekauft werden. Sinken die Kurse dazwischen wird daher zu einem höheren Preis verkauft, als später gekauft wird und es entsteht die Differenz als Gewinn. \cite{gabler-leerverkauf}\\
-	Wollen mehr Handelsteilnehmer oder \emph{Trader} kaufen, als verkaufen steigt der Preis aufgrund der hohen Nachfrage, man spricht auch von einem Bullenmarkt. \cite{duden-bullenmarkt}
-Ist es andersherum so, dass die Verkäufer überwiegen und der Preis sinkt handelt es sich um einen Bärenmarkt. \cite{duden-baerenmarkt}\\
+Eine Börse ist ein Handelsmarkt, auf dem sich Preise durch Angebot und Nachfrage von Handelspartnern bilden und der Handel nicht direkt zwischen Käufern und Verkäufern, sondern über berechtigte Händler abgewickelt wird. Wichtig ist dabei, dass immer für ausreichend Liquidität gesorgt werden muss, so dass jederzeit Wertpapiere gekauft und auch verkauft werden können.\\
+	Handelsvorgänge oder \emph{Trades} resultieren aus einer Erwartungshaltung der Marktteilnehmer.  \cite{boerse-wien-funktion} \cite{boerse-frankfurt-funktion}
+Unter der Annahme von steigenden Kursen werden Einheiten gekauft, i.e. es wird \emph{long} gegangen, werden fallende Kurse erwartet, werden entweder existierende Stückzahlen verkauft oder es wird sogar ein Leerverkauf getätigt, i.e. eine \emph{short}-Position eröffnet. Damit wird der Verkauf von geborgten Wertpapieren bezeichnet, die zu einem späteren Zeitpunkt beim Schließen der short-Position erst gekauft werden. Sinken die Kurse dazwischen, wird daher zu einem höheren Preis verkauft als später gekauft wird und es entsteht die Differenz als Gewinn. \cite{gabler-leerverkauf}\\
+	Wollen mehr Handelsteilnehmer oder \emph{Trader} kaufen als verkaufen, steigt der Preis aufgrund der hohen Nachfrage, man spricht auch von einem Bullenmarkt. \cite{duden-bullenmarkt}
+Ist es andersherum so, dass die Verkäufer überwiegen und der Preis sinkt, handelt es sich um einen Bärenmarkt. \cite{duden-baerenmarkt}\\
 \\
 
 \section{Preise}
 
-Für jedes Wertpapier wird ein sogenanntes Orderbuch geführt, das die aktuellen Kauf- und Verkaufaufträge beinhaltet. Investoren interessieren sich meist für die sogenannte Quote-Zeile, die Informationen zu den günstigsten Konditionen sowohl auf Käufer-, als auch auf Verkäuferseite bietet.\\
+Für jedes Wertpapier wird ein sogenanntes Orderbuch geführt, das die aktuellen Kauf- und Verkaufsaufträge beinhaltet. Investoren interessieren sich meist für die sogenannte Quote-Zeile, die Informationen zu den günstigsten Konditionen sowohl auf Käufer- als auch auf Verkäuferseite bietet.\\
 	Eine Quote-Zeile von Apple (AAPL) könnte dabei folgendermaßen aussehen.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline 
 Bid & Bid Size & Ask & Ask Size \\ \hline
-691.52 & 700 & 691.66 & 300 \\ \hline
+691.52 & 7 & 691.66 & 3 \\ \hline
 \end{tabular}
 \end{center}
 
 Der Bid-Preis von \textdollar{691.52} ist das höchste vorhandene Gebot für eine Apple-Aktie. Die Bid-Size gibt die Information über die Anzahl an Aktien, die Käufer zu diesem Preis erstehen wollen. Die Anzahl wird in \emph{round lots} angegeben; meist entspricht ein round lot 100 Stück der Aktie. Die Bid-Seite beschreit somit die Käuferseite.\\
-Der Ask-Preis und die Ask-Size beschreibt hingegen das beste Angebot auf der Verkäuferseite. In diesem Fall werden 300 round lots für den Stückpreis von \textdollar{691.66} angeboten.\\
-	Soll ein Handel so schnell als möglich abgewickelt werden muss zum Ask-Preis gekauft und zum Bid-Preis verkauft werden. In diesem Fall verändert sich die Quote-Zeile so, dass der nächstbeste Auftrag angezeigt wird. Diese Hintereinanderreihung von Angeboten wird auch als Orderbuchtiefe bezeichnet.\\
-	Angenommen ein Käufer ist nicht bereit zum aktuellen Ask-Preis zu kaufen. Er will bessere Konditionen und schickt eine \emph{Limit-Order}, d.h. zu gegebenem Preis oder besser \footnote{IB-Ordertypen siehe: http://www.interactivebrokers.com/de/p.php?f=orderTypes}, mit einem Limit, das zwischen Ask- und Bid-Preis liegt. Sein Kaufgebot ist damit höher als der zuvor höchste und wird daher sofort in der Quote-Zeile auf der Bid-Seite angezeigt.\\
+Der Ask-Preis und die Ask-Size beschreibt hingegen das beste Angebot auf der Verkäuferseite. In diesem Fall werden 3 round lots für den Stückpreis von \textdollar{691,66} pro Aktie angeboten. Ein round lot würde in diesem Fall also \textdollar{69166,00} kosten.\\
+	Soll ein Handel so schnell wie möglich abgewickelt werden muss zum Ask-Preis gekauft und zum Bid-Preis verkauft werden. In diesem Fall verändert sich die Quote-Zeile so, dass der nächstbeste Auftrag angezeigt wird. Diese Hintereinanderreihung von Angeboten wird auch als Orderbuchtiefe bezeichnet.\\
+	Angenommen, ein Käufer ist nicht bereit zum aktuellen Ask-Preis zu kaufen. Er will bessere Konditionen und schickt eine \emph{Limit-Order}, d.h. zu gegebenem Preis oder besser\footnote{IB-Ordertypen siehe: http://www.interactivebrokers.com/de/p.php?f=orderTypes}, mit einem Limit, das zwischen Ask- und Bid-Preis liegt. Sein Kaufgebot ist damit höher als der zuvor höchste und wird daher sofort in der Quote-Zeile auf der Bid-Seite angezeigt.\\
 \\
 Der Aktienkurs wird mithilfe dieser vorhandenen Orders so gebildet, dass stets der höchste Umsatz entsteht.
 \cite{charttec-kursfeststellung}
 
 \section{Markt}
 
-Aktienpreise setzten sich vollständig durch Angebot und Nachfrage zusammen. Nachfrage entsteht wenn Handelsteilnehmer annehmen, dass die Preise steigen, Angebot durch die Erwartung von negativen Kursveräufen.\\
+Aktienpreise setzen sich vollständig aus Angebot und Nachfrage zusammen. Nachfrage entsteht, wenn Handelsteilnehmer annehmen, dass die Preise steigen, Angebot durch die Erwartung von negativen Kursverläufen.\\
 	Diese Annahmen beruhen auf einer Vielzahl von Informationen, die zur Verfügung stehen. Somit haben diese Informationen einen direkten Einfluss auf die Aktienkurse. Veröffentlicht ein Unternehmen seine Bilanz und fallen darin die Gewinne höher aus als erwartet, wird die Aktie aufgrund dieser Information steigen. Die Preise reflektieren aber nicht nur realisierte Gewinne, sondern auch potentielle zukünftige. Wären in der Theorie alle möglichen Informationen allen Handelsteilnehmern bekannt, würde sich der Kurs nur mehr durch das Auftauchen von neuen Informationen verändern. In der Praxis verhält es sich anders, da weder alle Informationen vorhanden sind, noch Handelsteilnehmer absolut rational agieren.\\
 Diese in den 1960ern entwickelte Theorie wird als \emph{Efficient Market Hypothesis} bezeichnet und besagt kurzgefasst, dass Marktpreise alle verfügbaren Informationen vollständig widerspiegeln.\\
-	Außer der Schlussfolgerung, dass Nachrichten und Ereignisse für Preisentwicklungen höchst relevant sind, lässt sich ebenfalls folgern, dass positive Informationen, z.B. eine Wachstumsprognose, keinen Kursanstieg bedeuten muss, weil diese schon in dem aktuellen Marktpreis inbegriffen sein kann. \cite{lo-efficient-market-hypothesis}\\
-	Unter der Prämisse, dass die Efficient Market Hypothesis uneingeschränkte Gültigkeit besitzt, lässt sich außerdem deduzieren, dass Preise nicht vorhergesehen werden können. Wäre dies nämlich der Fall und könnte jeder Markteilnehmer Preise beliebig genau vorhersagen, wäre niemand bereit unter dem vorhergesagten Preis zu verkaufen und niemand würde darüber Kaufen. Daraus resultiert eine sofortiger Sprung auf den vorhergesagten Preis. Da nur neue Informationen, die \emph{noch nicht bekannt sind} das Preisniveau verändern, sind folglich auch die Preise noch nicht bekannt. \cite{bodie-investments}
+	Außer der Schlussfolgerung, dass Nachrichten und Ereignisse für Preisentwicklungen höchst relevant sind, lässt sich ebenfalls folgern, dass positive Informationen, z.B. eine Wachstumsprognose, keinen Kursanstieg bedeuten müssen, weil diese Informationen schon in dem aktuellen Marktpreis inbegriffen sein können. \cite{lo-efficient-market-hypothesis}\\
+	Unter der Prämisse, dass die Efficient Market Hypothesis uneingeschränkte Gültigkeit besitzt, lässt sich außerdem deduzieren, dass die Preise nicht vorhersehbar sind. Wäre dies nämlich der Fall und könnte jeder Markteilnehmer die Preise beliebig genau vorhersagen, wäre niemand bereit, unter dem vorhergesagten Preis zu verkaufen und niemand würde darüber kaufen. Daraus resultiert, dass der Aktienmarkt den vorhergesagten Preis fixiert. Da nur neue Informationen, die \emph{noch nicht bekannt sind}, das Preisniveau verändern, sind folglich auch die Preise noch nicht bekannt. \cite{bodie-investments}
 \\
-Da ein Marktpreis bei erhöhter Nachfrage steigt, ist es für Aktienanleger sinnvoll Geld dort anzulegen, wo auch andere investieren. Gewinn liegt daher darin herauszufinden was die Mehrheit oder der Markt denkt und nicht in der persönlichen Einschätzung der Information. John Maynard Keynes beschreibt diese Theorie schon 1936 in seiner \emph{General Theory}.\\
-	In dieser Theorie lässt sich eine Rückkopplung an Information erahnen. Nicht nur die ursprüngliche Information selbst spielt eine Rolle, sonder auch die Reaktion darauf, im Falle von Aktien also die Kursentwicklung. Dieser iterative Prozess benötigt aufgrund von menschlichem Handeln aber auch seine Zeit. Dadurch entstehen durch Kursschwankungen und die verursachten Reaktionen Trendbewegungen in den Märkten. Erst durch diesen, eigentlich psychologischen Effekt, funktionieren Charttechniken und technische Analysen.\\
-	Für jene, die sich zusätzlich noch mit makroökonomischen Zusammenhängen befassen besteht trotzdem weiterhin ein Vorteil. Marktrückkopplungen unterliegen einem "`Herdentrieb"' und können zu Spekulationsblasen führen. Übergeordnete Vorgänge können somit frühzeitige Hinweise liefern und bei der korrekten Interpretation von den resultierenden Kursverläufen helfen. \cite{singer-herdentrieb}
+Da ein Marktpreis bei erhöhter Nachfrage steigt, ist es für Aktienanleger sinnvoll, Geld dort anzulegen, wo auch andere investieren. Gewinn liegt daher darin, herauszufinden, was die Mehrheit oder der Markt denkt und nicht in der persönlichen Einschätzung der Information. John Maynard Keynes beschreibt diese Theorie schon 1936 in seiner \emph{General Theory}.\\
+	In dieser Theorie lässt sich eine Rückkopplung zur Information erahnen. Nicht nur die ursprüngliche Information selbst spielt eine Rolle, sondern auch die Reaktion darauf, im Falle von Aktien also die Kursentwicklung. Dieser iterative Prozess benötigt aufgrund von menschlichem Handeln aber auch seine Zeit. Deshalb entstehen durch Kursschwankungen und die verursachten Reaktionen Trendbewegungen in den Märkten. Erst durch diesen eigentlich psychologischen Effekt funktionieren Charttechniken und technische Analysen.\\
+	Für jene, die sich zusätzlich noch mit makroökonomischen Zusammenhängen befassen, besteht trotzdem weiterhin ein Vorteil. Marktrückkopplungen unterliegen einem "`Herdentrieb"' und können zu Spekulationsblasen führen. Übergeordnete Vorgänge können somit frühzeitige Hinweise liefern und bei der korrekten Interpretation der resultierenden Kursverläufe helfen. \cite{singer-herdentrieb}
 
 \subsection{Marktzustände}
 
-Um die Performance von Trendfolgemethoden zu optimieren sollen verschiedene \emph{Marktzustände} unterschieden werden, die sich auf den Kursverlauf auswirken. Zu diesem Zweck können diverse Kriterien untersucht werden. Angefangen bei längeren Trendverläufen, die nicht zum aktiven Handel genutzt werden, über Währungswechselkurse bis zu Zinssätzen.\\
-	Beispielsweise könnte sich herausstellen, dass bei einem langfristigen Aufwärtstrend bei Kaufsignalen die long-Positionen immer größer ausfallen sollten, als die short-Positionen bei Verkaufssignalen oder dass erhöhte Volatilität und steigende Zinsen einen Kurseinbruch ankündigen.
+Um die Performance von Trendfolgemethoden zu optimieren, sollen verschiedene \emph{Marktzustände} unterschieden werden, die sich auf den Kursverlauf auswirken. Zu diesem Zweck können diverse Kriterien untersucht werden. Angefangen bei längeren Trendverläufen, die nicht zum aktiven Handel genutzt werden, über Währungswechselkurse bis zu Zinssätzen.\\
+	Beispielsweise könnte sich herausstellen, dass bei einem langfristigen Aufwärtstrend bei Kaufsignalen die long-Positionen immer größer ausfallen sollten als die short-Positionen bei Verkaufssignalen oder dass erhöhte Volatilität und steigende Zinsen einen Kurseinbruch ankündigen.
 
-\section{Trends und Gleitende Durchschnitte}
+\section{Trends und gleitende Durchschnitte}
 
 \subsection{Trends}
 
-Bei der Trendbestimmung in Börsenkursen gelten gleitende Durchschnitte, oder \glspl{ma}, als ein beliebtes Mittel und infolge dessen häufig genutzter Indikator. Die klassische Technische Analyse ist oft subjektiv und unterliegt einem gewissen Interpretationsspielraum, während \glspl{ma} für algorithmische Handelssysteme klare Entscheidungen generieren können.\\
-	 Ein \gls{ma} ist wie das zweite Wort bereits verrät eine Art statistischer Durschnitt von einer Reihe von Werten. \emph{Gleitend} oder \emph{moving} bedeutet, dass nicht alle historischen Daten in die Durchschnittsberechnung einfließen, sondern nur eine beschränkte Anzahl der vergangenen Daten. Zur Berechnung von diversen \glspl{ma} gibt es unterschiedliche Varianten zur Wahl der verwendeten Rohdaten. Klassischerweise werden Schlusskurse zur \gls{ma}-Berechnung verwendet, wobei manche Trader es vorziehen, Open- oder Mittelwerte aus Open- und Close heranzuziehen. Eine weitere Variante ist eine separate Berechnung von \glspl{ma} für High- und Low-Kurse, wodurch ein Band entsteht, das einen Art Neutralbereich anzeigt, der beispielsweise als Signalfilter verwendet werden kann.\\
-	Prinzipbedingt sind alle \glspl{ma} Trendfolgeindikatoren, sie antizipieren keine zukünftigen Kursveränderungen, wie viele Methoden der Technischen Analyse, sondern reagieren nur auf bereits stattgefundene Trendwenden.\\
+Bei der Trendbestimmung in Börsenkursen gelten gleitende Durchschnitte, oder \glspl{ma}, als ein beliebtes Mittel und infolge dessen häufig genutzter Indikator. Die klassische technische Analyse ist oft subjektiv und unterliegt einem gewissen Interpretationsspielraum, während \glspl{ma} für algorithmische Handelssysteme klare Entscheidungen generieren können.\\
+	 Ein \gls{ma} ist wie das zweite Wort bereits verrät eine Art statistischer Durschnitt einer Reihe von Werten. \emph{Gleitend} oder \emph{moving} bedeutet, dass nicht alle historischen Daten in die Durchschnittsberechnung einfließen, sondern nur eine beschränkte Anzahl der vergangenen Daten. Zur Berechnung von diversen \glspl{ma} gibt es unterschiedliche Varianten zur Wahl der verwendeten Rohdaten. Klassischerweise werden Schlusskurse zur \gls{ma}-Berechnung verwendet, wobei manche Trader es vorziehen, Open- oder Mittelwerte aus Open- und Close heranzuziehen. Eine weitere Variante ist eine separate Berechnung von \glspl{ma} für High- und Low-Kurse, wodurch ein Band entsteht, das einen Art Neutralbereich anzeigt, der beispielsweise als Signalfilter verwendet werden kann.\\
+	Prinzipiell sind alle \glspl{ma} Trendfolgeindikatoren, sie antizipieren keine zukünftigen Kursveränderungen, so wie viele Methoden der technischen Analyse, sondern reagieren nur auf bereits stattgefundene Trendwenden.\\
 
 \subsection{Simple Moving Average}
 
 Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten ein arithmetischer Mittelwert berechnet. Soll aus einer Reihe von Close-Kursen ein 10-Tages-\gls{sma} berechnet werden, werden dazu die letzten 10 Schlusskurse addiert und anschließend durch 10 dividiert um einen Wert zu erhalten. Für den folgenden Mittelwert wird der älteste subtrahiert, ein weiterer neuer Wert addiert und die Summe anschließend wieder für einen Mittelwert durch 10 dividiert. Auf diese Weise entsteht ein geglätteter Kurs, der kurzzeitige Preisveränderungen abschwächt, wodurch Trends klarer erkennbar werden.\\
-	2 häufig kritisierte Eigenschaften des \gls{sma} sind, dass erstens nicht alle vorhandenen Daten in die Berechnung miteinbezogen werden und zweitens alle verwendeten Kursdaten mit gleicher Gewichtung in das Resultat eingehen. Bei einem 10-Tage-\gls{sma} hat jeder Kurswert, unabhängig vom Alter, eine Gewichtung von 10\%, bei einem 20-Tage-\gls{sma} 5\%.
+	Zwei häufig kritisierte Eigenschaften des \gls{sma} sind, dass erstens nicht alle vorhandenen Daten in die Berechnung miteinbezogen werden und zweitens alle verwendeten Kursdaten mit gleicher Gewichtung in das Resultat eingehen. Bei einem 10-Tage-\gls{sma} hat jeder Kurswert, unabhängig vom Alter, eine Gewichtung von 10\%, bei einem 20-Tage-\gls{sma} 5\%.
 
 \begin{equation}
 	\label{Simple Moving Average}
@@ -71,7 +71,7 @@ Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten
 
 \subsection{Linear Weighted Moving Average}
 
-Um eines der Probleme des \gls{sma} zu vermeiden, und zwar die gleiche Gewichtung von allen Daten über die Zeit, kann ein \gls{lwma} verwendet werden. Dabei werden Daten zu früheren Zeitpunkten geringer gewichtet, als aktuellere Daten. Konkret wird der neueste Eintrag mit $n$ multipliziert, der davor mit $n-1$ und so weiter bis der letzte den Multiplikationsfaktor 1 erhält. Die daraus gebildete Summe muss anschließend noch durch die Summe der Multiplikatoren dividiert werden, um einen Durchschnitt zu erhalten. Bei einem 10-Tage-\gls{lwma} werden die Kursdaten von neu nach alt mit $10, 9, 8, 7,\dots, 1$ multipliziert und die anschließend gebildete Summe durch $10+9+8+7+\dots+1$ dividiert.
+Um eines der Probleme des \gls{sma} zu vermeiden, nämlich die gleiche Gewichtung aller Daten über die Zeit, kann ein \gls{lwma} verwendet werden. Dabei werden Daten zu früheren Zeitpunkten geringer gewichtet, als aktuellere Daten. Konkret wird der neueste Eintrag mit $n$ multipliziert, der davor mit $n-1$ und so weiter bis der letzte den Multiplikationsfaktor 1 erhält. Die daraus gebildete Summe muss anschließend noch durch die Summe der Multiplikatoren dividiert werden, um einen Durchschnitt zu erhalten. Bei einem 10-Tage-\gls{lwma} werden die Kursdaten von neu nach alt mit $10, 9, 8, 7,\dots, 1$ multipliziert und die anschließend gebildete Summe durch $10+9+8+7+\dots+1$ dividiert.
 
 \begin{equation}
 	\label{Linear Weighted Moving Average}
@@ -80,7 +80,7 @@ Um eines der Probleme des \gls{sma} zu vermeiden, und zwar die gleiche Gewichtun
 
 \subsection{Exponential Moving Average}
 
-Der \gls{ema} versucht beide Hauptkritikpunkte am \gls{sma} zu lösen, indem er neuere Werte immer stärker gewichtet und alle zur Verfügung stehenden Daten in die Berechnung miteinbezieht. Man spricht auch vom exponentiell geglätteten gleitenden Durchschnitt. Dazu muss ein \emph{\gls{sf}}, auch Glättungsfaktor genannt, zwischen 0 und 1 gewählt werden mit dem der neueste Wert multipliziert wird. Der zuvorige Wert wird mit der Differenz des \gls{sf} und 1 multipliziert. Der aktuelle \gls{ema} ergibt sich dann aus der Addition dieser beiden gewichteten Werte. Dadurch bleibt jeder Kurswert unendlich lange in der zukünftigen Berechnung bestehen, dessen Bedeutung konvergiert aber gegen 0. Aus ebendiesem Grund handelt es sich mathematisch rigoros betrachtet bei dem \gls{ema} nicht wirklich um einen \emph{moving} average, da sich der Wertebereich nicht verschiebt, sondern immer alle Werte verwendet werden. \cite{klinker-exponential-2011}
+Der \gls{ema} versucht beide Hauptkritikpunkte am \gls{sma} zu lösen, indem er neuere Werte immer stärker gewichtet und alle zur Verfügung stehenden Daten in die Berechnung miteinbezieht. Man spricht auch vom exponentiell geglätteten gleitenden Durchschnitt. Dazu muss ein \emph{\gls{sf}}, auch Glättungsfaktor genannt, zwischen 0 und 1 gewählt werden, mit dem der neueste Wert multipliziert wird. Der vorherige Wert wird mit der Differenz des \gls{sf} zu 1 multipliziert. Der aktuelle \gls{ema} ergibt sich dann aus der Addition dieser beiden gewichteten Werte. Dadurch bleibt jeder Kurswert unendlich lange in der weiteren Berechnung bestehen, die Bedeutung des Kurswerts konvergiert aber gegen 0. Aus ebendiesem Grund handelt es sich mathematisch rigoros betrachtet bei dem \gls{ema} nicht wirklich um einen \emph{moving} average, da sich der Wertebereich nicht verschiebt, sondern immer alle Werte verwendet werden. \cite{klinker-exponential}
 	Dies beschreibt eine rekursive Vorgangsweise; anders wäre es auch möglich mit dem ältesten (bzw. zweitältesten) Wert zu beginnen und die Berechnung bis zum neuesten fortzusetzen.
 Die folgende Formel soll die Berechnung des exponentiell geglätteten Preises $P^{*}_t$ zum Zeitpunkt $t$ verdeutlichen. Dabei ist $\alpha$ der \gls{sf} und $P^{*}_{t-1}$ der exponentiell geglättete Preis zum Zeitpunkt $t-1$.
 
@@ -89,12 +89,12 @@ Die folgende Formel soll die Berechnung des exponentiell geglätteten Preises $P^
 	P^{*}_t = \alpha * P_{t} + (1 - \alpha) * P^{*}_{t-1}
 \end{equation}
 
-\cite{murphy-technische-2004}
+\cite{murphy-technische}
 \\
 \\
-Um den Lag, also das hinterherhinken hinter dem tatsächlichen Kurs zu reduzieren gibt es die Möglichkeit neue Daten noch stärker zu gewichten, als bei einem normalen \gls{ema}.
-1994 von Patrick Mulloy eingeführt, schaffen sowohl der \gls{dema} als auch der noch stärker neue Daten gewichtende \gls{tema}, bei dieser Problematik Abhilfe.
-Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berechneten \gls{ema} vorstellen. Das würde zu einer ungewünschten starken Abwertung aktueller Daten führen, wie an den Gewichtungsgraphen in Abbildung \ref{wrong_dema_tema} zu sehen ist. Tatsächlich wird der \gls{dema} aus einer Zusammensetzung aus einem einfachen und einem doppelten \gls{ema} berechnet, wodurch ein neuer \gls{ma} entsteht mit weniger Lag als jede der Komponenten. \cite{mulloy-smoothing-1994}
+Um den Lag, also das Hinterherhinken hinter dem tatsächlichen Kurs, zu reduzieren, gibt es die Möglichkeit neue Daten noch stärker zu gewichten als bei einem normalen \gls{ema}.
+1994 von Patrick Mulloy eingeführt, schaffen sowohl der \gls{dema} als auch der noch stärker neue Daten gewichtende \gls{tema} bei dieser Problematik Abhilfe.
+Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berechneten \gls{ema} vorstellen. Das würde zu einer ungewünschten starken Abwertung aktueller Daten führen, wie an den Gewichtungsgraphen in Abbildung \ref{fig:wrong_dema_tema} zu sehen ist. Tatsächlich wird der \gls{dema} aus einer Zusammensetzung aus einem einfachen und einem doppelten \gls{ema} berechnet, wodurch ein neuer \gls{ma} entsteht mit weniger Lag als jede der Komponenten. \cite{mulloy-smoothing}
 
 \begin{equation}
 	\label{Double Exponential Moving Average}
@@ -126,7 +126,7 @@ Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berech
 
 \subsection{Momentum}
 
-Das Momentum ist ein Oszillator, der die Kurssteigung über einen gewissen Zeitraum angibt. Aus der Differenz des Preises zum Zeitpunkt $t$ und des Preises vor $n$ Perioden ergibt sich eine einfach zu interpretierende Anzeige für die Stärke eines Trends. Aus einem 10-Tage-Momentum ist ablesbar, ob der Kurs aktuell höher notiert, als noch vor 10 Tagen. Wenn das Momentum von einer Position unter 0 bis zur Nullposition ansteigt ist ersichtlich, dass die Stärke eines aktueller Abwärtstrend abnimmt, wobei der Trend immer noch abwärts gerichtet sein kann. Er wird nur nicht mehr stärker. Erst bei einem positiven Wert des Momentum ist ein Aufwärtstrend zu erkennen.\\
+Das Momentum ist ein Oszillator, der die Kurssteigung über einen gewissen Zeitraum angibt. Aus der Differenz des Preises zum Zeitpunkt $t$ und des Preises vor $n$ Perioden ergibt sich eine einfach interpretierbare Anzeige für die Stärke eines Trends. Aus einem 10-Tage-Momentum ist ablesbar, ob der Kurs aktuell höher notiert, als noch vor 10 Tagen. Wenn das Momentum von einer Position unter 0 bis zur Nullposition ansteigt, ist ersichtlich, dass die Stärke eines aktuellen Abwärtstrends abnimmt, wobei der Trend immer noch abwärts gerichtet sein kann. Er wird nur nicht mehr stärker. Erst bei einem positiven Wert des Momentum ist ein Aufwärtstrend zu erkennen.\\
 	Der große Vorteil dieses Indikators liegt in der Frühzeitigkeit seiner Anzeige. Bevor sich der Trend umkehrt, zeigt der Momentum-Oszillator bereits an, dass eine Trendwechsel bevorstehen könnte, aufgrund der abnehmenden Stärke des aktuellen Trends.
 
 \begin{equation}
@@ -144,14 +144,14 @@ Der \gls{rsi} gibt ähnliche Informationen, wie das Momentum, schafft aber Abhilf
 	RSI_t = 100 - \frac{1}{1 + RS_t}
 \end{equation}
 
-$RS_t$ ist in der Formel \ref{equ:rsi} die relative Stärke (relative strength) und wird berechnet aus dem Durchschnitt der Schlusskurse von $n$ Tagen mit steigenden Kursen, dividiert durch den Durchschnitt der Schlusskurse von $n$ Tagen mit fallenden Kursen.\\
-	Der Erfinder sah ursprünglich eine Zeitperiode von $n = 14 Tage$ vor, wobei aber für unterschiedliche Volatilität auch andere Parameter gewählt werden können. Interessant ist der \gls{rsi}, wenn er im Vorhinein festgelegt Level überschreitet. Diese sind standardmäßig bei 70 und 30 für Überkauft- und Überverkauft-Level, können aber beispielsweise als Anpassung für Bullenmärkte auf 80 oder für Bärenmärkte auf 20 verändert werden.
+$RSI_t$ ist in der Formel \ref{equ:rsi} die relative Stärke (relative strength) und wird berechnet aus dem Durchschnitt der Schlusskurse von $n$ Tagen mit steigenden Kursen, dividiert durch den Durchschnitt der Schlusskurse von $n$ Tagen mit fallenden Kursen.\\
+	Der Erfinder sah ursprünglich eine Zeitperiode von $n = 14$ Tagen vor, wobei aber für unterschiedliche Volatilität auch andere Parameter gewählt werden können. Interessant ist der \gls{rsi}, wenn er im Vorhinein festgelegte Level überschreitet. Diese sind standardmäßig bei 70 und 30 für die Überkauft- und Überverkauft-Level, können aber beispielsweise als Anpassung für Bullenmärkte auf 80 oder für Bärenmärkte auf 20 verändert werden.
 
 \subsection{Aroon}
 
-Der 1995 von Tushar S. Chande entwickelte Aroon ist ein zweigeteilter Trendindikator, der zwar nicht die Stärke eines Trends anzeigt, aber gut die Marktlage erfasst. So kann beispielsweise erkannt werden, ob es sich um eine Trend- oder eher um eine Seitwärtsphase handelt. Die Signale sind dabei sehr einfach abzulesen und fluktuieren sehr wenig, da die Trendstärke, wie bereits erwähnt, nicht direkt erfasst wird, sondern nur zeitlich, sodass ein Verlust des Momentums feststellbar wird. Die Stärke des Indikators ist es, schnell einen Trendwechsel bzw. Marktzustandswandel anzuzeigen. Die klaren Signale eignen sich außerdem gut für algorithmische Handelssysteme, wenn die Stärke des Trends durch eine andere Komponente erfasst wird.\\
+Der 1995 von Tushar S. Chande entwickelte Aroon ist ein zweigeteilter Trendindikator, der zwar nicht die Stärke eines Trends anzeigt, aber gut die Marktlage erfasst. So kann beispielsweise erkannt werden, ob es sich um eine Trend- oder eher um eine Seitwärtsphase handelt. Die Signale sind dabei sehr einfach abzulesen und fluktuieren sehr wenig, da die Trendstärke, wie bereits erwähnt, nicht direkt erfasst wird, sondern nur zeitlich, sodass ein Verlust des Momentums feststellbar wird. Die Stärke dieses Indikators ist es, schnell einen Trendwechsel bzw. Marktzustandswandel anzuzeigen. Die klaren Signale eignen sich außerdem gut für algorithmische Handelssysteme, wenn die Stärke des Trends durch eine andere Komponente erfasst wird.\\
 	Aroon besteht aus einem Aroon-Up und einem Aroon-Down, die jeweils die vergange Zeit zu einem Kursextrem anzeigen und zwischen 0 und 100 variieren. Bei einem 14-Tage-Aroon hat der Aroon-Up bei einem aktuellen 14-Tages-Hoch einen Wert von 100.\\
-	Zur Interpretation ist eine Signallinie sehr wichtig, die von Chande bei einem Wert von 75 angesetzt wurde, aus anderen Quellen sind auch Werte um die 90 zu finden. Liegt der Aroon-Up über dem Aroon-Down und steigt zusätzlich noch über die Signallinie ist dies als Aufwärtstrend zu identifizieren. Da der Indikator häufig kurzfristig unter die Signallinie fällt (s. \ref{fig:aroon}), ist es noch nicht ratsam zu diesem Zeitpunkt die Positionen zu liquidieren, sondern noch zu warten bis sich die Up- und Down-Linien ebenfalls überkreuzen.\\
+	Zur Interpretation ist eine Signallinie sehr wichtig, die von Chande bei einem Wert von 75 angesetzt wurde, in anderen Quellen sind auch Werte um die 90 zu finden. Liegt der Aroon-Up über dem Aroon-Down und steigt zusätzlich noch über die Signallinie ist dies als Aufwärtstrend zu identifizieren. Da der Indikator häufig kurzfristig unter die Signallinie fällt (s. \ref{fig:aroon}), ist es nicht ratsam die Positionen zu diesem Zeitpunkt zu liquidieren, sondern noch zu warten bis sich die Up- und Down-Linien ebenfalls überkreuzen.\\
 	Ein Seitwärtstrend wird angezeigt, wenn sich Aroon-Up und -Down unter der Signallinie befinden, was bei liquiden Positionen nur kurzfristig auftritt. \cite{charttec-aroon}\\
 
 \begin{figure}
@@ -161,7 +161,7 @@ Der 1995 von Tushar S. Chande entwickelte Aroon ist ein zweigeteilter Trendindik
 	\label{fig:aroon}
 \end{figure}
 
-Die Berechnung des Aroon-Up und Aroon-Down ist mit den folgenden Formeln beschrieben. Wobei $high_{n+1}$ in \ref{Aroon-Up} die Zeit seit dem höchstem Hoch innerhalb von $n+1$ Perioden und $low_{n+1}$ in \ref{Aroon-Down} die Zeit seit dem tiefstem Tief innerhalb von $n+1$ Perioden bezeichnet.
+Die Berechnung des Aroon-Up und Aroon-Down sind mit den folgenden Formeln beschrieben. Wobei $high_{n+1}$ in \ref{Aroon-Up} die Zeit seit dem höchstem Hoch innerhalb von $n+1$ Perioden und $low_{n+1}$ in \ref{Aroon-Down} die Zeit seit dem tiefstem Tief innerhalb von $n+1$ Perioden bezeichnet.
 
 \begin{equation}
 	\label{Aroon-Up}
@@ -175,9 +175,9 @@ Die Berechnung des Aroon-Up und Aroon-Down ist mit den folgenden Formeln beschri
 
 \subsection{Commodity Channel Index}
 
-Entwickelt wurde der \gls{cci}, wie der Name bereits andeutet, für Commodities, also Handelsgüter, kann aber ebenso gut für Wertpapiere und Derivate verwendet werden. Im Prinzip ist er ein Trendfolger, der sowohl Momentum, als auch Preis berücksichtigt.
-Der \gls{cci} zeigt den Handelspreis im Verhältnis zu einem \gls{ma} über eine bestimmte Zeitdauer und wurde vom Erfinder Donald R. Lambert mithilfe eines Divisors, der auf der Standardabweichung basiert, normalisiert. Daher bewegt sich der \gls{cci} meist zwischen den Werten -100 und +100. Wenn sich der Preis stärker verändert als es im Zeitraum des \gls{ma} bereits passiert ist, bewegt sich der \gls{cci} über diese Grenzen hinweg. Vom Erfinder wurde eine long-Position bei Werten über +100 und eine short-Position unter -100 empfohlen. Heutzutage benutzen viele Trader diese Grenzen in umgekehrter Manier als Support- und Resistance-Level, wodurch sie bevor sich ein Trend umkehrt auf einen möglichen Umschwung hingewiesen werden. Solange sich der \gls{cci} zwischen den beiden signifikanten Werten bewegt spricht man von einem trendlosen Markt.\\
-	Berechnet wird der CCI, indem vom typischen Preis (s. \ref{typical_price}) der \gls{sma} abgezogen wird und die Differenz, wie in Formel \ref{cci} beschrieben, durch die Standardabweichung dividiert wird. Der Gewichtungsfaktor von $\frac{1}{0.015}$ wird gewählt damit die Hauptzahl der Werte zwischen -100 und 100 liegt. Zeigt der \gls{cci} in eine inverse Richtung zum \gls{ma}, deutet diese Divergenz auf einen instabilen Markt. Es könnte ein Trendwechsel bevorstehen.
+Entwickelt wurde der \gls{cci}, wie der Name bereits andeutet, für Commodities, also Handelsgüter, er kann aber ebenso gut für Wertpapiere und Derivate verwendet werden. Im Prinzip ist er ein Trendfolger, der sowohl Momentum als auch Preis berücksichtigt.
+Der \gls{cci} zeigt den Handelspreis im Verhältnis zu einem \gls{ma} über eine bestimmte Zeitdauer an und wurde vom Erfinder Donald R. Lambert mithilfe eines Divisors, der auf der Standardabweichung basiert, normalisiert. Daher bewegt sich der \gls{cci} meist zwischen den Werten -100 und +100. Wenn sich der Preis stärker verändert als es im Zeitraum des \gls{ma} bereits passiert ist, bewegt sich der \gls{cci} über diese Grenzen hinweg. Vom Erfinder wurde eine long-Position bei Werten über +100 und eine short-Position unter -100 empfohlen. Heutzutage benutzen viele Trader diese Grenzen in umgekehrter Manier als Support- und Resistance-Level, wodurch sie bevor sich ein Trend umkehrt auf einen möglichen Umschwung hingewiesen werden. Solange sich der \gls{cci} zwischen den beiden signifikanten Werten bewegt, spricht man von einem trendlosen Markt.\\
+	Berechnet wird der CCI, indem vom typischen Preis (s. \ref{typical_price}) der \gls{sma} abgezogen wird und die Differenz, wie in Formel \ref{cci} beschrieben, durch die Standardabweichung dividiert wird. Der Gewichtungsfaktor von $\frac{1}{0.015}$ wird gewählt, damit die Hauptzahl der Werte zwischen -100 und 100 liegt. Zeigt der \gls{cci} in eine inverse Richtung zum \gls{ma}, deutet diese Divergenz auf einen instabilen Markt. Es könnte ein Trendwechsel bevorstehen.
 
 \begin{equation}
 	\label{typical_price}
@@ -193,11 +193,12 @@ Der \gls{cci} zeigt den Handelspreis im Verhältnis zu einem \gls{ma} über eine b
 
 \section{Unterstützung und Widerstand}
 
-Die Kurse von Aktien unterliegen, wie bereits erwähnt gewissen Trends, die entweder auf-, ab- oder auch seitwärts verlaufen, wenn weder das eine, noch das andere klar feststellbar ist. Bei steigenden Kursen erreichen diese irgendwann ein Level, bei dem der Preis nicht mehr als billig angesehen wird und der Kurs dreht um. Der Trend verliert also seine Nachhaltigkeit. Dieses Level wird als \emph{Widerstand} oder \emph{Resistance} bezeichnet, da dieser nur schwer überwunden wird. Sinkt der Kurs eine Weile wieder und sonstige Bewertungskriterien des Handelsgutes haben sich nicht signifikant verändert, erreicht der Kurs einen Punkt, bei dem er wieder interessant für etwaige Käufer wird. Diese Schwelle wird als \emph{Unterstützung} oder \emph{Support} bezeichnet. Am Beispiel von Microsoft kann diese Funktion in der Grafik \ref{fig:msft_sup_res} über einen längeren Zeitraum beobachtet werden.\\
-	Diese beiden Schwellen sind temporäre Hilfsmittel und lassen Wendepunkte erahnen. Bei Durchbruch eines Levels, kann hingegen mit einer Fortsetzung dieses Trends gerechnet werden und ggf. wird ein alter Widerstand zur Unterstützung. \cite{godmode-supp-res} Das Chart \ref{fig:payx_sup_res} von Paychex Inc. veranschaulicht diesen Wechsel von Unterstützungs- zu Widerstands- und wieder zurück zu Unterstützungslevel.
+Die Kurse von Aktien unterliegen, wie bereits erwähnt gewissen Trends, die entweder auf-, ab- oder auch seitwärts (weder auf- noch abwärts) verlaufen. Bei steigenden Kursen erreichen diese irgendwann ein Level, bei dem der Preis nicht mehr als billig angesehen wird und der Kurs dreht um. Der Trend verliert also seine Nachhaltigkeit. Dieses Level wird als \emph{Widerstand} oder \emph{Resistance} bezeichnet, da es nur schwer überwunden wird. Sinkt der Kurs eine Weile wieder und sonstige Bewertungskriterien des Handelsgutes haben sich nicht signifikant verändert, erreicht der Kurs einen Punkt, bei dem er wieder interessant für etwaige Käufer wird. Diese Schwelle wird als \emph{Unterstützung} oder \emph{Support} bezeichnet. Am Beispiel von Microsoft kann diese Funktion in der Abbildung \ref{fig:msft_sup_res} über einen längeren Zeitraum beobachtet werden.\\
+	Diese beiden Schwellen sind temporäre Hilfsmittel und lassen Wendepunkte erahnen. Bei Durchbrechung eines Levels kann hingegen mit einer Fortsetzung dieses Trends gerechnet werden und ggf. wird ein alter Widerstand zur Unterstützung. \cite{investopedia-support-resistance} Abbildung \ref{fig:payx_sup_res} von Paychex Inc. veranschaulicht diesen Wechsel von Unterstützungs- zu Widerstands- und wieder zurück zu Unterstützungslevel.
 
 \begin{figure}
-	\centering		\includegraphics[width=0.8\textwidth]{graphics/chapter2/msft_sup_res.JPG}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/chapter2/msft_sup_res.JPG}
 	\caption[Microsoft Support Resistance]{Microsoft 5-Jahres-Chart mit 1-Wochen-Intervallen und eingezeichneten Support- und Resistance-Level}
 	\label{fig:msft_sup_res}
 \end{figure}
@@ -211,31 +212,31 @@ Die Kurse von Aktien unterliegen, wie bereits erwähnt gewissen Trends, die entwe
 
 \subsection{Prozentbänder}
 
-Prozentbänder sind eine andere Möglichkeit Nachhaltigkeit bzw. Überkauft- oder Überverkauft-Level festzustellen. Dazu wird ein \gls{ma} um einen festgelegten Prozentwert nach unten und oben verschoben, so dass ein Kanal bzw. ein Band entsteht, in dem der Kurs die meiste Zeit verläuft. Wenn der Kurs über dem oberen Band notiert, wird dieser meist als überkauft angesehen, da er im Vergleich zum Durchschnitt sehr schnell gestiegen ist. Um wie viel Prozent die Bänder nach oben und unten verschoben werden, hängt von der Länge des \gls{ma} und somit dem Tradingzeitraum ab. Oft gebraucht werden 3\%-Bänder und eine 21-Tage-Linie oder 10\%-Bänder mit einem 40-Wochen-\gls{ma}.
+Prozentbänder sind eine andere Möglichkeit, Nachhaltigkeit bzw. Überkauft- oder Überverkauft-Level festzustellen. Dazu wird ein \gls{ma} um einen festgelegten Prozentwert nach unten und oben verschoben, so dass ein Kanal bzw. ein Band entsteht, in dem der Kurs die meiste Zeit verläuft. Wenn der Kurs über dem oberen Band notiert, wird dieser meist als überkauft angesehen, da er im Vergleich zum Durchschnitt sehr schnell gestiegen ist. Um wie viel Prozent die Bänder nach oben und unten verschoben werden, hängt von der Länge des \gls{ma} und somit dem Tradingzeitraum ab. Oft gebraucht werden 3\%-Bänder und eine 21-Tage-Linie oder 10\%-Bänder mit einem 40-Wochen-\gls{ma}.
 
 \subsection{Bollinger Bänder}
 
-Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikator, wie die Prozentbänder. Es wird ebenso ein Bereich oberhalb und unterhalb des \gls{ma} aufgespannt, aber anstatt ihn einfach um einen fixen Prozentwert zu verschieben, wird die Durchschnittslinie um die \emph{Doppelte Standardabweichung}, die meist auf Länge des \gls{ma} berechnet wird, nach oben und nach unten verschoben.\\
-	Dabei dienen die Bänder meist als Kursziele, so dass beim ansteigen des Kurses vom unteren Bollinger-Band, das obere als Ziel angenommen wird. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler.
+Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikator wie die Prozentbänder. Es wird ebenso ein Bereich oberhalb und unterhalb des \gls{ma} aufgespannt, aber anstatt ihn einfach um einen fixen Prozentwert zu verschieben, wird die Durchschnittslinie um die \emph{Doppelte Standardabweichung}, die meist auf Länge des \gls{ma} berechnet wird, nach oben und nach unten verschoben.\\
+	Dabei dienen die Bänder meist als Kursziele, so dass beim Ansteigen des Kurses vom unteren Bollinger-Band das obere als Ziel angenommen wird. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler.
 
 \section{Handelsstrategien}
 
 In diesem Punkt sollen verbreitete Handelsstrategien erläutert werden, um einerseits potentiell zu testende Algorithmen festzustellen und andererseits eine Grundlage für Weiterentwicklung und Kombinationsmöglichkeiten aufzuzeigen.
 
-\subsection{Preiskreuzung des Gleitenden Durchschnitts}
+\subsection{Preiskreuzung des gleitenden Durchschnitts}
 
-Eine simples Tradingmodell, dass von einigen Tradern verwendet wird, basiert auf einer einfachen Überkreuzung eines \gls{ma} über den Preis. Es wird dabei angenommen, dass wenn der Preis über den \gls{ma} steigt, ein Aufwärtstrend eingesetzt hat, da der Kurs begonnen hat schneller als der längere Durchschnitt zu steigen. Umgekehrt wird angenommen, dass bei einem Abfall des Kurses unter den \gls{ma} ein Abwärtstrend folg und daher wird ein short-Signal generiert. Eine zusätzliche Sicherheit ist gegeben, wenn der \gls{ma} selbst in erwartete Kursrichtung dreht.\\
-	Dieser simple Algorithmus hat einige Nachteile. Es ist zu jedem Zeitpunkt ein Signal gegeben, was bedeutet dass immer entweder eine long- oder eine short-Position gehalten wird. Außerdem verliert diese Strategie bei langen \glspl{ma} nach der Trendumkehr wieder viel des Gewinns, da das Gegensignal erst spät generiert wird. Kurze \glspl{ma} erzeugen oft Fehlsignale.
+Eine simples Tradingmodell, dass von einigen Tradern verwendet wird, basiert auf einer einfachen Überkreuzung eines \gls{ma} über den Preis. Es wird dabei angenommen, dass ein Aufwärtstrend eingesetzt hat, wenn der Preis über den \gls{ma} steigt, da der Kurs begonnen hat, schneller als der längere Durchschnitt zu steigen. Umgekehrt wird angenommen, dass bei einem Abfall des Kurses unter den \gls{ma} ein Abwärtstrend folgt und daher wird ein short-Signal generiert. Eine zusätzliche Sicherheit ist gegeben, wenn der \gls{ma} selbst in die erwartete Kursrichtung dreht.\\
+	Dieser simple Algorithmus hat einige Nachteile. Es ist zu jedem Zeitpunkt ein Signal gegeben, was bedeutet, dass immer entweder eine long- oder eine short-Position gehalten wird. Außerdem verliert diese Strategie bei langen \glspl{ma} nach der Trendumkehr wieder viel vom Gewinn, da das Gegensignal erst spät generiert wird. Kurze \glspl{ma} erzeugen oft Fehlsignale.
 
-\subsection{Verwendung Mehrerer Gleitender Durchschnitte}
+\subsection{Verwendung mehrerer gleitender Durchschnitte}
 
-Eine häufig verwendete Variante zur Signalgenerierung mit \glspl{ma} wird \emph{Double Crossover Method} genannt. Dabei kommen 2 unterschiedlich lange \glspl{ma} zum Einsatz, wobei ein Signal erzeugt wird wenn sich beide schneiden. Kreuzt der kurze \gls{ma} den längeren entsteht ein Kaufsignal, auch \emph{Golden Cross} genannt, und vice versa. Diese Variante erzeugt weniger Fehlssignale, als die direkte Verwendung des Preises, hinkt dem Markt dafür aber auch stärker hinterher. Die Länge der Durchschnitte hängt wie immer sowohl vom Handelszeitraum und der gewünschten Signalanzahl, als auch vom Markt ab.\\
+Eine häufig verwendete Variante zur Signalgenerierung mit \glspl{ma} wird \emph{Double Crossover Method} genannt. Dabei kommen zwei unterschiedlich lange \glspl{ma} zum Einsatz, wobei ein Signal erzeugt wird wenn sich beide schneiden. Kreuzt der kurze \gls{ma} den längeren entsteht ein Kaufsignal, auch \emph{Golden Cross} genannt, und vice versa. Diese Variante erzeugt weniger Fehlsignale als die direkte Verwendung des Preises, hinkt dem Markt dafür aber auch stärker hinterher. Die Länge der Durchschnitte hängt wie immer sowohl vom Handelszeitraum und der gewünschten Signalanzahl als auch vom Markt ab.\\
 \\
-Dieses System kann noch um einen weiteren \gls{ma} raffiniert werden. Der Einsatz dreier Durchschnitte, oder \emph{Triple Crossover Method} verfeinert die Art des Signals. Ein vollständiges Kaufsignal entsteht sobald der kurze über dem mittleren, und jener wiederum über dem langen \gls{ma} notiert. Eine umgekehrte Anordung ist als Verkaufssignal anzusehen.\\
+Dieses System kann noch um einen weiteren \gls{ma} erweitert werden. Der Einsatz dreier Durchschnitte, oder \emph{Triple Crossover Method}, verfeinert die Art des Signals. Ein vollständiges Kaufsignal entsteht sobald der kurze über dem mittleren, und jener wiederum über dem langen \gls{ma} notiert. Eine umgekehrte Anordung ist als Verkaufssignal anzusehen.\\
 	Beginnt der kurze Trendfolger über den mittleren und anschließend auch über den langen zu steigen, ist dies als vorbereitendes Kaufsignal zu interpretieren. Wenn der mittlere anschließend den langen auch noch von unten schneidet ist das Signal vollständig.\\
 	Auf diese Art kann beispielsweise bei unklaren Signalen eine Neutralstellung (i.e. keine Aktien im Portfolio) eingenommen werden oder die Market-Exposure (i.e. Anzahl der Aktien) reduziert werden.\\
-	Normalerweise werden für solche Systeme \glspl{sma} verwendet, wobei aber besonders bei einem Double Crossover System die Anwendung eines \gls{ema} oder sogar 
+	Normalerweise werden für solche Systeme \glspl{sma} verwendet, wobei aber besonders bei einem Double Crossover System die Anwendung eines \gls{ema} oder sogar \gls{dema} oder \gls{tema} möglich ist.
 
 \subsection{Moving Average Convergence/Divergence}
 
-Der \gls{macd} ist ein Indikator, um die Differenz zwischen zwei \glspl{ema} darzustellen. Der längere \gls{ema} wird vom kürzeren abgezogen, um bei einem Kreuzungspunkt genau einen Wert von 0 zu erhalten. Eine andere Möglichkeit eines \gls{macd}-basierten Handelssystems ist es den \gls{macd} mit einem zusätzlichen \gls{ema}, der kürzer ist als beide zur Berechnung des \gls{macd} verwendeten \glspl{ema}, zu vergleichen. Dies wird als Signallinie bezeichnet. Obwohl die Signallinie den kürzesten Zeitraum abbildet, ist der \gls{macd} näher am tatsächlichen Kurs. Wenn der \gls{macd} die Signallinie von unten schneidet, entspricht dies daher einem Kaufsignal und umgekehrt.
+Der \gls{macd} ist ein Indikator, um die Differenz zwischen zwei \glspl{ema} darzustellen. Der längere \gls{ema} wird vom kürzeren abgezogen, um bei einem Kreuzungspunkt genau einen Wert von 0 zu erhalten. Eine andere Möglichkeit eines \gls{macd}-basierten Handelssystems ist den \gls{macd} mit einem zusätzlichen \gls{ema} zu vergleichen, der kürzer ist als beide zur Berechnung des \gls{macd} verwendeten \glspl{ema}. Dies wird als Signallinie bezeichnet. Obwohl die Signallinie den kürzesten Zeitraum abbildet, ist der \gls{macd} näher am tatsächlichen Kurs. Wenn der \gls{macd} die Signallinie von unten schneidet, entspricht dies daher einem Kaufsignal und umgekehrt.
