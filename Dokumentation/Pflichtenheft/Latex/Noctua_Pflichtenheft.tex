@@ -32,6 +32,7 @@
 \usepackage{multirow}
 \usepackage{eurosym}
 \usepackage{array}
+\usepackage{capt-of}
 
 %%-----------------------------------------------------------------------
 % Makro for thick table lines
@@ -70,7 +71,7 @@
 %%-----------------------------------------------------------------------
 
 
-\renewcommand{\nomname}{List of symbols}
+\renewcommand{\nomname}{Abbildungsverzeichnis}
 %\renewcommand{\nompreamble}{The following list only contains symbols
 %  that are used continuously throughout the text. Local symbols are
 %  not listed.}
@@ -245,7 +246,7 @@
 \clearpage
 \listoffigures
 \clearpage
-\lstlistoflistings %\listoftables
+%\lstlistoflistings %\listoftables
 \clearpage 
 \markboth{Contents}{Contents}
 
@@ -279,11 +280,11 @@
 \include{tex/chapter10}%
 \include{tex/chapter11}%
 \include{tex/chapter12}%
-\include{tex/chapter13}%
+%\include{tex/chapter13}%
 
 
 
-\addcontentsline{toc}{chapter}{Glossary} 
+\addcontentsline{toc}{chapter}{Glossar} 
 %\printglossary[type=\acronymtype]
 %\glsaddall
 
@@ -293,7 +294,7 @@
 %% include appendix
 \begin{appendix}
 %\include{tex/appendix}%
-\printglossary[type=\acronymtype]
+\printglossary[type=\acronymtype, title=Glossar]
 \end{appendix}
 
 % Use of the sorted IEEE style, with changes:
@@ -319,7 +320,7 @@
 %\addcontentsline{toc}{chapter}{\numberline{}\indexname}%
 
 %% include affidavit
-\include{tex/eid}%
+%\include{tex/eid}%
 
 
 
