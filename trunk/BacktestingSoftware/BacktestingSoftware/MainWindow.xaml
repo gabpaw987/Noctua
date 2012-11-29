@@ -1,22 +1,31 @@
 ﻿<Window x:Class="BacktestingSoftware.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Backtesting Software" Height="150" Width="300">
+        xmlns:local="clr-namespace:BacktestingSoftware"
+        Title="Backtesting Software" Height="200" Width="300">
+    <Window.DataContext>
+        <local:MainViewModel x:Name="mainViewModel" />
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
-            <RowDefinition Height="56" />
+            <RowDefinition Height="55" />
+            <RowDefinition Height="55" />
         </Grid.RowDefinitions>
 
-        <WrapPanel Height="23" Orientation="Horizontal" HorizontalAlignment="Left" Margin="12,26,0,0" Name="wrapPanel1" VerticalAlignment="Top" Width="254">
-            <TextBox Height="23" Name="AlgorithmTextBox" Width="163" Text="{Binding}"/>
-            <Button Content="Button" Height="23" Name="AlgorithmButton" Width="75" Click="AlgorithmButton_Click" />
+        <Label Content="Algorithm" Grid.Row="0" Height="28" HorizontalAlignment="Left" Margin="12,4,0,0" Name="label2" VerticalAlignment="Top" />
+        <WrapPanel Height="23" Orientation="Horizontal" HorizontalAlignment="Left" Margin="12,26,0,0" Name="wrapPanel1" VerticalAlignment="Top" Width="255" Grid.Row="0">
+            <TextBox Height="23" Name="AlgorithmTextBox" Width="165" Text="{Binding Path=AlgorithmFileName}"/>
+            <Button Content="Button" Height="23" Name="AlgorithmButton" Width="75" Click="AlgorithmButton_Click" Margin="15,0,0,0" />
         </WrapPanel>
-        <WrapPanel Height="23" HorizontalAlignment="Left" Margin="12,21,0,0" Name="wrapPanel2" VerticalAlignment="Top" Width="254" Grid.Row="1">
-            <TextBox Height="23" Name="DataTextBox" Width="163" />
-            <Button Content="Button" Height="23" Name="DataButton" Width="75" />
+
+        <Label Content="Data" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label1" VerticalAlignment="Top" />
+        <WrapPanel Height="23" HorizontalAlignment="Left" Margin="12,21,0,0" Name="wrapPanel2" VerticalAlignment="Top" Width="255" Grid.Row="1">
+            <TextBox Height="23" Name="DataTextBox" Width="165" Text="{Binding Path=DataFileName}"/>
+            <Button Content="Button" Height="23" Name="DataButton" Width="75" Margin="15,0,0,0" Click="DataButton_Click" />
         </WrapPanel>
-        <Label Content="Data" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label1" VerticalAlignment="Top" />
-        <Label Content="Algorithm" Height="28" HorizontalAlignment="Left" Margin="12,4,0,0" Name="label2" VerticalAlignment="Top" />
+        <WrapPanel Height="23" HorizontalAlignment="left"  Margin="12,11,0,0" Name="wrapPanel3" VerticalAlignment="Top" Width="255" Grid.Row="2">
+            <Button Content="Button" Height="23" Name="StartButton" Width="75" Margin="0,0,0,0" Click="StartButton_Click" />
+        </WrapPanel>
     </Grid>
 </Window>
