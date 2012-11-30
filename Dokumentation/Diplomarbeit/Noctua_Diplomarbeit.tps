@@ -5,7 +5,7 @@ Version=2
 [SessionInfo]
 ActiveTab=0
 FrameCount=23
-ActiveFrame=14
+ActiveFrame=20
 
 [Frame0]
 Columns=1
@@ -416,8 +416,8 @@ TopSubLine=4
 [Frame14]
 Columns=1
 Rows=1
-Flags=2
-ShowCmd=3
+Flags=0
+ShowCmd=1
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -430,17 +430,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\voruntersuchung.tex
 
 [Frame14_Row0]
-cyCur=554
+cyCur=402
 cyMin=10
 
 [Frame14_Col0]
-cxCur=1583
+cxCur=1335
 cxMin=10
 
 [Frame14_View0,0]
-Cursor.row=62
-Cursor.column=492
-TopSubLine=80
+Cursor.row=0
+Cursor.column=0
+TopSubLine=0
 
 [Frame15]
 Columns=1
@@ -590,8 +590,8 @@ TopSubLine=0
 [Frame20]
 Columns=1
 Rows=1
-Flags=0
-ShowCmd=1
+Flags=2
+ShowCmd=3
 MinPos.x=-1
 MinPos.y=-1
 MaxPos.x=-9
@@ -604,17 +604,17 @@ Class=CLatexEdit
 Document=tex\machbarkeitsstudie\management_summary.tex
 
 [Frame20_Row0]
-cyCur=402
+cyCur=554
 cyMin=10
 
 [Frame20_Col0]
-cxCur=1456
+cxCur=1583
 cxMin=10
 
 [Frame20_View0,0]
-Cursor.row=28
-Cursor.column=38
-TopSubLine=14
+Cursor.row=16
+Cursor.column=68
+TopSubLine=4
 
 [Frame21]
 Columns=1
