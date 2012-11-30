@@ -51,6 +51,8 @@
 % Using the Hyperref-Package for PDF-Online Version
 %%-----------------------------------------------------------------------
 
+\usepackage[hyphens]{url}
+
 \def\usehyperref{1}
 
 \ifnum\usehyperref=1
@@ -65,7 +67,7 @@
 ]{hyperref}%
 \fi
 
-
+\usepackage{breakurl}
 
 %%-----------------------------------------------------------------------
 % Rearranging Nomenclature
@@ -206,7 +208,7 @@
 % Define month
 %%-----------------------------------------------------------------------
 
-\def\monthdis{Oktober 2012}
+\def\monthdis{November 2012}
 
 \makeglossaries
 %%-----------------------------------------------------------------------
@@ -288,9 +290,9 @@
 %\printglossary[type=\acronymtype,style=listwithwidth]
 
 %% include appendix
-\begin{appendix}
-\include{tex/appendix}%
-\end{appendix}
+%\begin{appendix}
+%\include{tex/appendix}%
+%\end{appendix}
 
 % Use of the sorted IEEE style, with changes:
 % "dashification" was disabled
