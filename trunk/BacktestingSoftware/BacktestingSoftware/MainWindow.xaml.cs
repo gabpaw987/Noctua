@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 
 namespace BacktestingSoftware
@@ -7,30 +6,8 @@ namespace BacktestingSoftware
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        private string _algorithmFileName;
-
-        public string AlgorithmFileName
-        {
-            get { return _algorithmFileName; }
-            set
-            {
-                if (value != _algorithmFileName)
-                {
-                    _algorithmFileName = value;
-                    OnPropertyChanged("AlgorithmFileName");
-                }
-            }
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public MainWindow()
         {
             InitializeComponent();
@@ -46,13 +23,31 @@ namespace BacktestingSoftware
 
             // Show open file dialog box
             Nullable<bool> result = dlg.ShowDialog();
-            this.AlgorithmFileName = dlg.FileName;
 
             // Process open file dialog box results
             if (result == true)
             {
                 // Open document
-                this.AlgorithmFileName = dlg.FileName;
+                this.mainViewModel.AlgorithmFileName = dlg.FileName;
+            }
+        }
+
+        private void DataButton_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            dlg.FileName = "Data.csv"; // Default file name
+            dlg.DefaultExt = ".csv"; // Default file extension
+            dlg.Filter = "Data File (.csv)|*.csv"; // Filter files by extension
+
+            // Show open file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process open file dialog box results
+            if (result == true)
+            {
+                // Open document
+                this.mainViewModel.DataFileName = dlg.FileName;
             }
         }
     }
