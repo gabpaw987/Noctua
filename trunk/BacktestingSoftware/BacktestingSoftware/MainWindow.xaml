@@ -16,16 +16,16 @@
         <Label Content="Algorithm" Grid.Row="0" Height="28" HorizontalAlignment="Left" Margin="12,4,0,0" Name="label2" VerticalAlignment="Top" />
         <WrapPanel Height="23" Orientation="Horizontal" HorizontalAlignment="Left" Margin="12,26,0,0" Name="wrapPanel1" VerticalAlignment="Top" Width="255" Grid.Row="0">
             <TextBox Height="23" Name="AlgorithmTextBox" Width="165" Text="{Binding Path=AlgorithmFileName}"/>
-            <Button Content="Button" Height="23" Name="AlgorithmButton" Width="75" Click="AlgorithmButton_Click" Margin="15,0,0,0" />
+            <Button Content="Browse" Height="23" Name="AlgorithmButton" Width="75" Click="AlgorithmButton_Click" Margin="15,0,0,0" />
         </WrapPanel>
 
         <Label Content="Data" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label1" VerticalAlignment="Top" />
         <WrapPanel Height="23" HorizontalAlignment="Left" Margin="12,21,0,0" Name="wrapPanel2" VerticalAlignment="Top" Width="255" Grid.Row="1">
             <TextBox Height="23" Name="DataTextBox" Width="165" Text="{Binding Path=DataFileName}"/>
-            <Button Content="Button" Height="23" Name="DataButton" Width="75" Margin="15,0,0,0" Click="DataButton_Click" />
+            <Button Content="Browse" Height="23" Name="DataButton" Width="75" Margin="15,0,0,0" Click="DataButton_Click" />
         </WrapPanel>
-        <WrapPanel Height="23" HorizontalAlignment="left"  Margin="12,11,0,0" Name="wrapPanel3" VerticalAlignment="Top" Width="255" Grid.Row="2">
-            <Button Content="Button" Height="23" Name="StartButton" Width="75" Margin="0,0,0,0" Click="StartButton_Click" />
+        <WrapPanel Height="23" HorizontalAlignment="Center"  Margin="101,16,101,0" Name="wrapPanel3" VerticalAlignment="Top" Width="76" Grid.Row="2">
+            <Button Content="Start" Height="23" Name="StartButton" Width="76" Margin="0,0,0,0" Click="StartButton_Click" />
         </WrapPanel>
     </Grid>
 </Window>
