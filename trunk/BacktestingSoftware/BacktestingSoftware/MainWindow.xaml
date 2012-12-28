@@ -2,30 +2,119 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:BacktestingSoftware"
-        Title="Backtesting Software" Height="200" Width="300">
+        Title="BTS" Height="400" Width="700">
     <Window.DataContext>
         <local:MainViewModel x:Name="mainViewModel" />
     </Window.DataContext>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="55"/>
-            <RowDefinition Height="55" />
-            <RowDefinition Height="55" />
-        </Grid.RowDefinitions>
-
-        <Label Content="Algorithm" Grid.Row="0" Height="28" HorizontalAlignment="Left" Margin="12,4,0,0" Name="label2" VerticalAlignment="Top" />
-        <WrapPanel Height="23" Orientation="Horizontal" HorizontalAlignment="Left" Margin="12,26,0,0" Name="wrapPanel1" VerticalAlignment="Top" Width="255" Grid.Row="0">
-            <TextBox Height="23" Name="AlgorithmTextBox" Width="165" Text="{Binding Path=AlgorithmFileName}"/>
-            <Button Content="Browse" Height="23" Name="AlgorithmButton" Width="75" Click="AlgorithmButton_Click" Margin="15,0,0,0" />
-        </WrapPanel>
-
-        <Label Content="Data" Grid.Row="1" Height="28" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label1" VerticalAlignment="Top" />
-        <WrapPanel Height="23" HorizontalAlignment="Left" Margin="12,21,0,0" Name="wrapPanel2" VerticalAlignment="Top" Width="255" Grid.Row="1">
-            <TextBox Height="23" Name="DataTextBox" Width="165" Text="{Binding Path=DataFileName}"/>
-            <Button Content="Browse" Height="23" Name="DataButton" Width="75" Margin="15,0,0,0" Click="DataButton_Click" />
-        </WrapPanel>
-        <WrapPanel Height="23" HorizontalAlignment="Center"  Margin="101,16,101,0" Name="wrapPanel3" VerticalAlignment="Top" Width="76" Grid.Row="2">
-            <Button Content="Start" Height="23" Name="StartButton" Width="76" Margin="0,0,0,0" Click="StartButton_Click" />
-        </WrapPanel>
-    </Grid>
+    <DockPanel>
+        <Menu IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" />
+                <MenuItem Header="_Open" />
+                <Separator />
+                <MenuItem Header="_Save" />
+                <MenuItem Header="_Save As" />
+                <Separator />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Contact" />
+                <MenuItem Header="_About" />
+            </MenuItem>
+        </Menu>
+        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+            <Button Content="Start" ToolTip="Start Performance Measurement" Click="StartButton_Click" />
+            <Button Content="Stop" ToolTip="Stop Performance Measurement" />
+            <Separator />
+            <Button Content="Algorithm" ToolTip="Select Algorithm-File" />
+            <Button Content="Data" ToolTip="Select Data-File" />
+            <Separator />
+            <Button Content="Save" ToolTip="Save" />
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem HorizontalContentAlignment="Stretch">
+                <TextBlock>Ready</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ProgressBar Value="30" Height="15" Width="100" />
+            </StatusBarItem>
+        </StatusBar>
+        <TabControl DockPanel.Dock="Top">
+            <TabItem Header="Performance">
+            </TabItem>
+            <TabItem Header="Orders">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!-- CHART -->
+                    <Canvas Grid.Row="0" Grid.Column="0">
+                        <TextBlock>CHART</TextBlock>
+                    </Canvas>
+                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3"></GridSplitter>
+                    <!-- ORDERS -->
+                    <DataGrid Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
+                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+                <Grid Margin="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TreeView Grid.Row="0" Grid.Column="0">
+                        <TreeViewItem Header="General">
+                        </TreeViewItem>
+                        <TreeViewItem Header="Orders">
+                        </TreeViewItem>
+                    </TreeView>
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <Grid Margin="5" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <!-- Text-Labels -->
+                            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
+                            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
+                            <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
+                            <!-- OpenFileDialog
+                            http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
+                            <!-- Algorithm File -->
+                            <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
+                                <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
+                                <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
+                            </StackPanel>
+                            <!-- Data File -->
+                            <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
+                                <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
+                                <TextBox Width="300" Text="{Binding Path=DataFileName}" />
+                            </StackPanel>
+                            <!-- Time Period -->
+                            <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
+                                <Label>From:</Label>
+                                <DatePicker SelectedDate="{Binding Path=StartDate}" />
+                                <Label>To:</Label>
+                                <DatePicker SelectedDate="{Binding Path=EndDate}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>

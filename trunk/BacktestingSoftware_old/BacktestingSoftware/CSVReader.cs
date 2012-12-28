@@ -18,19 +18,18 @@ namespace BacktestingSoftware
         /// <param name="filePath">The excel file path.</param>
         /// <returns>An enumeration of bars.</returns>
         /// <remarks></remarks>
-        public static IEnumerable<Tuple<DateTime, double, double, double, double>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
+        public static IEnumerable<Bar> EnumerateExcelFile(string filePath)
         {
             // Enumerate all lines, but skip the header
             return from line in File.ReadLines(filePath).Skip(1)
                    select line.Split(',')
                        into fields
-                       let timeStamp = DateTime.ParseExact(fields[1] + " " + fields[2], "MM/dd/yy HH:mm", new CultureInfo("en-US"))
-                       let open = Double.Parse(fields[3])
-                       let high = Double.Parse(fields[4])
-                       let low = Double.Parse(fields[5])
-                       let close = Double.Parse(fields[6])
-                       where timeStamp.Date >= startDate.Date && timeStamp.Date <= endDate.Date
-                       select new Tuple<DateTime, double, double, double, double>(timeStamp, open, high, low, close);
+                       let timeStamp = DateTime.ParseExact(fields[1] + fields[2], "d", new CultureInfo("en-US"))
+                       let open = Decimal.Parse(fields[3])
+                       let high = Decimal.Parse(fields[4])
+                       let low = Decimal.Parse(fields[5])
+                       let close = Decimal.Parse(fields[6])
+                       select new Bar(timeStamp, open, high, low, close);
         }
     }
 }

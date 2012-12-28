@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 
 namespace BacktestingSoftware
@@ -11,8 +13,6 @@ namespace BacktestingSoftware
         public MainWindow()
         {
             InitializeComponent();
-            this.mainViewModel.StartDate = DateTime.Now;
-            this.mainViewModel.EndDate = DateTime.Now;
         }
 
         private void AlgorithmButton_Click(object sender, RoutedEventArgs e)
@@ -55,11 +55,22 @@ namespace BacktestingSoftware
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(this.mainViewModel.StartDate.ToLongDateString());
-            Calculator c = new Calculator(this.mainViewModel);
-            c.Start();
+            IEnumerable<Bar> barList = CSVReader.EnumerateExcelFile(this.mainViewModel.DataFileName);
 
-            MessageBox.Show("" + c.signals[0]);
+            List<double> dl = new List<double>();
+            foreach (Bar b in barList)
+            {
+                dl.Add((double)b.Close);
+            }
+            Assembly assembly = Assembly.LoadFrom(this.mainViewModel.AlgorithmFileName);
+            AppDomain.CurrentDomain.Load(assembly.GetName());
+            Type t = assembly.GetType("Algorithm.DecisionCalculator");
+
+            Object[] oa = { dl, 2, 4 };
+
+            var signal = t.GetMethod("startCalculation").Invoke(null, oa);
+
+            MessageBox.Show("" + signal);
         }
     }
 }
