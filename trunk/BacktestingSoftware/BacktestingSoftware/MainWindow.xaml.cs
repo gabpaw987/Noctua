@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace BacktestingSoftware
@@ -13,6 +14,8 @@ namespace BacktestingSoftware
             InitializeComponent();
             this.mainViewModel.StartDate = DateTime.Now;
             this.mainViewModel.EndDate = DateTime.Now;
+            this.mainViewModel.Orders = new List<Order>();
+            this.orders.DataContext = this.mainViewModel.Orders;
         }
 
         private void AlgorithmButton_Click(object sender, RoutedEventArgs e)
@@ -55,11 +58,10 @@ namespace BacktestingSoftware
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(this.mainViewModel.StartDate.ToLongDateString());
             Calculator c = new Calculator(this.mainViewModel);
             c.Start();
 
-            MessageBox.Show("" + c.signals[0]);
+            MessageBox.Show("" + this.mainViewModel.GainLossPercent + " " + this.mainViewModel.Orders.Count);
         }
     }
 }

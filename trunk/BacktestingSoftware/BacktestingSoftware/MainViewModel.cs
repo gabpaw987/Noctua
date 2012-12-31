@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace BacktestingSoftware
@@ -78,6 +79,101 @@ namespace BacktestingSoftware
                     _endDate = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("EndDate"));
+                }
+            }
+        }
+
+        private List<Order> _orders;
+
+        public List<Order> Orders
+        {
+            get
+            {
+                return _orders;
+            }
+            set
+            {
+                if (!value.Equals(_orders))
+                {
+                    _orders = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("Orders"));
+                }
+            }
+        }
+
+        private double _gainLossPercent;
+
+        public double GainLossPercent
+        {
+            get
+            {
+                return _gainLossPercent;
+            }
+            set
+            {
+                if (!value.Equals(_gainLossPercent))
+                {
+                    _gainLossPercent = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("GainLossPercent"));
+                }
+            }
+        }
+
+        private double _noOfGoodTrades;
+
+        public double NoOfGoodTrades
+        {
+            get
+            {
+                return _noOfGoodTrades;
+            }
+            set
+            {
+                if (!value.Equals(_noOfGoodTrades))
+                {
+                    _noOfGoodTrades = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("NoOfGoodTrades"));
+                }
+            }
+        }
+
+        private double _noOfBadTrades;
+
+        public double NoOfBadTrades
+        {
+            get
+            {
+                return _noOfBadTrades;
+            }
+            set
+            {
+                if (!value.Equals(_noOfBadTrades))
+                {
+                    _noOfBadTrades = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("NoOfBadTrades"));
+                }
+            }
+        }
+
+        private double _gtBtRatio;
+
+        public double GtBtRatio
+        {
+            get
+            {
+                return _gtBtRatio;
+            }
+            set
+            {
+                if (!value.Equals(_gtBtRatio))
+                {
+                    _gtBtRatio = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("GtBtRatio"));
                 }
             }
         }

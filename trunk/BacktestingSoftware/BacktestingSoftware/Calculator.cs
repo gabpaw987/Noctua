@@ -29,7 +29,51 @@ namespace BacktestingSoftware
 
             Object[] oa = { 90, barList, this.signals };
 
-            var signals = t.GetMethod("startCalculation").Invoke(null, oa);
+            t.GetMethod("startCalculation").Invoke(null, oa);
+
+            this.calculateNumbers();
+        }
+
+        private void calculateNumbers()
+        {
+            if (barList.Count == signals.Count)
+            {
+                this.mainViewModel.GainLossPercent = 0;
+                double valueOfLastTrade = 0.0;
+                for (int i = 1; i < barList.Count; i++)
+                {
+                    if (signals[i - 1] != signals[i] && signals[i] != 0 && signals[i - 1] != 0)
+                    {
+                        if (valueOfLastTrade == 0.0)
+                        {
+                            //TODO:Weighting
+                            valueOfLastTrade = barList[i].Item5 * Math.Abs(signals[i]);
+                        }
+                        else
+                        {
+                            //TODO: Weighting
+                            double valueOfThisTrade = barList[i].Item5 * Math.Abs(signals[i]);
+                            double percentageOfThisTrade = 0;
+                            if (signals[i] > 0)
+                                percentageOfThisTrade = ((valueOfLastTrade - valueOfThisTrade) / valueOfThisTrade) * 100;
+                            else if (signals[i] < 0)
+                                percentageOfThisTrade = ((valueOfThisTrade - valueOfLastTrade) / valueOfLastTrade) * 100;
+
+                            this.mainViewModel.GainLossPercent += percentageOfThisTrade;
+
+                            if (percentageOfThisTrade > 0)
+                                this.mainViewModel.NoOfGoodTrades++;
+                            else if (percentageOfThisTrade < 0)
+                                this.mainViewModel.NoOfBadTrades++;
+
+                            this.mainViewModel.Orders.Add(new Order(barList[i].Item1, signals[i], 0, barList[i].Item5, percentageOfThisTrade, this.mainViewModel.GainLossPercent));
+
+                            valueOfLastTrade = valueOfThisTrade;
+                        }
+                    }
+                }
+                this.mainViewModel.GtBtRatio = this.mainViewModel.NoOfGoodTrades / this.mainViewModel.NoOfBadTrades;
+            }
         }
     }
 }

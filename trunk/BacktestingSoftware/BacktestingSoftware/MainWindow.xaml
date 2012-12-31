@@ -41,6 +41,37 @@
         </StatusBar>
         <TabControl DockPanel.Dock="Top">
             <TabItem Header="Performance">
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <Grid Margin="5" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <!-- Text-Labels -->
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Gain/Loss [%]:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Gain [%]:</Label>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Loss [%]:</Label>
+                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Profit:</Label>
+                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Equity Price:</Label>
+                        <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Number of Good Trades:</Label>
+                        <Label Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
+                        <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Number of Bad Trades:</Label>
+                        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
+                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Ratio of Good Trades - Bad Trades:</Label>
+                        <Label Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
+                    </Grid>
+                </StackPanel>
             </TabItem>
             <TabItem Header="Orders">
                 <Grid>
@@ -58,8 +89,8 @@
                     </Canvas>
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3"></GridSplitter>
                     <!-- ORDERS -->
-                    <DataGrid Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
-                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" />
+                    <DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
+                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" IsReadOnly="True" />
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">

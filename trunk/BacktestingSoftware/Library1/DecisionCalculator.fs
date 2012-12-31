@@ -10,18 +10,14 @@ namespace Algorithm
         }
         
         (* This function calculates the simple moving average for a list of lists of double and returns the calculated values in a list of doubles*)
-        let sma (n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, double, double, double, double>>)=
-            // saves the startposition
+        let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, double, double, double, double>>)=
             let mutable position = n
             let mutable resultlist:List<double> = [0.0]
-            for i = 0 to n do
-                
-                // calculated MovingAverage at the moment
+            for i = n to liste2D.Count-1 do
                 let mutable mma = 0.0
-                for j = position-1 downto position-n do
-                    // adds the close to mma
+                for j = i downto i - n do
                     mma <- mma + liste2D.[j].Item5
-                // divides by MA-length
+                    // divides by MA-length
                 mma <- mma/(float n)
                 // desides weither the resultList is set yet or not
                 if resultlist.[0] = 0.0 then
@@ -31,12 +27,11 @@ namespace Algorithm
                     let temp = [mma]
                     // adds a new result to the list
                     resultlist <- List.append resultlist temp
-                // increments the position in the array
-                position <- position + 1
-            //returns the resultarray
             resultlist
 
         let signalgeber(n:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, double, double, double, double>>,signals:System.Collections.Generic.List<int>) =
+            for i = 0 to n-1 do
+                signals.Add(0)
             let ergebnis1 = sma(n,list2D)
             for i = 0 to ergebnis1.Length-1 do
                 if list2D.[i+n-1].Item5 < ergebnis1.[i] then
