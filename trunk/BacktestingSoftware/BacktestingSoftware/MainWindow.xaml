@@ -61,9 +61,13 @@
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Gain/Loss [%]:</Label>
                         <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Gain [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Loss [%]:</Label>
+                        <Label Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
                         <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Profit:</Label>
+                        <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfProfit}"></Label>
                         <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Equity Price:</Label>
+                        <Label Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfPEquityPrice}"></Label>
                         <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Number of Good Trades:</Label>
                         <Label Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
                         <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Number of Bad Trades:</Label>

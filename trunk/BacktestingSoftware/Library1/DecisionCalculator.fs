@@ -9,18 +9,18 @@ namespace Algorithm
                 yield sr.ReadLine ()
         }
         
-        (* This function calculates the simple moving average for a list of lists of double and returns the calculated values in a list of doubles*)
-        let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, double, double, double, double>>)=
+        (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
+        let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let mutable position = n
-            let mutable resultlist:List<double> = [0.0]
+            let mutable resultlist:List<decimal> = [0m]
             for i = n to liste2D.Count-1 do
-                let mutable mma = 0.0
+                let mutable mma = 0m
                 for j = i downto i - n do
                     mma <- mma + liste2D.[j].Item5
                     // divides by MA-length
-                mma <- mma/(float n)
+                mma <- mma/(decimal n)
                 // desides weither the resultList is set yet or not
-                if resultlist.[0] = 0.0 then
+                if resultlist.[0] = 0m then
                     // sets the first result
                     resultlist <- [mma]
                 else 
@@ -29,7 +29,7 @@ namespace Algorithm
                     resultlist <- List.append resultlist temp
             resultlist
 
-        let signalgeber(n:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, double, double, double, double>>,signals:System.Collections.Generic.List<int>) =
+        let signalgeber(n:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>) =
             for i = 0 to n-1 do
                 signals.Add(0)
             let ergebnis1 = sma(n,list2D)
@@ -42,13 +42,5 @@ namespace Algorithm
                     signals.Add(0)
             signals
 
-        let startCalculation (n:int, list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, double, double, double, double>>,signals:System.Collections.Generic.List<int>)= 
-            //let o = new System.Random()
-            //let mutable list2D:List<List<double>> = [[0.0;0.0;0.0;10.0]] 
-            //for i = 0 to 100 do
-            //    let test:double = o.NextDouble()
-            //   if i = 0 then
-            //        list2D <- [[0.0;0.0;0.0;(test*100.1)]]
-            //    else 
-            //        list2D <- List.append list2D [[0.0;0.0;0.0;(test*100.1)]]
+        let startCalculation (n:int, list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
             signalgeber (n, list2D, signals)

@@ -6,12 +6,12 @@ namespace BacktestingSoftware
     {
         private DateTime _timestamp;
         private int _trendstrength;
-        private double _quantityMultiplier;
-        private double _price;
-        private double _gainLossPercent;
-        private double _cumulativeGainLossPercent;
+        private decimal _quantityMultiplier;
+        private decimal _price;
+        private decimal _gainLossPercent;
+        private decimal _cumulativeGainLossPercent;
 
-        public Order(DateTime timestamp, int trendstrength, double quantityMultiplier, double price, double gainLossPercent, double cumulativeGainLossPercent)
+        public Order(DateTime timestamp, int trendstrength, decimal quantityMultiplier, decimal price, decimal gainLossPercent, decimal cumulativeGainLossPercent)
         {
             _timestamp = timestamp;
             _trendstrength = trendstrength;
@@ -33,25 +33,25 @@ namespace BacktestingSoftware
             set { _trendstrength = value; }
         }
 
-        public double QuantityMultiplier
+        public decimal QuantityMultiplier
         {
             get { return _quantityMultiplier; }
             set { _quantityMultiplier = value; }
         }
 
-        public double Price
+        public decimal Price
         {
             get { return _price; }
             set { _price = value; }
         }
 
-        public double GainLossPercent
+        public decimal GainLossPercent
         {
             get { return _gainLossPercent; }
             set { _gainLossPercent = value; }
         }
 
-        public double CumulativeGainLossPercent
+        public decimal CumulativeGainLossPercent
         {
             get { return _cumulativeGainLossPercent; }
             set { _cumulativeGainLossPercent = value; }

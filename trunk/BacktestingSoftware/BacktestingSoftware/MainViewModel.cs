@@ -102,9 +102,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private double _gainLossPercent;
+        private decimal _gainLossPercent;
 
-        public double GainLossPercent
+        public decimal GainLossPercent
         {
             get
             {
@@ -121,9 +121,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private double _noOfGoodTrades;
+        private decimal _noOfGoodTrades;
 
-        public double NoOfGoodTrades
+        public decimal NoOfGoodTrades
         {
             get
             {
@@ -140,9 +140,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private double _noOfBadTrades;
+        private decimal _noOfBadTrades;
 
-        public double NoOfBadTrades
+        public decimal NoOfBadTrades
         {
             get
             {
@@ -159,9 +159,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private double _gtBtRatio;
+        private decimal _gtBtRatio;
 
-        public double GtBtRatio
+        public decimal GtBtRatio
         {
             get
             {
@@ -174,6 +174,82 @@ namespace BacktestingSoftware
                     _gtBtRatio = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("GtBtRatio"));
+                }
+            }
+        }
+
+        private decimal _gainPercent;
+
+        public decimal GainPercent
+        {
+            get
+            {
+                return _gainPercent;
+            }
+            set
+            {
+                if (!value.Equals(_gainPercent))
+                {
+                    _gainPercent = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("GainPercent"));
+                }
+            }
+        }
+
+        private decimal _lossPercent;
+
+        public decimal LossPercent
+        {
+            get
+            {
+                return _lossPercent;
+            }
+            set
+            {
+                if (!value.Equals(_lossPercent))
+                {
+                    _lossPercent = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("LossPercent"));
+                }
+            }
+        }
+
+        private decimal _stdDevOfProfit;
+
+        public decimal StdDevOfProfit
+        {
+            get
+            {
+                return _stdDevOfProfit;
+            }
+            set
+            {
+                if (!value.Equals(_stdDevOfProfit))
+                {
+                    _stdDevOfProfit = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("StdDevOfProfit"));
+                }
+            }
+        }
+
+        private decimal _stdDevOfEquityPrice;
+
+        public decimal StdDevOfPEquityPrice
+        {
+            get
+            {
+                return _stdDevOfEquityPrice;
+            }
+            set
+            {
+                if (!value.Equals(_stdDevOfEquityPrice))
+                {
+                    _stdDevOfEquityPrice = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("StdDevOfPEquityPrice"));
                 }
             }
         }
