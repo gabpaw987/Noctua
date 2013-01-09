@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace BacktestingSoftware
 {
@@ -21,39 +22,45 @@ namespace BacktestingSoftware
             _cumulativeGainLossPercent = cumulativeGainLossPercent;
         }
 
+        [DisplayName("Time")]
         public DateTime Timestamp
         {
             get { return _timestamp; }
             set { _timestamp = value; }
         }
 
+        [DisplayName("Signal Strength")]
         public int Trendstrength
         {
             get { return _trendstrength; }
             set { _trendstrength = value; }
         }
 
+        [DisplayName("Quantity Multiplier")]
         public decimal QuantityMultiplier
         {
             get { return _quantityMultiplier; }
             set { _quantityMultiplier = value; }
         }
 
+        [DisplayName("Price")]
         public decimal Price
         {
             get { return _price; }
             set { _price = value; }
         }
 
+        [DisplayName("Gain/Loss [%]")]
         public decimal GainLossPercent
         {
-            get { return _gainLossPercent; }
+            get { return Math.Round(_gainLossPercent, 3); }
             set { _gainLossPercent = value; }
         }
 
+        [DisplayName("Cumulative Gain/Loss [%]")]
         public decimal CumulativeGainLossPercent
         {
-            get { return _cumulativeGainLossPercent; }
+            get { return Math.Round(_cumulativeGainLossPercent, 3); }
             set { _cumulativeGainLossPercent = value; }
         }
     }

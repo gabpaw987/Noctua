@@ -9,34 +9,37 @@ namespace BacktestingSoftware
     {
         private MainViewModel mainViewModel { get; set; }
 
-        public List<Tuple<DateTime, decimal, decimal, decimal, decimal>> barList { get; private set; }
-
-        public List<int> signals { get; private set; }
-
         public Calculator(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
-            this.signals = new List<int>();
+            this.mainViewModel.Signals = new List<int>();
         }
 
         public void Start()
         {
-            this.barList = CSVReader.EnumerateExcelFile(this.mainViewModel.DataFileName, this.mainViewModel.StartDate, this.mainViewModel.EndDate).ToList();
+            this.ReadFile();
+            this.CalculateSignals();
+            this.CalculateNumbers();
+        }
 
+        public void ReadFile()
+        {
+            this.mainViewModel.BarList = CSVReader.EnumerateExcelFile(this.mainViewModel.DataFileName, this.mainViewModel.StartDate, this.mainViewModel.EndDate).ToList();
+        }
+
+        public void CalculateSignals()
+        {
             Assembly assembly = Assembly.LoadFrom(this.mainViewModel.AlgorithmFileName);
             AppDomain.CurrentDomain.Load(assembly.GetName());
             Type t = assembly.GetType("Algorithm.DecisionCalculator");
 
-            Object[] oa = { 90, barList, this.signals };
-
+            Object[] oa = { 90, this.mainViewModel.BarList, this.mainViewModel.Signals };
             t.GetMethod("startCalculation").Invoke(null, oa);
-
-            this.CalculateNumbers();
         }
 
-        private void CalculateNumbers()
+        public void CalculateNumbers()
         {
-            if (barList.Count == signals.Count)
+            if (this.mainViewModel.BarList.Count == this.mainViewModel.Signals.Count)
             {
                 List<double> profitsForStdDev = new List<double>();
                 List<double> EquityPricesForStdDev = new List<double>();
@@ -44,23 +47,23 @@ namespace BacktestingSoftware
                 this.mainViewModel.GainPercent = 0;
                 this.mainViewModel.LossPercent = 0;
                 decimal valueOfLastTrade = 0m;
-                for (int i = 1; i < barList.Count; i++)
+                for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                 {
-                    if (signals[i - 1] != signals[i] && signals[i] != 0 && signals[i - 1] != 0)
+                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.Signals[i] != 0 && this.mainViewModel.Signals[i - 1] != 0)
                     {
                         if (valueOfLastTrade == 0m)
                         {
                             //TODO:Weighting
-                            valueOfLastTrade = barList[i].Item5 * Math.Abs(signals[i]);
+                            valueOfLastTrade = this.mainViewModel.BarList[i].Item5 * Math.Abs(this.mainViewModel.Signals[i]);
                         }
                         else
                         {
                             //TODO: Weighting
-                            decimal valueOfThisTrade = barList[i].Item5 * Math.Abs(signals[i]);
+                            decimal valueOfThisTrade = this.mainViewModel.BarList[i].Item5 * Math.Abs(this.mainViewModel.Signals[i]);
                             decimal percentageOfThisTrade = 0;
-                            if (signals[i] > 0)
+                            if (this.mainViewModel.Signals[i] > 0)
                                 percentageOfThisTrade = ((valueOfLastTrade - valueOfThisTrade) / valueOfThisTrade) * 100;
-                            else if (signals[i] < 0)
+                            else if (this.mainViewModel.Signals[i] < 0)
                                 percentageOfThisTrade = ((valueOfThisTrade - valueOfLastTrade) / valueOfLastTrade) * 100;
 
                             this.mainViewModel.GainLossPercent += percentageOfThisTrade;
@@ -77,12 +80,12 @@ namespace BacktestingSoftware
                                 this.mainViewModel.LossPercent += percentageOfThisTrade;
                             }
 
-                            this.mainViewModel.Orders.Add(new Order(barList[i].Item1, signals[i], 0, barList[i].Item5, percentageOfThisTrade, this.mainViewModel.GainLossPercent));
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], 0, this.mainViewModel.BarList[i].Item5, percentageOfThisTrade, this.mainViewModel.GainLossPercent));
 
                             valueOfLastTrade = valueOfThisTrade;
                         }
                     }
-                    EquityPricesForStdDev.Add((double)barList[i].Item5);
+                    EquityPricesForStdDev.Add((double)this.mainViewModel.BarList[i].Item5);
                 }
                 this.mainViewModel.GtBtRatio = this.mainViewModel.NoOfGoodTrades / this.mainViewModel.NoOfBadTrades;
                 this.mainViewModel.StdDevOfProfit = (decimal)this.CalculateStdDevs(profitsForStdDev);

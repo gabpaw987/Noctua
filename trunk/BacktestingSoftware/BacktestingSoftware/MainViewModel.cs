@@ -7,6 +7,45 @@ namespace BacktestingSoftware
     internal class MainViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private List<int> _signals;
+
+        public List<int> Signals
+        {
+            get
+            {
+                return _signals;
+            }
+            set
+            {
+                if (value != _signals)
+                {
+                    _signals = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("Signals"));
+                }
+            }
+        }
+
+        private List<Tuple<DateTime, decimal, decimal, decimal, decimal>> _barList;
+
+        public List<Tuple<DateTime, decimal, decimal, decimal, decimal>> BarList
+        {
+            get
+            {
+                return _barList;
+            }
+            set
+            {
+                if (value != _barList)
+                {
+                    _barList = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("BarList"));
+                }
+            }
+        }
+
         private string _algorithmFileName;
 
         public string AlgorithmFileName
@@ -108,7 +147,7 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _gainLossPercent;
+                return Math.Round(_gainLossPercent, 3);
             }
             set
             {
@@ -165,7 +204,7 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _gtBtRatio;
+                return Math.Round(_gtBtRatio, 3);
             }
             set
             {
@@ -184,7 +223,7 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _gainPercent;
+                return Math.Round(_gainPercent, 3);
             }
             set
             {
@@ -203,7 +242,7 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _lossPercent;
+                return Math.Round(_lossPercent, 3);
             }
             set
             {
@@ -222,7 +261,7 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _stdDevOfProfit;
+                return Math.Round(_stdDevOfProfit, 3);
             }
             set
             {
@@ -241,7 +280,7 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _stdDevOfEquityPrice;
+                return Math.Round(_stdDevOfEquityPrice, 3);
             }
             set
             {
