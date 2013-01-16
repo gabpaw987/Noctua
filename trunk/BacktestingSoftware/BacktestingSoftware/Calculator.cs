@@ -87,7 +87,12 @@ namespace BacktestingSoftware
                     }
                     EquityPricesForStdDev.Add((double)this.mainViewModel.BarList[i].Item5);
                 }
-                this.mainViewModel.GtBtRatio = this.mainViewModel.NoOfGoodTrades / this.mainViewModel.NoOfBadTrades;
+
+                if (this.mainViewModel.NoOfBadTrades > 0)
+                    this.mainViewModel.GtBtRatio = this.mainViewModel.NoOfGoodTrades / this.mainViewModel.NoOfBadTrades;
+                else
+                    this.mainViewModel.GtBtRatio = 0;
+
                 this.mainViewModel.StdDevOfProfit = (decimal)this.CalculateStdDevs(profitsForStdDev);
                 this.mainViewModel.StdDevOfPEquityPrice = (decimal)this.CalculateStdDevs(EquityPricesForStdDev);
             }

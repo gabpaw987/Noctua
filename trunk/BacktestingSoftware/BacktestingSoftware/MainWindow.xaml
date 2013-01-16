@@ -5,7 +5,8 @@
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
-        Title="BTS" Height="400" Width="700">
+        Title="BTS" Height="400" Width="700"
+        Closing="Window_Closing">
     <Window.DataContext>
         <local:MainViewModel x:Name="mainViewModel" />
     </Window.DataContext>
@@ -13,10 +14,10 @@
         <Menu IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" />
-                <MenuItem Header="_Open" />
+                <MenuItem Header="_Open" Click="LoadButton_Click"/>
                 <Separator />
-                <MenuItem Header="_Save" />
-                <MenuItem Header="_Save As" />
+                <MenuItem Header="_Save" Click="SaveButton_Click"/>
+                <MenuItem Header="_Save As" Click="SaveAsButton_Click"/>
                 <Separator />
                 <MenuItem Header="Exit" />
             </MenuItem>
@@ -39,7 +40,7 @@
                 <TextBlock Name="StatusLabel">Ready</TextBlock>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <ProgressBar Value="30" Height="15" Width="100" />
+                <ProgressBar Height="15" Width="100" Name="ProgressBar" />
             </StatusBarItem>
         </StatusBar>
         <TabControl DockPanel.Dock="Top">
@@ -93,9 +94,6 @@
                     <!-- CHART -->
                     <WindowsFormsHost Name="WfHost" Grid.Row="0">
                         <MSChart:Chart x:Name="MyWinformChart">
-                            <MSChart:Chart.Series>
-                                <MSChart:Series Name="series" ChartType="Line"/>
-                            </MSChart:Chart.Series>
                             <MSChart:Chart.ChartAreas>
                                 <MSChart:ChartArea/>
                             </MSChart:Chart.ChartAreas>
@@ -117,47 +115,93 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TreeView Grid.Row="0" Grid.Column="0">
-                        <TreeViewItem Header="General">
+                        <TreeViewItem Name="GeneralSettingsTabSelector" Header="General" Selected="TreeViewItem_Selected">
                         </TreeViewItem>
-                        <TreeViewItem Header="Orders">
+                        <TreeViewItem Name="OrdersSettingsTabSelector" Header="Orders" Selected="TreeViewItem_Selected">
                         </TreeViewItem>
                     </TreeView>
-                    <StackPanel Grid.Row="0" Grid.Column="1">
-                        <Grid Margin="5" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <!-- Text-Labels -->
-                            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
-                            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
-                            <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
-                            <!-- OpenFileDialog
+                    <TabControl Grid.Column="1" Name="SettingsTabControl">
+                        <TabControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+                        <TabItem Name="GeneralSettingsTab">
+                            <StackPanel>
+                                <Grid Margin="5" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Text-Labels -->
+                                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
+                                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
+                                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
+                                    <!-- OpenFileDialog
                             http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
-                            <!-- Algorithm File -->
-                            <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
-                                <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
-                                <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
+                                    <!-- Algorithm File -->
+                                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
+                                        <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
+                                        <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
+                                    </StackPanel>
+                                    <!-- Data File -->
+                                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
+                                        <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
+                                        <TextBox Width="300" Text="{Binding Path=DataFileName}" />
+                                    </StackPanel>
+                                    <!-- Time Period -->
+                                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
+                                        <Label>From:</Label>
+                                        <DatePicker SelectedDate="{Binding Path=StartDate}" />
+                                        <Label>To:</Label>
+                                        <DatePicker SelectedDate="{Binding Path=EndDate}" />
+                                    </StackPanel>
+                                </Grid>
                             </StackPanel>
-                            <!-- Data File -->
-                            <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
-                                <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
-                                <TextBox Width="300" Text="{Binding Path=DataFileName}" />
+                        </TabItem>
+                        <TabItem Name="OrdersSettingsTab">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition Height="100"></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="-3" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
+                                    <Label Content="-2" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
+                                    <Label Content="-1" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" />
+                                    <Label Content="1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" />
+                                    <Label Content="2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" />
+                                    <Label Content="3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" />
+                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
+                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" />
+                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" />
+                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" />
+                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" />
+                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" />
+                                    <TextBox Grid.Row="2" Grid.Column="0" Margin="0,3,0,0"/>
+                                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,0,0"/>
+                                    <TextBox Grid.Row="2" Grid.Column="2" Margin="0,3,0,0"/>
+                                    <TextBox Grid.Row="2" Grid.Column="3" Margin="0,3,0,0"/>
+                                    <TextBox Grid.Row="2" Grid.Column="4" Margin="0,3,0,0"/>
+                                    <TextBox Grid.Row="2" Grid.Column="5" Margin="0,3,0,0"/>
+                                </Grid>
                             </StackPanel>
-                            <!-- Time Period -->
-                            <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
-                                <Label>From:</Label>
-                                <DatePicker SelectedDate="{Binding Path=StartDate}" />
-                                <Label>To:</Label>
-                                <DatePicker SelectedDate="{Binding Path=EndDate}" />
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -292,5 +292,43 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private string _saveFileName;
+
+        public string SaveFileName
+        {
+            get
+            {
+                return _saveFileName;
+            }
+            set
+            {
+                if (!value.Equals(_saveFileName))
+                {
+                    _saveFileName = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("SaveFileName"));
+                }
+            }
+        }
+
+        private string _loadFileName;
+
+        public string LoadFileName
+        {
+            get
+            {
+                return _loadFileName;
+            }
+            set
+            {
+                if (!value.Equals(_loadFileName))
+                {
+                    _loadFileName = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("LoadFileName"));
+                }
+            }
+        }
     }
 }

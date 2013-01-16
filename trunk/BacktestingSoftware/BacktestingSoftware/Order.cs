@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 namespace BacktestingSoftware
 {
+    [Serializable()]
     internal class Order
     {
         private DateTime _timestamp;
@@ -46,7 +47,7 @@ namespace BacktestingSoftware
         [DisplayName("Price")]
         public decimal Price
         {
-            get { return _price; }
+            get { return Math.Round(_price, 3); }
             set { _price = value; }
         }
 

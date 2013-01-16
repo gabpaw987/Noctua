@@ -25,10 +25,10 @@ namespace BacktestingSoftware
                    select line.Split(',')
                        into fields
                        let timeStamp = DateTime.ParseExact(fields[1] + " " + fields[2], "MM/dd/yy HH:mm", new CultureInfo("en-US"))
-                       let open = decimal.Parse(fields[3])
-                       let high = decimal.Parse(fields[4])
-                       let low = decimal.Parse(fields[5])
-                       let close = decimal.Parse(fields[6])
+                       let open = decimal.Parse(fields[3], CultureInfo.InvariantCulture)
+                       let high = decimal.Parse(fields[4], CultureInfo.InvariantCulture)
+                       let low = decimal.Parse(fields[5], CultureInfo.InvariantCulture)
+                       let close = decimal.Parse(fields[6], CultureInfo.InvariantCulture)
                        where timeStamp.Date >= startDate.Date && timeStamp.Date <= endDate.Date
                        select new Tuple<DateTime, decimal, decimal, decimal, decimal>(timeStamp, open, high, low, close);
         }
