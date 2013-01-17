@@ -68,5 +68,101 @@ namespace BacktestingSoftware.Properties {
                 this["EndDate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int ValueOfSliderOne {
+            get {
+                return ((int)(this["ValueOfSliderOne"]));
+            }
+            set {
+                this["ValueOfSliderOne"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ValueOfSliderTwo {
+            get {
+                return ((int)(this["ValueOfSliderTwo"]));
+            }
+            set {
+                this["ValueOfSliderTwo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ValueOfSliderThree {
+            get {
+                return ((int)(this["ValueOfSliderThree"]));
+            }
+            set {
+                this["ValueOfSliderThree"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ValueOfSliderFour {
+            get {
+                return ((int)(this["ValueOfSliderFour"]));
+            }
+            set {
+                this["ValueOfSliderFour"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ValueOfSliderFive {
+            get {
+                return ((int)(this["ValueOfSliderFive"]));
+            }
+            set {
+                this["ValueOfSliderFive"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int ValueOfSliderSix {
+            get {
+                return ((int)(this["ValueOfSliderSix"]));
+            }
+            set {
+                this["ValueOfSliderSix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int RoundLotSize {
+            get {
+                return ((int)(this["RoundLotSize"]));
+            }
+            set {
+                this["RoundLotSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100000")]
+        public string Capital {
+            get {
+                return ((string)(this["Capital"]));
+            }
+            set {
+                this["Capital"] = value;
+            }
+        }
     }
 }

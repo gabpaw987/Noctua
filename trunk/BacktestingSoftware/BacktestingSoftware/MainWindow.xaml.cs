@@ -42,6 +42,16 @@ namespace BacktestingSoftware
                 this.mainViewModel.EndDate = DateTime.Now;
             }
 
+            this.mainViewModel.ValueOfSliderOne = Properties.Settings.Default.ValueOfSliderOne;
+            this.mainViewModel.ValueOfSliderTwo = Properties.Settings.Default.ValueOfSliderTwo;
+            this.mainViewModel.ValueOfSliderThree = Properties.Settings.Default.ValueOfSliderThree;
+            this.mainViewModel.ValueOfSliderFour = Properties.Settings.Default.ValueOfSliderFour;
+            this.mainViewModel.ValueOfSliderFive = Properties.Settings.Default.ValueOfSliderFive;
+            this.mainViewModel.ValueOfSliderSix = Properties.Settings.Default.ValueOfSliderSix;
+
+            this.mainViewModel.RoundLotSize = Properties.Settings.Default.RoundLotSize;
+            this.mainViewModel.Capital = Properties.Settings.Default.Capital;
+
             this.orders.DataContext = this.mainViewModel.Orders;
         }
 
@@ -237,8 +247,8 @@ namespace BacktestingSoftware
             Series series3 = new Series("FinFor2");
             chart.Series.Add(series3);
 
-            chart.DataManipulator.FinancialFormula(FinancialFormula.TriangularMovingAverage, "10", "Data:Y3", "FinFor");
-            chart.DataManipulator.FinancialFormula(FinancialFormula.TriangularMovingAverage, "90", "Data:Y3", "FinFor2");
+            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "10", "Data:Y3", "FinFor");
+            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "90", "Data:Y3", "FinFor2");
             chart.Series["FinFor"].ChartType = SeriesChartType.FastLine;
             chart.Series["FinFor2"].ChartType = SeriesChartType.FastLine;
 
@@ -301,6 +311,17 @@ namespace BacktestingSoftware
             Properties.Settings.Default.DataFileName = this.mainViewModel.DataFileName;
             Properties.Settings.Default.StartDate = this.mainViewModel.StartDate;
             Properties.Settings.Default.EndDate = this.mainViewModel.EndDate;
+
+            Properties.Settings.Default.ValueOfSliderOne = this.mainViewModel.ValueOfSliderOne;
+            Properties.Settings.Default.ValueOfSliderTwo = this.mainViewModel.ValueOfSliderTwo;
+            Properties.Settings.Default.ValueOfSliderThree = this.mainViewModel.ValueOfSliderThree;
+            Properties.Settings.Default.ValueOfSliderFour = this.mainViewModel.ValueOfSliderFour;
+            Properties.Settings.Default.ValueOfSliderFive = this.mainViewModel.ValueOfSliderFive;
+            Properties.Settings.Default.ValueOfSliderSix = this.mainViewModel.ValueOfSliderSix;
+
+            Properties.Settings.Default.RoundLotSize = this.mainViewModel.RoundLotSize;
+            Properties.Settings.Default.Capital = this.mainViewModel.Capital;
+
             Properties.Settings.Default.Save();
         }
 

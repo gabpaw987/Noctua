@@ -330,5 +330,157 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private int _valueOfSliderOne;
+
+        public int ValueOfSliderOne
+        {
+            get
+            {
+                return _valueOfSliderOne;
+            }
+            set
+            {
+                if (!value.Equals(_valueOfSliderOne))
+                {
+                    _valueOfSliderOne = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderOne"));
+                }
+            }
+        }
+
+        private int _valueOfSliderTwo;
+
+        public int ValueOfSliderTwo
+        {
+            get
+            {
+                return _valueOfSliderTwo;
+            }
+            set
+            {
+                if (!value.Equals(_valueOfSliderTwo))
+                {
+                    _valueOfSliderTwo = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderTwo"));
+                }
+            }
+        }
+
+        private int _valueOfSliderThree;
+
+        public int ValueOfSliderThree
+        {
+            get
+            {
+                return _valueOfSliderThree;
+            }
+            set
+            {
+                if (!value.Equals(_valueOfSliderThree))
+                {
+                    _valueOfSliderThree = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderThree"));
+                }
+            }
+        }
+
+        private int _valueOfSliderFour;
+
+        public int ValueOfSliderFour
+        {
+            get
+            {
+                return _valueOfSliderFour;
+            }
+            set
+            {
+                if (!value.Equals(_valueOfSliderFour))
+                {
+                    _valueOfSliderFour = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderFour"));
+                }
+            }
+        }
+
+        private int _valueOfSliderFive;
+
+        public int ValueOfSliderFive
+        {
+            get
+            {
+                return _valueOfSliderFive;
+            }
+            set
+            {
+                if (!value.Equals(_valueOfSliderFive))
+                {
+                    _valueOfSliderFive = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderFive"));
+                }
+            }
+        }
+
+        private int _valueOfSliderSix;
+
+        public int ValueOfSliderSix
+        {
+            get
+            {
+                return _valueOfSliderSix;
+            }
+            set
+            {
+                if (!value.Equals(_valueOfSliderSix))
+                {
+                    _valueOfSliderSix = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderSix"));
+                }
+            }
+        }
+
+        private int _roundLotSize;
+
+        public int RoundLotSize
+        {
+            get
+            {
+                return _roundLotSize;
+            }
+            set
+            {
+                if (!value.Equals(_roundLotSize))
+                {
+                    _roundLotSize = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("RoundLotSize"));
+                }
+            }
+        }
+
+        private int _capital;
+
+        public String Capital
+        {
+            get
+            {
+                return _capital.ToString();
+            }
+            set
+            {
+                if (!(int.Parse(value)).Equals(_capital))
+                {
+                    _capital = int.Parse(value);
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("Capital"));
+                }
+            }
+        }
     }
 }

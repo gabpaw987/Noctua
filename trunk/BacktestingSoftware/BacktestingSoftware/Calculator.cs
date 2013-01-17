@@ -9,6 +9,8 @@ namespace BacktestingSoftware
     {
         private MainViewModel mainViewModel { get; set; }
 
+        private decimal currentCapital { get; set; }
+
         public Calculator(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
@@ -46,25 +48,60 @@ namespace BacktestingSoftware
                 this.mainViewModel.GainLossPercent = 0;
                 this.mainViewModel.GainPercent = 0;
                 this.mainViewModel.LossPercent = 0;
-                decimal valueOfLastTrade = 0m;
+                decimal priceOfLastTrade = 0m;
+                decimal absCumGainLoss = 0m;
+                decimal cumulativePortfolioPerformance = 0m;
+                this.currentCapital = int.Parse(this.mainViewModel.Capital);
+
+                int RoundLotSize = 0;
+                switch (this.mainViewModel.RoundLotSize)
+                {
+                    case 0:
+                        RoundLotSize = 10;
+                        break;
+                    case 1:
+                        RoundLotSize = 50;
+                        break;
+                    case 2:
+                        RoundLotSize = 100;
+                        break;
+                }
+
                 for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                 {
+                    //TODO: 0
                     if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.Signals[i] != 0 && this.mainViewModel.Signals[i - 1] != 0)
                     {
-                        if (valueOfLastTrade == 0m)
+                        if (priceOfLastTrade == 0m)
                         {
-                            //TODO:Weighting
-                            valueOfLastTrade = this.mainViewModel.BarList[i].Item5 * Math.Abs(this.mainViewModel.Signals[i]);
+                            priceOfLastTrade = this.mainViewModel.BarList[i].Item5;
+
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i), 0, 0, 0, 0, 0, absCumGainLoss, this.currentCapital));
                         }
                         else
                         {
-                            //TODO: Weighting
-                            decimal valueOfThisTrade = this.mainViewModel.BarList[i].Item5 * Math.Abs(this.mainViewModel.Signals[i]);
+                            int WeightingMultiplier = this.getWeightingMultiplier(i - 1);
+
+                            //TODO: Position reduzieren
+                            decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
+
+                            decimal currentGainLoss = 0;
+                            currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * WeightingMultiplier * RoundLotSize;
+
+                            decimal portfolioPerformance = 0;
+                            portfolioPerformance = currentGainLoss / this.currentCapital * 100;
+
+                            cumulativePortfolioPerformance += portfolioPerformance;
+
                             decimal percentageOfThisTrade = 0;
                             if (this.mainViewModel.Signals[i] > 0)
-                                percentageOfThisTrade = ((valueOfLastTrade - valueOfThisTrade) / valueOfThisTrade) * 100;
+                            {
+                                percentageOfThisTrade = ((priceOfLastTrade - priceOfThisTrade) / priceOfThisTrade) * 100;
+                            }
                             else if (this.mainViewModel.Signals[i] < 0)
-                                percentageOfThisTrade = ((valueOfThisTrade - valueOfLastTrade) / valueOfLastTrade) * 100;
+                            {
+                                percentageOfThisTrade = ((priceOfThisTrade - priceOfLastTrade) / priceOfLastTrade) * 100;
+                            }
 
                             this.mainViewModel.GainLossPercent += percentageOfThisTrade;
                             profitsForStdDev.Add((double)percentageOfThisTrade);
@@ -80,9 +117,12 @@ namespace BacktestingSoftware
                                 this.mainViewModel.LossPercent += percentageOfThisTrade;
                             }
 
-                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], 0, this.mainViewModel.BarList[i].Item5, percentageOfThisTrade, this.mainViewModel.GainLossPercent));
+                            absCumGainLoss += currentGainLoss;
+                            this.currentCapital += currentGainLoss;
 
-                            valueOfLastTrade = valueOfThisTrade;
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i), percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, cumulativePortfolioPerformance, currentGainLoss, absCumGainLoss, this.currentCapital));
+
+                            priceOfLastTrade = priceOfThisTrade;
                         }
                     }
                     EquityPricesForStdDev.Add((double)this.mainViewModel.BarList[i].Item5);
@@ -96,6 +136,26 @@ namespace BacktestingSoftware
                 this.mainViewModel.StdDevOfProfit = (decimal)this.CalculateStdDevs(profitsForStdDev);
                 this.mainViewModel.StdDevOfPEquityPrice = (decimal)this.CalculateStdDevs(EquityPricesForStdDev);
             }
+        }
+
+        private int getWeightingMultiplier(int index)
+        {
+            switch (this.mainViewModel.Signals[index])
+            {
+                case -3:
+                    return this.mainViewModel.ValueOfSliderOne * -1;
+                case -2:
+                    return this.mainViewModel.ValueOfSliderTwo * -1;
+                case -1:
+                    return this.mainViewModel.ValueOfSliderThree * -1;
+                case 1:
+                    return this.mainViewModel.ValueOfSliderFour;
+                case 2:
+                    return this.mainViewModel.ValueOfSliderFive;
+                case 3:
+                    return this.mainViewModel.ValueOfSliderSix;
+            }
+            return 0;
         }
 
         private double CalculateStdDevs(IEnumerable<double> values)

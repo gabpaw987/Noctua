@@ -127,79 +127,143 @@
                             </Style>
                         </TabControl.ItemContainerStyle>
                         <TabItem Name="GeneralSettingsTab">
-                            <StackPanel>
-                                <Grid Margin="5" >
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100"></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <!-- Text-Labels -->
-                                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
-                                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
-                                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
-                                    <!-- OpenFileDialog
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Grid Margin="5" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <!-- Text-Labels -->
+                                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
+                                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
+                                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
+                                        <!-- OpenFileDialog
                             http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
-                                    <!-- Algorithm File -->
-                                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
-                                        <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
-                                        <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
-                                    </StackPanel>
-                                    <!-- Data File -->
-                                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
-                                        <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
-                                        <TextBox Width="300" Text="{Binding Path=DataFileName}" />
-                                    </StackPanel>
-                                    <!-- Time Period -->
-                                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
-                                        <Label>From:</Label>
-                                        <DatePicker SelectedDate="{Binding Path=StartDate}" />
-                                        <Label>To:</Label>
-                                        <DatePicker SelectedDate="{Binding Path=EndDate}" />
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
+                                        <!-- Algorithm File -->
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
+                                            <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
+                                            <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
+                                        </StackPanel>
+                                        <!-- Data File -->
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
+                                            <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
+                                            <TextBox Width="300" Text="{Binding Path=DataFileName}" />
+                                        </StackPanel>
+                                        <!-- Time Period -->
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
+                                            <Label>From:</Label>
+                                            <DatePicker SelectedDate="{Binding Path=StartDate}" />
+                                            <Label>To:</Label>
+                                            <DatePicker SelectedDate="{Binding Path=EndDate}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
                         </TabItem>
                         <TabItem Name="OrdersSettingsTab">
-                            <StackPanel>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition Height="100"></RowDefinition>
-                                        <RowDefinition></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                        <ColumnDefinition Width="50"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <Label Content="-3" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
-                                    <Label Content="-2" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
-                                    <Label Content="-1" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" />
-                                    <Label Content="1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" />
-                                    <Label Content="2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" />
-                                    <Label Content="3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" />
-                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" />
-                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" />
-                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" />
-                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" />
-                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" />
-                                    <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" />
-                                    <TextBox Grid.Row="2" Grid.Column="0" Margin="0,3,0,0"/>
-                                    <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3,0,0"/>
-                                    <TextBox Grid.Row="2" Grid.Column="2" Margin="0,3,0,0"/>
-                                    <TextBox Grid.Row="2" Grid.Column="3" Margin="0,3,0,0"/>
-                                    <TextBox Grid.Row="2" Grid.Column="4" Margin="0,3,0,0"/>
-                                    <TextBox Grid.Row="2" Grid.Column="5" Margin="0,3,0,0"/>
-                                </Grid>
-                            </StackPanel>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Orientation="Vertical">
+                                    <Label>
+                                        <Span FontWeight="Bold">Portfolio</Span>
+                                    </Label>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Width="50" Content="Capital:"/>
+                                        <TextBox Width="50" Text="{Binding Path=Capital}" Margin="0,3,0,3"/>
+                                    </StackPanel>
+                                    <Label>
+                                        <Span FontWeight="Bold">Transaction Fee</Span>
+                                    </Label>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Abs"/>
+                                        <TextBox Grid.Row="0" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
+                                        <Label Grid.Row="0" Grid.Column="2" Content="$"/>
+
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Rel"/>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
+                                        <Label Grid.Row="1" Grid.Column="2" Content="%"/>
+                                    </Grid>
+                                    <Label>
+                                        <Span FontWeight="Bold">Price Premium</Span>
+                                    </Label>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Buy"/>
+                                        <TextBox Grid.Row="0" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
+                                        <Label Grid.Row="0" Grid.Column="2" Content="$"/>
+
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Sell"/>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
+                                        <Label Grid.Row="1" Grid.Column="2" Content="$"/>
+                                    </Grid>
+                                    <Label>
+                                        <Span FontWeight="Bold">Order Sizes</Span>
+                                    </Label>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="100"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="-3" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
+                                        <Label Content="-2" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
+                                        <Label Content="-1" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" />
+                                        <Label Content="1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" />
+                                        <Label Content="2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" />
+                                        <Label Content="3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" />
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderOne}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderTwo}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderThree}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderFour}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderFive}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderSix}" Minimum="0" Maximum="5"/>
+                                        <TextBox Grid.Row="2" Grid.Column="0" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderOne}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="1" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderTwo}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="2" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderThree}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="3" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderFour}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="4" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderFive}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="5" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderSix}" TextAlignment="Center"/>
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <Label Content="Round Lot Size:"/>
+                                        <ComboBox Width="50" Margin="0,3,0,3" SelectedIndex="{Binding Path=RoundLotSize}">
+                                            <ComboBoxItem Name="CBI0" Content="10"/>
+                                            <ComboBoxItem Name="CBI1" Content="50"/>
+                                            <ComboBoxItem Name="CBI2" Content="100"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
                         </TabItem>
                     </TabControl>
                 </Grid>
