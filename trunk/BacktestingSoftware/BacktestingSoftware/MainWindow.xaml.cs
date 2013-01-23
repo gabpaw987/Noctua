@@ -186,7 +186,7 @@ namespace BacktestingSoftware
             chart.Series["Data"]["PriceDownColor"] = "Red"; // <<== use text indexer for series
             //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
             chart.Series["Data"].Color = System.Drawing.Color.Black;
-
+            
             //Calculating Minimum and Maximum values for scaling of y axis
             decimal min = this.mainViewModel.BarList[0].Item4;
             decimal max = 0m;
@@ -227,9 +227,9 @@ namespace BacktestingSoftware
             chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
 
             decimal margin = (max - min) * 5 / 100;
-            chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+            //chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
             chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
-
+            chart.ChartAreas[0].AxisY.Minimum = 0;
             for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
             {
                 // adding date and high
@@ -247,7 +247,7 @@ namespace BacktestingSoftware
             Series series3 = new Series("FinFor2");
             chart.Series.Add(series3);
 
-            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "10", "Data:Y3", "FinFor");
+            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, "12,26", "Data:Y3", "FinFor");
             chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "90", "Data:Y3", "FinFor2");
             chart.Series["FinFor"].ChartType = SeriesChartType.FastLine;
             chart.Series["FinFor2"].ChartType = SeriesChartType.FastLine;

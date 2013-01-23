@@ -1,0 +1,6 @@
+c:\users\josefs\documents\visual studio 2010\Projects\Algorithms\Algorithms\obj\x86\Debug\Algorithms.pdb
+C:\Users\Josefs\Documents\Visual Studio 2010\Projects\Algorithms\Algorithms\bin\Debug\Algorithms.XML
+C:\Users\Josefs\Documents\Visual Studio 2010\Projects\Algorithms\Algorithms\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Josefs\Documents\Visual Studio 2010\Projects\Algorithms\Algorithms\obj\x86\Debug\Algorithms.dll
+C:\Users\Josefs\Documents\Visual Studio 2010\Projects\Algorithms\Algorithms\bin\Debug\Algorithms.dll
+C:\Users\Josefs\Documents\Visual Studio 2010\Projects\Algorithms\Algorithms\bin\Debug\Algorithms.pdb
