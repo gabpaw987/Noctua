@@ -18,7 +18,7 @@ namespace AlgorthimTesting
             // = new List<decimal>();
             // 
             List<int> test = new List<int>() ;
-            test =  Algorithm.DecisionCalculator.startCalculation(1,asd,test);
+            test =  Algorithm.DecisionCalculator.startCalculation(2,asd,test);
             for (int i = 0; i < test.Count;i++ )
                 Console.WriteLine(test.ElementAt(i));
             Console.Read();
