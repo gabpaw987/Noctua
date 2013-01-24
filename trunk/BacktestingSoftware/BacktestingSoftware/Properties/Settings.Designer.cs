@@ -164,5 +164,77 @@ namespace BacktestingSoftware.Properties {
                 this["Capital"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string AbsTransactionFee {
+            get {
+                return ((string)(this["AbsTransactionFee"]));
+            }
+            set {
+                this["AbsTransactionFee"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string RelTransactionFee {
+            get {
+                return ((string)(this["RelTransactionFee"]));
+            }
+            set {
+                this["RelTransactionFee"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string BuyPricePremium {
+            get {
+                return ((string)(this["BuyPricePremium"]));
+            }
+            set {
+                this["BuyPricePremium"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string SellPricePremium {
+            get {
+                return ((string)(this["SellPricePremium"]));
+            }
+            set {
+                this["SellPricePremium"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string ShortBorrowingFee {
+            get {
+                return ((string)(this["ShortBorrowingFee"]));
+            }
+            set {
+                this["ShortBorrowingFee"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SaveFileName {
+            get {
+                return ((string)(this["SaveFileName"]));
+            }
+            set {
+                this["SaveFileName"] = value;
+            }
+        }
     }
 }

@@ -52,6 +52,14 @@ namespace BacktestingSoftware
             this.mainViewModel.RoundLotSize = Properties.Settings.Default.RoundLotSize;
             this.mainViewModel.Capital = Properties.Settings.Default.Capital;
 
+            this.mainViewModel.AbsTransactionFee = Properties.Settings.Default.AbsTransactionFee;
+            this.mainViewModel.RelTransactionFee = Properties.Settings.Default.RelTransactionFee;
+            this.mainViewModel.BuyPricePremium = Properties.Settings.Default.BuyPricePremium;
+            this.mainViewModel.SellPricePremium = Properties.Settings.Default.SellPricePremium;
+            this.mainViewModel.ShortBorrowingFee = Properties.Settings.Default.ShortBorrowingFee;
+
+            this.mainViewModel.SaveFileName = Properties.Settings.Default.SaveFileName;
+
             this.orders.DataContext = this.mainViewModel.Orders;
         }
 
@@ -141,6 +149,8 @@ namespace BacktestingSoftware
             {
                 this.StatusLabel.Text = String.Empty + args.UserState.ToString();
                 this.ProgressBar.Value = args.ProgressPercentage;
+                if (args.ProgressPercentage == 0)
+                    this.ProgressBar.Visibility = Visibility.Visible;
             });
 
             // what to do when worker completes its task (notify the user)
@@ -151,6 +161,7 @@ namespace BacktestingSoftware
                 this.LoadLineChartData();
                 this.StatusLabel.Text = "Finished!";
                 this.ProgressBar.Value = 100;
+                this.ProgressBar.Visibility = Visibility.Hidden;
                 this.orders.Items.Refresh();
             });
 
@@ -319,8 +330,16 @@ namespace BacktestingSoftware
             Properties.Settings.Default.ValueOfSliderFive = this.mainViewModel.ValueOfSliderFive;
             Properties.Settings.Default.ValueOfSliderSix = this.mainViewModel.ValueOfSliderSix;
 
+            Properties.Settings.Default.AbsTransactionFee = this.mainViewModel.AbsTransactionFee;
+            Properties.Settings.Default.RelTransactionFee = this.mainViewModel.RelTransactionFee;
+            Properties.Settings.Default.BuyPricePremium = this.mainViewModel.BuyPricePremium;
+            Properties.Settings.Default.SellPricePremium = this.mainViewModel.SellPricePremium;
+            Properties.Settings.Default.ShortBorrowingFee = this.mainViewModel.ShortBorrowingFee;
+
             Properties.Settings.Default.RoundLotSize = this.mainViewModel.RoundLotSize;
             Properties.Settings.Default.Capital = this.mainViewModel.Capital;
+
+            Properties.Settings.Default.SaveFileName = this.mainViewModel.SaveFileName;
 
             Properties.Settings.Default.Save();
         }
@@ -395,13 +414,28 @@ namespace BacktestingSoftware
                                    this.mainViewModel.GtBtRatio});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
-                List<string> tempFileNameList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
-                                                                            this.mainViewModel.DataFileName});
-                bFormatter.Serialize(stream, tempFileNameList);
+                List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
+                                                                            this.mainViewModel.DataFileName,
+                                                                            this.mainViewModel.Capital,
+                                                                            this.mainViewModel.AbsTransactionFee,
+                                                                            this.mainViewModel.RelTransactionFee,
+                                                                            this.mainViewModel.BuyPricePremium,
+                                                                            this.mainViewModel.SellPricePremium,
+                                                                            this.mainViewModel.ShortBorrowingFee});
+                bFormatter.Serialize(stream, tempStringList);
 
                 List<DateTime> tempDateList = new List<DateTime>(new DateTime[] {this.mainViewModel.StartDate,
                                                                               this.mainViewModel.EndDate});
                 bFormatter.Serialize(stream, tempDateList);
+
+                List<int> tempIntList = new List<int>(new int[] {this.mainViewModel.ValueOfSliderOne,
+                                                                 this.mainViewModel.ValueOfSliderTwo,
+                                                                 this.mainViewModel.ValueOfSliderThree,
+                                                                 this.mainViewModel.ValueOfSliderFour,
+                                                                 this.mainViewModel.ValueOfSliderFive,
+                                                                 this.mainViewModel.ValueOfSliderSix,
+                                                                 this.mainViewModel.RoundLotSize});
+                bFormatter.Serialize(stream, tempIntList);
 
                 stream.Close();
             }
@@ -461,13 +495,28 @@ namespace BacktestingSoftware
                 this.mainViewModel.NoOfBadTrades = tempPerfomanceList[6];
                 this.mainViewModel.GtBtRatio = tempPerfomanceList[7];
 
-                List<string> tempFileNameList = (List<string>)bFormatter.Deserialize(stream);
-                this.mainViewModel.AlgorithmFileName = tempFileNameList[0];
-                this.mainViewModel.DataFileName = tempFileNameList[1];
+                List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
+                this.mainViewModel.AlgorithmFileName = tempStringList[0];
+                this.mainViewModel.DataFileName = tempStringList[1];
+                this.mainViewModel.Capital = tempStringList[2];
+                this.mainViewModel.AbsTransactionFee = tempStringList[3];
+                this.mainViewModel.RelTransactionFee = tempStringList[4];
+                this.mainViewModel.BuyPricePremium = tempStringList[5];
+                this.mainViewModel.SellPricePremium = tempStringList[6];
+                this.mainViewModel.ShortBorrowingFee = tempStringList[7];
 
                 List<DateTime> tempDateList = (List<DateTime>)bFormatter.Deserialize(stream);
                 this.mainViewModel.StartDate = tempDateList[0];
                 this.mainViewModel.EndDate = tempDateList[1];
+
+                List<int> tempIntList = (List<int>)bFormatter.Deserialize(stream);
+                this.mainViewModel.ValueOfSliderOne = tempIntList[0];
+                this.mainViewModel.ValueOfSliderTwo = tempIntList[1];
+                this.mainViewModel.ValueOfSliderThree = tempIntList[2];
+                this.mainViewModel.ValueOfSliderFour = tempIntList[3];
+                this.mainViewModel.ValueOfSliderFive = tempIntList[4];
+                this.mainViewModel.ValueOfSliderSix = tempIntList[5];
+                this.mainViewModel.RoundLotSize = tempIntList[6];
 
                 this.mainViewModel.SaveFileName = this.mainViewModel.LoadFileName;
 

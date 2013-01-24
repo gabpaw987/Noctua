@@ -9,8 +9,6 @@ namespace BacktestingSoftware
     {
         private MainViewModel mainViewModel { get; set; }
 
-        private decimal currentCapital { get; set; }
-
         public Calculator(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
@@ -50,8 +48,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.LossPercent = 0;
                 decimal priceOfLastTrade = 0m;
                 decimal absCumGainLoss = 0m;
-                decimal cumulativePortfolioPerformance = 0m;
-                this.currentCapital = int.Parse(this.mainViewModel.Capital);
+                this.mainViewModel.NetWorth = int.Parse(this.mainViewModel.Capital);
 
                 int RoundLotSize = 0;
                 switch (this.mainViewModel.RoundLotSize)
@@ -69,38 +66,39 @@ namespace BacktestingSoftware
 
                 for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                 {
-                    //TODO: 0
-                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.Signals[i] != 0 && this.mainViewModel.Signals[i - 1] != 0)
+                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i])
                     {
                         if (priceOfLastTrade == 0m)
                         {
                             priceOfLastTrade = this.mainViewModel.BarList[i].Item5;
 
-                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i), 0, 0, 0, 0, 0, absCumGainLoss, this.currentCapital));
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i), 0, 0, 0, 0, 0, absCumGainLoss, this.mainViewModel.NetWorth));
                         }
                         else
                         {
-                            int WeightingMultiplier = this.getWeightingMultiplier(i - 1);
+                            int oldWeightingMultiplier = this.getWeightingMultiplier(i - 1);
+                            int WeightingMultiplier = this.getWeightingMultiplier(i);
 
-                            //TODO: Position reduzieren
                             decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
 
                             decimal currentGainLoss = 0;
-                            currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * WeightingMultiplier * RoundLotSize;
+                            currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize;
 
                             decimal portfolioPerformance = 0;
-                            portfolioPerformance = currentGainLoss / this.currentCapital * 100;
+                            portfolioPerformance = currentGainLoss / this.mainViewModel.NetWorth * 100;
 
-                            cumulativePortfolioPerformance += portfolioPerformance;
+                            this.mainViewModel.PortfolioPerformancePercent += portfolioPerformance;
 
                             decimal percentageOfThisTrade = 0;
-                            if (this.mainViewModel.Signals[i] > 0)
+                            if ((oldWeightingMultiplier == 0) ||
+                                (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
+                                (WeightingMultiplier - oldWeightingMultiplier) == Math.Sign(WeightingMultiplier)))
                             {
-                                percentageOfThisTrade = ((priceOfLastTrade - priceOfThisTrade) / priceOfThisTrade) * 100;
+                                percentageOfThisTrade = 0;
                             }
-                            else if (this.mainViewModel.Signals[i] < 0)
+                            else if (oldWeightingMultiplier != 0)
                             {
-                                percentageOfThisTrade = ((priceOfThisTrade - priceOfLastTrade) / priceOfLastTrade) * 100;
+                                percentageOfThisTrade = ((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade)) / priceOfLastTrade) * 100;
                             }
 
                             this.mainViewModel.GainLossPercent += percentageOfThisTrade;
@@ -118,9 +116,9 @@ namespace BacktestingSoftware
                             }
 
                             absCumGainLoss += currentGainLoss;
-                            this.currentCapital += currentGainLoss;
+                            this.mainViewModel.NetWorth += currentGainLoss;
 
-                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i), percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, cumulativePortfolioPerformance, currentGainLoss, absCumGainLoss, this.currentCapital));
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i), percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
 
                             priceOfLastTrade = priceOfThisTrade;
                         }
