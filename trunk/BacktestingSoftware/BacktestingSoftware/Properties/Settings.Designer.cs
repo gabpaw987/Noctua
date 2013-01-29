@@ -236,5 +236,16 @@ namespace BacktestingSoftware.Properties {
                 this["SaveFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection IndicatorPanels {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["IndicatorPanels"]));
+            }
+            set {
+                this["IndicatorPanels"] = value;
+            }
+        }
     }
 }

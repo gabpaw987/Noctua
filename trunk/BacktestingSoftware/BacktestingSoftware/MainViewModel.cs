@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace BacktestingSoftware
 {
@@ -626,6 +627,25 @@ namespace BacktestingSoftware
                     _portfolioPerformancePercent = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("PortfolioPerformancePercent"));
+                }
+            }
+        }
+
+        private List<StackPanel> _indicatorPanels;
+
+        public List<StackPanel> IndicatorPanels
+        {
+            get
+            {
+                return _indicatorPanels;
+            }
+            set
+            {
+                if (!value.Equals(_indicatorPanels))
+                {
+                    _indicatorPanels = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IndicatorPanels"));
                 }
             }
         }

@@ -48,7 +48,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.LossPercent = 0;
                 decimal priceOfLastTrade = 0m;
                 decimal absCumGainLoss = 0m;
-                this.mainViewModel.NetWorth = int.Parse(this.mainViewModel.Capital);
+                this.mainViewModel.NetWorth = decimal.Parse(this.mainViewModel.Capital);
 
                 int RoundLotSize = 0;
                 switch (this.mainViewModel.RoundLotSize)
@@ -87,7 +87,7 @@ namespace BacktestingSoftware
                             decimal portfolioPerformance = 0;
                             portfolioPerformance = currentGainLoss / this.mainViewModel.NetWorth * 100;
 
-                            this.mainViewModel.PortfolioPerformancePercent += portfolioPerformance;
+                            this.mainViewModel.PortfolioPerformancePercent += (currentGainLoss / decimal.Parse(this.mainViewModel.Capital) * 100);
 
                             decimal percentageOfThisTrade = 0;
                             if ((oldWeightingMultiplier == 0) ||
@@ -102,7 +102,7 @@ namespace BacktestingSoftware
                             }
 
                             this.mainViewModel.GainLossPercent += percentageOfThisTrade;
-                            profitsForStdDev.Add((double)percentageOfThisTrade);
+                            profitsForStdDev.Add((double)portfolioPerformance);
 
                             if (percentageOfThisTrade > 0)
                             {

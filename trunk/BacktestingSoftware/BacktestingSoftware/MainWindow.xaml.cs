@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Markup;
+using Xceed.Wpf.Toolkit;
 
 namespace BacktestingSoftware
 {
@@ -60,7 +63,40 @@ namespace BacktestingSoftware
 
             this.mainViewModel.SaveFileName = Properties.Settings.Default.SaveFileName;
 
+            this.mainViewModel.IndicatorPanels = new List<StackPanel>();
+            if (Properties.Settings.Default.IndicatorPanels != null)
+            {
+                if (Properties.Settings.Default.IndicatorPanels.Count != 0)
+                {
+                    this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(Properties.Settings.Default.IndicatorPanels);
+                }
+            }
+            else
+            {
+                Properties.Settings.Default.IndicatorPanels = new System.Collections.Specialized.StringCollection();
+            }
+
+            this.refreshIndicatorList();
+
             this.orders.DataContext = this.mainViewModel.Orders;
+        }
+
+        public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
+        {
+            List<StackPanel> newList = new List<StackPanel>();
+
+            for (int i = 0; i < strings.Count; i += 2)
+            {
+                newList.Add((StackPanel)XamlReader.Parse(strings[i]));
+                string[] argb = strings[i + 1].Split(';');
+                ColorPicker cp = this.AddColorPicker();
+                cp.SelectedColor = System.Windows.Media.Color.FromArgb(Convert.ToByte(argb[0]), Convert.ToByte(argb[1]), Convert.ToByte(argb[2]), Convert.ToByte(argb[3]));
+                newList[i / 2].Children.Add(cp);
+
+                ((System.Windows.Controls.Button)newList[i / 2].Children[0]).Click += RemoveIndicatorButton_Click;
+            }
+
+            return newList;
         }
 
         private void OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -253,18 +289,63 @@ namespace BacktestingSoftware
                 chart.Series["Data"].Points[i].YValues[3] = Convert.ToDouble(this.mainViewModel.BarList[i].Item5);
             }
 
-            Series series2 = new Series("FinFor");
-            chart.Series.Add(series2);
-            Series series3 = new Series("FinFor2");
-            chart.Series.Add(series3);
+            double min2 = 0;
+            double max2 = 0;
 
-            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "10", "Data:Y3", "FinFor");
-            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "90", "Data:Y3", "FinFor2");
-            chart.Series["FinFor"].ChartType = SeriesChartType.FastLine;
-            chart.Series["FinFor2"].ChartType = SeriesChartType.FastLine;
+            for (int i = 0; i < this.mainViewModel.IndicatorPanels.Count; i++)
+            {
+                Series formula = new Series("FinFor" + i);
+                chart.Series.Add(formula);
 
-            chart.Series["FinFor"].Color = System.Drawing.Color.CornflowerBlue;
-            chart.Series["FinFor2"].Color = System.Drawing.Color.DarkGoldenrod;
+                if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Simple Moving Average"))
+                {
+                    chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+                }
+                else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Weighted Moving Average"))
+                {
+                    chart.DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+                }
+                else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Exponential Moving Average"))
+                {
+                    chart.DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+                }
+                else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Moving Average Convergence-Divergence"))
+                {
+                    if (chart.ChartAreas.Count <= 1)
+                        this.drawSecondChartArea(chart);
+
+                    formula.ChartArea = "IndicatorArea";
+
+                    chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+
+                    for (int j = 0; j < chart.Series["FinFor" + i].Points.Count; j++)
+                    {
+                        if (chart.Series["FinFor" + i].Points[j].YValues[0] < min2)
+                            min2 = chart.Series["FinFor" + i].Points[j].YValues[0];
+                        else if (chart.Series["FinFor" + i].Points[j].YValues[0] > max2)
+                            max2 = chart.Series["FinFor" + i].Points[j].YValues[0];
+                    }
+                }
+                else
+                {
+                    chart.Series.Remove(formula);
+                    break;
+                }
+
+                System.Windows.Media.Color tempColor = ((ColorPicker)this.mainViewModel.IndicatorPanels[i].Children[4]).SelectedColor;
+                chart.Series["FinFor" + i].Color = System.Drawing.Color.FromArgb(tempColor.A, tempColor.R, tempColor.G, tempColor.B);
+            }
+
+            if (chart.ChartAreas.Count > 1)
+            {
+                double margin2 = (max2 - min2) * 5 / 100;
+                chart.ChartAreas[1].AxisY.Minimum = Math.Round(min2 - margin2);
+                chart.ChartAreas[1].AxisY.Maximum = Math.Round(max2 + margin2);
+            }
 
             chart.DataBind();
 
@@ -278,16 +359,60 @@ namespace BacktestingSoftware
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                Chart chart = this.FindName("MyWinformChart") as Chart;
+                Chart chart = sender as Chart;
                 chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 chart.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+
+                if (chart.ChartAreas.Count > 1)
+                {
+                    chart.ChartAreas[1].AxisX.ScaleView.ZoomReset();
+                    chart.ChartAreas[1].AxisY.ScaleView.ZoomReset();
+                }
             }
+        }
+
+        public void drawSecondChartArea(Chart chart)
+        {
+            ChartArea indicatorArea = new ChartArea("IndicatorArea");
+            chart.ChartAreas.Add(indicatorArea);
+
+            chart.ChartAreas[1].CursorY.IsUserEnabled = true;
+            chart.ChartAreas[1].CursorY.IsUserSelectionEnabled = true;
+            chart.ChartAreas[1].AxisY.ScaleView.Zoomable = true;
+            chart.ChartAreas[1].AxisY.ScrollBar.IsPositionedInside = false;
+
+            chart.ChartAreas[1].CursorX.IsUserEnabled = true;
+            chart.ChartAreas[1].CursorX.IsUserSelectionEnabled = true;
+            chart.ChartAreas[1].AxisX.ScaleView.Zoomable = true;
+            chart.ChartAreas[1].AxisX.ScrollBar.IsPositionedInside = false;
+
+            chart.ChartAreas[1].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chart.ChartAreas[1].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+
+            chart.ChartAreas[1].AlignWithChartArea = "MainArea";
+
+            chart.ChartAreas[1].AxisX.Minimum = this.mainViewModel.BarList[0].Item1.ToOADate();
+            chart.ChartAreas[1].AxisX.Maximum = this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate();
+
+            chart.ChartAreas[1].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
+                                 this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
+
+            chart.ChartAreas[0].Position.Width = 100;
+            chart.ChartAreas[0].Position.X = 0;
+            chart.ChartAreas[0].Position.Height = 70;
+            chart.ChartAreas[0].Position.Y = 0;
+
+            chart.ChartAreas[1].Position.Width = 100;
+            chart.ChartAreas[1].Position.X = 0;
+            chart.ChartAreas[1].Position.Height = 30;
+            chart.ChartAreas[1].Position.Y = 70;
         }
 
         public void resetCalculation()
         {
             this.mainViewModel.Orders.Clear();
             this.orders.Items.Refresh();
+
             this.mainViewModel.Signals.Clear();
             this.mainViewModel.BarList.Clear();
             this.mainViewModel.GainLossPercent = 0;
@@ -298,9 +423,14 @@ namespace BacktestingSoftware
             this.mainViewModel.StdDevOfPEquityPrice = 0;
             this.mainViewModel.StdDevOfProfit = 0;
             this.mainViewModel.LossPercent = 0;
+            this.mainViewModel.NetWorth = 0;
+            this.mainViewModel.PortfolioPerformancePercent = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
+
             chart.Series.Clear();
+            chart.ChartAreas.Clear();
+            chart.ChartAreas.Add(new ChartArea("MainArea"));
 
             this.StatusLabel.Text = "Ready";
             this.ProgressBar.Value = 0;
@@ -341,7 +471,29 @@ namespace BacktestingSoftware
 
             Properties.Settings.Default.SaveFileName = this.mainViewModel.SaveFileName;
 
+            Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
+
             Properties.Settings.Default.Save();
+        }
+
+        public StringCollection storeIndicatorStackPanels(List<StackPanel> stackPanels)
+        {
+            StringCollection strings = new StringCollection();
+            if (stackPanels.Count != 0)
+            {
+                foreach (StackPanel sp in stackPanels)
+                {
+                    if (sp.Children[sp.Children.Count - 1].GetType().IsAssignableFrom((new ColorPicker()).GetType()))
+                    {
+                        ColorPicker cp = ((ColorPicker)sp.Children[sp.Children.Count - 1]);
+                        sp.Children.Remove(cp);
+                        strings.Add(XamlWriter.Save(sp));
+                        strings.Add(cp.SelectedColor.A + ";" + cp.SelectedColor.R + ";" + cp.SelectedColor.G + ";" + cp.SelectedColor.B);
+                        sp.Children.Add(cp);
+                    }
+                }
+            }
+            return strings;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -411,7 +563,9 @@ namespace BacktestingSoftware
                                    this.mainViewModel.StdDevOfPEquityPrice,
                                    this.mainViewModel.NoOfGoodTrades,
                                    this.mainViewModel.NoOfBadTrades,
-                                   this.mainViewModel.GtBtRatio});
+                                   this.mainViewModel.GtBtRatio,
+                                   this.mainViewModel.NetWorth,
+                                   this.mainViewModel.PortfolioPerformancePercent});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -436,6 +590,10 @@ namespace BacktestingSoftware
                                                                  this.mainViewModel.ValueOfSliderSix,
                                                                  this.mainViewModel.RoundLotSize});
                 bFormatter.Serialize(stream, tempIntList);
+
+                StringCollection serializableStackPanels = new StringCollection();
+                serializableStackPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
+                bFormatter.Serialize(stream, serializableStackPanels);
 
                 stream.Close();
             }
@@ -494,6 +652,8 @@ namespace BacktestingSoftware
                 this.mainViewModel.NoOfGoodTrades = tempPerfomanceList[5];
                 this.mainViewModel.NoOfBadTrades = tempPerfomanceList[6];
                 this.mainViewModel.GtBtRatio = tempPerfomanceList[7];
+                this.mainViewModel.NetWorth = tempPerfomanceList[8];
+                this.mainViewModel.PortfolioPerformancePercent = tempPerfomanceList[9];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
@@ -518,6 +678,10 @@ namespace BacktestingSoftware
                 this.mainViewModel.ValueOfSliderSix = tempIntList[5];
                 this.mainViewModel.RoundLotSize = tempIntList[6];
 
+                StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
+                this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
+                this.refreshIndicatorList();
+
                 this.mainViewModel.SaveFileName = this.mainViewModel.LoadFileName;
 
                 stream.Close();
@@ -534,6 +698,93 @@ namespace BacktestingSoftware
                 this.GeneralSettingsTab.IsSelected = true;
             else if (e.Source == this.OrdersSettingsTabSelector)
                 this.OrdersSettingsTab.IsSelected = true;
+            else if (e.Source == this.ChartSettingsTabSelector)
+                this.ChartSettingsTab.IsSelected = true;
+        }
+
+        private void RemoveIndicatorButton_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < this.mainViewModel.IndicatorPanels.Count; i++)
+            {
+                if (((System.Windows.Controls.Button)this.mainViewModel.IndicatorPanels[i].Children[0]).Equals((System.Windows.Controls.Button)sender))
+                {
+                    this.mainViewModel.IndicatorPanels.RemoveAt(i);
+                }
+            }
+            this.refreshIndicatorList();
+        }
+
+        private void AddIndicatorButton_Click(object sender, RoutedEventArgs e)
+        {
+            StackPanel sp = new StackPanel();
+            sp.Orientation = System.Windows.Controls.Orientation.Horizontal;
+
+            System.Windows.Controls.Button remBut = new System.Windows.Controls.Button();
+            remBut.Content = "Remove";
+            remBut.Margin = new Thickness(5, 5, 5, 5);
+            remBut.Click += RemoveIndicatorButton_Click;
+            sp.Children.Add(remBut);
+
+            System.Windows.Controls.Label label = new System.Windows.Controls.Label();
+            label.Content = ((ComboBoxItem)this.IndicatorComboBox.SelectedValue).Content;
+            label.Margin = new Thickness(0, 0, 20, 0);
+            label.Width = 200;
+            sp.Children.Add(label);
+
+            switch (this.IndicatorComboBox.SelectedIndex)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    sp.Children.Add(this.AddLabel("Length"));
+                    sp.Children.Add(this.AddTextBox(String.Empty));
+                    sp.Children.Add(this.AddColorPicker());
+                    break;
+                case 3:
+                    sp.Children.Add(this.AddLabel("Lengths"));
+                    sp.Children.Add(this.AddTextBox("Works like this: length1,length2"));
+                    sp.Children.Add(this.AddColorPicker());
+
+                    break;
+            }
+
+            this.mainViewModel.IndicatorPanels.Add(sp);
+            this.refreshIndicatorList();
+        }
+
+        public System.Windows.Controls.Label AddLabel(string content)
+        {
+            System.Windows.Controls.Label label = new System.Windows.Controls.Label();
+            label.Content = content;
+            return label;
+        }
+
+        public System.Windows.Controls.TextBox AddTextBox(string tooltip)
+        {
+            System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
+            tb.Margin = new Thickness(5, 5, 5, 5);
+            if (tooltip.Length != 0)
+                tb.ToolTip = tooltip;
+            tb.Width = 50;
+            return tb;
+        }
+
+        public ColorPicker AddColorPicker()
+        {
+            ColorPicker cp = new ColorPicker();
+            cp.DisplayColorAndName = true;
+            //cp2.Width = 100;
+            cp.Margin = new Thickness(5, 5, 5, 5);
+            return cp;
+        }
+
+        public void refreshIndicatorList()
+        {
+            this.IndicatorStackPanel.Children.Clear();
+            foreach (StackPanel panel in this.mainViewModel.IndicatorPanels)
+            {
+                this.IndicatorStackPanel.Children.Add(panel);
+            }
         }
     }
 }
