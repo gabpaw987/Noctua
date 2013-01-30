@@ -136,6 +136,25 @@ namespace Algorithm
                 if ergebnis1.[i+mover] = ergebnis2.[i] then
                     signals.Add(0)
             signals
+        
+
+        let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+            for i = 0 to n3-1 do
+                signals.Add(0)
+            let shorts = sma2(n1,list2D)
+            let shortmover = n3 - n1
+            let middle = sma2(n2,list2D)
+            let middlemover = n2 - n1
+            let longs = sma2(n3,list2D)
+            for i = 0 to longs.Length - 1 do
+                if shorts.[i + shortmover] < middle.[i + middlemover] && middle.[i + middlemover] < longs.[i] then
+                    signals.Add(-1)
+                else if shorts.[i + shortmover] > middle.[i + middlemover] && middle.[i + middlemover] > longs.[i] then
+                    signals.Add(1)
+                else
+                    signals.Add(signals.[signals.Count-1])
+            signals
+
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            signalgeber3 (10,90,0.5, list2D, signals)
+            tripleCrossed (10,15,20, list2D, signals)
