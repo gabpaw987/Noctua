@@ -1,7 +1,7 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator7=
+    module DecisionCalculator=
         open System.IO
         let readLines (filePath:string) = seq {
             use sr = new StreamReader (filePath)
@@ -137,5 +137,5 @@ namespace Algorithm
                     signals.Add(0)
             signals
 
-        let startCalculation (n:int, list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            signalgeber (10,90, list2D, signals)
+        let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
+            signalgeber3 (10,90,0.5, list2D, signals)

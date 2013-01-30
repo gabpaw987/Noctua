@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator9=
         let regression(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick
@@ -23,19 +23,23 @@
             let mutable xx = 0m
             let mutable x = 0m
             let mutable y = 0m
-            for i = 0 to liste2D.Count do 
+            for i = 0 to liste2D.Count - 1 do 
                 x <- x+decimal i
                 y <- y + liste2D.[i].Item5
                 xy <- xy + liste2D.[i].Item5 * decimal i
                 xx <- xx + decimal i* decimal i
             let b = (decimal liste2D.Count * xy - (x*y))/(decimal liste2D.Count * xx - x*x)
-            //http://www.easycalculation.com/statistics/learn-regression.php
+            let a = (y - b*x)/decimal liste2D.Count
+            decimal liste2D.Count*b + a
 
         (*  *)
         let signalgeber(n:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>) =
             //for i = 0 to 2 do
             //    signals.Add(0)
-            let regressions = regression(n,list2D)
+            let mutable regressions = []
+            for i = 20 to list2D.Count - 1 do
+                regressions <- List.append regressions [(regression2((list2D.GetRange(i-20,20))))]
+            let regression = regression2(list2D)
             let temp = regressions.[0]
             for i = 0 to regressions.Length - 1 do
                 let temp = regressions.[i]
@@ -45,5 +49,5 @@
                     signals.Add(-1)    
             signals
 
-        let startCalculation (n:int, list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
+        let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
             signalgeber (20, list2D, signals)
