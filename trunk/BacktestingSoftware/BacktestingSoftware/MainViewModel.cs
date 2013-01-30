@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace BacktestingSoftware
 {
@@ -479,6 +480,172 @@ namespace BacktestingSoftware
                     _capital = int.Parse(value);
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("Capital"));
+                }
+            }
+        }
+
+        private decimal _absTransactionFee;
+
+        public String AbsTransactionFee
+        {
+            get
+            {
+                return _absTransactionFee.ToString();
+            }
+            set
+            {
+                if (!(int.Parse(value)).Equals(_absTransactionFee))
+                {
+                    _absTransactionFee = int.Parse(value);
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("AbsTransactionFee"));
+                }
+            }
+        }
+
+        private decimal _relTransactionFee;
+
+        public String RelTransactionFee
+        {
+            get
+            {
+                return _relTransactionFee.ToString();
+            }
+            set
+            {
+                if (!(int.Parse(value)).Equals(_relTransactionFee))
+                {
+                    _relTransactionFee = int.Parse(value);
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("RelTransactionFee"));
+                }
+            }
+        }
+
+        private decimal _buyPricePremium;
+
+        public String BuyPricePremium
+        {
+            get
+            {
+                return _buyPricePremium.ToString();
+            }
+            set
+            {
+                if (!(int.Parse(value)).Equals(_buyPricePremium))
+                {
+                    _buyPricePremium = int.Parse(value);
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("BuyPricePremium"));
+                }
+            }
+        }
+
+        private decimal _sellPricePremium;
+
+        public String SellPricePremium
+        {
+            get
+            {
+                return _sellPricePremium.ToString();
+            }
+            set
+            {
+                if (!(int.Parse(value)).Equals(_sellPricePremium))
+                {
+                    _sellPricePremium = int.Parse(value);
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("SellPricePremium"));
+                }
+            }
+        }
+
+        private decimal _shortBorrowingFee;
+
+        public String ShortBorrowingFee
+        {
+            get
+            {
+                return _shortBorrowingFee.ToString();
+            }
+            set
+            {
+                if (!(int.Parse(value)).Equals(_shortBorrowingFee))
+                {
+                    _shortBorrowingFee = int.Parse(value);
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ShortBorrowingFee"));
+                }
+            }
+        }
+
+        private decimal _netWorth;
+
+        public decimal NetWorth
+        {
+            get
+            {
+                return _netWorth;
+            }
+            set
+            {
+                if (!value.Equals(_netWorth))
+                {
+                    _netWorth = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("NetWorth"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("NetWorthToDisplay"));
+                    }
+                }
+            }
+        }
+
+        public string NetWorthToDisplay
+        {
+            get
+            {
+                if (Math.Sign(_netWorth - _capital) == 1)
+                    return Math.Round(_netWorth, 3) + " (+" + Math.Round(_netWorth - _capital, 3) + ")";
+                else
+                    return Math.Round(_netWorth, 3) + " (" + Math.Round(_netWorth - _capital, 3) + ")";
+            }
+        }
+
+        private decimal _portfolioPerformancePercent;
+
+        public decimal PortfolioPerformancePercent
+        {
+            get
+            {
+                return Math.Round(_portfolioPerformancePercent, 3);
+            }
+            set
+            {
+                if (!value.Equals(_portfolioPerformancePercent))
+                {
+                    _portfolioPerformancePercent = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("PortfolioPerformancePercent"));
+                }
+            }
+        }
+
+        private List<StackPanel> _indicatorPanels;
+
+        public List<StackPanel> IndicatorPanels
+        {
+            get
+            {
+                return _indicatorPanels;
+            }
+            set
+            {
+                if (!value.Equals(_indicatorPanels))
+                {
+                    _indicatorPanels = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IndicatorPanels"));
                 }
             }
         }

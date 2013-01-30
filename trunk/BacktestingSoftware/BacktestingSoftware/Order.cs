@@ -98,14 +98,14 @@ namespace BacktestingSoftware
             set { _cumulativePortfolioPerformance = value; }
         }
 
-        [DisplayName("Absolute Gain/Loss")]
+        [DisplayName("Absolute Portfolio Performance")]
         public decimal AbsGainLoss
         {
             get { return Math.Round(_absGainLoss, 3); }
             set { _absGainLoss = value; }
         }
 
-        [DisplayName("Absolute Cumulative Gain/Loss")]
+        [DisplayName("Absolute Cumulative Portfolio Performance")]
         public decimal AbsCumulativeGainLoss
         {
             get { return Math.Round(_absCumulativeGainLoss, 3); }

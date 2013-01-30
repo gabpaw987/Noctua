@@ -40,7 +40,7 @@
                 <TextBlock Name="StatusLabel">Ready</TextBlock>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <ProgressBar Height="15" Width="100" Name="ProgressBar" />
+                <ProgressBar Height="15" Width="100" Name="ProgressBar" Visibility="Hidden" />
             </StatusBarItem>
         </StatusBar>
         <TabControl DockPanel.Dock="Top">
@@ -56,28 +56,34 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <!-- Text-Labels -->
-                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Gain/Loss [%]:</Label>
-                        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
-                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Gain [%]:</Label>
-                        <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
-                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Loss [%]:</Label>
-                        <Label Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
-                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Profit:</Label>
-                        <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfProfit}"></Label>
-                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Equity Price:</Label>
-                        <Label Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfPEquityPrice}"></Label>
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Net Worth:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NetWorthToDisplay}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=PortfolioPerformancePercent}"></Label>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfProfit}"></Label>
+                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Mean Deviation of Equity Price:</Label>
+                        <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfPEquityPrice}"></Label>
+                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Return on Investment [%]:</Label>
+                        <Label Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
                         <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Number of Good Trades:</Label>
                         <Label Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
-                        <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Number of Bad Trades:</Label>
-                        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
-                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Ratio of Good Trades - Bad Trades:</Label>
-                        <Label Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
+                        <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Gain From Good Trades [%]:</Label>
+                        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
+                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Number of Bad Trades:</Label>
+                        <Label Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
+                        <Label Grid.Row="8" Grid.Column="0" VerticalAlignment="Center">Loss From Bad Trades [%]:</Label>
+                        <Label Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
+                        <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center">Ratio of Good Trades - Bad Trades:</Label>
+                        <Label Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
                     </Grid>
                 </StackPanel>
             </TabItem>
@@ -95,7 +101,7 @@
                     <WindowsFormsHost Name="WfHost" Grid.Row="0">
                         <MSChart:Chart x:Name="MyWinformChart">
                             <MSChart:Chart.ChartAreas>
-                                <MSChart:ChartArea/>
+                                <MSChart:ChartArea Name="MainArea"/>
                             </MSChart:Chart.ChartAreas>
                         </MSChart:Chart>
                     </WindowsFormsHost>
@@ -118,6 +124,8 @@
                         <TreeViewItem Name="GeneralSettingsTabSelector" Header="General" Selected="TreeViewItem_Selected">
                         </TreeViewItem>
                         <TreeViewItem Name="OrdersSettingsTabSelector" Header="Orders" Selected="TreeViewItem_Selected">
+                        </TreeViewItem>
+                        <TreeViewItem Name="ChartSettingsTabSelector" Header="Chart" Selected="TreeViewItem_Selected">
                         </TreeViewItem>
                     </TreeView>
                     <TabControl Grid.Column="1" Name="SettingsTabControl">
@@ -176,26 +184,57 @@
                                         <Label Width="50" Content="Capital:"/>
                                         <TextBox Width="50" Text="{Binding Path=Capital}" Margin="0,3,0,3"/>
                                     </StackPanel>
-                                    <Label>
-                                        <Span FontWeight="Bold">Transaction Fee</Span>
-                                    </Label>
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"></ColumnDefinition>
-                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="125"></ColumnDefinition>
                                             <ColumnDefinition></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Row="0" Grid.Column="0" Content="Abs"/>
-                                        <TextBox Grid.Row="0" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
-                                        <Label Grid.Row="0" Grid.Column="2" Content="$"/>
+                                        <Grid Grid.Row="0" Grid.Column="0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
 
-                                        <Label Grid.Row="1" Grid.Column="0" Content="Rel"/>
-                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
-                                        <Label Grid.Row="1" Grid.Column="2" Content="%"/>
+                                            <Label Grid.Row="0" Grid.ColumnSpan="3">
+                                                <Span FontWeight="Bold">Transaction Fee</Span>
+                                            </Label>
+
+                                            <Label Grid.Row="1" Grid.Column="0" Content="Abs"/>
+                                            <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=AbsTransactionFee}" />
+                                            <Label Grid.Row="1" Grid.Column="2" Content="&#164;"/>
+
+                                            <Label Grid.Row="2" Grid.Column="0" Content="Rel"/>
+                                            <TextBox Grid.Row="2" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=RelTransactionFee}" />
+                                            <Label Grid.Row="2" Grid.Column="2" Content="%"/>
+                                        </Grid>
+                                        <Grid Grid.Row="0" Grid.Column="1">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                                <ColumnDefinition Width="50"></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Label Grid.Row="0" Grid.ColumnSpan="3">
+                                                <Span FontWeight="Bold">Short Borrowing Fee</Span>
+                                            </Label>
+                                            <Label Grid.Row="1" Grid.Column="0" Content="Interest Rate"/>
+                                            <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=ShortBorrowingFee}" />
+                                            <Label Grid.Row="1" Grid.Column="2" Content="%"/>
+                                        </Grid>
                                     </Grid>
                                     <Label>
                                         <Span FontWeight="Bold">Price Premium</Span>
@@ -203,20 +242,15 @@
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"></ColumnDefinition>
                                             <ColumnDefinition Width="50"></ColumnDefinition>
                                             <ColumnDefinition></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Row="0" Grid.Column="0" Content="Buy"/>
-                                        <TextBox Grid.Row="0" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
-                                        <Label Grid.Row="0" Grid.Column="2" Content="$"/>
-
                                         <Label Grid.Row="1" Grid.Column="0" Content="Sell"/>
-                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3"/>
-                                        <Label Grid.Row="1" Grid.Column="2" Content="$"/>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=SellPricePremium}" />
+                                        <Label Grid.Row="1" Grid.Column="2" Content="&#164;"/>
                                     </Grid>
                                     <Label>
                                         <Span FontWeight="Bold">Order Sizes</Span>
@@ -263,6 +297,30 @@
                                         </ComboBox>
                                     </StackPanel>
                                 </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Name="ChartSettingsTab">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="25"></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                        <ComboBox Name="IndicatorComboBox"  Width="300" SelectedIndex="0">
+                                            <ComboBoxItem Content="Simple Moving Average"></ComboBoxItem>
+                                            <ComboBoxItem Content="Weighted Moving Average"></ComboBoxItem>
+                                            <ComboBoxItem Content="Exponential Moving Average"></ComboBoxItem>
+                                            <ComboBoxItem Content="Moving Average Convergence-Divergence"></ComboBoxItem>
+                                        </ComboBox>
+                                        <Button VerticalContentAlignment="Center" Content="+" Width="25" Margin="5,0,0,0" Click="AddIndicatorButton_Click" />
+                                    </StackPanel>
+                                    <StackPanel Name="IndicatorStackPanel" Grid.Row="1" Orientation="Vertical">
+                                    </StackPanel>
+                                </Grid>
                             </ScrollViewer>
                         </TabItem>
                     </TabControl>
