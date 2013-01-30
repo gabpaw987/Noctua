@@ -1,7 +1,7 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator9=
         let macd(n1:int,n2:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick
