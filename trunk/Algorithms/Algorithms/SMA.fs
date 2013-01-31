@@ -123,7 +123,7 @@ namespace Algorithm
         
         (* smaklein gegen smagross *)
         let signalgeber(n1:int, n2:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>) =
-            for i = 0 to n2-1 do
+            for i = 0 to n2-2 do
                 signals.Add(0)
             let ergebnis1 = sma2(n1,list2D)
             let ergebnis2 = sma2(n2,list2D)
@@ -157,4 +157,4 @@ namespace Algorithm
 
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            tripleCrossed (10,15,20, list2D, signals)
+            signalgeber (10,90, list2D, signals)
