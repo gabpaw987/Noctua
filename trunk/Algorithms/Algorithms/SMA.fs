@@ -139,7 +139,7 @@ namespace Algorithm
         
 
         let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
-            for i = 0 to n3-1 do
+            for i = 0 to n3-2 do
                 signals.Add(0)
             let shorts = sma2(n1,list2D)
             let shortmover = n3 - n1
