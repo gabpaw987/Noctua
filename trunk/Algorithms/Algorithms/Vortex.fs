@@ -1,18 +1,8 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator7=        
-        (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
+    module DecisionCalculator=        
         let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
-            let mutable sma = [];
-            for i = n to liste2D.Count - 1 do
-                let mutable mom = 0m
-                for j = i - (n-1) to i do
-                    mom <- mom + liste2D.[j].Item5
-                sma <- List.append sma [mom / decimal n]
-            sma
-
-        let sma2(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick
             let s2 = new System.Windows.Forms.DataVisualization.Charting.Series("incdicator")
@@ -67,6 +57,35 @@ namespace Algorithm
                 1
             else
                 0
+
+        (*  Normaly 14 Days, provide this method with at least 1 day more than you want
+            to calculate.
+        *)
+        let vortex(prices:System.Collections.Generic.List<System.Tuple<System.DateTime,decimal, decimal, decimal, decimal>>)=
+            // calculate the positve and negative trendmovement:
+            let mutable sumpVM = 0m
+            let mutable sumnVM = 0m
+            let mutable sumTR = 0m
+            for i = 1 to prices.Count - 1 do 
+                sumpVM <- sumpVM + (prices.[i].Item3 - prices.[i - 1].Item4)
+                sumnVM <- sumnVM + (prices.[i].Item4 - prices.[i - 1].Item3)
+                // calculate the true range for the prices
+                    //current high less current low
+                let chlcl = prices.[i].Item3 - prices.[i].Item4
+                    // current high less previous close
+                let chlpc = prices.[i].Item3 - prices.[i - 1].Item5
+                    // current low less previous Close
+                let cllpc = prices.[i].Item4 - prices.[i - 1].Item5
+                if chlcl < chlpc && chlpc < cllpc then
+                    sumTR <- sumTR + cllpc
+                else if chlcl > chlpc && chlpc > cllpc then
+                    sumTR <- sumTR + chlcl
+                else if chlcl < chlpc && chlpc > cllpc then
+                    sumTR <- sumTR + chlpc
+            let pVI = sumpVM / sumTR
+            let nVI = sumnVM / sumTR
+            4
+
 
         (*  two sma´s
             param:
@@ -142,8 +161,8 @@ namespace Algorithm
             for i = 0 to n2-2 do
                 signals.Add(0)
             // calculate the two sma´s
-            let ergebnis1 = sma2(n1,list2D)
-            let ergebnis2 = sma2(n2,list2D)
+            let ergebnis1 = sma(n1,list2D)
+            let ergebnis2 = sma(n2,list2D)
             // the number of indices the smaller is ahead
             let mover = n2 - n1
             for i = 0 to ergebnis2.Length-1 do
@@ -159,11 +178,11 @@ namespace Algorithm
         let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
             for i = 0 to n3-1 do
                 signals.Add(0)
-            let shorts = sma2(n1,list2D)
+            let shorts = sma(n1,list2D)
             let shortmover = (n3 - n1)
-            let middle = sma2(n2,list2D)
+            let middle = sma(n2,list2D)
             let middlemover = (n2 - n1) 
-            let longs = sma2(n3,list2D)
+            let longs = sma(n3,list2D)
             for i = 0 to longs.Length - 1 do
                 if shorts.[i + shortmover] < middle.[i + middlemover] && middle.[i + middlemover] < longs.[i] then
                     signals.Add(-1*momentumInterpreter(5,list2D.GetRange(i+n3-10,10)))
@@ -180,4 +199,5 @@ namespace Algorithm
         
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
+            let test = vortex(list2D.GetRange(list2D.Count - 16,14))
             tripleCrossed (10,15,20, list2D, signals)
