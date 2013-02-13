@@ -494,9 +494,9 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(int.Parse(value)).Equals(_absTransactionFee))
+                if (!(decimal.Parse(value)).Equals(_absTransactionFee))
                 {
-                    _absTransactionFee = int.Parse(value);
+                    _absTransactionFee = decimal.Parse(value);
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("AbsTransactionFee"));
                 }
@@ -509,13 +509,13 @@ namespace BacktestingSoftware
         {
             get
             {
-                return _relTransactionFee.ToString();
+                return Convert.ToString(_relTransactionFee);
             }
             set
             {
-                if (!(int.Parse(value)).Equals(_relTransactionFee))
+                if (!(decimal.Parse(value)).Equals(_relTransactionFee))
                 {
-                    _relTransactionFee = int.Parse(value);
+                    _relTransactionFee = decimal.Parse(value);
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("RelTransactionFee"));
                 }
@@ -532,9 +532,9 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(int.Parse(value)).Equals(_buyPricePremium))
+                if (!(decimal.Parse(value)).Equals(_buyPricePremium))
                 {
-                    _buyPricePremium = int.Parse(value);
+                    _buyPricePremium = decimal.Parse(value);
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("BuyPricePremium"));
                 }
@@ -551,9 +551,9 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(int.Parse(value)).Equals(_sellPricePremium))
+                if (!(decimal.Parse(value)).Equals(_sellPricePremium))
                 {
-                    _sellPricePremium = int.Parse(value);
+                    _sellPricePremium = decimal.Parse(value);
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("SellPricePremium"));
                 }
@@ -570,9 +570,9 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(int.Parse(value)).Equals(_shortBorrowingFee))
+                if (!(decimal.Parse(value)).Equals(_shortBorrowingFee))
                 {
-                    _shortBorrowingFee = int.Parse(value);
+                    _shortBorrowingFee = decimal.Parse(value);
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ShortBorrowingFee"));
                 }

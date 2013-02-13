@@ -11,6 +11,7 @@ namespace BacktestingSoftware
         private decimal _quantityMultiplier;
         private decimal _price;
         private decimal _transactionPrice;
+        private decimal _paidFee;
         private decimal _gainLossPercent;
         private decimal _cumulativeGainLossPercent;
         private decimal _portfolioPerformance;
@@ -19,13 +20,14 @@ namespace BacktestingSoftware
         private decimal _absCumulativeGainLoss;
         private decimal _currentCapital;
 
-        public Order(DateTime timestamp, int trendstrength, decimal quantityMultiplier, decimal price, decimal transactionPrice, decimal gainLossPercent, decimal cumulativeGainLossPercent, decimal portfolioPerformance, decimal cumulativePortfolioPerformance, decimal absGainLoss, decimal absCumulativeGainLoss, decimal currentCapital)
+        public Order(DateTime timestamp, int trendstrength, decimal quantityMultiplier, decimal price, decimal transactionPrice, decimal paidFee, decimal gainLossPercent, decimal cumulativeGainLossPercent, decimal portfolioPerformance, decimal cumulativePortfolioPerformance, decimal absGainLoss, decimal absCumulativeGainLoss, decimal currentCapital)
         {
             _timestamp = timestamp;
             _trendstrength = trendstrength;
             _quantityMultiplier = quantityMultiplier;
             _price = price;
             _transactionPrice = transactionPrice;
+            _paidFee = paidFee;
             _gainLossPercent = gainLossPercent;
             _cumulativeGainLossPercent = cumulativeGainLossPercent;
             _portfolioPerformance = portfolioPerformance;
@@ -70,6 +72,13 @@ namespace BacktestingSoftware
             set { _transactionPrice = value; }
         }
 
+        [DisplayName("Paid Fee")]
+        public decimal PaidFee
+        {
+            get { return Math.Round(_paidFee, 3); }
+            set { _paidFee = value; }
+        }
+
         [DisplayName("Gain/Loss [%]")]
         public decimal GainLossPercent
         {
@@ -77,7 +86,7 @@ namespace BacktestingSoftware
             set { _gainLossPercent = value; }
         }
 
-        [DisplayName("Cumulative Gain/Loss [%]")]
+        [DisplayName("Cum. Gain/Loss [%]")]
         public decimal CumulativeGainLossPercent
         {
             get { return Math.Round(_cumulativeGainLossPercent, 3); }
@@ -91,21 +100,21 @@ namespace BacktestingSoftware
             set { _portfolioPerformance = value; }
         }
 
-        [DisplayName("Cumulative Portfolio Performance [%]")]
+        [DisplayName("Cum. Portfolio Performance [%]")]
         public decimal CumulativePortfolioPerformance
         {
             get { return Math.Round(_cumulativePortfolioPerformance, 3); }
             set { _cumulativePortfolioPerformance = value; }
         }
 
-        [DisplayName("Absolute Portfolio Performance")]
+        [DisplayName("Abs. Portfolio Performance")]
         public decimal AbsGainLoss
         {
             get { return Math.Round(_absGainLoss, 3); }
             set { _absGainLoss = value; }
         }
 
-        [DisplayName("Absolute Cumulative Portfolio Performance")]
+        [DisplayName("Abs. Cum. Portfolio Performance")]
         public decimal AbsCumulativeGainLoss
         {
             get { return Math.Round(_absCumulativeGainLoss, 3); }

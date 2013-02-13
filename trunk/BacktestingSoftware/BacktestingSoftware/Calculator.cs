@@ -39,6 +39,7 @@ namespace BacktestingSoftware
 
         public void CalculateNumbers()
         {
+            //TODO: Error Message
             if (this.mainViewModel.BarList.Count == this.mainViewModel.Signals.Count)
             {
                 List<double> profitsForStdDev = new List<double>();
@@ -70,7 +71,7 @@ namespace BacktestingSoftware
                     {
                         decimal addableFee = 0;
                         if (this.mainViewModel.Signals[i] != 0)
-                            addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) * (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i))) + decimal.Parse(this.mainViewModel.AbsTransactionFee);
+                            addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 * (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i))) + decimal.Parse(this.mainViewModel.AbsTransactionFee);
 
                         int oldWeightingMultiplier = this.getWeightingMultiplier(i - 1);
                         int WeightingMultiplier = this.getWeightingMultiplier(i);
@@ -122,7 +123,7 @@ namespace BacktestingSoftware
                         this.mainViewModel.NetWorth += currentGainLoss;
 
                         decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i)) - addableFee;
-                        this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
+                        this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
 
                         priceOfLastTrade = priceOfThisTrade;
                     }

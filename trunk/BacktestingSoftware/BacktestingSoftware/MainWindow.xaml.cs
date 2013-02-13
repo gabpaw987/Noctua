@@ -144,6 +144,7 @@ namespace BacktestingSoftware
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
+            //TODO: only one backgroundworker at once
             this.resetCalculation();
 
             bw = new BackgroundWorker();
@@ -287,6 +288,47 @@ namespace BacktestingSoftware
                 chart.Series["Data"].Points[i].YValues[2] = Convert.ToDouble(this.mainViewModel.BarList[i].Item2);
                 // adding close
                 chart.Series["Data"].Points[i].YValues[3] = Convert.ToDouble(this.mainViewModel.BarList[i].Item5);
+
+                if (i != 0)
+                {
+                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i])
+                    {
+                        ArrowAnnotation la = new ArrowAnnotation();
+                        la.Name = "Arrow-" + i;
+
+                        //la.AnchorDataPoint = chart.Series["Data"].Points[i];
+
+                        la.Width = 0;
+                        la.ClipToChartArea = chart.ChartAreas[0].Name;
+                        la.ArrowSize = 3;
+                        la.LineWidth = 2;
+
+                        if (this.mainViewModel.Signals[i] < 0)
+                        {
+                            la.Height = -5;
+                            la.LineColor = System.Drawing.Color.Black;
+                            la.BackColor = System.Drawing.Color.Red;
+
+                            la.AnchorDataPoint = chart.Series["Data"].Points[i];
+                            //indicates which one of the y values of the datapoint is used for the arrow
+                            la.AnchorY = chart.Series["Data"].Points[i].YValues[0];
+                            la.AnchorOffsetY = -2;
+                        }
+                        else if (this.mainViewModel.Signals[i] > 0)
+                        {
+                            la.Height = 5;
+                            la.LineColor = System.Drawing.Color.Black;
+                            la.BackColor = System.Drawing.Color.Green;
+
+                            la.AnchorDataPoint = chart.Series["Data"].Points[i];
+                            //indicates which one of the y values of the datapoint is used for the arrow
+                            la.AnchorY = chart.Series["Data"].Points[i].YValues[1];
+                            la.AnchorOffsetY = 2;
+                        }
+
+                        chart.Annotations.Add(la);
+                    }
+                }
             }
 
             double min2 = 0;
@@ -431,6 +473,7 @@ namespace BacktestingSoftware
             chart.Series.Clear();
             chart.ChartAreas.Clear();
             chart.ChartAreas.Add(new ChartArea("MainArea"));
+            chart.Annotations.Clear();
 
             this.StatusLabel.Text = "Ready";
             this.ProgressBar.Value = 0;
