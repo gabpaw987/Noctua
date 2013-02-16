@@ -51,9 +51,11 @@ namespace Algorithm
             let mutable ama = []
             //for i = periodLength to prices.Count-1 do
             for i = (if periodLength>n2 then periodLength else n2) to prices.Count-1 do
-                let c = decimal(c (n1, n2, prices.GetRange (i, periodLength)))
+                //let c = decimal(c (n1, n2, prices.GetRange (i, periodLength)))
+                let c = decimal(c (n1, n2, prices.GetRange (i-periodLength, periodLength)))
                 let n = int((2.0m/c)-1.0m)
-                ama <- List.append ama (ema (n, prices.GetRange (0, i)))
+                let ema = (ema (n, prices.GetRange (0, i)))
+                ama <- List.append ama [ema.[ema.Length-1]]
             ama
 
         let signalgeber(n:int, n1:int, n2:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>) =
@@ -70,5 +72,64 @@ namespace Algorithm
                     signals.Add(0)
             signals
 
+        (*
+            This function calculates the momentum over the give time period
+        *)
+        let momentum(period:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime,decimal, decimal, decimal, decimal>>)=
+            let mutable result = []
+            for i = period to prices.Count - 1 do
+                result <- List.append result [prices.[i].Item5 - prices.[i - period].Item5]
+            result
+        
+        (*
+            This function calls the momentum function and interprets its results
+        *)
+        let momentumInterpreter(period:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime,decimal, decimal, decimal, decimal>>)=
+            let moments = momentum(period, prices)
+            // mom pos und steigend +3
+            let mutable m1 = 0
+            // mom pos und fallend +1
+            let mutable m2 = 0
+            // mom neg und fallend -3
+            let mutable m3 = 0
+            // mom neg und steigend -1
+            let mutable m4 = 0
+            for i = 1 to moments.Length - 1 do 
+                if(moments.[i]>0m&&moments.[i-1]<moments.[i]) then
+                    m1 <- m1 + 1
+                if(moments.[i]>0m&&moments.[i-1]>moments.[i]) then
+                    m2 <- m2 + 1
+                if(moments.[i]<0m&&moments.[i-1]>moments.[i]) then
+                    m3 <- m3 + 1
+                if(moments.[i]<0m&&moments.[i-1]<moments.[i]) then
+                    m4 <- m4 + 1
+            if ((m1>m2&&m1>m3&&m1>m4)||m3>m1&&m3>m2&&m3>m4) then
+                3
+            else if ((m2>m1&&m2>m3&&m2>m4)||m4>m1&&m4>m2&&m4>m3) then
+                1
+            else
+                0
+
+        // erp...efficiency ratio period
+        let tripleCrossed(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int,prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+        //let tripleCrossed(n1:int,n2:int,n3:int,prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+            for i = 0 to erp-1 do
+                signals.Add(0)
+            let short = ama(erp, s1, s2,prices)
+            let middle = ama(erp, m1, m2, prices)
+            let long = ama(erp, l1, l2, prices)
+            for i = 0 to long.Length - 1 do
+                if short.[i] < middle.[i] && middle.[i] < long.[i] then
+                    signals.Add(-1*momentumInterpreter(5, prices.GetRange(i+erp-10,10)))
+                else if short.[i] > middle.[i] && middle.[i] > long.[i] then
+                    signals.Add(1*momentumInterpreter(5, prices.GetRange(i+erp-10,10)))
+                else
+                    // add the last again
+                    // signals.Add(signals.[signals.Count-1])
+                    // add zero
+                    signals.Add(0)
+            signals
+
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            signalgeber (126, 2, 30, prices, signals)
+            //signalgeber (126, 2, 30, prices, signals)
+            tripleCrossed(126, 8, 12, 13, 17, 18, 22, prices, signals)
