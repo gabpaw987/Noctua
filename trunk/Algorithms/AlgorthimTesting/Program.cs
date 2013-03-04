@@ -11,9 +11,12 @@ namespace AlgorthimTesting
         {
             //"C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/NKD_1mBar_20110809.csv"
             //"C:/Users/Josefs/Dropbox/Projekte/Diplomprojekt/GOOG_1dBar_20130110.csv"
+            //"C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/SPX_1dBar_20130220.csv"
+            //"C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv"
+            //"C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\Input_Data\GOOG_1mBar_20130110.csv"
             Console.WriteLine("File einlesen");
             List<Tuple<DateTime, decimal, decimal, decimal, decimal>> asd;
-            asd = CSVReader.EnumerateExcelFile("C:/Users/Josefs/Dropbox/Projekte/Diplomprojekt/GOOG_1dBar_20130110.csv", new DateTime(), DateTime.Now).ToList();
+            asd = CSVReader.EnumerateExcelFile("C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv", new DateTime(), DateTime.Now).ToList();
             Console.WriteLine("Algorithmus starten");
             // = new List<decimal>();
             // 
