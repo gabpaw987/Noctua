@@ -37,7 +37,7 @@ namespace BacktestingSoftware
             t.GetMethod("startCalculation").Invoke(null, oa);
         }
 
-        public void CalculateNumbers()
+        public String CalculateNumbers()
         {
             //TODO: Error Message
             if (this.mainViewModel.BarList.Count == this.mainViewModel.Signals.Count)
@@ -77,6 +77,17 @@ namespace BacktestingSoftware
                         int WeightingMultiplier = this.getWeightingMultiplier(i);
 
                         decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
+
+                        //if buy
+                        if (WeightingMultiplier > oldWeightingMultiplier)
+                        {
+                            priceOfThisTrade += decimal.Parse(this.mainViewModel.PricePremium);
+                        }
+                        //else if sell
+                        else if (WeightingMultiplier < oldWeightingMultiplier)
+                        {
+                            priceOfThisTrade -= decimal.Parse(this.mainViewModel.PricePremium);
+                        }
 
                         decimal currentGainLoss = 0;
                         currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize;
@@ -137,6 +148,14 @@ namespace BacktestingSoftware
 
                 this.mainViewModel.StdDevOfProfit = (decimal)this.CalculateStdDevs(profitsForStdDev);
                 this.mainViewModel.StdDevOfPEquityPrice = (decimal)this.CalculateStdDevs(EquityPricesForStdDev);
+
+                this.mainViewModel.SharpeRatio = this.mainViewModel.PortfolioPerformancePercent / this.mainViewModel.StdDevOfProfit;
+
+                return "";
+            }
+            else
+            {
+                return "Algorithm File is wrong!";
             }
         }
 

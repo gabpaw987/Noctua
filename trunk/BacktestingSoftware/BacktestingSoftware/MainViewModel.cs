@@ -494,9 +494,18 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(decimal.Parse(value)).Equals(_absTransactionFee))
+                try
                 {
-                    _absTransactionFee = decimal.Parse(value);
+                    if (!(decimal.Parse(value)).Equals(_absTransactionFee))
+                    {
+                        _absTransactionFee = decimal.Parse(value);
+                        if (PropertyChanged != null)
+                            PropertyChanged(this, new PropertyChangedEventArgs("AbsTransactionFee"));
+                    }
+                }
+                catch (Exception)
+                {
+                    _absTransactionFee = 0;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("AbsTransactionFee"));
                 }
@@ -522,59 +531,21 @@ namespace BacktestingSoftware
             }
         }
 
-        private decimal _buyPricePremium;
+        private decimal _pricePremium;
 
-        public String BuyPricePremium
+        public String PricePremium
         {
             get
             {
-                return _buyPricePremium.ToString();
+                return _pricePremium.ToString();
             }
             set
             {
-                if (!(decimal.Parse(value)).Equals(_buyPricePremium))
+                if (!(decimal.Parse(value)).Equals(_pricePremium))
                 {
-                    _buyPricePremium = decimal.Parse(value);
+                    _pricePremium = decimal.Parse(value);
                     if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("BuyPricePremium"));
-                }
-            }
-        }
-
-        private decimal _sellPricePremium;
-
-        public String SellPricePremium
-        {
-            get
-            {
-                return _sellPricePremium.ToString();
-            }
-            set
-            {
-                if (!(decimal.Parse(value)).Equals(_sellPricePremium))
-                {
-                    _sellPricePremium = decimal.Parse(value);
-                    if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("SellPricePremium"));
-                }
-            }
-        }
-
-        private decimal _shortBorrowingFee;
-
-        public String ShortBorrowingFee
-        {
-            get
-            {
-                return _shortBorrowingFee.ToString();
-            }
-            set
-            {
-                if (!(decimal.Parse(value)).Equals(_shortBorrowingFee))
-                {
-                    _shortBorrowingFee = decimal.Parse(value);
-                    if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("ShortBorrowingFee"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("PricePremium"));
                 }
             }
         }
@@ -627,6 +598,25 @@ namespace BacktestingSoftware
                     _portfolioPerformancePercent = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("PortfolioPerformancePercent"));
+                }
+            }
+        }
+
+        private decimal _sharpeRatio;
+
+        public decimal SharpeRatio
+        {
+            get
+            {
+                return Math.Round(_sharpeRatio, 3);
+            }
+            set
+            {
+                if (!value.Equals(_sharpeRatio))
+                {
+                    _sharpeRatio = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("SharpeRatio"));
                 }
             }
         }

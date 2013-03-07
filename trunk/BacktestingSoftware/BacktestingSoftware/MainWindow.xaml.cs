@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -20,10 +21,16 @@ namespace BacktestingSoftware
     public partial class MainWindow : Window
     {
         BackgroundWorker bw;
+        string ErrorMessage;
+
+        bool iscalculating = false;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            this.ErrorMessage = "";
+
             this.mainViewModel.Orders = new List<Order>();
             this.mainViewModel.Signals = new List<int>();
             this.mainViewModel.BarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
@@ -57,9 +64,7 @@ namespace BacktestingSoftware
 
             this.mainViewModel.AbsTransactionFee = Properties.Settings.Default.AbsTransactionFee;
             this.mainViewModel.RelTransactionFee = Properties.Settings.Default.RelTransactionFee;
-            this.mainViewModel.BuyPricePremium = Properties.Settings.Default.BuyPricePremium;
-            this.mainViewModel.SellPricePremium = Properties.Settings.Default.SellPricePremium;
-            this.mainViewModel.ShortBorrowingFee = Properties.Settings.Default.ShortBorrowingFee;
+            this.mainViewModel.PricePremium = Properties.Settings.Default.PricePremium;
 
             this.mainViewModel.SaveFileName = Properties.Settings.Default.SaveFileName;
 
@@ -79,6 +84,8 @@ namespace BacktestingSoftware
             this.refreshIndicatorList();
 
             this.orders.DataContext = this.mainViewModel.Orders;
+
+            this.bw = new BackgroundWorker();
         }
 
         public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
@@ -88,6 +95,13 @@ namespace BacktestingSoftware
             for (int i = 0; i < strings.Count; i += 2)
             {
                 newList.Add((StackPanel)XamlReader.Parse(strings[i]));
+
+                for (int j = 0; j < newList[i].Children.Count; j++)
+                {
+                    if (newList[i].Children[j] is System.Windows.Controls.TextBox)
+                        ((System.Windows.Controls.TextBox)newList[i].Children[j]).PreviewTextInput += NumericOnly;
+                }
+
                 string[] argb = strings[i + 1].Split(';');
                 ColorPicker cp = this.AddColorPicker();
                 cp.SelectedColor = System.Windows.Media.Color.FromArgb(Convert.ToByte(argb[0]), Convert.ToByte(argb[1]), Convert.ToByte(argb[2]), Convert.ToByte(argb[3]));
@@ -144,65 +158,94 @@ namespace BacktestingSoftware
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: only one backgroundworker at once
-            this.resetCalculation();
-
-            bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-
-            // this allows our worker to report progress during work
-            bw.WorkerReportsProgress = true;
-
-            // what to do in the background thread
-            bw.DoWork += new DoWorkEventHandler(
-            delegate(object o, DoWorkEventArgs args)
+            if (!this.iscalculating)
             {
-                BackgroundWorker b = o as BackgroundWorker;
+                this.iscalculating = true;
 
-                // report the progress
-                b.ReportProgress(0, "Starting Calculation...");
+                this.StopButton_Click(null, null);
 
-                Calculator c = new Calculator(this.mainViewModel);
+                this.resetCalculation();
 
-                // report the progress
-                b.ReportProgress(5, "Reading File...");
+                bw = new BackgroundWorker();
+                bw.WorkerSupportsCancellation = true;
 
-                c.ReadFile();
+                // this allows our worker to report progress during work
+                bw.WorkerReportsProgress = true;
 
-                // report the progress
-                b.ReportProgress(40, "Calculating Signals...");
+                // what to do in the background thread
+                bw.DoWork += new DoWorkEventHandler(
+                delegate(object o, DoWorkEventArgs args)
+                {
+                    try
+                    {
+                        BackgroundWorker b = o as BackgroundWorker;
 
-                c.CalculateSignals();
+                        // report the progress
+                        b.ReportProgress(0, "Starting Calculation...");
 
-                // report the progress
-                b.ReportProgress(70, "Calculating Performance...");
+                        Calculator c = new Calculator(this.mainViewModel);
 
-                c.CalculateNumbers();
-            });
+                        // report the progress
+                        b.ReportProgress(5, "Reading File...");
 
-            // what to do when progress changed (update the progress bar for example)
-            bw.ProgressChanged += new ProgressChangedEventHandler(
-            delegate(object o, ProgressChangedEventArgs args)
-            {
-                this.StatusLabel.Text = String.Empty + args.UserState.ToString();
-                this.ProgressBar.Value = args.ProgressPercentage;
-                if (args.ProgressPercentage == 0)
-                    this.ProgressBar.Visibility = Visibility.Visible;
-            });
+                        c.ReadFile();
 
-            // what to do when worker completes its task (notify the user)
-            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-            delegate(object o, RunWorkerCompletedEventArgs args)
-            {
-                this.StatusLabel.Text = "Drawing Chart...";
-                this.LoadLineChartData();
-                this.StatusLabel.Text = "Finished!";
-                this.ProgressBar.Value = 100;
-                this.ProgressBar.Visibility = Visibility.Hidden;
-                this.orders.Items.Refresh();
-            });
+                        // report the progress
+                        b.ReportProgress(40, "Calculating Signals...");
 
-            bw.RunWorkerAsync();
+                        c.CalculateSignals();
+
+                        // report the progress
+                        b.ReportProgress(70, "Calculating Performance...");
+
+                        this.ErrorMessage = c.CalculateNumbers();
+                    }
+                    catch (Exception)
+                    {
+                        this.ErrorMessage = "An error while calculating occured.";
+                    }
+                });
+
+                // what to do when progress changed (update the progress bar for example)
+                bw.ProgressChanged += new ProgressChangedEventHandler(
+                delegate(object o, ProgressChangedEventArgs args)
+                {
+                    this.StatusLabel.Text = String.Empty + args.UserState.ToString();
+                    this.ProgressBar.Value = args.ProgressPercentage;
+                    if (args.ProgressPercentage == 0)
+                        this.ProgressBar.Visibility = Visibility.Visible;
+                });
+
+                // what to do when worker completes its task (notify the user)
+                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                delegate(object o, RunWorkerCompletedEventArgs args)
+                {
+                    this.StatusLabel.Text = "Drawing Chart...";
+                    try
+                    {
+                        this.LoadLineChartData();
+                    }
+                    catch (Exception)
+                    {
+                        this.ErrorMessage = "An error while drawing occured.";
+                    }
+                    if (this.ErrorMessage.Length != 0)
+                    {
+                        this.StatusLabel.Text = this.ErrorMessage;
+                        this.ErrorMessage = "";
+                    }
+                    else
+                    {
+                        this.StatusLabel.Text = "Finished!";
+                    }
+                    this.ProgressBar.Value = 100;
+                    this.ProgressBar.Visibility = Visibility.Hidden;
+                    this.iscalculating = false;
+                    this.orders.Items.Refresh();
+                });
+
+                bw.RunWorkerAsync();
+            }
         }
 
         private void LoadLineChartData()
@@ -307,7 +350,18 @@ namespace BacktestingSoftware
                         {
                             la.Height = -5;
                             la.LineColor = System.Drawing.Color.Black;
-                            la.BackColor = System.Drawing.Color.Red;
+                            switch (this.mainViewModel.Signals[i])
+                            {
+                                case -1:
+                                    la.BackColor = System.Drawing.Color.FromArgb(255, 204, 204);
+                                    break;
+                                case -2:
+                                    la.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                                    break;
+                                case -3:
+                                    la.BackColor = System.Drawing.Color.FromArgb(102, 0, 0);
+                                    break;
+                            }
 
                             la.AnchorDataPoint = chart.Series["Data"].Points[i];
                             //indicates which one of the y values of the datapoint is used for the arrow
@@ -318,14 +372,49 @@ namespace BacktestingSoftware
                         {
                             la.Height = 5;
                             la.LineColor = System.Drawing.Color.Black;
-                            la.BackColor = System.Drawing.Color.Green;
+                            switch (this.mainViewModel.Signals[i])
+                            {
+                                case 1:
+                                    la.BackColor = System.Drawing.Color.FromArgb(0, 255, 51);
+                                    break;
+                                case 2:
+                                    la.BackColor = System.Drawing.Color.FromArgb(0, 153, 0);
+                                    break;
+                                case 3:
+                                    la.BackColor = System.Drawing.Color.FromArgb(0, 51, 0);
+                                    break;
+                            }
 
                             la.AnchorDataPoint = chart.Series["Data"].Points[i];
                             //indicates which one of the y values of the datapoint is used for the arrow
                             la.AnchorY = chart.Series["Data"].Points[i].YValues[1];
                             la.AnchorOffsetY = 2;
                         }
+                        else if (this.mainViewModel.Signals[i] == 0)
+                        {
+                            if (this.mainViewModel.Signals[i - 1] < 0)
+                            {
+                                la.Height = -5;
+                                la.LineColor = System.Drawing.Color.Black;
+                                la.BackColor = System.Drawing.Color.White;
 
+                                la.AnchorDataPoint = chart.Series["Data"].Points[i];
+                                //indicates which one of the y values of the datapoint is used for the arrow
+                                la.AnchorY = chart.Series["Data"].Points[i].YValues[0];
+                                la.AnchorOffsetY = -2;
+                            }
+                            else if (this.mainViewModel.Signals[i - 1] > 0)
+                            {
+                                la.Height = 5;
+                                la.LineColor = System.Drawing.Color.Black;
+                                la.BackColor = System.Drawing.Color.White;
+
+                                la.AnchorDataPoint = chart.Series["Data"].Points[i];
+                                //indicates which one of the y values of the datapoint is used for the arrow
+                                la.AnchorY = chart.Series["Data"].Points[i].YValues[1];
+                                la.AnchorOffsetY = 2;
+                            }
+                        }
                         chart.Annotations.Add(la);
                     }
                 }
@@ -334,52 +423,76 @@ namespace BacktestingSoftware
             double min2 = 0;
             double max2 = 0;
 
-            for (int i = 0; i < this.mainViewModel.IndicatorPanels.Count; i++)
+            try
             {
-                Series formula = new Series("FinFor" + i);
-                chart.Series.Add(formula);
-
-                if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Simple Moving Average"))
+                for (int i = 0; i < this.mainViewModel.IndicatorPanels.Count; i++)
                 {
-                    chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
-                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
-                }
-                else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Weighted Moving Average"))
-                {
-                    chart.DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
-                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
-                }
-                else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Exponential Moving Average"))
-                {
-                    chart.DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
-                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
-                }
-                else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Moving Average Convergence-Divergence"))
-                {
-                    if (chart.ChartAreas.Count <= 1)
-                        this.drawSecondChartArea(chart);
+                    Series formula = new Series("FinFor" + i);
+                    chart.Series.Add(formula);
 
-                    formula.ChartArea = "IndicatorArea";
-
-                    chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
-                    chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
-
-                    for (int j = 0; j < chart.Series["FinFor" + i].Points.Count; j++)
+                    if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Simple Moving Average"))
                     {
-                        if (chart.Series["FinFor" + i].Points[j].YValues[0] < min2)
-                            min2 = chart.Series["FinFor" + i].Points[j].YValues[0];
-                        else if (chart.Series["FinFor" + i].Points[j].YValues[0] > max2)
-                            max2 = chart.Series["FinFor" + i].Points[j].YValues[0];
+                        chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                        chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
                     }
-                }
-                else
-                {
-                    chart.Series.Remove(formula);
-                    break;
-                }
+                    else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Weighted Moving Average"))
+                    {
+                        chart.DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                        chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+                    }
+                    else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Exponential Moving Average"))
+                    {
+                        chart.DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text, "Data:Y3", "FinFor" + i);
+                        chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+                    }
+                    else if (((System.Windows.Controls.Label)this.mainViewModel.IndicatorPanels[i].Children[1]).Content.Equals("Moving Average Convergence-Divergence"))
+                    {
+                        string shortLength = ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[3]).Text;
+                        string longLength = ((System.Windows.Controls.TextBox)this.mainViewModel.IndicatorPanels[i].Children[5]).Text;
 
-                System.Windows.Media.Color tempColor = ((ColorPicker)this.mainViewModel.IndicatorPanels[i].Children[4]).SelectedColor;
-                chart.Series["FinFor" + i].Color = System.Drawing.Color.FromArgb(tempColor.A, tempColor.R, tempColor.G, tempColor.B);
+                        if (shortLength.Length != 0 && longLength.Length != 0 &&
+                            !shortLength.Length.Equals("0") && !longLength.Length.Equals("0"))
+                        {
+                            if (chart.ChartAreas.Count <= 1)
+                                this.drawSecondChartArea(chart);
+
+                            formula.ChartArea = "IndicatorArea";
+
+                            chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, shortLength + "," + longLength, "Data:Y3", "FinFor" + i);
+                            chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
+
+                            for (int j = 0; j < chart.Series["FinFor" + i].Points.Count; j++)
+                            {
+                                if (chart.Series["FinFor" + i].Points[j].YValues[0] < min2)
+                                    min2 = chart.Series["FinFor" + i].Points[j].YValues[0];
+                                else if (chart.Series["FinFor" + i].Points[j].YValues[0] > max2)
+                                    max2 = chart.Series["FinFor" + i].Points[j].YValues[0];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        chart.Series.Remove(formula);
+                        break;
+                    }
+
+                    System.Windows.Media.Color tempColor = new System.Windows.Media.Color();
+
+                    for (int j = 0; j < this.mainViewModel.IndicatorPanels[i].Children.Count; j++)
+                    {
+                        if (this.mainViewModel.IndicatorPanels[i].Children[j] is ColorPicker)
+                            tempColor = ((ColorPicker)this.mainViewModel.IndicatorPanels[i].Children[j]).SelectedColor;
+                    }
+
+                    chart.Series["FinFor" + i].Color = System.Drawing.Color.FromArgb(tempColor.A, tempColor.R, tempColor.G, tempColor.B);
+                }
+            }
+            catch (Exception)
+            {
+                this.ErrorMessage = "An error occured while drawing indicators!";
+
+                //reset calculation
+                this.resetCalculation();
             }
 
             if (chart.ChartAreas.Count > 1)
@@ -388,6 +501,9 @@ namespace BacktestingSoftware
                 chart.ChartAreas[1].AxisY.Minimum = Math.Round(min2 - margin2);
                 chart.ChartAreas[1].AxisY.Maximum = Math.Round(max2 + margin2);
             }
+
+            if (chart.ChartAreas.Count <= 1)
+                this.drawSecondEmptyChartArea(chart);
 
             chart.DataBind();
 
@@ -450,6 +566,22 @@ namespace BacktestingSoftware
             chart.ChartAreas[1].Position.Y = 70;
         }
 
+        public void drawSecondEmptyChartArea(Chart chart)
+        {
+            ChartArea indicatorArea = new ChartArea("IndicatorArea");
+            chart.ChartAreas.Add(indicatorArea);
+
+            chart.ChartAreas[1].AlignWithChartArea = "MainArea";
+
+            chart.ChartAreas[1].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
+                                 this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
+
+            chart.ChartAreas[1].Position.Width = 100;
+            chart.ChartAreas[1].Position.X = 0;
+            chart.ChartAreas[1].Position.Height = 0;
+            chart.ChartAreas[1].Position.Y = 100;
+        }
+
         public void resetCalculation()
         {
             this.mainViewModel.Orders.Clear();
@@ -467,6 +599,7 @@ namespace BacktestingSoftware
             this.mainViewModel.LossPercent = 0;
             this.mainViewModel.NetWorth = 0;
             this.mainViewModel.PortfolioPerformancePercent = 0;
+            this.mainViewModel.SharpeRatio = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
 
@@ -481,12 +614,17 @@ namespace BacktestingSoftware
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.bw.IsBusy)
+            try
             {
-                this.bw.CancelAsync();
+                if (this.bw.IsBusy)
+                {
+                    this.bw.CancelAsync();
 
-                this.resetCalculation();
+                    this.resetCalculation();
+                }
             }
+            catch (Exception)
+            { }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -505,9 +643,7 @@ namespace BacktestingSoftware
 
             Properties.Settings.Default.AbsTransactionFee = this.mainViewModel.AbsTransactionFee;
             Properties.Settings.Default.RelTransactionFee = this.mainViewModel.RelTransactionFee;
-            Properties.Settings.Default.BuyPricePremium = this.mainViewModel.BuyPricePremium;
-            Properties.Settings.Default.SellPricePremium = this.mainViewModel.SellPricePremium;
-            Properties.Settings.Default.ShortBorrowingFee = this.mainViewModel.ShortBorrowingFee;
+            Properties.Settings.Default.PricePremium = this.mainViewModel.PricePremium;
 
             Properties.Settings.Default.RoundLotSize = this.mainViewModel.RoundLotSize;
             Properties.Settings.Default.Capital = this.mainViewModel.Capital;
@@ -608,7 +744,8 @@ namespace BacktestingSoftware
                                    this.mainViewModel.NoOfBadTrades,
                                    this.mainViewModel.GtBtRatio,
                                    this.mainViewModel.NetWorth,
-                                   this.mainViewModel.PortfolioPerformancePercent});
+                                   this.mainViewModel.PortfolioPerformancePercent,
+                                   this.mainViewModel.SharpeRatio});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -616,9 +753,7 @@ namespace BacktestingSoftware
                                                                             this.mainViewModel.Capital,
                                                                             this.mainViewModel.AbsTransactionFee,
                                                                             this.mainViewModel.RelTransactionFee,
-                                                                            this.mainViewModel.BuyPricePremium,
-                                                                            this.mainViewModel.SellPricePremium,
-                                                                            this.mainViewModel.ShortBorrowingFee});
+                                                                            this.mainViewModel.PricePremium});
                 bFormatter.Serialize(stream, tempStringList);
 
                 List<DateTime> tempDateList = new List<DateTime>(new DateTime[] {this.mainViewModel.StartDate,
@@ -697,6 +832,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.GtBtRatio = tempPerfomanceList[7];
                 this.mainViewModel.NetWorth = tempPerfomanceList[8];
                 this.mainViewModel.PortfolioPerformancePercent = tempPerfomanceList[9];
+                this.mainViewModel.SharpeRatio = tempPerfomanceList[10];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
@@ -704,9 +840,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.Capital = tempStringList[2];
                 this.mainViewModel.AbsTransactionFee = tempStringList[3];
                 this.mainViewModel.RelTransactionFee = tempStringList[4];
-                this.mainViewModel.BuyPricePremium = tempStringList[5];
-                this.mainViewModel.SellPricePremium = tempStringList[6];
-                this.mainViewModel.ShortBorrowingFee = tempStringList[7];
+                this.mainViewModel.PricePremium = tempStringList[5];
 
                 List<DateTime> tempDateList = (List<DateTime>)bFormatter.Deserialize(stream);
                 this.mainViewModel.StartDate = tempDateList[0];
@@ -771,7 +905,7 @@ namespace BacktestingSoftware
             System.Windows.Controls.Label label = new System.Windows.Controls.Label();
             label.Content = ((ComboBoxItem)this.IndicatorComboBox.SelectedValue).Content;
             label.Margin = new Thickness(0, 0, 20, 0);
-            label.Width = 200;
+            label.Width = 300;
             sp.Children.Add(label);
 
             switch (this.IndicatorComboBox.SelectedIndex)
@@ -779,15 +913,16 @@ namespace BacktestingSoftware
                 case 0:
                 case 1:
                 case 2:
-                    sp.Children.Add(this.AddLabel("Length"));
+                    sp.Children.Add(this.AddAttrLabel("Length"));
                     sp.Children.Add(this.AddTextBox(String.Empty));
                     sp.Children.Add(this.AddColorPicker());
                     break;
                 case 3:
-                    sp.Children.Add(this.AddLabel("Lengths"));
-                    sp.Children.Add(this.AddTextBox("Works like this: length1,length2"));
+                    sp.Children.Add(this.AddAttrLabel("Short"));
+                    sp.Children.Add(this.AddTextBox("Works like this: ShortLength"));
+                    sp.Children.Add(this.AddAttrLabel("Long"));
+                    sp.Children.Add(this.AddTextBox("Works like this: LongLength"));
                     sp.Children.Add(this.AddColorPicker());
-
                     break;
             }
 
@@ -795,17 +930,20 @@ namespace BacktestingSoftware
             this.refreshIndicatorList();
         }
 
-        public System.Windows.Controls.Label AddLabel(string content)
+        public System.Windows.Controls.Label AddAttrLabel(string content)
         {
             System.Windows.Controls.Label label = new System.Windows.Controls.Label();
             label.Content = content;
+            label.Width = 70;
             return label;
         }
 
         public System.Windows.Controls.TextBox AddTextBox(string tooltip)
         {
             System.Windows.Controls.TextBox tb = new System.Windows.Controls.TextBox();
+            tb.PreviewTextInput += NumericOnly;
             tb.Margin = new Thickness(5, 5, 5, 5);
+            tb.Text = "0";
             if (tooltip.Length != 0)
                 tb.ToolTip = tooltip;
             tb.Width = 50;
@@ -816,9 +954,21 @@ namespace BacktestingSoftware
         {
             ColorPicker cp = new ColorPicker();
             cp.DisplayColorAndName = true;
-            //cp2.Width = 100;
+            cp.Width = 200;
             cp.Margin = new Thickness(5, 5, 5, 5);
             return cp;
+        }
+
+        private void NumericOnly(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Regex reg = new Regex("[^0-9]");
+            e.Handled = reg.IsMatch(e.Text);
+        }
+
+        private void NumericOnly_WithDecimalPlace(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Regex reg = new Regex("[^0-9,]");
+            e.Handled = reg.IsMatch(e.Text);
         }
 
         public void refreshIndicatorList()

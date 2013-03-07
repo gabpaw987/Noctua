@@ -192,36 +192,12 @@ namespace BacktestingSoftware.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string BuyPricePremium {
+        public string PricePremium {
             get {
-                return ((string)(this["BuyPricePremium"]));
+                return ((string)(this["PricePremium"]));
             }
             set {
-                this["BuyPricePremium"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string SellPricePremium {
-            get {
-                return ((string)(this["SellPricePremium"]));
-            }
-            set {
-                this["SellPricePremium"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string ShortBorrowingFee {
-            get {
-                return ((string)(this["ShortBorrowingFee"]));
-            }
-            set {
-                this["ShortBorrowingFee"] = value;
+                this["PricePremium"] = value;
             }
         }
         
