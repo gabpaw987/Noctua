@@ -1,7 +1,7 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator7=        
+    module DecisionCalculator15=        
         (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
         let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let mutable sma = [];
@@ -144,6 +144,7 @@ namespace Algorithm
             // calculate the two sma´s
             let ergebnis1 = sma2(n1,list2D)
             let ergebnis2 = sma2(n2,list2D)
+            
             // the number of indices the smaller is ahead
             let mover = n2 - n1
             for i = 0 to ergebnis2.Length-1 do
@@ -156,7 +157,7 @@ namespace Algorithm
             signals
         
 
-        let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+        let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,index:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
             for i = 0 to n3-1 do
                 signals.Add(0)
             let shorts = sma2(n1,list2D)
@@ -177,7 +178,43 @@ namespace Algorithm
             signals.RemoveAt(signals.Count-1)
             signals
 
-        
+        let readIndex (path:string)= 
+            let mutable ownTupleList = new System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>()
+            let str = System.IO.File.ReadAllText(path)
+            let mutable strArray:List<string> = List.ofArray(str.Split('\n'))
+            let mutable fullySplittedStringArrayArray:List<List<string>> = []
+            for s:string in strArray do
+                fullySplittedStringArrayArray <- List.append fullySplittedStringArrayArray [List.ofArray(s.Split(','))]
+            
+            // nun haben wir eine beschissene Liste aus den eingelesenen Daten jetzt noch in eine Tupleliste
+
+            let mutable notfirst = false
+            for list:List<string> in fullySplittedStringArrayArray do
+                if(notfirst&&list.Length=7) then
+                    let date = System.DateTime.ParseExact(list.Item(1)+" "+list.Item(2),"MM/dd/yy HH:mm", new System.Globalization.CultureInfo("en-US"))
+                    let opendec = decimal (list.Item(3))
+                    let highdec = decimal (list.Item(4))
+                    let lowdec = decimal (list.Item(5))
+                    let closedec = decimal (list.Item(6))
+                    ownTupleList.Add(new System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>(date, opendec, highdec, lowdec, closedec))
+                else
+                    notfirst <- true
+            ownTupleList
+
+        let regression2(liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
+            let mutable xy = 0m
+            let mutable xx = 0m
+            let mutable x = 0m
+            let mutable y = 0m
+            for i = 0 to liste2D.Count - 1 do 
+                x <- x+decimal i
+                y <- y + liste2D.[i].Item5
+                xy <- xy + liste2D.[i].Item5 * decimal i
+                xx <- xx + decimal i* decimal i
+            let b = (decimal liste2D.Count * xy - (x*y))/(decimal liste2D.Count * xx - x*x)
+            let a = (y - b*x)/decimal liste2D.Count
+            decimal liste2D.Count*b + a
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            tripleCrossed (10,15,20, list2D, signals)
+            let index = readIndex("C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv")
+            tripleCrossed (10,15,20, list2D,index, signals)
