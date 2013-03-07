@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator4=
+    module DecisionCalculator=
         (* This method calculates the sum from 1 to n *)
         let sum (n:int)= 
             let mutable result = 0m
@@ -35,7 +35,7 @@
                     signals
         
         let signalgeber(shortn:int, longn:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>) =
-            for i = 0 to 2 * longn - 1 do
+            for i = 0 to longn - 1 do
                 signals.Add(0)
             let short = wma(shortn, list2D)
             let long = wma(longn, list2D)

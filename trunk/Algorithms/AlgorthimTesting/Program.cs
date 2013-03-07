@@ -16,7 +16,7 @@ namespace AlgorthimTesting
             //"C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\Input_Data\GOOG_1mBar_20130110.csv"
             Console.WriteLine("File einlesen");
             List<Tuple<DateTime, decimal, decimal, decimal, decimal>> asd;
-            asd = CSVReader.EnumerateExcelFile("C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv", new DateTime(), DateTime.Now).ToList();
+            asd = CSVReader.EnumerateExcelFile("C:/Users/Josefs/Dropbox/Projekte/Diplomprojekt/GOOG_1dBar_20130110.csv", new DateTime(), DateTime.Now).ToList();
             Console.WriteLine("Algorithmus starten");
             // = new List<decimal>();
             // 
@@ -24,6 +24,10 @@ namespace AlgorthimTesting
             test =  Algorithm.DecisionCalculator.startCalculation(asd,test);
             for (int i = 0; i < test.Count;i++ )
                 Console.WriteLine(test.ElementAt(i));
+            if (asd.Count == test.Count)
+                Console.WriteLine("Algorithmus passt");
+            else
+                Console.WriteLine("Passt gar nicht sollte sein:" + asd.Count + " ist aber:" + test.Count + "");
             Console.Read();
             
         }
