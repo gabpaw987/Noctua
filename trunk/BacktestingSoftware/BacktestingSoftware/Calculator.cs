@@ -39,7 +39,6 @@ namespace BacktestingSoftware
 
         public String CalculateNumbers()
         {
-            //TODO: Error Message
             if (this.mainViewModel.BarList.Count == this.mainViewModel.Signals.Count)
             {
                 List<double> profitsForStdDev = new List<double>();
