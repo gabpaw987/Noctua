@@ -118,6 +118,73 @@ namespace BacktestingSoftware
             e.Column.Header = ((PropertyDescriptor)e.PropertyDescriptor).DisplayName;
         }
 
+        private void ContactButton_Click(object sender, RoutedEventArgs e)
+        {
+            string message = "Developers:\n\n"
+                             + "Peer Nagy\npeer@gmx.at\n\n"
+                             + "Gabriel Pawlowsky\ngabriel_pawlowsky@yahoo.de\n\n"
+                             + "Josef Sochovsky\njosef.nikolaus@sochovsky.at";
+            System.Windows.MessageBox.Show(message);
+        }
+
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            string message = "Backtestingsoftware Noctua\n" +
+                             "Version 1.0\n\n" +
+                             "This software has been developed within the socpe of the \"Projects and Projectmanagement\" education " +
+                             "as part of the dimploma project at the Technologischen Gewerbemusem Wien. It tests algorithms for technical" +
+                             "analysis in .dll-Files with historical stock market data stored in .csv-Files. Additionally " +
+                             "an interface for creating such algorithm is provided to developers.";
+            System.Windows.MessageBox.Show(message);
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            string algorithmUsed = this.mainViewModel.AlgorithmFileName.Split(new char[] { '/', '\\' }).Last();
+            string datafileUsed = this.mainViewModel.DataFileName.Split(new char[] { '/', '\\' }).Last();
+
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+
+            dlg.FileName = algorithmUsed.Split(new char[] { '.' })[algorithmUsed.Split(new char[] { '.' }).Length - 2]
+                           + "#" +
+                           datafileUsed.Split(new char[] { '.' })[datafileUsed.Split(new char[] { '.' }).Length - 2]; // Default file name
+            dlg.DefaultExt = ".txt"; // Default file extension
+            dlg.Filter = "Performance Data File (.txt)|*.txt"; // Filter files by extension
+
+            // Show open file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process open file dialog box results
+            if (result == true)
+            {
+                string[] lines = new string[]
+                {
+                    "Algorithm used: " + algorithmUsed,
+                    "Data-File used: " + datafileUsed,
+                    "",
+                    "Net Worth:                                    " + (this.mainViewModel.NetWorth < 0 ? "" : " ")                     + this.mainViewModel.NetWorthToDisplay,
+                    "Portfolio Performance [%]:                    " + (this.mainViewModel.PortfolioPerformancePercent < 0 ? "" : " ")  + this.mainViewModel.PortfolioPerformancePercent,
+                    "Sharpe Ratio:                                 " + (this.mainViewModel.SharpeRatio < 0 ? "" : " ")                  + this.mainViewModel.SharpeRatio,
+                    "Mean Deviation of Portfolio Performance [%]:  " + (this.mainViewModel.StdDevOfProfit < 0 ? "" : " ")               + this.mainViewModel.StdDevOfProfit,
+                    "Mean Deviation of Equity Price:               " + (this.mainViewModel.StdDevOfPEquityPrice < 0 ? "" : " ")         + this.mainViewModel.StdDevOfPEquityPrice,
+                    "Return on Investment [%]:                     " + (this.mainViewModel.GainLossPercent < 0 ? "" : " ")              + this.mainViewModel.GainLossPercent,
+                    "Number of Good Trades:                        " + (this.mainViewModel.NoOfGoodTrades < 0 ? "" : " ")               + this.mainViewModel.NoOfGoodTrades,
+                    "Gain From Good Trades [%]:                    " + (this.mainViewModel.GainPercent < 0 ? "" : " ")                  + this.mainViewModel.GainPercent,
+                    "Number of Bad Trades:                         " + (this.mainViewModel.NoOfBadTrades < 0 ? "" : " ")                + this.mainViewModel.NoOfBadTrades,
+                    "Loss From Bad Trades [%]:                     " + (this.mainViewModel.LossPercent < 0 ? "" : " ")                  + this.mainViewModel.LossPercent,
+                    "Ratio of Good Trades - Bad Trades:            " + (this.mainViewModel.GtBtRatio < 0 ? "" : " ")                    + this.mainViewModel.GtBtRatio
+                };
+
+                // Open document
+                System.IO.File.WriteAllLines(dlg.FileName, lines);
+            }
+        }
+
         private void AlgorithmButton_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -176,33 +243,51 @@ namespace BacktestingSoftware
                 bw.DoWork += new DoWorkEventHandler(
                 delegate(object o, DoWorkEventArgs args)
                 {
+                    BackgroundWorker b = o as BackgroundWorker;
+
+                    // report the progress
+                    b.ReportProgress(0, "Starting Calculation...");
+
+                    Calculator c = new Calculator(this.mainViewModel);
+
+                    // report the progress
+                    b.ReportProgress(5, "Reading File...");
+
                     try
                     {
-                        BackgroundWorker b = o as BackgroundWorker;
-
-                        // report the progress
-                        b.ReportProgress(0, "Starting Calculation...");
-
-                        Calculator c = new Calculator(this.mainViewModel);
-
-                        // report the progress
-                        b.ReportProgress(5, "Reading File...");
-
-                        c.ReadFile();
-
-                        // report the progress
-                        b.ReportProgress(40, "Calculating Signals...");
-
-                        c.CalculateSignals();
-
-                        // report the progress
-                        b.ReportProgress(70, "Calculating Performance...");
-
-                        this.ErrorMessage = c.CalculateNumbers();
+                        if (this.ErrorMessage.Length == 0)
+                            c.ReadFile();
                     }
                     catch (Exception)
                     {
-                        this.ErrorMessage = "An error while calculating occured.";
+                        if (this.ErrorMessage.Length == 0)
+                            this.ErrorMessage = "An error with the Data-File occured.";
+                    }
+
+                    // report the progress
+                    b.ReportProgress(40, "Calculating Signals...");
+
+                    try
+                    {
+                        if (this.ErrorMessage.Length == 0)
+                            c.CalculateSignals();
+                    }
+                    catch (Exception)
+                    {
+                        this.ErrorMessage = "An error with the Algorithm-File occured.";
+                    }
+
+                    // report the progress
+                    b.ReportProgress(70, "Calculating Performance...");
+
+                    try
+                    {
+                        if (this.ErrorMessage.Length == 0)
+                            this.ErrorMessage = c.CalculateNumbers();
+                    }
+                    catch (Exception)
+                    {
+                        this.ErrorMessage = "An error while calculating performance data occured.";
                     }
                 });
 
@@ -227,7 +312,8 @@ namespace BacktestingSoftware
                     }
                     catch (Exception)
                     {
-                        this.ErrorMessage = "An error while drawing occured.";
+                        if (this.ErrorMessage.Length == 0)
+                            this.ErrorMessage = "An error while drawing occured.";
                     }
                     if (this.ErrorMessage.Length != 0)
                     {
