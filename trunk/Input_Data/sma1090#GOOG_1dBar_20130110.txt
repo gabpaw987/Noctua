@@ -1,0 +1,14 @@
+Algorithm used: sma1090.dll
+Data-File used: GOOG_1dBar_20130110.csv
+
+Net Worth:                                     0 (-100000)
+Portfolio Performance [%]:                     0
+Sharpe Ratio:                                  0
+Mean Deviation of Portfolio Performance [%]:   0
+Mean Deviation of Equity Price:                0
+Return on Investment [%]:                      0
+Number of Good Trades:                         0
+Gain From Good Trades [%]:                     0
+Number of Bad Trades:                          0
+Loss From Bad Trades [%]:                      0
+Ratio of Good Trades - Bad Trades:             0
