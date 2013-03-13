@@ -29,7 +29,7 @@ namespace BacktestingSoftware
 
         public void CalculateSignals()
         {
-            Assembly assembly = Assembly.LoadFrom(this.mainViewModel.AlgorithmFileName);
+            Assembly assembly = Assembly.LoadFile(this.mainViewModel.AlgorithmFileName);
             AppDomain.CurrentDomain.Load(assembly.GetName());
             Type t = assembly.GetType("Algorithm.DecisionCalculator");
 
