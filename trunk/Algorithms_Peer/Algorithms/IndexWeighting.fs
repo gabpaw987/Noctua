@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=(*=14*)
+    module DecisionCalculator15=
 
         (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
         let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
@@ -80,24 +80,29 @@
         
         let signalgenerator(prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,index:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
 
-            let indexSignals = tmaDoubleCross (10, 90, index, new System.Collections.Generic.List<int>())
-            let priceSignals = tmaDoubleCross (10, 90, prices, new System.Collections.Generic.List<int>())
+            let indexSignals = tmaDoubleCross (20, 80, index, new System.Collections.Generic.List<int>())
+            let priceSignals = tmaDoubleCross (20, 80, prices, new System.Collections.Generic.List<int>())
 
             if (indexSignals.Count = priceSignals.Count) then
                 // length of lists
                 let len = indexSignals.Count;
                 // count of matches for each possible time shift
                 let matchCount:System.Collections.Generic.List<int> = new System.Collections.Generic.List<int>()
+                let matchRel:System.Collections.Generic.List<decimal> = new System.Collections.Generic.List<decimal>()
 
                 // shift up to 50% to each side
                 // i = time shift between data
                 let minNegShift:int = -1 * int (floor((float len)/2.0))
                 let maxPosShift:int = len - (len%2) - int (floor((float len)/2.0))
+                let mutable bestMatch = 0.0m
+                let mutable bestShift = 0
                 
                 for i=minNegShift to maxPosShift do
+                    //System.Console.WriteLine(i)
                     matchCount.Add(0)
 
-                    for j=0 to int (ceil((float len)/2.0)) - 1 do
+                    let numComp = ceil((float len)/2.0)
+                    for j=0 to int numComp-1 do
                         // first half: shift price back
                         if (i < 0) then
                             if (indexSignals.[j+System.Math.Abs(i)] = priceSignals.[j]) then
@@ -111,15 +116,18 @@
                             if (indexSignals.[j+System.Math.Abs(i)] = priceSignals.[j]) then
                                 matchCount.[matchCount.Count-1] <- matchCount.[matchCount.Count-1]+1
 
-                //TODO: look for the index difference in patterns of the calculated ama´s
-                let mutable difference:int = new int()
+                    // divide absolute count by number of compared pairs
+                    matchRel.Add(decimal matchCount.[matchCount.Count-1] / decimal numComp)
 
-                if (difference>=0) then 
-                    //TODO: weight the decisions of the endalgorithm with the index regression
-                    difference <- 0
+                    // save best match and the associated time shift
+                    if (matchRel.[matchCount.Count-1] > bestMatch) then
+                        bestMatch <- matchRel.[matchCount.Count-1]
+                        bestShift <- i
+
+                if (bestMatch >= 0.8m) then 
+                    printfn "Best match is: %e with a time shift of: %d" bestMatch bestShift
                 else
-                    //TODO: just do the normal endalgorithm without the index regression 
-                    difference <- 0
+                    System.Console.WriteLine("Not so good match is: {0:D} with a time shift of: {1:D}", bestMatch, bestShift);
             signals
         
         (* returns the slope of the given points, uses the close of all given values*)
@@ -138,5 +146,5 @@
             decimal b
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            let index = readIndex("C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\Input_Data\GOOG_1mBar_20130110.csv")
+            let index = readIndex("C:/noctua/trunk/Input_Data/SPX_1dBar_20130220.csv")
             signalgenerator (list2D,index, signals)

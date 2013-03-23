@@ -1,11 +1,11 @@
 ﻿// http://www.investopedia.com/articles/trading/08/adaptive-moving-averages.asp#axzz2JT9BYz6o
 
 namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator14=
         let ema(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick
-            let s2 = new System.Windows.Forms.DataVisualization.Charting.Series("incdicator")
+            let s2 = new System.Windows.Forms.DataVisualization.Charting.Series("indicator")
             for i = 0 to prices.Count - 1 do
                 let mutable temp:int = s1.Points.AddXY(prices.[i].Item1,double prices.[i].Item3)
                 let mutable liste = [|double prices.[i].Item4;double prices.[i].Item2;double prices.[i].Item5|]
@@ -50,7 +50,7 @@ namespace Algorithm
         let ama (periodLength:int, n1:int, n2:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let mutable ama = []
             //for i = periodLength to prices.Count-1 do
-            for i = (if periodLength>n2 then periodLength else n2) to prices.Count-1 do
+            for i = (if periodLength>n2 then periodLength else n2) to prices.Count do
                 //let c = decimal(c (n1, n2, prices.GetRange (i, periodLength)))
                 let c = decimal(c (n1, n2, prices.GetRange (i-periodLength, periodLength)))
                 let n = int((2.0m/c)-1.0m)
@@ -113,9 +113,9 @@ namespace Algorithm
         // erp...efficiency ratio period
         let tripleCrossed(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int,prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
         //let tripleCrossed(n1:int,n2:int,n3:int,prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
-            for i = 0 to erp-1 do
+            for i = 0 to erp-2 do
                 signals.Add(0)
-            let short = ama(erp, s1, s2,prices)
+            let short = ama(erp, s1, s2, prices)
             let middle = ama(erp, m1, m2, prices)
             let long = ama(erp, l1, l2, prices)
             for i = 0 to long.Length - 1 do
@@ -132,4 +132,4 @@ namespace Algorithm
 
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
             //signalgeber (126, 2, 30, prices, signals)
-            tripleCrossed(126, 8, 12, 13, 17, 18, 22, prices, signals)
+            tripleCrossed(64, 8, 12, 16, 24, 22, 38, prices, signals)
