@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator44=(*44*)
         
         let alphaToN (a) : int=
             int ((2.0m/a)-1.0m)
@@ -10,6 +10,7 @@
         let ema (n:int, prices:List<decimal>)=
             let alpha = nToAlpha n
             // t-1: calculate average of first n-1 elements as initial value for the ema
+
             let tm1 =
                 prices
                 |> Seq.take (n-1)
@@ -290,7 +291,7 @@
                     signals.Add(0)
                 else
                     // if er indicates sideways markets
-                    if adx.[i] < 30m then
+                    if adx.[i] < 20m then
                         sw <- sw+1
 //                        // price over higher bb
 //                        if cPrices.[i] > (bollinger.[i] |> fst) then
@@ -308,6 +309,8 @@
                                 signals.Add(-1)
                             else
                                 signals.Add(0)
+                        else
+                            signals.Add(0)
                     // trending market
                     else
                         trend <- trend+1

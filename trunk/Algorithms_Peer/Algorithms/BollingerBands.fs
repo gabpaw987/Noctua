@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator12=
+    module DecisionCalculator12=(*12*)
         let bollinger(n:int, sigma:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick
@@ -48,7 +48,7 @@
                 //let breadth = bollinger.[i].[0] - bollinger.[i].[1]
                 breadth.Add(bollinger.[i].[0] - bollinger.[i].[1])
                 
-                // if er indicates sideways markte
+                // if er indicates sideways marktet
                 if ers.[i] < 0.4m then
                     // price over higher bb
                     if prices.[i+n-1].Item5 > bollinger.[i].[0] then
@@ -76,4 +76,4 @@
             for i = 0 to n-2 do
                 signals.Add(0)
 
-            fadingStrategy (n, 2m, prices, signals)
+            fadingStrategy (n, 1.5m, prices, signals)
