@@ -12,4 +12,3 @@ namespace Algorithm
             //sumup/(decimal liste2D.Count)
             //sumdown/(decimal liste2D.Count)
             (sumup/(decimal liste2D.Count))/((sumup/(decimal liste2D.Count))+(sumdown/(decimal liste2D.Count)))
-            

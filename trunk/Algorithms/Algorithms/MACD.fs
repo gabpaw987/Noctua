@@ -32,5 +32,6 @@ namespace Algorithm
                     signals.Add(-1)    
             signals
 
+
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
             signalgeber (10,90, list2D, signals)
