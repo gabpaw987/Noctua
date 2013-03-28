@@ -1,7 +1,7 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator6=
+    module DecisionCalculator66=
                 
         (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
         let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
@@ -45,18 +45,29 @@ namespace Algorithm
             let mover = longn - shortn
             let mutable abw = 0m
             for i = 0 to long.Length-1 do
-
-                abw <- decimal (sqrt ((double (short.[i+mover] - long.[i]))**2.0))
-                let mutable multiplicator = int (abw % 10m)
-                if multiplicator > 3 then 
-                    multiplicator <- 3
-                if multiplicator = 0 then 
-                    multiplicator <- 1
                 if short.[i+mover] > long.[i] then
-                    signals.Add(1*multiplicator)
+                    signals.Add(1)
                 if short.[i+mover] < long.[i] then
-                    signals.Add(-1*multiplicator)
+                    signals.Add(-1)
                 if short.[i+mover] = long.[i] then
+                    signals.Add(0)
+            signals
+
+        let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+            for i = 0 to n3-1 do
+                signals.Add(0)
+            let shorts = List.append [for i in 0..n1*2-1 -> 0m] (tma(n1, sma(n1,list2D)))
+            let middle = List.append [for i in 0..n2*2-1 -> 0m] (tma(n2, sma(n2,list2D)))
+            let longs = List.append [for i in 0..n3*2-1 -> 0m]  (tma(n3, sma(n3,list2D)))
+            for i = n3 to longs.Length-1 do
+                if shorts.[i] < middle.[i] && middle.[i] < longs.[i] then
+                    signals.Add(-1)
+                else if shorts.[i] > middle.[i] && middle.[i] > longs.[i] then
+                    signals.Add(1)
+                else
+                    // add the last again
+                    // signals.Add(signals.[signals.Count-1])
+                    // add zero
                     signals.Add(0)
             signals
 

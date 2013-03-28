@@ -58,6 +58,9 @@
     <Compile Include="Regression.fs" />
     <Compile Include="ADX.fs" />
     <Compile Include="WithIndex.fs" />
+    <Compile Include="PivotPoints.fs" />
+    <Compile Include="AMA.fs" />
+    <Compile Include="Test.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />

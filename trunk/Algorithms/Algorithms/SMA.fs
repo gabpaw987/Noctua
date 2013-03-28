@@ -1,7 +1,7 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator15=        
+    module DecisionCalculator55=        
         (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
         let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let mutable sma = [];
@@ -81,9 +81,9 @@ namespace Algorithm
             let mover = n2 - n1
             for i = 0 to ergebnis2.Length-1 do
                 if ergebnis1.[i+mover] > ergebnis2.[i] then
-                    signals.Add(-1)
-                if ergebnis1.[i+mover] < ergebnis2.[i] then
                     signals.Add(1)
+                if ergebnis1.[i+mover] < ergebnis2.[i] then
+                    signals.Add(-1)
                 if ergebnis1.[i+mover] = ergebnis2.[i] then
                     signals.Add(0)
             signals
@@ -157,25 +157,24 @@ namespace Algorithm
             signals
         
 
-        let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,index:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+        let tripleCrossed(n1:int,n2:int,n3:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
             for i = 0 to n3-1 do
                 signals.Add(0)
-            let shorts = sma2(n1,list2D)
-            let shortmover = (n3 - n1)
-            let middle = sma2(n2,list2D)
-            let middlemover = (n2 - n1) 
-            let longs = sma2(n3,list2D)
-            for i = 0 to longs.Length - 1 do
-                if shorts.[i + shortmover] < middle.[i + middlemover] && middle.[i + middlemover] < longs.[i] then
-                    signals.Add(-1*momentumInterpreter(5,list2D.GetRange(i+n3-10,10)))
-                else if shorts.[i + shortmover] > middle.[i + middlemover] && middle.[i + middlemover] > longs.[i] then
-                    signals.Add(1*momentumInterpreter(5,list2D.GetRange(i+n3-10,10)))
+            let shorts = List.append [for i in 0..n1-1 -> 0m] (sma(n1,list2D))
+            let middle = List.append [for i in 0..n2-1 -> 0m] (sma(n2,list2D))
+            let longs = List.append [for i in 0..n3-1 -> 0m] (sma(n3,list2D))
+            for i = n3 to longs.Length-1 do
+                if shorts.[i] < middle.[i] && middle.[i] < longs.[i] then
+                    if(signals.[signals.Count-1]=3)then signals.Add(3)
+                    else signals.Add(-1*momentumInterpreter(5,list2D.GetRange(i-n2,n2)))
+                else if shorts.[i] > middle.[i] && middle.[i] > longs.[i] then
+                    if(signals.[signals.Count-1]= -3)then signals.Add(-3)
+                    else signals.Add(1*momentumInterpreter(5,list2D.GetRange(i-n2,n2)))
                 else
                     // add the last again
                     // signals.Add(signals.[signals.Count-1])
                     // add zero
                     signals.Add(0)
-            signals.RemoveAt(signals.Count-1)
             signals
 
         let readIndex (path:string)= 
@@ -216,5 +215,5 @@ namespace Algorithm
             decimal liste2D.Count*b + a
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            let index = readIndex("C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv")
-            tripleCrossed (10,15,20, list2D,index, signals)
+            //let index = readIndex("C:/Users/Josefs/Documents/Schule/PPM/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv")
+            tripleCrossed (10,40,90, list2D, signals)
