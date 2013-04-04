@@ -50,6 +50,11 @@ namespace BacktestingSoftware
                 decimal absCumGainLoss = 0m;
                 this.mainViewModel.NetWorth = decimal.Parse(this.mainViewModel.Capital);
 
+                if (this.mainViewModel.NetWorth == 0)
+                {
+                    return "Capital is 0!";
+                }
+
                 int RoundLotSize = 0;
                 switch (this.mainViewModel.RoundLotSize)
                 {
@@ -66,7 +71,8 @@ namespace BacktestingSoftware
 
                 for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                 {
-                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i])
+                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.BarList[i].Item2 != 0
+                        && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0)
                     {
                         decimal addableFee = 0;
                         if (this.mainViewModel.Signals[i] != 0)
@@ -93,7 +99,14 @@ namespace BacktestingSoftware
                         currentGainLoss -= addableFee;
 
                         decimal portfolioPerformance = 0;
-                        portfolioPerformance = currentGainLoss / this.mainViewModel.NetWorth * 100;
+                        if (this.mainViewModel.NetWorth == 0)
+                        {
+                            portfolioPerformance = decimal.Zero;
+                        }
+                        else
+                        {
+                            portfolioPerformance = currentGainLoss / this.mainViewModel.NetWorth * 100;
+                        }
 
                         this.mainViewModel.PortfolioPerformancePercent += (currentGainLoss / decimal.Parse(this.mainViewModel.Capital) * 100);
 
@@ -112,7 +125,14 @@ namespace BacktestingSoftware
                         }
                         else if (oldWeightingMultiplier != 0)
                         {
-                            percentageOfThisTrade = ((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade - addableFee)) / priceOfLastTrade) * 100;
+                            if (priceOfLastTrade == 0)
+                            {
+                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i))) * 100;
+                            }
+                            else
+                            {
+                                percentageOfThisTrade = ((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade - addableFee)) / priceOfLastTrade) * 100;
+                            }
                         }
 
                         this.mainViewModel.GainLossPercent += percentageOfThisTrade;
