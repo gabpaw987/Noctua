@@ -1,5 +1,14 @@
 ﻿namespace Algorithm
-    module DecisionCalculator44=(*44*)
+    module DecisionCalculator=(*44*)
+
+        (*
+         * Divides one value by another
+         * Returns 0 if denominator is 0
+         *)
+        let divideZero denom nom =
+            match denom with
+            | 0m -> 0m
+            | _ -> nom/denom
         
         let alphaToN (a) : int=
             int ((2.0m/a)-1.0m)
@@ -113,7 +122,7 @@
             for i = period to prices.Count - 1 do
                 result <- List.append result [prices.[i].Item5 - prices.[i - period].Item5]
             result
-        
+
         (*
             This function calls the momentum function and interprets its results
         *)
@@ -142,6 +151,44 @@
                 1
             else
                 0
+
+        (*
+         * RSI using Welles Wilder's original smoothing technique and close-open
+         * price changes
+         *)
+        let rsi(n:int, prices:(decimal*decimal)[])=
+            let priceChanges = prices |> Array.map (fun bar -> snd bar - fst bar)
+            
+            let up = Array.zeroCreate (prices.Length-n+1)
+            let down = Array.zeroCreate (prices.Length-n+1)
+            let firstUp = Array.zeroCreate (n)
+            let firstDown = Array.zeroCreate (n)
+            
+            // calculate first value for up and down    
+            for i in 0..n-2 do
+                firstUp.[i]   <- List.max [    priceChanges.[i]   ; 0m]
+                firstDown.[i] <- List.max [-1m*priceChanges.[i+1] ; 0m]
+            // first value is the n.th; e.g. 14.
+            up.[0]   <- Array.average firstUp
+            down.[0] <- Array.average firstDown
+
+            // calculate all remaining values using welles wilder' smoothing method
+            up
+            |> Array.iteri (fun i p -> 
+                match i with
+                | _ when i > 0 ->
+                    up.[i]   <- (up.[i-1]  *decimal(n-1) + List.max [    priceChanges.[i] ; 0m])/decimal(n)
+                    down.[i] <- (down.[i-1]*decimal(n-1) + List.max [-1m*priceChanges.[i] ; 0m])/decimal(n)
+                | _ -> ignore i)
+            
+            // 
+            (up, down) 
+            ||> Array.map2 (fun u d -> 
+                if (u = 0m && d = 0m) then
+                    50m
+                else
+                    100m*u/(u+d))
+            |> Array.append (Array.zeroCreate (n-1))
 
         (*
          * Calculates the Directional Movement 
@@ -184,15 +231,6 @@
                 let max = [tr1;tr2;tr3] |> List.max
                 tr.[i] <- max
             Array.toList tr
-
-        (*
-         * Divides one value by another
-         * Returns 0 if denominator is 0
-         *)
-        let divideZero denom nom =
-            match denom with
-            | 0m -> 0m
-            | _ -> nom/denom
 
         let adx(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             // calculate the directional movements (pos & neg)
@@ -245,20 +283,16 @@
                 [ for i in prices -> i.Item5 ]
                 |> Seq.skip skip
                 |> Seq.toArray
+            // list of open/close price tuples
+            let ocPrices = 
+                [ for i in prices -> (i.Item2, i.Item5) ]
+                |> Seq.skip skip
+                |> Seq.toArray
 
             // skiped list of prices
             let prices = prices.GetRange(skip, prices.Count-skip)
-
             printfn "Skipped %d" skip
 
-            // amas for triple crossing in trend phases
-            let short = ama(erp, s1, s2, cPrices)
-            printfn "Finished short AMA"
-            let middle = ama(erp, m1, m2, cPrices)
-            printfn "Finished middle AMA"
-            let long = ama(erp, l1, l2, cPrices)
-            printfn "Finished long AMA"
-            
             // bollinger bands
             let bollinger = bollinger(n, sigma, prices)
             // bollinger band breadth
@@ -267,19 +301,36 @@
             let bInd = (cPrices, bollinger) |> bInd
             //let bInd = cPrices bollinger
             let mutable lastCross = 0
-
             printfn "Finished Bollinger Bands"
-            
-            let adx = adx (14, prices)
 
+            // amas for triple crossing in trend phases
+            let short = ama(erp, s1, s2, cPrices)
+            printfn "Finished short AMA"
+            let middle = ama(erp, m1, m2, cPrices)
+            printfn "Finished middle AMA"
+            let long = ama(erp, l1, l2, cPrices)
+            printfn "Finished long AMA"
+
+            // rsi
+            let rsiN = 14
+            let rsi = rsi(rsiN, ocPrices)
+
+            // TODO: short regression
+            let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
+            
+            // adx
+            let adx = adx (14, prices)
             printfn "Finished ADX"
 
-            // TODO: signals with and without skip!
+            // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
             
             let mutable sw = 0
             let mutable trend = 0
+            let mutable rsiSig = 0
+            let mutable amaSig = 0
             for i in signals.Count .. prices.Count-1 do
+                // Bollinger
                 // check if price has crossed Bollinger Bands
                 if bollinger.[i] |> fst <> 0m then
                     if cPrices.[i] > (bollinger.[i] |> fst) then
@@ -287,20 +338,30 @@
                     else if cPrices.[i] < (bollinger.[i] |> snd) then
                         lastCross <- 1
 
+                // AMA
+                amaSig <-
+                    if short.[i] < middle.[i] && middle.[i] < long.[i] then
+                        -1
+                    else if short.[i] > middle.[i] && middle.[i] > long.[i] then
+                        1
+                    else
+                        0
+
+                // RSI
+                rsiSig <-
+                    if (rsi.[i] < 30m) then 
+                        1 
+                    else if(rsi.[i] > 70m) then
+                        -1
+                    else 0
+
+                // Not all neccessary data available yet
                 if i < firstI then
                     signals.Add(0)
                 else
                     // if er indicates sideways markets
                     if adx.[i] < 20m then
                         sw <- sw+1
-//                        // price over higher bb
-//                        if cPrices.[i] > (bollinger.[i] |> fst) then
-//                            lastCross <- -1
-//                            signals.Add(0)
-//                        // price under lower bb
-//                        else if cPrices.[i] < (bollinger.[i] |> snd) then
-//                            lastCross <- 1
-//                            signals.Add(0)
                         // price between bbs
                         if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
                             if lastCross = 1 && bInd.[i]<0m then
@@ -314,16 +375,32 @@
                     // trending market
                     else
                         trend <- trend+1
-                        //signals.Add(0)
-                        if short.[i] < middle.[i] && middle.[i] < long.[i] then
-                            signals.Add(-1)
-                        else if short.[i] > middle.[i] && middle.[i] > long.[i] then
-                            signals.Add(1)
-                        else
-                            // add the last again
-                            // signals.Add(signals.[signals.Count-1])
-                            // add zero
+                        // contradictory ama and rsi signals
+                        if (amaSig + rsiSig = 0) then
                             signals.Add(0)
+                        else
+                            // + 3
+                            // ama and rsi on buy and price upwards
+                            if (amaSig = 1 && rsiSig = 1 && regrS.[i] > 0) then
+                                signals.Add(3)
+                            // -3
+                            // same for sell
+                            else if (amaSig = -1 && rsiSig = -1 && regrS.[i] < 0) then
+                                signals.Add(-3)
+                            // +/- 2
+                            else if (amaSig = rsiSig) then
+                                signals.Add(amaSig*2)
+                            // +/- 1
+                            else
+                                signals.Add(amaSig)
+                        // signals can only get bigger, neutral or in the other direction:
+                        // same sign
+                        if (sign signals.[signals.Count-1] = sign signals.[signals.Count-2]) then
+                            // weaker signal than before
+                            if (abs signals.[signals.Count-1] < abs signals.[signals.Count-2]) then
+                                // save stronger signal from before as present signal
+                                signals.[signals.Count-1] <- signals.[signals.Count-2]
+                        printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
             printfn "Trending decisions: %d" trend
             printfn "Sideways decisions: %d" sw
             signals

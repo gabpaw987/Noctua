@@ -12,10 +12,11 @@ namespace AlgorthimTesting
             //"C:/noctua/trunk/Input_Data/NKD_1mBar_20110809.csv"
             //"C:/noctua/trunk/Input_Data/GOOG_1dBar_20130110.csv"
             //"C:/noctua/trunk/Input_Data/SPX_1dBar_20130220.csv"
+            //"C:/noctua/trunk/Input_Data/INTC_1dBar_20130220.csv"
             //"C:/Dropbox/Diplomprojekt/CAD_1mBar_20110924.csv"
             Console.WriteLine("File einlesen");
             List<Tuple<DateTime, decimal, decimal, decimal, decimal>> asd;
-            asd = CSVReader.EnumerateExcelFile("C:/noctua/trunk/Input_Data/GOOG_1dBar_20130110.csv", new DateTime(), DateTime.Now).ToList();
+            asd = CSVReader.EnumerateExcelFile("C:/noctua/trunk/Input_Data/SPX_1dBar_20130220.csv", new DateTime(), DateTime.Now).ToList();
             Console.WriteLine("Algorithmus starten");
             // = new List<decimal>();
             // 
