@@ -475,9 +475,18 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(int.Parse(value)).Equals(_capital))
+                try
                 {
-                    _capital = int.Parse(value);
+                    if (!(int.Parse(value)).Equals(_capital))
+                    {
+                        _capital = int.Parse(value);
+                        if (PropertyChanged != null)
+                            PropertyChanged(this, new PropertyChangedEventArgs("Capital"));
+                    }
+                }
+                catch (Exception)
+                {
+                    _capital = 0;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("Capital"));
                 }
@@ -522,9 +531,18 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(decimal.Parse(value)).Equals(_relTransactionFee))
+                try
                 {
-                    _relTransactionFee = decimal.Parse(value);
+                    if (!(decimal.Parse(value)).Equals(_relTransactionFee))
+                    {
+                        _relTransactionFee = decimal.Parse(value);
+                        if (PropertyChanged != null)
+                            PropertyChanged(this, new PropertyChangedEventArgs("RelTransactionFee"));
+                    }
+                }
+                catch (Exception)
+                {
+                    _relTransactionFee = 0;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("RelTransactionFee"));
                 }
@@ -541,9 +559,18 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!(decimal.Parse(value)).Equals(_pricePremium))
+                try
                 {
-                    _pricePremium = decimal.Parse(value);
+                    if (!(decimal.Parse(value)).Equals(_pricePremium))
+                    {
+                        _pricePremium = decimal.Parse(value);
+                        if (PropertyChanged != null)
+                            PropertyChanged(this, new PropertyChangedEventArgs("PricePremium"));
+                    }
+                }
+                catch (Exception)
+                {
+                    _pricePremium = 0;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("PricePremium"));
                 }

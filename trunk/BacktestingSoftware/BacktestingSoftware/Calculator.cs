@@ -69,17 +69,20 @@ namespace BacktestingSoftware
                         break;
                 }
 
+                //To remove all the remaining positions in the end
+                this.mainViewModel.Signals[this.mainViewModel.Signals.Count - 1] = 0;
+
                 for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                 {
                     if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.BarList[i].Item2 != 0
                         && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0)
                     {
                         decimal addableFee = 0;
-                        if (this.mainViewModel.Signals[i] != 0)
-                            addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 * (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i))) + decimal.Parse(this.mainViewModel.AbsTransactionFee);
+                        if (this.mainViewModel.Signals[i] != 0 || (this.mainViewModel.Signals[i - 1] != 0 && this.mainViewModel.Signals[i] == 0))
+                            addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 * (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) + decimal.Parse(this.mainViewModel.AbsTransactionFee);
 
-                        int oldWeightingMultiplier = this.getWeightingMultiplier(i - 1);
-                        int WeightingMultiplier = this.getWeightingMultiplier(i);
+                        int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1);
+                        int WeightingMultiplier = this.GetWeightingMultiplier(i);
 
                         decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
 
@@ -120,14 +123,14 @@ namespace BacktestingSoftware
                             //If its the first trade, divide by transaction price
                             if (priceOfLastTrade == 0)
                             {
-                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i))) * 100;
+                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
                             }
                         }
                         else if (oldWeightingMultiplier != 0)
                         {
                             if (priceOfLastTrade == 0)
                             {
-                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i))) * 100;
+                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
                             }
                             else
                             {
@@ -152,8 +155,8 @@ namespace BacktestingSoftware
                         absCumGainLoss += currentGainLoss;
                         this.mainViewModel.NetWorth += currentGainLoss;
 
-                        decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.getWeightingMultiplier(i)) - addableFee;
-                        this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.getWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
+                        decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i)) - addableFee;
+                        this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.GetWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
 
                         priceOfLastTrade = priceOfThisTrade;
                     }
@@ -178,9 +181,61 @@ namespace BacktestingSoftware
             }
         }
 
-        private int getWeightingMultiplier(int index)
+        private int GetAbsWeightedSignalDifference(int index)
+        {
+            int oldSignal = this.mainViewModel.Signals[index - 1];
+            int newSignal = this.mainViewModel.Signals[index];
+
+            int toZero = 0;
+            int fromZero = 0;
+
+            if ((newSignal > 0 && oldSignal < 0) ||
+                (newSignal < 0 && oldSignal > 0))
+            {
+                toZero = 0 - oldSignal;
+                fromZero = newSignal;
+            }
+            else if (newSignal > oldSignal)
+            {
+                //kaufen newSignal - oldSignal
+                toZero = newSignal - oldSignal;
+            }
+            else if (newSignal < oldSignal)
+            {
+                //verkaufen newSignal - oldSignal
+                toZero = -(newSignal - oldSignal);
+            }
+            else if (newSignal == 0)
+            {
+                toZero = 0 - oldSignal;
+            }
+
+            return (Math.Abs(GetWeightingMultiplierFromSignal(toZero)) + Math.Abs(GetWeightingMultiplierFromSignal(fromZero)));
+        }
+
+        private int GetWeightingMultiplier(int index)
         {
             switch (this.mainViewModel.Signals[index])
+            {
+                case -3:
+                    return this.mainViewModel.ValueOfSliderOne * -1;
+                case -2:
+                    return this.mainViewModel.ValueOfSliderTwo * -1;
+                case -1:
+                    return this.mainViewModel.ValueOfSliderThree * -1;
+                case 1:
+                    return this.mainViewModel.ValueOfSliderFour;
+                case 2:
+                    return this.mainViewModel.ValueOfSliderFive;
+                case 3:
+                    return this.mainViewModel.ValueOfSliderSix;
+            }
+            return 0;
+        }
+
+        private int GetWeightingMultiplierFromSignal(int signal)
+        {
+            switch (signal)
             {
                 case -3:
                     return this.mainViewModel.ValueOfSliderOne * -1;
