@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=(*2*)
+    module DecisionCalculator2=(*2*)
         
         let rsi(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>) =
             let mutable rsi = []
@@ -15,8 +15,73 @@
                 rsi <- List.append rsi [100m*(List.sum(wins)/(decimal wins.Length))/((List.sum(wins)/(decimal wins.Length))-(List.sum(losses)/(decimal losses.Length)))]
             rsi
 
+        let rsi_close(n:int, prices:decimal list)=
+            let up = Array.zeroCreate (prices.Length-n)
+            let down = Array.zeroCreate (prices.Length-n)
+            
+            let firstUp = Array.zeroCreate (n)
+            let firstDown = Array.zeroCreate (n)
+            // price changes from one bar to the next
+            let diffs = Array.zeroCreate prices.Length
+            for i in 1..diffs.Length-1 do
+                diffs.[i] <- prices.[i] - prices.[i-1]
+            
+            // calculate first value for up and down    
+            for i in 0..n-1 do
+                firstUp.[i] <- List.max [diffs.[i+1] ; 0m]
+                firstDown.[i] <- List.max [-1m*diffs.[i+1] ; 0m]
+            // first value is the n+1.th; e.g. 15. (because of use of price changes)
+            // -> n price changes are available
+            up.[0] <- Array.average firstUp
+            down.[0] <- Array.average firstDown
+
+            // calculate all remaining values using welles wilder' smoothing method
+            up
+            |> Array.iteri (fun i p -> 
+                match i with
+                | _ when i > 0 ->
+                    up.[i]   <- (up.[i-1]*decimal(n-1)   + List.max [diffs.[i] ; 0m])/decimal(n)
+                    down.[i] <- (down.[i-1]*decimal(n-1) + List.max [-1m*diffs.[i] ; 0m])/decimal(n)
+                | _            -> ignore i)
+            
+            // 
+            (up, down) 
+            ||> Array.map2 (fun u d -> 100m*u/(u+d))
+            |> Array.append (Array.zeroCreate (n))
+
+        let rsi_neu(n:int, prices:(decimal*decimal)[])=
+            let priceChanges = prices |> Array.map (fun bar -> snd bar - fst bar)
+            
+            let up = Array.zeroCreate (prices.Length-n+1)
+            let down = Array.zeroCreate (prices.Length-n+1)
+            let firstUp = Array.zeroCreate (n)
+            let firstDown = Array.zeroCreate (n)
+            
+            // calculate first value for up and down    
+            for i in 0..n-2 do
+                firstUp.[i]   <- List.max [    priceChanges.[i]   ; 0m]
+                firstDown.[i] <- List.max [-1m*priceChanges.[i+1] ; 0m]
+            // first value is the n.th; e.g. 14.
+            up.[0]   <- Array.average firstUp
+            down.[0] <- Array.average firstDown
+
+            // calculate all remaining values using welles wilder' smoothing method
+            up
+            |> Array.iteri (fun i p -> 
+                match i with
+                | _ when i > 0 ->
+                    up.[i]   <- (up.[i-1]  *decimal(n-1) + List.max [    priceChanges.[i] ; 0m])/decimal(n)
+                    down.[i] <- (down.[i-1]*decimal(n-1) + List.max [-1m*priceChanges.[i] ; 0m])/decimal(n)
+                | _ -> ignore i)
+            
+            // 
+            (up, down) 
+            ||> Array.map2 (fun u d -> 100m*u/(u+d))
+            |> Array.append (Array.zeroCreate (n-1))
+
         let rsi_peer(n:int, prices:decimal list)=
-            //let up = Array.zeroCreate pr
+            //let up = Array.zeroCreate prices.Length
+
             let up = [|
                 for v in Seq.windowed n prices ->
                     v
@@ -24,8 +89,8 @@
                         match i with
                         | _ when i>0 ->
                             List.max [v.[i]-v.[i-1] ; 0m]
-                        | _          -> 0m)
-                    |> Array.sum|]
+                        | _          -> 0m) //).[n-1]|]
+                    |> Array.average |]
 
             let down = [|
                 for v in Seq.windowed n prices ->
@@ -34,11 +99,12 @@
                         match i with
                         | _ when i>0 ->
                             List.min [v.[i]-v.[i-1] ; 0m]
-                        | _          -> 0m)
-                    |> Array.sum)|]
+                        | _          -> 0m) //).[n-1]|]
+                    |> Array.average)|]
 
             (up, down) 
-            ||> Array.map2 (fun x y -> 100m-100m / (1m + x/y))
+            ||> Array.map2 (fun u d -> 100m*u/(u+d))
+            //||> Array.map2 (fun x y -> 100m-100m / (1m + (x / y)))
             |> Array.append (Array.zeroCreate (n-1))
             
         let rsiFinancialFormula(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
@@ -86,9 +152,24 @@
             let cPrices = 
                 [ for i in prices -> i.Item5 ]
                 |> Seq.toList
+            let ocPrices =
+                [ for i in prices -> (i.Item2, i.Item5) ]
+                |> Seq.toArray
 
             let rsi1 = rsiFinancialFormula(n, prices)
             let rsi2 = rsi(n, prices)
             let rsi3 = rsi_peer(n, cPrices)
+            let rsi4 = rsi_neu(n, ocPrices)
+
+            let mutable s1 = 0m
+            let mutable s2 = 0m
+            for i in 0..100 do
+                printfn "%d: %f\t %f\t %f\t new: %f %f" i rsi1.[i] rsi3.[i] (rsi1.[i] - rsi3.[i]) rsi4.[i] (rsi1.[i] - rsi4.[i])
+                s1 <- s1 + (rsi1.[i] - rsi3.[i])
+                s2 <- s2 + (rsi1.[i] - rsi4.[i])
+
+            s1 <- s1/100m
+            s2 <- s2/100m
+            printfn "Mean deviation: %f\t%f" s1 s2
             
             signals
