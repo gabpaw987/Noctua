@@ -480,17 +480,6 @@ namespace BacktestingSoftware
                         {
                             if (this.mainViewModel.Signals[i - 1] < 0)
                             {
-                                la.Height = -5;
-                                la.LineColor = System.Drawing.Color.Black;
-                                la.BackColor = System.Drawing.Color.White;
-
-                                la.AnchorDataPoint = chart.Series["Data"].Points[i];
-                                //indicates which one of the y values of the datapoint is used for the arrow
-                                la.AnchorY = chart.Series["Data"].Points[i].YValues[0];
-                                la.AnchorOffsetY = -2;
-                            }
-                            else if (this.mainViewModel.Signals[i - 1] > 0)
-                            {
                                 la.Height = 5;
                                 la.LineColor = System.Drawing.Color.Black;
                                 la.BackColor = System.Drawing.Color.White;
@@ -499,6 +488,17 @@ namespace BacktestingSoftware
                                 //indicates which one of the y values of the datapoint is used for the arrow
                                 la.AnchorY = chart.Series["Data"].Points[i].YValues[1];
                                 la.AnchorOffsetY = 2;
+                            }
+                            else if (this.mainViewModel.Signals[i - 1] > 0)
+                            {
+                                la.Height = -5;
+                                la.LineColor = System.Drawing.Color.Black;
+                                la.BackColor = System.Drawing.Color.White;
+
+                                la.AnchorDataPoint = chart.Series["Data"].Points[i];
+                                //indicates which one of the y values of the datapoint is used for the arrow
+                                la.AnchorY = chart.Series["Data"].Points[i].YValues[0];
+                                la.AnchorOffsetY = -2;
                             }
                         }
                         chart.Annotations.Add(la);

@@ -81,11 +81,11 @@
                         <Label Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
                         <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" ToolTip="Count of trades with a positive portfolio performance.">Number of Good Trades:</Label>
                         <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
-                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" ToolTip="Sum of the performance of all good trades.">Gain From Good Trades [%]:</Label>
+                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" ToolTip="Sum of the performance of all good trades relative to the invested capital.">Gain From Good Trades [%]:</Label>
                         <Label Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
                         <Label Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" ToolTip="Count of trades with a negative portfolio performance.">Number of Bad Trades:</Label>
                         <Label Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
-                        <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" ToolTip="Sum of the performance of all bad trades.">Loss From Bad Trades [%]:</Label>
+                        <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" ToolTip="Sum of the performance of all bad trades relative to the invested capital.">Loss From Bad Trades [%]:</Label>
                         <Label Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
                         <Label Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio of the number of good trades compared to the number of bad trades.">Ratio of Good Trades - Bad Trades:</Label>
                         <Label Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
