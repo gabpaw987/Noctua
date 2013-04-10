@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BacktestingSoftware", "BacktestingSoftware\BacktestingSoftware.csproj", "{24E9F5B2-533F-446D-8CE6-779E9858210E}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BTS_Setup", "BTS_Setup\BTS_Setup.vdproj", "{934D2230-901C-494F-B024-CA6DD9BBE293}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,12 @@ Global
 		{24E9F5B2-533F-446D-8CE6-779E9858210E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{24E9F5B2-533F-446D-8CE6-779E9858210E}.Release|x86.ActiveCfg = Release|x86
 		{24E9F5B2-533F-446D-8CE6-779E9858210E}.Release|x86.Build.0 = Release|x86
+		{934D2230-901C-494F-B024-CA6DD9BBE293}.Debug|Any CPU.ActiveCfg = Debug
+		{934D2230-901C-494F-B024-CA6DD9BBE293}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{934D2230-901C-494F-B024-CA6DD9BBE293}.Debug|x86.ActiveCfg = Debug
+		{934D2230-901C-494F-B024-CA6DD9BBE293}.Release|Any CPU.ActiveCfg = Release
+		{934D2230-901C-494F-B024-CA6DD9BBE293}.Release|Mixed Platforms.ActiveCfg = Release
+		{934D2230-901C-494F-B024-CA6DD9BBE293}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
