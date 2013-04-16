@@ -131,8 +131,8 @@ namespace BacktestingSoftware
         {
             string message = "Backtestingsoftware Noctua\n" +
                              "Version 1.0\n\n" +
-                             "This software has been developed within the socpe of the \"Projects and Projectmanagement\" education " +
-                             "as part of the dimploma project at the Technologischen Gewerbemusem Wien. It tests algorithms for technical" +
+                             "This software has been developed within the scope of the \"Projects and Projectmanagement\" education " +
+                             "as part of a diploma project at the Technologischen Gewerbemusem Wien. It tests algorithms for technical" +
                              "analysis in .dll-Files with historical stock market data stored in .csv-Files. Additionally " +
                              "an interface for creating such algorithm is provided to developers.";
             System.Windows.MessageBox.Show(message);
@@ -150,9 +150,17 @@ namespace BacktestingSoftware
 
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
 
-            dlg.FileName = algorithmUsed.Split(new char[] { '.' })[algorithmUsed.Split(new char[] { '.' }).Length - 2]
+            try
+            {
+                dlg.FileName = algorithmUsed.Split(new char[] { '.' })[algorithmUsed.Split(new char[] { '.' }).Length - 2]
                            + "#" +
                            datafileUsed.Split(new char[] { '.' })[datafileUsed.Split(new char[] { '.' }).Length - 2]; // Default file name
+            }
+            catch (Exception)
+            {
+                dlg.FileName = "ExportedFile";
+            }
+
             dlg.DefaultExt = ".txt"; // Default file extension
             dlg.Filter = "Performance Data File (.txt)|*.txt"; // Filter files by extension
 
