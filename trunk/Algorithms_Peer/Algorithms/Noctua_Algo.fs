@@ -61,7 +61,7 @@
             let er = er (prices)
             //pown (er * (nToAlpha (decimal(n1)) - nToAlpha (decimal(n2))) + nToAlpha (decimal(n2))) 2
             // double(ers.[ers.Count-1] * (nToAlpha (decimal(n1)) - nToAlpha (decimal(n2))) + nToAlpha (decimal(n2)))**0.75
-            double(er * (alpha1 - alpha2) + alpha2)**0.75
+            double(er * (alpha1 - alpha2) + alpha2)**1.00
 
         let ama (erp:int, n1:int, n2:int, prices:decimal[])=
             // initial period
@@ -69,10 +69,10 @@
             // calculate alphas for er
             let alpha1 = nToAlpha n1
             let alpha2 = nToAlpha n2
-            // t-1: calculate average of first n-1 elements as initial value for the ema
+            // t-1: calculate average of first n2-1 elements as initial value for the ema
             let tm1 =
                 prices
-                |> Seq.take (n-1)
+                |> Seq.take (n2-1)
                 |> Seq.average
             // create output array
             let ama : decimal array = Array.zeroCreate (prices.Length)
@@ -84,7 +84,9 @@
                 match i with
                 | _ when i > n-2 ->
                     let c = decimal (c (alpha1, alpha2, prices.[i-erp+1..i]))
+                    //printfn "%d-%d\t c: %d" n1 n2 (alphaToN c)
                     ama.[i] <- c * p + (1m - c) * ama.[i-1]
+                    //ama.[i] <- decimal(alphaToN c)
                     //printfn "%d" i
                 | _              -> ignore i)
             // set initial ama value (sma) to 0
@@ -113,6 +115,33 @@
                 ergebnis1.[i+n-1] <- (decimal c1.Series.["bbh"].Points.[i].YValues.[0], decimal c1.Series.["bbl"].Points.[i].YValues.[0])
                 //ergebnis1 <- List.append ergebnis1 [[decimal c1.Series.["bbh"].Points.[i].YValues.[0]; decimal c1.Series.["bbl"].Points.[i].YValues.[0]]]
             ergebnis1
+
+        (* return [supportlevel2, supportlevel1, pivotpoint, resistancelevel1, resistancelevel2]*)
+        let pivotpointcalcultor(n : int, prices : System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>) = 
+            let pvpts : decimal[][] = Array.zeroCreate ((int)(ceil((decimal prices.Count)/(decimal n))))
+            for i in 0..n..prices.Count do
+                let bars = prices.GetRange(i,n)
+                let mutable o = 0m
+                let mutable h = 0m
+                let mutable l = 0m
+                let mutable c = 0m
+                let mutable pivot = 0m
+                let mutable supportlevel1 = 0m
+                let mutable resistancelevel1 = 0m
+                let mutable supportlevel2 = 0m
+                let mutable resistancelevel2 = 0m
+                for j in 0 .. pvpts.Length-1 do
+                    o <- bars.[0].Item2
+                    h <- List.max [for j in bars -> j.Item3]
+                    l <- List.min [for j in bars -> j.Item4]
+                    c <- bars.[bars.Count-1].Item5
+                    pivot <- (h+l+c)/3m
+                    supportlevel1 <- 2m*pivot - h
+                    resistancelevel1 <- 2m*pivot - l
+                    supportlevel2 <- pivot - (resistancelevel1 - supportlevel1)
+                    resistancelevel2 <- (pivot - supportlevel1) + resistancelevel1
+                    pvpts.[j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
+            pvpts
 
         (*
             calculates the momentum over the given time period
@@ -194,22 +223,24 @@
          * Calculates the Directional Movement 
          * dependent on which char is given(+/-) the positive or negative dm
          *)
-        let calculateDm(decision:char, n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
+        let calculateDm(decision:char, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             // calculate the directional movements (pos / neg)
             let dm = Array.zeroCreate prices.Count
             dm.[0] <- 0m
             for i = 1 to prices.Count - 1 do
-                if(prices.[i].Item5 > prices.[i-1].Item5) then 
-                    if(decision.Equals('+')) then
+                if(decision.Equals('+')) then
+                    if(prices.[i].Item5 > prices.[i-1].Item5) then
                         dm.[i] <- prices.[i].Item3 - prices.[i-1].Item3
                     else 
                         dm.[i] <- 0m
-                else if (prices.[i].Item5 < prices.[i-1].Item5) then 
-                    if(decision.Equals('-')) then
+                else if(decision.Equals('-')) then
+                    if (prices.[i].Item5 < prices.[i-1].Item5) then 
                         dm.[i] <- prices.[i-1].Item4 - prices.[i].Item4
                     else 
                         dm.[i] <- 0m
-                else
+                else 
+                    dm.[i] <- 0m
+                if(dm.[i] < 0m) then
                     dm.[i] <- 0m
             Array.toList dm
 
@@ -220,8 +251,7 @@
          * Today's High - Yesterday's Close, and
          * Yesterday's Close - Today's Low
          *)
-        let calculateTr(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
-            // calculate the directional movements (pos & neg)
+        let calculateTr(prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let tr = Array.zeroCreate prices.Count
             tr.[0] <- 0m
             for i = 1 to prices.Count - 1 do
@@ -234,33 +264,20 @@
 
         let adx(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             // calculate the directional movements (pos & neg)
-            let posdm = ema (n, calculateDm ('+', n, prices))
-            let negdm = ema (n, calculateDm ('-', n, prices))
-            let tr    = ema (n, calculateTr (n, prices))
+            let posdm = ema (n, calculateDm ('+', prices))
+            let negdm = ema (n, calculateDm ('-', prices))
+            let tr    = ema (n, calculateTr (prices))
 
-            let posdi = Array.zeroCreate prices.Count
+            let posdi = Array.zeroCreate (prices.Count)
             let negdi = Array.zeroCreate prices.Count
-            for i in 0 .. posdm.Length-1 do
+            for i in n .. posdm.Length-1 do
                 posdi.[i] <- 100m*(posdm.[i] |> divideZero tr.[i])
                 negdi.[i] <- 100m*(negdm.[i] |> divideZero tr.[i])
 
-//            let l = (posdm14, negdm14, tr14) |||> List.zip3
-//            let posdi14 = Array.zeroCreate prices.Count
-//            let negdi14 = Array.zeroCreate prices.Count
-//            let mutable i = 0
-//            for (pos, neg, tr) in l do
-//                posdi14.[i] <- 100m*(pos |> divideZero tr)
-//                negdi14.[i] <- 100m*(neg |> divideZero tr)
-//                i <- i+1
-
-//            // calculate the directional indicators
-//            // [ for x in 0 .. posdm14.Length -> posdm14.[x]/ tr14.[x] ]
-//            let posdi14 = [ for x in 0 .. prices.Count - 1 -> 100m*(posdm14.[x] |> divideZero tr14.[x]) ]
-//            let negdi14 = [ for x in 0 .. prices.Count - 1 -> 100m*(negdm14.[x] |> divideZero tr14.[x]) ]
 
             // calculate the difference between the two indicators as a positive number
-            let dx = [ for x in 0 .. prices.Count - 1 -> 100m*(abs(posdi.[x] - negdi.[x])) |> divideZero (abs(posdi.[x] + negdi.[x])) ]
-            let adx = ema(n, dx)
+            let dx = [ for x in 0 .. prices.Count - 1 ->   100m*((abs(posdi.[x] - negdi.[x]))) |> divideZero (abs(posdi.[x] + negdi.[x])) ]
+            let adx = ema(n*2, dx)
             adx
 
         (*
@@ -274,7 +291,7 @@
                 bInd.[i] <- ((prices.[i] - (bollinger.[i] |> snd)) |> divideZero ((bollinger.[i] |> fst) - (bollinger.[i] |> snd))) * 200m - 100m
             bInd
 
-        let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+        let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
             // skip already calculated signals
             let skip = if signals.Count-n+1 > 0 then signals.Count-n+1 else 0
 
@@ -325,10 +342,18 @@
             // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
             
+            // price at trade entry (long or short)
+            let mutable entryPrice = 0m
+            // price extreme in trade for cut loss
+            let mutable priceExtreme = cPrices.[0]
+
             let mutable sw = 0
             let mutable trend = 0
+            let mutable cutlossCount = 0
+
             let mutable rsiSig = 0
             let mutable amaSig = 0
+            let signalFilter = 0.0m
             for i in signals.Count .. prices.Count-1 do
                 // Bollinger
                 // check if price has crossed Bollinger Bands
@@ -339,21 +364,26 @@
                         lastCross <- 1
 
                 // AMA
+
                 amaSig <-
-                    if short.[i] < middle.[i] && middle.[i] < long.[i] then
-                        -1
-                    else if short.[i] > middle.[i] && middle.[i] > long.[i] then
-                        1
+                    if short.[i] + (cPrices.[i]*signalFilter) < middle.[i] && short.[i] + (cPrices.[i]*signalFilter) < long.[i] then
+                        if middle.[i] < long.[i] then
+                            -2
+                        else
+                            -1
+                    else if short.[i] - (cPrices.[i]*signalFilter) > middle.[i] && short.[i] - (cPrices.[i]*signalFilter) > long.[i] then
+                        if middle.[i] > long.[i] then
+                            2
+                        else
+                            1
                     else
                         0
 
                 // RSI
-                rsiSig <-
-                    if (rsi.[i] < 30m) then 
-                        1 
-                    else if(rsi.[i] > 70m) then
-                        -1
-                    else 0
+                if (rsi.[i] < 30m) then
+                    rsiSig <- 1 
+                else if (rsi.[i] > 70m) then
+                    rsiSig <- -1
 
                 // Not all neccessary data available yet
                 if i < firstI then
@@ -376,35 +406,55 @@
                     else
                         trend <- trend+1
                         // contradictory ama and rsi signals
-                        if (amaSig + rsiSig = 0) then
+                        if (sign amaSig <> sign rsiSig) then
                             signals.Add(0)
                         else
                             // + 3
-                            // ama and rsi on buy and price upwards
-                            if (amaSig = 1 && rsiSig = 1 && regrS.[i] > 0) then
-                                signals.Add(3)
+                            // ama and rsi on buy
+                            if (sign amaSig = 1 && rsiSig = 1) then
+                                signals.Add(amaSig + 1)
                             // -3
                             // same for sell
-                            else if (amaSig = -1 && rsiSig = -1 && regrS.[i] < 0) then
-                                signals.Add(-3)
-                            // +/- 2
-                            else if (amaSig = rsiSig) then
-                                signals.Add(amaSig*2)
-                            // +/- 1
+                            else if (sign amaSig = -1 && rsiSig = -1) then
+                                signals.Add(amaSig - 1)
+                            // +/- 1,2
                             else
                                 signals.Add(amaSig)
-                        // signals can only get bigger, neutral or in the other direction:
-                        // same sign
-                        if (sign signals.[signals.Count-1] = sign signals.[signals.Count-2]) then
-                            // weaker signal than before
-                            if (abs signals.[signals.Count-1] < abs signals.[signals.Count-2]) then
-                                // save stronger signal from before as present signal
-                                signals.[signals.Count-1] <- signals.[signals.Count-2]
-                        printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
+
+                    // Signal Smoothing:    signals can only get bigger, neutral or in the other direction
+                    // Cutloss:             neutralise if loss is too big (% of price movement!)
+
+                    // same sign: signal now and last bar
+                    if (sign signals.[i] = sign signals.[i-1]) then
+                        // cut loss: price extreme
+                        if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
+                            priceExtreme <- cPrices.[i]
+
+                        // weaker signal than before
+                        if (abs signals.[i] < abs signals.[i-1]) then
+                            // save stronger signal from before as present signal
+                            signals.[i] <- signals.[i-1]
+
+                    // new buy or sell signal (different direction)
+                    if (signals.[i] <> 0 && sign signals.[i] <> sign signals.[i-1]) then
+                        entryPrice <- cPrices.[i]
+                        // reset priceExtreme for new trade
+                        priceExtreme <- cPrices.[i]
+                    // same trading direction (-/+)
+                    else if (signals.[i] <> 0) then
+                        // check cut loss:
+                        if (abs (priceExtreme - cPrices.[i]) > cutloss*0.01m*entryPrice) then
+                            // neutralise -> liquidate
+                            signals.[i] <- 0
+                            cutlossCount <- cutlossCount + 1
+                            printfn "Cut loss with loss of %f > cut loss of %f" (priceExtreme - cPrices.[i]) (cutloss*0.01m*entryPrice)
+
+                    //printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
             printfn "Trending decisions: %d" trend
             printfn "Sideways decisions: %d" sw
+            printfn "Cut Losses: %d" cutlossCount
             signals
 
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
-            //       erp  s1  s2  m1  m2  l1  l2   bN  sig 
-            strategy (90, 10, 20, 40, 50, 90, 120, 20, 2m, prices, signals)
+            //       erp  s1  s2  m1  m2  l1  l2   bN  sig cutloss
+            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 5.0m, prices, signals)
