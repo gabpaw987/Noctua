@@ -1,0 +1,49 @@
+\section{Microsoft Chart Controls}
+
+Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die es ermöglicht in WinForms-Anwendungen oder auf Webseiten mit ASP.NET Charts und Diagramme zu zeichnen. Die Möglichkeiten sind dermaßen umfangreich, dass es im Folgenden nur Sinn macht, die Funktionen zu erläutern, die für die Darstellung finanzieller Charts erheblich sind. Zu den Hauptfeatures zählen daher \cite{msdn-charting}:
+
+\begin{itemize}
+\item \textbf{Charttypen} \\
+	Es werden 35 verschiedene Charttypen unterstützt, dabei alles von normalen Liniencharts bis zu Bar- und Candlestick-Charts zur Darstellung von Aktiendaten.
+\item \textbf{Skalierbarkeit} \\
+	Es können unendlich viele Daten, Chart-Areas (Bereiche innerhalb eines Charts), Bemerkungen (z.B. Pfeile), etc. innerhalb eines Charts angezeigt werden. Daher können bspw. Aktiendaten und deren \glspl{ma} in einer ChartArea angezeigt werden. Zusätzlich könnte man eine weitere ChartArea ergänzen um bspw. einen \gls{macd}-Verlauf direkt unter den Aktiendaten zu zeichnen.
+\item \textbf{Daten} \\
+	Es werden Unmengen an Möglichkeiten zur Verwaltung der Daten innerhalb eines Charts, wie z.B. Data Binding, zur Verfügung gestellt. Außerdem können die Daten des Charts exportiert, oder zum Speichern serialisiert werden. 
+\item \textbf{Aussehen} \\
+	Weiters können sowohl zweidimensionale als auch dreidimensionale Charts erstellt werden, die alle sehr simpel und schön dargestellt werden. Die können zudem auch zur Laufzeit noch weiter manipuliert werden und die WinForms-Version bietet sogar Möglichkeiten zum interaktiven Zoomen und Scrollen für den User. (Auf Webseiten mit ASP.NET werden keine interaktiven Funktionen für den Benutzer der Website angeboten.) \cite{msdn-charting}
+\end{itemize}
+
+\subsection{Nutzung mit WPF}
+
+Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich, man kann diese Einschränkung allerdings umgehen indem man einen sog. WinFormsHost erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem MSChart kann so erstellt werden:
+
+\begin{verbatim}
+<WindowsFormsHost Name="WfHost" Grid.Row="0">
+	<MSChart:Chart x:Name="MyWinformChart">
+	    <MSChart:Chart.ChartAreas>
+	        <MSChart:ChartArea Name="MainArea"/>
+	    </MSChart:Chart.ChartAreas>
+	</MSChart:Chart>
+</WindowsFormsHost>
+\end{verbatim}
+
+Hier wurde außer dem primitiven MSChart auch gleich eine ChartArea hinzugefügt. Eine ChartArea ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses WinFormsHost-Element allerdings funktioniert müssen für das gesamte Window noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
+
+\begin{verbatim}
+xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+\end{verbatim}
+
+\subsection{Finanzielle Berechnungen}
+
+Die Microsoft Chart Controls Library bietet allerdings nicht nur Möglichkeiten zur einfachen Darstellung von Daten. Denn sie beinhaltet ein Framework aus über 50 veschiedenen statistischen und finanziellen Formeln zur automatischen Berechnung und Darstellung spezieller Werte. \cite{msdn-charting}\\
+\\
+Die wichtigsten Formeln in der FinancialFormula-Sammlung der MS Chart Controls sind:
+
+\begin{itemize}
+\item Bollinger Bänder
+\item \gls{cci}
+\item diverse \glspl{ma}
+\item \gls{macd}
+\end{itemize}
