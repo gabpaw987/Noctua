@@ -118,29 +118,29 @@
 
         (* return [supportlevel2, supportlevel1, pivotpoint, resistancelevel1, resistancelevel2]*)
         let pivotpointcalcultor(n : int, prices : System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>) = 
-            let pvpts : decimal[][] = Array.zeroCreate ((int)(ceil((decimal prices.Count)/(decimal n))))
-            for i in 0..n..prices.Count do
+            //let pvpts : decimal[][] = Array.zeroCreate ((int)(floor((decimal prices.Count)/(decimal n))))
+            let pvpts : decimal[][] = Array.zeroCreate prices.Count
+            for i in 0..n-1 do
+                pvpts.[i] <- [|0m; 0m; 0m; 0m; 0m|]
+            for i in 0..n..prices.Count-n do
                 let bars = prices.GetRange(i,n)
-                let mutable o = 0m
-                let mutable h = 0m
-                let mutable l = 0m
-                let mutable c = 0m
-                let mutable pivot = 0m
-                let mutable supportlevel1 = 0m
-                let mutable resistancelevel1 = 0m
-                let mutable supportlevel2 = 0m
-                let mutable resistancelevel2 = 0m
-                for j in 0 .. pvpts.Length-1 do
-                    o <- bars.[0].Item2
-                    h <- List.max [for j in bars -> j.Item3]
-                    l <- List.min [for j in bars -> j.Item4]
-                    c <- bars.[bars.Count-1].Item5
-                    pivot <- (h+l+c)/3m
-                    supportlevel1 <- 2m*pivot - h
-                    resistancelevel1 <- 2m*pivot - l
-                    supportlevel2 <- pivot - (resistancelevel1 - supportlevel1)
-                    resistancelevel2 <- (pivot - supportlevel1) + resistancelevel1
-                    pvpts.[j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
+
+                let o = bars.[0].Item2
+                let h = List.max [for j in bars -> j.Item3]
+                let l = List.min [for j in bars -> j.Item4]
+                let c = bars.[bars.Count-1].Item5
+                let pivot = (h+l+c)/3m
+                let supportlevel1 = 2m*pivot - h
+                let resistancelevel1 = 2m*pivot - l
+                let supportlevel2 = pivot - (resistancelevel1 - supportlevel1)
+                let resistancelevel2 = (pivot - supportlevel1) + resistancelevel1
+
+                if (i + 2*(n-1) < pvpts.Length) then
+                    for j in 0..n-1 do
+                        pvpts.[n-1 + i + j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
+                else
+                    for j in 0..(pvpts.Length - (n-1 + i) - 1) do
+                        pvpts.[n-1 + i + j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
             pvpts
 
         (*
@@ -320,6 +320,9 @@
             let mutable lastCross = 0
             printfn "Finished Bollinger Bands"
 
+            // pivot points
+            let pvpts = pivotpointcalcultor(14,prices)
+
             // amas for triple crossing in trend phases
             let short = ama(erp, s1, s2, cPrices)
             printfn "Finished short AMA"
@@ -333,7 +336,7 @@
             let rsi = rsi(rsiN, ocPrices)
 
             // TODO: short regression
-            let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
+            //let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
             
             // adx
             let adx = adx (14, prices)
@@ -364,7 +367,6 @@
                         lastCross <- 1
 
                 // AMA
-
                 amaSig <-
                     if short.[i] + (cPrices.[i]*signalFilter) < middle.[i] && short.[i] + (cPrices.[i]*signalFilter) < long.[i] then
                         if middle.[i] < long.[i] then
@@ -390,16 +392,27 @@
                     signals.Add(0)
                 else
                     // if er indicates sideways markets
-                    if adx.[i] < 20m then
+                    //if adx.[i] < 20m then
+                    if adx.[i] < 40m then
                         sw <- sw+1
+                        // print price between support2 and resistance2
+                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
                         // price between bbs
                         if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
-                            if lastCross = 1 && bInd.[i]<0m then
+                            // either with PVPTS:
+                            if lastCross = 1 && bInd.[i] < 0.8m && cPrices.[i] < pvpts.[i].[3] then
                                 signals.Add(1)
-                            else if lastCross = -1 && bInd.[i]>0m then
+                            else if lastCross = -1 && bInd.[i] > -0.8m && cPrices.[i] > pvpts.[i].[1] then
                                 signals.Add(-1)
                             else
                                 signals.Add(0)
+                            // or without PVPTS:
+//                            if lastCross = 1 && bInd.[i] < 0.0m then
+//                                signals.Add(1)
+//                            else if lastCross = -1 && bInd.[i] > 0.0m then
+//                                signals.Add(-1)
+//                            else
+//                                signals.Add(0)
                         else
                             signals.Add(0)
                     // trending market
@@ -407,7 +420,13 @@
                         trend <- trend+1
                         // contradictory ama and rsi signals
                         if (sign amaSig <> sign rsiSig) then
-                            signals.Add(0)
+                            // check pvpts for supp/res
+                            if (amaSig > 0 && cPrices.[i] > pvpts.[i].[1]) then
+                                signals.Add(amaSig)
+                            else if (amaSig < 0 && cPrices.[i] < pvpts.[i].[3]) then
+                                signals.Add(amaSig)
+                            else
+                                signals.Add(0)
                         else
                             // + 3
                             // ama and rsi on buy
