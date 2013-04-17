@@ -64,18 +64,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_94274DF894F4F7A87FA64178014D1FF7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0CDFA7C02095F66D837A69AFF5D315CD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_7BC6107C1F094A92B909D6BF1EF45070"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -103,6 +91,18 @@
         "OwnerKey" = "8:_12E3A0A189B5A19EF15FFD9592B5B908"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_94274DF894F4F7A87FA64178014D1FF7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0CDFA7C02095F66D837A69AFF5D315CD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -128,6 +128,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
         "Release"
@@ -152,6 +165,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
     }
@@ -406,6 +432,17 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_667B9996DDB14F6690D47E82BF3C92F6"
+                    {
+                    "Name" = "8:Noctua"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_74D714613CA54CC98BD6F4E41B1CEE1E"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
         }
@@ -423,22 +460,22 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:BTS_Setup"
+        "ProductName" = "8:BTS"
         "ProductCode" = "8:{72E1F0F1-180E-4035-8FD3-2F116EE0C349}"
         "PackageCode" = "8:{1A4B4F14-364F-4968-8858-9D9FBB7F1062}"
         "UpgradeCode" = "8:{7EE53DA4-25DF-4869-98EC-C068382A6C90}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Standardfirmenname"
+        "Manufacturer" = "8:Noctua"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:BTS_Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Standardfirmenname"
+        "ARPCONTACT" = "8:Noctua"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -545,6 +582,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_9387CDD6D1C742D2BD250813A7ADDEF7"
+            {
+            "Name" = "8:BTS"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_7BC6107C1F094A92B909D6BF1EF45070"
+            "Folder" = "8:_667B9996DDB14F6690D47E82BF3C92F6"
+            "WorkingFolder" = "8:_EDB78BA429C54D29B7CF71507B79DFCC"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
@@ -946,7 +997,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7BC6107C1F094A92B909D6BF1EF45070"
             {
-            "SourcePath" = "8:..\\BacktestingSoftware\\obj\\x86\\Debug\\BacktestingSoftware.exe"
+            "SourcePath" = "8:..\\BacktestingSoftware\\obj\\x86\\Release\\BacktestingSoftware.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_EDB78BA429C54D29B7CF71507B79DFCC"
