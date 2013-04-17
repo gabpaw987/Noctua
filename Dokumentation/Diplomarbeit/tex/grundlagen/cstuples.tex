@@ -1,12 +1,12 @@
 \section{C\# Tuples}
 
-Ein Tuple ist prinzipiell eine Ansammlung von Werten. Dabei können sie beliebig viele Werte mit verschiedenen Datentypen haben. Eben diese Anzahl und die dazugehörigen Datentypen müssen allerdings schon im Vorhinein festgelegt werden, wenn der Tuple erzeugt wir. Ein Tuple könnte bsow. so aussehen:
+Ein Tuple ist prinzipiell eine Ansammlung von Werten. Dabei können sie beliebig viele Werte mit verschiedenen Datentypen haben. Eben diese Anzahl und die dazugehörigen Datentypen müssen allerdings schon im Vorhinein festgelegt werden, wenn der Tuple erzeugt wir. Ein Tuple könnte bsow. so aussehen \cite{cs-tuple}:
 
 \begin{verbatim}
 Tuple<int, bool> tuple = new Tuple<int, bool>(1, true);
 \end{verbatim}
 
 Dabei handelt es sich um einen sehr einfachen Tuple der lediglich einen Integer-Wert zu einem dazugehörigen Boolean-Wert speichert.\\
-Der Tuple ist eine Klasse dessen Werte in ihm gespeichert werden. Deshalb muss er einen separaten Ort im Heap allokieren. Dies bedeutet, dass bspw. ein Tuple mit zwei Werte in der Erstellung wesentlich längert benötigt als ein KeyValuePair, er aber später in der Nutzung eine deutlich höhere Performance aufweist. Außerdem können durch diese Tatsache die Datentypen der Felder des Tuples nach dessen Erstellung absolut nicht mehr geändert werden, was den Tuple eigentlich mehr einer struct ähneln lässt.\\
+Der Tuple ist eine Klasse dessen Werte in ihm gespeichert werden. Deshalb muss er einen separaten Ort im Heap allokieren. \cite{cs-tuple} Dies bedeutet, dass bspw. ein Tuple mit zwei Werte in der Erstellung wesentlich länger benötigt als ein KeyValuePair, er aber später in der Nutzung eine deutlich höhere Performance aufweist. \cite{tuple-performance} Außerdem können durch diese Tatsache die Datentypen der Felder des Tuples nach dessen Erstellung absolut nicht mehr geändert werden, was den Tuple eigentlich mehr einer struct ähneln lässt. \cite{cs-tuple}\\
 \\
 In der Praxis werden selten einzelne Tuples verwendet. Es ist allerdings oft von Vorteil eine Liste aus Tuples zu erzeugen, wenn man quasi eine Map (bzw. ein Dictionary) mit mehreren Werten oder anderen Datentypen benötigt. So können z.B. Aktienpreis-Bars als Tuple aus einem TimeStamp und Feldern für Open, High, Low und Close realisiert werden. Daraus kann dann eine Liste erstellt werden, um die Bars adäquat speichern zu können.
