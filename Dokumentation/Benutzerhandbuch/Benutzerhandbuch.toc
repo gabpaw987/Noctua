@@ -1,0 +1,11 @@
+\select@language {german}
+\contentsline {chapter}{\numberline {1}Einleitung}{3}
+\contentsline {chapter}{\numberline {2}Installation}{4}
+\contentsline {section}{\numberline {2.1}Start der Installation}{4}
+\contentsline {chapter}{\numberline {3}Programm}{7}
+\contentsline {section}{\numberline {3.1}Schreiben eines Algorithmus}{7}
+\contentsline {subsection}{\numberline {3.1.1}Erzeugen eines Algorithmus-Files}{8}
+\contentsline {subsection}{\numberline {3.1.2}Entscheidungen}{10}
+\contentsline {section}{\numberline {3.2}Historische Daten}{10}
+\contentsline {section}{\numberline {3.3}Backtestingsoftware}{11}
+\contentsline {chapter}{\numberline {4}minimale Systemvoraussetzungen}{17}

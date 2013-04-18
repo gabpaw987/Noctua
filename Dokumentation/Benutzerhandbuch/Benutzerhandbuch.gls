@@ -1,0 +1,9 @@
+\glossarysection[\glossarytoctitle]{\glossarytitle}\glossarypreamble
+\begin{theglossary}\glossaryheader
+\glsgroupheading{D}\relax \glsresetentrylist %
+\glossaryentryfield{DLL}{\glsnamefont{DLL}}{Dynamic Link Library (DLL) bezeichnet allgemein eine dynamische Programmbibliothek, meist bezieht sich der Begriff jedoch auf die von Microsoft für die Betriebssysteme Microsoft Windows und OS/2 verwendete Variante.}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{2}}}\glsgroupskip
+\glsgroupheading{F}\relax \glsresetentrylist %
+\glossaryentryfield{F-Sharp}{\glsnamefont{F-Sharp}}{F\# ist eine funktionale Programmiersprache von Microsoft für das .NET-Framework.}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{2\delimN 3}}}%
+\end{theglossary}\glossarypostamble
