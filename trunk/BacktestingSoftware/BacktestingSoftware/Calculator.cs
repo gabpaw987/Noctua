@@ -215,7 +215,7 @@ namespace BacktestingSoftware
 
                     this.mainViewModel.SharpeRatio = (this.mainViewModel.PortfolioPerformancePercent - portfolioPerformanceWithRiskFreeRate) / this.mainViewModel.StdDevOfProfit;
 
-                    return "";
+                    return string.Empty;
                 }
                 else
                 {

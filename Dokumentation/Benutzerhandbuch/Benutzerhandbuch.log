@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  18 APR 2013 12:52
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (Web2C 2011) (format=pdflatex 2012.9.13)  18 APR 2013 15:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1008,11 +1008,22 @@ Package pdftex.def Info: images/btsorders.png used on input line 51.
 Kapitel 4.
 ) (./Benutzerhandbuch.gls [17
 
-]) [18
+]
+Overfull \hbox (2.2139pt too wide) in paragraph at lines 11--11
+[]\T1/cmr/m/n/10.95 Das Da-tei-for-mat CSV steht für eng-
+ []
+
+
+Overfull \hbox (14.80649pt too wide) in paragraph at lines 11--11
+\T1/cmr/m/n/10.95 lisch Comma-separated va-lues (sel-te-ner Character-separated
+
+ []
+
+[18
 
 
 
-] (./Benutzerhandbuch.lof)
+]) [19] (./Benutzerhandbuch.lof)
 \tf@lof=\write6
 \openout6 = `Benutzerhandbuch.lof'.
 
@@ -1025,19 +1036,19 @@ Class scrreprt Warning: Usage of deprecated \float@listhead!
 (scrreprt)              `scrreprt' soon, so it should not be used  on input lin
 e 101.
 
-[19
+[20
 
 ] (./Benutzerhandbuch.lol)
 \tf@lol=\write7
 \openout7 = `Benutzerhandbuch.lol'.
 
- [20
+ [21
 
 ] (./Benutzerhandbuch.aux) ) 
 Here is how much of TeX's memory you used:
  10259 strings out of 493633
  149824 string characters out of 3146745
- 268528 words of memory out of 3000000
+ 268562 words of memory out of 3000000
  13308 multiletter control sequences out of 15000+200000
  17791 words of font info for 42 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
@@ -1054,10 +1065,10 @@ live/2011/texmf-dist/fonts/type1/public/cm-super/sfss1440.pfb><c:/texlive/2011/
 texmf-dist/fonts/type1/public/cm-super/sfss2488.pfb><c:/texlive/2011/texmf-dist
 /fonts/type1/public/cm-super/sfsx1095.pfb><c:/texlive/2011/texmf-dist/fonts/typ
 e1/public/cm-super/sfsx2074.pfb>
-Output written on Benutzerhandbuch.pdf (20 pages, 781749 bytes).
+Output written on Benutzerhandbuch.pdf (21 pages, 789778 bytes).
 PDF statistics:
- 134 PDF objects out of 1000 (max. 8388607)
- 82 compressed objects within 1 object stream
+ 137 PDF objects out of 1000 (max. 8388607)
+ 84 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  56 words of extra memory for PDF output out of 10000 (max. 10000000)
 
