@@ -10,12 +10,12 @@ Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die
 \item \textbf{Daten} \\
 	Es werden Unmengen an Möglichkeiten zur Verwaltung der Daten innerhalb eines Charts, wie z.B. Data Binding, zur Verfügung gestellt. Außerdem können die Daten des Charts exportiert, oder zum Speichern serialisiert werden. 
 \item \textbf{Aussehen} \\
-	Weiters können sowohl zweidimensionale als auch dreidimensionale Charts erstellt werden, die alle sehr simpel und schön dargestellt werden. Die können zudem auch zur Laufzeit noch weiter manipuliert werden und die WinForms-Version bietet sogar Möglichkeiten zum interaktiven Zoomen und Scrollen für den User. (Auf Webseiten mit ASP.NET werden keine interaktiven Funktionen für den Benutzer der Website angeboten.) \cite{msdn-charting}
-\end{itemize}
+	Weiters können sowohl zweidimensionale als auch dreidimensionale Charts erstellt werden, die alle sehr simpel und schön dargestellt werden. Die können zudem auch zur Laufzeit noch weiter manipuliert werden und die WinForms-Version bietet sogar Möglichkeiten zum interaktiven Zoomen und Scrollen für den User. (Auf Webseiten mit ASP.NET werden keine interaktiven Funktionen für den Benutzer der Website angeboten.) 
+\end{itemize} \cite{msdn-charting}
 
 \subsection{Nutzung mit WPF}
 
-Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich, man kann diese Einschränkung allerdings umgehen indem man einen sog. WinFormsHost erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem MSChart kann so erstellt werden:
+Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich, man kann diese Einschränkung allerdings umgehen indem man einen sog. \textit{WinFormsHost} erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem \textit{MSChart} kann so erstellt werden:
 
 \begin{verbatim}
 <WindowsFormsHost Name="WfHost" Grid.Row="0">
@@ -27,7 +27,7 @@ Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältli
 </WindowsFormsHost>
 \end{verbatim}
 
-Hier wurde außer dem primitiven MSChart auch gleich eine ChartArea hinzugefügt. Eine ChartArea ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses WinFormsHost-Element allerdings funktioniert müssen für das gesamte Window noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
+Hier wurde außer dem primitiven \textit{MSChart} auch gleich eine \textit{ChartArea} hinzugefügt. Eine \textit{ChartArea} ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses WinFormsHost-Element allerdings funktioniert müssen für das gesamte \textit{Window} noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
 
 \begin{verbatim}
 xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
@@ -35,15 +35,48 @@ xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;ass
 xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 \end{verbatim}
 
+\subsection{Darstellung einfacher Graphen}
+
+Nachdem eine leere \textit{ChartArea}, in die ein Graph gezeichnet werden kann, bereits im \gls{xaml} erzeugt wurde, muss man im C\#-Code nur noch das \textit{Chart} suchen, in das gezeichnet werden soll und eine \textit{Series} erstellen. In diese Series werden dann die Daten eingespeist, die gezeichnet werden soll. Wenn man nun auch noch einen Typ für den Graphen konfiguriert wird dieser auch schon in der \textit{ChartArea} angezeigt. Um bspw. eine Sinusfunktion darzustellen müsste man nun folgenden Code schreiben: \cite{msdn-charting}
+
+\begin{verbatim}
+//Lookup des bereits im XAMl-Code definierten Charts
+Chart chart = this.FindName("MyWinformChart") as Chart;
+
+//Erstellen der Series
+Series sinus = new Series("Sinus");
+
+//Berechnung einer Sinuskurve und speichern der
+//errechneten Daten in die Series
+for (double i = 0; i <= 7.5; i += 0.2)
+	sinus.Points.AddXY(i, Math.Sin(i));
+
+//Definieren des Zeichentyps als normale Linie
+sinus.ChartType = SeriesChartType.FastLine;
+ 
+// Hinzufuegen des Graphs zum Chart
+chart.Series.Add(sinus);
+\end{verbatim} \cite{msdn-charting}
+
+In diesem Beispiel wurde jeder Punkt des Sinus einzeln berechnet und zur \textit{Series} hinzugefügt. Dies könnte man natürlich auch mit jeder anderen Datenquelle wie zum Beispiel einer Liste machen, in dem man jeden Wert einzeln hinzufügt. \cite{msdn-charting}
+
 \subsection{Finanzielle Berechnungen}
 
 Die Microsoft Chart Controls Library bietet allerdings nicht nur Möglichkeiten zur einfachen Darstellung von Daten. Denn sie beinhaltet ein Framework aus über 50 veschiedenen statistischen und finanziellen Formeln zur automatischen Berechnung und Darstellung spezieller Werte. \cite{msdn-charting}\\
 \\
-Die wichtigsten Formeln in der FinancialFormula-Sammlung der MS Chart Controls sind:
+Die wichtigsten Formeln in der \textit{FinancialFormula}-Sammlung der MS Chart Controls sind:
 
 \begin{itemize}
 \item Bollinger Bänder
 \item \gls{cci}
 \item diverse \glspl{ma}
 \item \gls{macd}
-\end{itemize}
+\end{itemize} \cite{msdn-charting}
+
+Im Code würde der Einsatz von \textit{FinancialFormula} so aussehen:
+
+\begin{verbatim}
+chart.DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, 90, "Data", "FinFor");
+\end{verbatim} \cite{msdn-charting}
+
+Dieser Aufruf erzeugt einen \gls{ma} der Länge 90. Dazu holt er sich die Daten aus der Series ''\textit{Data}'', berechnet den \gls{ma} und schreibt die errechneten Daten in die \textit{Series FinFor}. Damit diese Berechnung möglich ist muss die \textit{Series FinFor} bereits zuvor erzeugt und die \textit{Series Data} ebenfalls bereits zuvor erzeugt auch wirklich mit Daten gefüllt sein. \cite{msdn-charting}

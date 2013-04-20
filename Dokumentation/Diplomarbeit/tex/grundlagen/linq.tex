@@ -1,0 +1,62 @@
+\section{LINQ}
+
+\gls{linq} stellt eine Spracherweiterung zu .NET dar, die mit dem .NET-Framework 3.5 und der Visual Studio Version 2008 hinzugefühgt wurde. \gls{linq} ermöglicht es über ein neues Abstraktionsmodell aus vielen verschiedenen Datenquellen über die selbe Syntax Daten abzufragen. Unterstützt werden bspw. \gls{xml}-Dokumente, Datenbanktabellen, Excel-Tabellen, herkömmliche Objekte oder Auflistungen von Objekten aller Art, und vieles mehr. \cite{visualcsharp}\\
+\\
+Da der Zugriff auf unterschiedliche Datenquellen intern allerdings durchaus unterschiedlich ablaufen muss, wurden von Microsoft mehrere \gls{linq}-Implementierungen in das .NET-Framework integriert. Diese werden Provider genannt und existieren zum Beispiel für folgende Datenquellen \cite{visualcsharp}:
+
+\begin{itemize}
+\item \textbf{\gls{linq} to Objects} \\
+	Mit dieser Implementierung lassen sich Auflistungen und Objekte manipulieren, die untereinander auch in Beziehung gesetzt werden können. Sie stellt damit das Fundament aller\gls{linq}-Abfragen dar.
+\item \textbf{\gls{linq} to \gls{xml}} \\
+	Diese Implementierung nutzt das .NET sprachinterne Abfrage-Framework für den Zugriff auf \gls{xml} im Arbeitsspeicher.
+\item \textbf{\gls{linq} to \gls{sql}} \\
+	Hiermit kann auf Microsofts hauseigenes Datenbanksystem \gls{sql} Server 2005 und 2008 zugegriffen werden.
+\end{itemize} \cite{visualcsharp}
+
+\subsection{Aufbau einer LINQ-Anweisung}
+
+Optisch sieht der Aufbau einer \gls{linq}-Anweisung, dem einer \gls{sql}-\textit{SELECT}-Anweisung sehr ähnlich. Eine Abfrage zur Ermittlung aller Personen mit Alter über 30 Jahren und der Rückgabe derer Alter und Namen in einer Ergebnisliste, würde als \gls{linq}-Anweisung in etwa so aussehen \cite{visualcsharp}:
+
+\begin{verbatim}
+var pers = from p in personen
+		   where p.Alter > 30
+		   select new { p.Name, p.Alter };
+\end{verbatim} \cite{visualcsharp}
+
+Genau die selbe Funktion, nur mit einer anderen Formulierung würde auch die folgende Abfrage erfüllen \cite{visualcsharp}:
+
+\begin{verbatim}
+var pers = personen
+		  .Where( p => p.Alter > 30 )
+		  .Select( p => new {p.Name, p.Alter });
+\end{verbatim} \cite{visualcsharp}
+
+Dabei ist es völlig egal, ob \textit{personen} das Ergebnis einer Datenbankabfrage oder eine Liste von \textit{Person}-Objekten ist, mit \gls{linq} muss man nur eine der beiden gezeigten Abfrage-Varianten benutzen.  Weiters ermöglicht die Nutzung von \gls{linq} auch viele zusätzliche Optionen, die das Suchergebnis weiter verfeinern. Es gibt bspw. die \gls{sql}-ähnlichen Funktionen, wie \textit{GroupBy} und \textit{Join}, es gibt allerdings auch noch viele mehr. \cite{visualcsharp}
+
+\subsection{Interne Funktionsweise von LINQ-Abfragen}
+
+\gls{linq}-Abfragen machen oft Gebrauch vom Prinzip der \textit{Delegates}. \textit{Delegate} ist eine relativ alte Technologie, die in der Programmiersprache C schon unter dem Namen Funktionszeiger bekannt war. Ein \textit{Delegate} ist ein Typ, der auf eine Methode zeigt. Das Wort ''Delegate'' kommt von ''Delegierter'' und wurde gewählt, da ein \textit{Delegate} wirklich einen Methodenaufruf an eine bestimmte andere Methode weiter leitet. Dies wird innerhalb von \gls{linq}-Abfragen benötigt, um die vom User übergebenen Bedingungen in die Logik der intern genutzten Methoden integrieren zu können. Der wohl am meisten in Kombination mit \gls{linq}-Abfragen genutzte \textit{Delegate} ist der folgende \cite{visualcsharp}:
+
+\begin{verbatim}
+public delegate TResult Func<T, TResult>(T arg)
+\end{verbatim} \cite{visualcsharp}
+
+Dieser wurde bspw. im oberen Beispiel verwendet, um die Bedingungen der \textit{Where}- (\textit{p => p.Alter > 30}) und der \textit{Select}-Abfrage (\textit{p => new {p.Name, p.Alter }}) an die \gls{linq}-Logik zu übergeben. Beide dieser Bedingungen werden hier als Methodenaufrufe bzw. Zeiger auf Methodenaufrufe mit einem Rückgabewert an die innere Logik der \gls{linq} übergeben. Das \textit{T} in \textit{Func<T, TResult>} beschreibt einen generischen Datentypen mit dem innerhalb der Abfrage gearbeitet werden soll. Hier können alle existierenden primitiven Datentypen übergeben werden und die Logik der \gls{linq} kann problemlos damit arbeiten. \textit{TResult} beschreibt ebenfalls einen generischen Datentypen. Allerdings den der vom angezeigten Methodenaufruf zurückgegeben wird. Intern ist die Abfragelogik der \gls{linq} damit so organisiert \cite{visualcsharp}:
+
+\begin{verbatim}
+class Programm {
+	static void Main(string[] args) {
+		string[] arr = { "Peter", "Uwe", "Willi", "Udo" };
+		GetShortNames(arr, name => name.Length < 4 );
+		Console.ReadLine();
+	}
+	
+	static void GetShortNames<T>(T[] names, Func<T, bool> getNames) {
+		foreach (T name in names )
+			if (getNames(name))
+				Console.WriteLine(name);
+	}
+}
+\end{verbatim} \cite{visualcsharp}
+
+In diesem Beispiel wird der Methode \textit{GetShortNames} ein \textit{Delegate} übergeben, der angibt welche Namen der Namensliste ausgegeben werden soll. Hierbei hätte in der \textit{Main}-Methode auch jede beliebige andere Bedingung, wie zum Beispiel die Abfrage, ob der erste Buchstabe des Namens ein ''P'' ist (\textit{GetShortNames(arr, name => name[0] == 'P');}) und es wäre genauso der entsprechende Name ''Peter'' ausgegeben worden, ohne dass die Methode geändert werden musste. \cite{visualcsharp}

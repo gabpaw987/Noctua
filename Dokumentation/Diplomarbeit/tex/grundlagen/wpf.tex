@@ -69,7 +69,7 @@ Das einfachste Beispiel für eine Bindung könnte nun in etwa so aussehen:
 </Window>
 \end{verbatim} \cite{visualcsharp}
 
-Zuerst wird hier der DataContext auf das ViewModel gesetzt. Dies wäre hier zwar noch nicht notwendig, da keine Bindung auf ein Property aus dem ViewModel erfolgt, es zeigt allerdings die angesprochene Funktionsweise und wird im nächsten Beispiel von Bedeutung sein. Danach werden zwei TextBoxen erstellt von denen die Text-Variable der unteren eine Bindung auf die Text-Variable der oberen besitzt. Dadurch wird der Text der unteren TextBox automatisch an den Text der oberen TextBox angepasst, falls sich dieser ändert. Eine Bindung in dieser Art könnte aber auch auf jedes andere Attribute der TextBoxen (z.B. Größe, Schriftart, etc.) angewendet werden. Dazu müsste lediglich der Path der Bindung geändert werden. \cite{visualcsharp}\\
+Zuerst wird hier der \textit{DataContext} auf das ViewModel gesetzt. Dies wäre hier zwar noch nicht notwendig, da keine Bindung auf ein Property aus dem ViewModel erfolgt, es zeigt allerdings die angesprochene Funktionsweise und wird im nächsten Beispiel von Bedeutung sein. Danach werden zwei \textit{TextBoxen} erstellt von denen die Text-Variable der unteren eine Bindung auf die Text-Variable der oberen besitzt. Dadurch wird der Text der unteren \textit{TextBox} automatisch an den Text der oberen \textit{TextBox} angepasst, falls sich dieser ändert. Eine Bindung in dieser Art könnte aber auch auf jedes andere Attribute der \textit{TextBoxen} (z.B. Größe, Schriftart, etc.) angewendet werden. Dazu müsste lediglich der \textit{Path} der Bindung geändert werden. \cite{visualcsharp}\\
 \\
 Eine etwas kompliziertere Bindung ist die auf ein Property aus dem ViewModel. Dazu muss man zuerst im ViewModel ein Property erzeugen und dessen setter-Methode für die Nutzung von Notifications implementieren. Das Property, das die Lieblingsfarbe einer Person speichert, könnte dann in etwa so aussehen \cite{msdn-mvvm}:
 
@@ -98,7 +98,7 @@ public class MyViewModel : INotifyPropertyChanged
 }
 \end{verbatim} \cite{msdn-mvvm}
 
-Hierbei wird einfach eine globale Variable (favoriteColor) mit einem Property (FavoriteColor) versehen, das die setter-Methode so implementiert hat, dass ein PropertyChangedEvent gesendet wird, sobald der Wert der Lieblingsfarbe geändert wird. Dies ist notwendig, wenn man das Property an ein \gls{gui}-Element binden will, da sich das \gls{gui}-Element, sonst im Falle einer Änderung der Lieblingsfarbe nicht aktualisieren würde. Möchte man dieses Property nun im \gls{xaml}-Code an ein \gls{gui}-Element binden, muss man lediglich das Folgende schreiben:
+Hierbei wird einfach eine globale Variable (\textit{favoriteColor}) mit einem Property (\textit{FavoriteColor}) versehen, das die setter-Methode so implementiert hat, dass ein \textit{PropertyChangedEvent} gesendet wird, sobald der Wert der Lieblingsfarbe geändert wird. Dies ist notwendig, wenn man das Property an ein \gls{gui}-Element binden will, da sich das \gls{gui}-Element, sonst im Falle einer Änderung der Lieblingsfarbe nicht aktualisieren würde. Möchte man dieses Property nun im \gls{xaml}-Code an ein \gls{gui}-Element binden, muss man lediglich das Folgende schreiben:
 
 \begin{verbatim}
 <Window x:Class="Wpf1Application1.MainWindow"
@@ -116,4 +116,4 @@ Hierbei wird einfach eine globale Variable (favoriteColor) mit einem Property (F
 </Window>
 \end{verbatim}
 
-Diesmal ist die Definition des ViewModels als DataContext notwendig. Aus diesem wird nämlich einfach in der Bindung das FavoriteColor-Property aufgerufen. Schon steht zu jeder Zeit die aktuelle Lieblingsfarbe aus dem ViewModel in der TextBox.
+Diesmal ist die Definition des ViewModels als \textit{DataContext} notwendig. Aus diesem wird nämlich einfach in der Bindung das \textit{FavoriteColor}-Property aufgerufen. Schon steht zu jeder Zeit die aktuelle Lieblingsfarbe aus dem ViewModel in der \textit{TextBox}.
