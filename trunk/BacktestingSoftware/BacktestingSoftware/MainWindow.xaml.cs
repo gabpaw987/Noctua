@@ -715,6 +715,8 @@ namespace BacktestingSoftware
                     this.bw.CancelAsync();
 
                     this.resetCalculation();
+
+                    this.iscalculating = false;
                 }
             }
             catch (Exception)
