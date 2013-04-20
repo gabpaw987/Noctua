@@ -41,139 +41,186 @@ namespace BacktestingSoftware
         {
             if (this.mainViewModel.BarList.Count == this.mainViewModel.Signals.Count)
             {
-                List<double> profitsForStdDev = new List<double>();
-                List<double> EquityPricesForStdDev = new List<double>();
-                this.mainViewModel.GainLossPercent = 0;
-                this.mainViewModel.GainPercent = 0;
-                this.mainViewModel.LossPercent = 0;
-                decimal priceOfLastTrade = 0m;
-                decimal absCumGainLoss = 0m;
-                this.mainViewModel.NetWorth = decimal.Parse(this.mainViewModel.Capital);
-
-                if (this.mainViewModel.NetWorth == 0)
+                if (this.mainViewModel.Signals.Count<int>(n => n == 0) != this.mainViewModel.Signals.Count)
                 {
-                    return "Capital is 0!";
-                }
+                    List<double> profitsForStdDev = new List<double>();
+                    List<double> EquityPricesForStdDev = new List<double>();
+                    this.mainViewModel.GainLossPercent = 0;
+                    this.mainViewModel.GainPercent = 0;
+                    this.mainViewModel.LossPercent = 0;
+                    decimal priceOfLastTrade = 0m;
+                    decimal absCumGainLoss = 0m;
+                    this.mainViewModel.NetWorth = decimal.Parse(this.mainViewModel.Capital);
 
-                int RoundLotSize = 0;
-                switch (this.mainViewModel.RoundLotSize)
-                {
-                    case 0:
-                        RoundLotSize = 10;
-                        break;
-                    case 1:
-                        RoundLotSize = 50;
-                        break;
-                    case 2:
-                        RoundLotSize = 100;
-                        break;
-                }
-
-                //To remove all the remaining positions in the end
-                this.mainViewModel.Signals[this.mainViewModel.Signals.Count - 1] = 0;
-
-                for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
-                {
-                    if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.BarList[i].Item2 != 0
-                        && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0)
+                    if (this.mainViewModel.NetWorth == 0)
                     {
-                        decimal addableFee = 0;
-                        if (this.mainViewModel.Signals[i] != 0 || (this.mainViewModel.Signals[i - 1] != 0 && this.mainViewModel.Signals[i] == 0))
-                            addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 * (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) + decimal.Parse(this.mainViewModel.AbsTransactionFee);
+                        return "Capital is 0!";
+                    }
 
-                        int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1);
-                        int WeightingMultiplier = this.GetWeightingMultiplier(i);
+                    int RoundLotSize = 0;
+                    switch (this.mainViewModel.RoundLotSize)
+                    {
+                        case 0:
+                            RoundLotSize = 10;
+                            break;
+                        case 1:
+                            RoundLotSize = 50;
+                            break;
+                        case 2:
+                            RoundLotSize = 100;
+                            break;
+                    }
 
-                        decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
+                    //To remove all the remaining positions in the end
+                    this.mainViewModel.Signals[this.mainViewModel.Signals.Count - 1] = 0;
 
-                        //if buy
-                        if (WeightingMultiplier > oldWeightingMultiplier)
+                    for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
+                    {
+                        if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.BarList[i].Item2 != 0
+                            && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0)
                         {
-                            priceOfThisTrade += decimal.Parse(this.mainViewModel.PricePremium);
-                        }
-                        //else if sell
-                        else if (WeightingMultiplier < oldWeightingMultiplier)
-                        {
-                            priceOfThisTrade -= decimal.Parse(this.mainViewModel.PricePremium);
-                        }
+                            decimal addableFee = 0;
+                            if (this.mainViewModel.Signals[i] != 0 || (this.mainViewModel.Signals[i - 1] != 0 && this.mainViewModel.Signals[i] == 0))
+                                addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 * (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) + decimal.Parse(this.mainViewModel.AbsTransactionFee);
 
-                        decimal currentGainLoss = 0;
-                        currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize;
-                        currentGainLoss -= addableFee;
+                            int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1);
+                            int WeightingMultiplier = this.GetWeightingMultiplier(i);
 
-                        decimal portfolioPerformance = 0;
-                        if (this.mainViewModel.NetWorth == 0)
-                        {
-                            portfolioPerformance = decimal.Zero;
-                        }
-                        else
-                        {
-                            portfolioPerformance = currentGainLoss / this.mainViewModel.NetWorth * 100;
-                        }
+                            decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
 
-                        this.mainViewModel.PortfolioPerformancePercent += (currentGainLoss / decimal.Parse(this.mainViewModel.Capital) * 100);
-
-                        decimal percentageOfThisTrade = 0;
-                        if ((oldWeightingMultiplier == 0) ||
-                            (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
-                            (WeightingMultiplier - oldWeightingMultiplier) == Math.Sign(WeightingMultiplier)))
-                        {
-                            percentageOfThisTrade = 0;
-
-                            //If its the first trade, divide by transaction price
-                            if (priceOfLastTrade == 0)
+                            //if buy
+                            if (WeightingMultiplier > oldWeightingMultiplier)
                             {
-                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
+                                priceOfThisTrade += decimal.Parse(this.mainViewModel.PricePremium);
                             }
-                        }
-                        else if (oldWeightingMultiplier != 0)
-                        {
-                            if (priceOfLastTrade == 0)
+                            //else if sell
+                            else if (WeightingMultiplier < oldWeightingMultiplier)
                             {
-                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
+                                priceOfThisTrade -= decimal.Parse(this.mainViewModel.PricePremium);
+                            }
+
+                            decimal currentGainLoss = 0;
+                            currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize;
+                            currentGainLoss -= addableFee;
+
+                            decimal portfolioPerformance = 0;
+                            if (this.mainViewModel.NetWorth == 0)
+                            {
+                                portfolioPerformance = decimal.Zero;
                             }
                             else
                             {
-                                percentageOfThisTrade = ((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade - addableFee)) / priceOfLastTrade) * 100;
+                                portfolioPerformance = currentGainLoss / this.mainViewModel.NetWorth * 100;
                             }
+
+                            //This is the portfolioperformance relative to the whole capital
+                            //not the net worth; only for cumulative and good trades and bad trades
+                            decimal partialPortfolioPerformancePercent = (currentGainLoss / decimal.Parse(this.mainViewModel.Capital) * 100);
+                            this.mainViewModel.PortfolioPerformancePercent += partialPortfolioPerformancePercent;
+
+                            decimal percentageOfThisTrade = 0;
+                            if ((oldWeightingMultiplier == 0) ||
+                                (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
+                                (WeightingMultiplier - oldWeightingMultiplier) == Math.Sign(WeightingMultiplier)))
+                            {
+                                percentageOfThisTrade = 0;
+
+                                //If its the first trade, divide by transaction price
+                                if (priceOfLastTrade == 0)
+                                {
+                                    percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
+                                }
+                            }
+                            else if (oldWeightingMultiplier != 0)
+                            {
+                                if (priceOfLastTrade == 0)
+                                {
+                                    percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
+                                }
+                                else
+                                {
+                                    percentageOfThisTrade = ((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade - addableFee)) / priceOfLastTrade) * 100;
+                                }
+                            }
+
+                            this.mainViewModel.GainLossPercent += percentageOfThisTrade;
+                            profitsForStdDev.Add((double)portfolioPerformance);
+
+                            absCumGainLoss += currentGainLoss;
+                            this.mainViewModel.NetWorth += currentGainLoss;
+
+                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i)) - addableFee;
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.GetWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
+
+                            priceOfLastTrade = priceOfThisTrade;
                         }
+                        EquityPricesForStdDev.Add((double)this.mainViewModel.BarList[i].Item5);
+                    }
 
-                        this.mainViewModel.GainLossPercent += percentageOfThisTrade;
-                        profitsForStdDev.Add((double)portfolioPerformance);
-
-                        if (percentageOfThisTrade > 0)
+                    //Calculation of GainPrecent and LossPercent, without losing unrealised profit.
+                    //This has to be done after the rest of the calculation in order to be able to catch the
+                    //unrealised profit too.
+                    for (int i = 1; i < this.mainViewModel.Orders.Count; i++)
+                    {
+                        Order order = this.mainViewModel.Orders[i];
+                        //Get all the normal profit
+                        if (order.GainLossPercent > 0)
                         {
                             this.mainViewModel.NoOfGoodTrades++;
-                            this.mainViewModel.GainPercent += percentageOfThisTrade;
+                            this.mainViewModel.GainPercent += (order.CumulativePortfolioPerformance -
+                                                               this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
                         }
-                        else if (percentageOfThisTrade < 0)
+                        else if (order.GainLossPercent < 0)
                         {
                             this.mainViewModel.NoOfBadTrades++;
-                            this.mainViewModel.LossPercent += percentageOfThisTrade;
+                            this.mainViewModel.LossPercent += (order.CumulativePortfolioPerformance -
+                                                               this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
                         }
-
-                        absCumGainLoss += currentGainLoss;
-                        this.mainViewModel.NetWorth += currentGainLoss;
-
-                        decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i)) - addableFee;
-                        this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.GetWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
-
-                        priceOfLastTrade = priceOfThisTrade;
+                        else if (order.GainLossPercent == 0)
+                        {
+                            decimal portfolioPerformanceRelativeToCapital = (order.CumulativePortfolioPerformance -
+                                                                             this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
+                            //Get all the unrealised profit
+                            if (portfolioPerformanceRelativeToCapital > 0)
+                            {
+                                this.mainViewModel.NoOfGoodTrades++;
+                                this.mainViewModel.GainPercent += portfolioPerformanceRelativeToCapital;
+                            }
+                            else if (portfolioPerformanceRelativeToCapital < 0)
+                            {
+                                this.mainViewModel.NoOfBadTrades++;
+                                this.mainViewModel.LossPercent += portfolioPerformanceRelativeToCapital;
+                            }
+                            //if 0 do nothing, becuase there is not even unrealised profit
+                        }
                     }
-                    EquityPricesForStdDev.Add((double)this.mainViewModel.BarList[i].Item5);
+
+                    if (this.mainViewModel.NoOfBadTrades > 0)
+                        this.mainViewModel.GtBtRatio = this.mainViewModel.NoOfGoodTrades / this.mainViewModel.NoOfBadTrades;
+                    else
+                        this.mainViewModel.GtBtRatio = 0;
+
+                    this.mainViewModel.StdDevOfProfit = (decimal)this.CalculateStdDevs(profitsForStdDev);
+                    this.mainViewModel.StdDevOfPEquityPrice = (decimal)this.CalculateStdDevs(EquityPricesForStdDev);
+
+                    //assume 365.25 days per year and get the length of the historical data in years
+                    decimal years = ((this.mainViewModel.BarList.Last().Item1 - this.mainViewModel.BarList[0].Item1).Days) / 365.25m;
+
+                    //portfolioperformance without the risk free rate you would have earned via a formula from http://www.frustfrei-lernen.de/mathematik/zinseszins.html
+                    double interestRate = 1.5;
+                    decimal netWorthWithRiskFreeRate = Convert.ToDecimal(Convert.ToDouble(this.mainViewModel.Capital) * Math.Pow(
+                                    (1 + (interestRate / 100)),
+                                    Convert.ToDouble(years)));
+                    decimal portfolioPerformanceWithRiskFreeRate = (netWorthWithRiskFreeRate - Convert.ToDecimal(this.mainViewModel.Capital)) / Convert.ToDecimal(this.mainViewModel.Capital) * 100;
+
+                    this.mainViewModel.SharpeRatio = (this.mainViewModel.PortfolioPerformancePercent - portfolioPerformanceWithRiskFreeRate) / this.mainViewModel.StdDevOfProfit;
+
+                    return string.Empty;
                 }
-
-                if (this.mainViewModel.NoOfBadTrades > 0)
-                    this.mainViewModel.GtBtRatio = this.mainViewModel.NoOfGoodTrades / this.mainViewModel.NoOfBadTrades;
                 else
-                    this.mainViewModel.GtBtRatio = 0;
-
-                this.mainViewModel.StdDevOfProfit = (decimal)this.CalculateStdDevs(profitsForStdDev);
-                this.mainViewModel.StdDevOfPEquityPrice = (decimal)this.CalculateStdDevs(EquityPricesForStdDev);
-
-                this.mainViewModel.SharpeRatio = this.mainViewModel.PortfolioPerformancePercent / this.mainViewModel.StdDevOfProfit;
-
-                return "";
+                {
+                    return "Algorithm File returning only 0s!";
+                }
             }
             else
             {

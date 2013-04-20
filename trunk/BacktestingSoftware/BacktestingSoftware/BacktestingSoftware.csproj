@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>bts.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -107,6 +110,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -115,6 +119,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="images\algorithm.ico" />
+    <Resource Include="images\data.ico" />
+    <Resource Include="images\save.ico" />
+    <Resource Include="images\start.ico" />
+    <Resource Include="images\stop.ico" />
+    <Resource Include="bts.ico" />
+    <Resource Include="images\bts.ico" />
     <Content Include="ListConverter.dll" />
     <Content Include="Prototyp4BTS.dll" />
     <Content Include="Xceed.Wpf.DataGrid.dll" />

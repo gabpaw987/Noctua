@@ -1,0 +1,74 @@
+\section{Binäre Serialisierung}
+
+Objekte in .NET-Sprachen sind grundsätzlich flüchtig, dass bedeutet das sie nach der Beendung und einem anschließenden Neustart der Anwendung nicht mehr vorhanden sind. Oft benötigen Entwickler allerdings die Funktion solche Objekte zu persistieren, sie also nach einem Neustart der Applikation weiterhin verfügbar zu machen. Dies kann durch binäre Serialisierung erreicht werden. Bei diesem Verfahren können über einen sog. \textit{BinaryFormatter} alle als \textit{Serializable} gekennzeichneten Objekte und deren aktueller Zustand, sprich all deren Variablenwerte, in binären Code umgewandelt werden. Dieser binäre Code könnte bspw. in einer persistenten Datei, einer Datenbank oder einer Anwendungskonfigurationsdatei (Siehe \ref{akd}) gespeichert werden. Weiters könnte dieser serialisierte Binärcode eines Objektes auch leicht über das Netzwerk übertragen werden, ohne dass die einzelnen Softwarekomponenten auf dem Weg des Objekts auch dessen Definition (Klasse) kennen müssen. \cite{visualcsharp}
+
+\subsection{Anwendung}
+
+Neben der einfachen Serialisierung mit dem \textit{BinaryFormatter}, bietet das .NET-Framework auch einen \textit{SoapFormatter} und einen \textit{XmlSerializer}. Der \textit{SoapFormatter}, überträgt den aktuellen Zustand eines Objekts nich in ein binäres, sondern ein \gls{soap}-Format. Dieses wird bei der Übertragung von Daten über das Netzwerk mittels einer \gls{soap}-Verbindung benötigt, um Objekte übertragen zu können. Der \textit{XmlSerializer} überträgt die Daten des betroffenen Objekts in ein \gls{xml}-Format, um es als \gls{xml}-Datei abspeichern und ggf. später wieder auslesen zu können. Im folgenden werde ich allerdings nur auf den wichtigsten, den \textit{BinaryFormatter}, eingehen, der Objekte einfach in ein binäres Format überführt und auf einen Stream legt. Dazu müssen lediglich alle globalen Variablen bzw. deren Werte in Binärcode umgewandelt und gespeichert werden. Methodendefinitionen, etc, müssen dabei nicht serialisiert werden, da zur Deserialisierung und anschließenden Nutzung des Objekts die Klassendefinition des Objekts ohnehin vorhanden sein muss. Die Serialisierung funktioniert wie folgt \cite{visualcsharp}:
+
+\begin{verbatim}
+BinaryFormatter bFormatter = new BinaryFormatter();
+bFormatter.Serialize(stream, object);
+\end{verbatim}
+
+Dazu wird also zuerst ein neuer BinaryFormatter initialisiert und anschließend die \textit{Serialize}-Methode aufgerufen. Der Serialize-Methode muss dabei zuerst ein Stream übergeben werden. Bei diesem Stream wird es sich meist um einen \textit{FileStream} handeln, der das umgewandelte Objekte auch sofort in eine Datei schreibt. Es kann allerdings bspw. auch ein Kommunikationsstream oder jede anderen mögliche Art von Streams, die vom Objekt \textit{Stream} erbt, übergeben werden. Als zweiter Parameter kann jedes mögliche Objekt, dessen Klasse von \textit{Object} erbt und mit dem \textit{Serializable()}-Attribut gekennzeichnet ist, übergeben werden. Es kann hier aber auch bspw. eine Liste übergeben werden, sofern sowohl die Liste selbst als auch all ihre gespeicherten Elemente das \textit{Serializable()}-Attribut besitzen. \cite{visualcsharp}\\
+\\
+Eine Klasse kann wie folgt bei der Deklaration mit dem \textit{Serializable()}-Attribut gekennzeichnet werden \cite{visualcsharp}:
+
+\begin{verbatim}
+[Serializable()]
+class Klasse{
+	...
+}
+\end{verbatim}
+
+Dies ist lediglich die Markierung der Klasse über ein sog. Markup-Interface. Dadurch wird der Compiler darüber informiert, dass Objekte dieser Klasse keinen außergewöhnlich heiklen Inhalt beinhalten können und somit bedenkenlos serialisiert werden dürfen. Fehlt dieses Attribut, so wird eine \textit{SerializationException} ausgelöst. \cite{visualcsharp}\\
+\\
+Möchte man ein bereits serialisiertes Objekt aus dem Binärcode wieder auslesen und als Objekt speichern, benötigt man ebenfalls die Klasse \textit{BinaryFormatter} und dessen \textit{Deserialize}-Methode. Dieser muss nur der Stream übergeben werden, der sich ohnehin mit seinem internen Zeiger auf einer Position befindet. Mit dem Aufruf der \textit{Deserialize}-Methode wird ab der aktuellen Zeigerposition das nächste serialisierte Objekt gesucht, zurück in ein normales Objekt umgewandelt und als \textit{Object} zurückgegeben. Damit dieses \textit{Object} wieder als das ursprüngliche erkannt werden kann und mit der richtigen Klassendefinition verknüpft wird, muss es zusätzlich noch auf den gewünschten Typ gecastet werden. \cite{visualcsharp}
+
+\begin{verbatim}
+BinaryFormatter bFormatter = new BinaryFormatter();
+Object object = (Object) bFormatter.Deserialize(stream);
+\end{verbatim}
+
+\section{Konfigurationsdateien}
+
+Das .NET-Framework unterstützt die Nutzung vieler verschiedener Konfigurationsdateien. Diese Konfigurationsdateien beinhalten grundsätzlich einfach nur Daten, die zur Laufzeit von der Anwendung ausgelesen werden können. Dadurch kann bspw. das Laufzeitverhalten der Anwendung komplett verändert werden, oder einfach nur ein einfach verwalteter Datenspeicher eingerichtet werden. Es gibt Anwendungskonfigurationsdateien, Herausgeberrichtliniendateien und die Maschienenkonfigurationsdatei, die beim Start der Anwendung auch in dieser Reihenfolge aufgerufen werden. Im folgenden wird allerdings lediglich auf die Anwendungskonfigurationsdatei eingegangen.  \cite{visualcsharp}
+
+\subsection{Anwendungskonfigurationsdateien} \label{akd}
+
+Eine Anwendungskonfigurationsdatei ist für die Ausführung einer Anwendung optional. Ist sie allerdings vorhanden, so dient sie zur Verwaltung und Sicherung der Stammdaten der gesamten Anwendung im \gls{xml}-Format. Diese Datei befindet sich immer Stammverzeichnis der Anwendung und ihr Name setzt sich aus dem Namen der Anwendung und dem Suffix \textit{.config} zusammen. Meist wird sie dazu verwendet, den aktuellen Zustand einer Anwendung, dass bedeutet alle zur Laufzeit gesetzten Variablen, zu sichern, um sie später im selben Zustand neu starten zu können. Dazu werden meist alle wichtigen Daten beim Beenden der Applikation in die Anwendungskonfigurationsdatei gespeichert und beim Start der Anwendung erneut aus dieser ausgelesen. \cite{visualcsharp}\\
+\\
+Innerhalb der \gls{xml}-Datei in der \textit{<configuration>}-Sektion werden zur Verwaltung dieser Stammdaten vier verschiedene Code-Sektionen angeboten. \cite{visualcsharp}
+
+\begin{itemize}
+\item \textit{<configSections>} \\
+	Diese Sektion beschreibt lediglich das Ausmaß der beiden untergeordneten Sektionen \textit{<applicationSettings>} und \textit{<userSettings>}.
+\item \textit{<applicationSettings>} \\
+	Diese Sektion speichert alle Stammdaten, die für die gesamte Anwendung (und jeden Benutzer) gültig sein sollen.
+\item \textit{<userSettings>} \\
+	Diese Sektion erlaubt die Definition und Sicherung von Stammdaten der Anwendung, die immer nur für einen einzigen Benutzer gültig sind. Dies ist besonders für benutzerspezifische Einstellungen unentbehrlich.
+\item \textit{<appSettings>} \\
+	Diese Sektion bietet grundsätzlich die selben Funktionen, wie die Sektion \textit{<applicationSettings>}, kann jedoch aus dem Code der laufenden Anwendung heraus editiert werden. \cite{visualcsharp}
+\end{itemize}
+
+Da die manuelle Erstellung einer solchen Anwendungskonfigurationsdatei sehr kompliziert wäre und mit einem sehr großen Aufwand verbunden ist, hat Microsoft eine unterstützte Erstellungshilfe mit graphischer Oberfläche in seine Entwicklungsumgebung Visual Studio integriert. Dazu müssen nur die Project-Properties des entsprechenden Projekts geöffnet und hier der Tab ''Einstellungen'' gewählt werden. Dadurch kommt man zu der Oberfläche aus Abbildung \ref{fig:akdErstellung}. \cite{visualcsharp}
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/grundlagen/akdErstellung.png}
+	\caption{Erstellung einer Anwendungskonfigurationsdatei mit Hilfe von Microsoft Visual Studio}
+	\label{fig:akdErstellung}
+\end{figure}
+
+Hier wurden schon einige Datensätze hinzugefügt. Wie man sehen kann muss lediglich für jeden neuen Datensatz eine neue Zeile angelegt werden. Danach muss der Einstellung ein Name und ein Datentyp zugewiesen werden. Spezifische Datentypen bzw. eigens kreierte Objekte können nicht als Einstellung in der Anwendungskonfigurationsdatei definiert werden, sie können allerdings bspw. in serialisierter Form als String gespeichert werden. Nun muss nur noch eine der zuvor beschriebenen Code-Sektionen als Bereich und ein Startwert, der nach der Erzeugung der \gls{xml}-Datei zu Anfang als Wert dieses Datensatzes gespeichert wird, definiert werden und schon kann der Datensatz im Programmcode benutzt werden. Das Lesen und Schreiben in ein solches File im Programmcode am Beispiel eines \textit{string}s für den Namen der Algorithmus-\gls{dll}-Datei funktioniert wie folgt \cite{visualcsharp}:
+
+\begin{verbatim}
+string algorithmFileName = "algorithm.dll";
+//Schreiben
+Properties.Settings.Default.AlgorithmFileName = algorithmFileName;
+//Lesen
+string algorithmFileNameRestored = Properties.Settings.Default.AlgorithmFileName;
+\end{verbatim}
+
+Zu den Default-Settings auf die in diesem Beispiel zugegriffen wird, können natürlich auch noch weitere Settings definiert werden. \cite{visualcsharp}

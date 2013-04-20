@@ -29,13 +29,23 @@
             </MenuItem>
         </Menu>
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
-            <Button Content="Start" ToolTip="Start Performance Measurement" Click="StartButton_Click" />
-            <Button Content="Stop" ToolTip="Stop Performance Measurement" Click="StopButton_Click" />
+            <Button ToolTip="Start Performance Measurement" Click="StartButton_Click" Height="25" Width="25">
+                <Image Source="images/start.ico"></Image>
+            </Button>
+            <Button ToolTip="Stop Performance Measurement" Click="StopButton_Click" Height="25" Width="25">
+                <Image Source="images/stop.ico"></Image>
+            </Button>
             <Separator />
-            <Button Content="Algorithm" ToolTip="Select Algorithm-File" Click="AlgorithmButton_Click" />
-            <Button Content="Data" ToolTip="Select Data-File" Click="DataButton_Click" />
+            <Button ToolTip="Select Algorithm-File" Click="AlgorithmButton_Click" Height="25" Width="25">
+                <Image Source="images/algorithm.ico"></Image>
+            </Button>
+            <Button ToolTip="Select Data-File" Click="DataButton_Click" Height="25" Width="25">
+                <Image Source="images/data.ico"></Image>
+            </Button>
             <Separator />
-            <Button Content="Save" ToolTip="Save" />
+            <Button ToolTip="Save the current state." Click="SaveButton_Click" Height="25" Width="25">
+                <Image Source="images/save.ico"></Image>
+            </Button>
         </ToolBar>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem HorizontalContentAlignment="Stretch">
