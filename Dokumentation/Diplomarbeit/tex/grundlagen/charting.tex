@@ -13,7 +13,7 @@ Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die
 	Weiters können sowohl zweidimensionale als auch dreidimensionale Charts erstellt werden, die alle sehr simpel und schön dargestellt werden. Die können zudem auch zur Laufzeit noch weiter manipuliert werden und die WinForms-Version bietet sogar Möglichkeiten zum interaktiven Zoomen und Scrollen für den User. (Auf Webseiten mit ASP.NET werden keine interaktiven Funktionen für den Benutzer der Website angeboten.) 
 \end{itemize} \cite{msdn-charting}
 
-\subsection{Nutzung mit WPF}
+\subsection{Nutzung mit WPF} \label{winformshost}
 
 Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich, man kann diese Einschränkung allerdings umgehen indem man einen sog. \textit{WinFormsHost} erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem \textit{MSChart} kann so erstellt werden:
 
@@ -56,7 +56,7 @@ sinus.ChartType = SeriesChartType.FastLine;
  
 // Hinzufuegen des Graphs zum Chart
 chart.Series.Add(sinus);
-\end{verbatim} \cite{msdn-charting}
+\end{verbatim} \cite{mschart-grundlagen}
 
 In diesem Beispiel wurde jeder Punkt des Sinus einzeln berechnet und zur \textit{Series} hinzugefügt. Dies könnte man natürlich auch mit jeder anderen Datenquelle wie zum Beispiel einer Liste machen, in dem man jeden Wert einzeln hinzufügt. \cite{msdn-charting}
 

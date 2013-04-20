@@ -1,0 +1,148 @@
+\subsection{Aufbau der grafischen Benutzeroberfläche}
+
+Als Grundelement der \gls{gui} der \gls{bts} wurde innerhalb des obligatorischen \textit{Window}s das \textit{DockPanel} gewählt. In diesem können weitere Elemente eingehängt werden. Damit einige der inneren Elemente über eine Bindung ihre Daten erhalten bzw. speichern können, wurde im \textit{Window} auch noch der \textit{DataContext} auf die \textit{MainViewModel} Klasse gesetzt, in der alle \gls{gui}-relevanten Informationen gespeichert werden:
+
+\begin{verbatim}
+<Window.DataContext>
+    <local:MainViewModel x:Name="mainViewModel" />
+</Window.DataContext>
+\end{verbatim}
+
+\subsubsection{Menü-, Symbol-, und Statusleiste}
+
+Als erstes wurde die Menüleiste (mit Hilfe des \textit{Menu}-Elements) ins \textit{Top} des \textit{DockPanel}s hinzugefügt. In dieser können \textit{MenuItem}s definiert werden. Diese stellen die einzelnen Buttons in der Menüleiste dar. Innerhalb dieser \textit{MenuItem}s können erneut \textit{MenuItem}s definiert werden. Diese beschreiben wiederum die Unterpunkte der einzelnen Buttons, die beim Darüberhalten der Maus angezeigt werden. Auf ähnliche Art und Weise könnten hier auch noch weitere Ebenen ergänzt werden. Statt der \textit{MenuItem}s können auch immer sog. \textit{Separator}s definiert werden. Diese separieren optisch Gruppen von \textit{MenuItem}s von einander und werden als senkrechte oder waagrechte Trennlinie angezeigt. Um die \textit{MenuItem}s auch noch jeweils mit einer Aktion zu versehen, kann einfach das \textit{Click}-Feld der einzelnen Items mit einem entsprechenden Methodenkopf gefüttert werden, der das richtige Senderobjekt und \textit{RoutedEventArgs} als Parameter übergeben bekommt und die gewünschte Aktion be einem Klick beschreibt. Ein Teil des Menüs der \gls{bts} sieht demnach so aus:
+
+\begin{verbatim}
+<Menu IsMainMenu="True" DockPanel.Dock="Top">
+    <MenuItem Header="_File">
+        <MenuItem Header="_Open" Click="LoadButton_Click"/>
+        <Separator />
+        <MenuItem Header="E_xit" Click="ExitButton_Click"/>
+    </MenuItem>
+    <MenuItem Header="_Help">
+        <MenuItem Header="_Contact" Click="ContactButton_Click" />
+        <MenuItem Header="_About" Click="AboutButton_Click" />
+    </MenuItem>
+</Menu>
+\end{verbatim}
+
+Die nächste Zeile wurde mit Hilfe der \textit{ToolBar} realisiert. In dieser können alle möglichen Arten von \textit{Button}s und ebenfalls \textit{Separator}s angezeigt werden. Hier wurden die \textit{Button}s auch noch mit Icons versehen. Wie dies und ein Teil der \textit{ToolBar} der \gls{bts} funktionieren kann man hier sehen:
+
+\begin{verbatim}
+<ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+    <Button ToolTip="Start Performance Measurement" Click="StartButton_Click" Height="25" Width="25">
+        <Image Source="images/start.ico"></Image>
+    </Button>
+</ToolBar>
+\end{verbatim}
+
+Die Statusleiste unten im Fenster der \gls{bts} wurde mit der \textit{StatusBar} realisiert, die hauptsächlich den aktuellen Zustand der Anwendung anzeigt. Im \gls{xaml}-Code sieht dies wie folgt aus:
+
+\begin{verbatim}
+<StatusBar DockPanel.Dock="Bottom">
+    <StatusBarItem HorizontalContentAlignment="Stretch">
+        <TextBlock Name="StatusLabel">Ready</TextBlock>
+    </StatusBarItem>
+    <StatusBarItem HorizontalAlignment="Right">
+        <ProgressBar Height="15" Width="100" Name="ProgressBar" Visibility="Hidden" />
+    </StatusBarItem>
+</StatusBar>
+\end{verbatim}
+
+Im \textit{StatusLabel} wird immer in Textform angezeigt, woran die \gls{bts} gerade arbeitet und etwaige Fehler, die während der Berechnungen aufgetreten sind. Die \textit{ProgressBar} zeigt an wie weit die Software mit dem jeweiligen Arbeitsschritt bereits gekommen ist.\\
+\\
+Die Umsetzung der Leisten kann man in Abbildung \ref{fig:btsBars} erkennen.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.70\textwidth]{graphics/durchfuehrung/btsBars.png}
+	\caption{Menü-, Symbol-, und Statusleiste der fertigen \gls{bts}}
+	\label{fig:btsBars}
+\end{figure}
+
+\subsubsection{TabControl}
+
+Der eigentliche Inhalt, den die \gls{bts} hauptsächlich darstellen soll, befindet sich im großen mittleren Bereich, der durch ein \textit{TabControl} in drei Tabs (\textit{TabItem}s) unterteilt ist.\\
+\\
+Das erste Tab ist das ''Performance''-Tab, dass die allgemeinen Performance-Daten über den getesteten Algorithmus ausgeben. Die Oberfläche ist hier allgemein durch ein \textit{StackPanel} und darin durch 11 Reihen aus je zwei \textit{Label} realisiert. Das jeweils linke \textit{Label} gibt dabei an, was der Wert im rechten \textit{Label} bedeutet und das rechte \textit{Label} ist direkt mit dem entsprechenden Property aus dem \textit{MainViewModel} über Data Binding (Siehe Abschnitt \ref{databinding} ''Data Binding'') verbunden. Das Aussehen der \gls{bts} auf dem Performance-Tab kann der Abbildung entnommen werden.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/durchfuehrung/btsPerformance.png}
+	\caption{Performance-Tab der \gls{bts}}
+	\label{fig:btsPerformance}
+\end{figure}
+
+Das zweite Tab ist der ''Orders''-Tab, der durch ein Grid-Layout in zwei gleich große Teile geteilt wird. Oben wird mittels eines \textit{WinFormsHost}s (Siehe Abschnitt \ref{winformshost} ''Nutzung mit WPF'') eine Microsoft Chart Control gezeichnet, die nach dem Einlesen der Daten-Datei in der \gls{bts} entsprechende Chart mit ggf. auch entsprechenden Indikatoren anzeigt. Im unteren Bereich wird ein \textit{DataGrid} angezeigt, dass alle wichtigen Informationen über jede Handelsaktion ausgibt, die der Algorithmus über die historischen Aktien-Preisdaten getätigt hätte. Die Daten bekommt das \textit{DataGrid} über eine spezielle Art des Data Bindings, bei der der \textit{DataContext} des DataGrids im C\#-Code manuell auf die \textit{Orders}-Liste des ViewModels gesetzt wird. Die funktioniert so:
+
+\begin{verbatim}
+this.orders.DataContext = this.mainViewModel.Orders;
+\end{verbatim}
+
+Das \textit{DataGrid} muss daraufhin im \gls{xaml}-Code wie folgt erzeugt werden:
+
+\begin{verbatim}
+<DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
+ HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn"/>
+\end{verbatim}
+
+Das Aussehen dieses Tabs nach einer Beispielberechnung kann der Abbildung entnommen werden.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/durchfuehrung/btsOrders.png}
+	\caption{Orders-Tab der \gls{bts} nach einer Beispielberechnung}
+	\label{fig:btsOrders}
+\end{figure}
+
+Der dritte und letzte Tab ist der ''Settings''-Tab. Auf diesem können jegliche Einstellungen, die das Laufzeitverhalten der \gls{bts} beeinflussen getroffen werden. Dieses Tab nutzt auf der linken Seite einen \textit{TreeView} zur Auswahl der verschiedenen Seiten des Settings-Tabs. Die einzelnen Seiten auf der rechten Seite wiederum wurden durch ein weiteres \textit{TabControl} realisiert, bei dem der Kopf (in dem man normalerweise zwischen den einzelnen Tabs wechseln kann) einfach ausgeblendet wurde. Wann immer allerdings im \textit{TreeView} ein neues Item ausgewählt wird, wird eine besondere Methode aufgerufen, die den \textit{TabControl} auf der rechten Seite auf das richtige Tab wechseln lässt. Dies erweckt den Anschein, dass man durch die Auswahl eines Elements im \textit{TreeView} direkt das Fenster auf der rechten Seite wechseln kann. Der \textit{TreeView} sieht im \gls{xaml}-Code wie folgt aus:
+
+\begin{verbatim}
+<TreeView Grid.Row="0" Grid.Column="0">
+    <TreeViewItem Name="GeneralSettingsTabSelector" Header="General" Selected="TreeViewItem_Selected">
+    </TreeViewItem>
+    <TreeViewItem Name="OrdersSettingsTabSelector" Header="Orders" Selected="TreeViewItem_Selected">
+    </TreeViewItem>
+    <TreeViewItem Name="ChartSettingsTabSelector" Header="Chart" Selected="TreeViewItem_Selected">
+    </TreeViewItem>
+</TreeView>
+\end{verbatim}
+
+Die dazugehörige Methode \textit{TreeViewItem\_Selected} sieht so aus:
+
+\begin{verbatim}
+private void TreeViewItem_Selected(object sender, RoutedEventArgs e)
+{
+    if (e.Source == this.GeneralSettingsTabSelector)
+        this.GeneralSettingsTab.IsSelected = true;
+    else if (e.Source == this.OrdersSettingsTabSelector)
+        this.OrdersSettingsTab.IsSelected = true;
+    else if (e.Source == this.ChartSettingsTabSelector)
+        this.ChartSettingsTab.IsSelected = true;
+}
+\end{verbatim}
+
+Das Aussehen des Settings-Tabs auf der ''Chart''-Seite kann der Abbildung \ref{fig:btsChartSettings} entnommen werden.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/durchfuehrung/btsChartSettings.png}
+	\caption{Settings-Tab der \gls{bts} auf der Chart-Seite mit Beispielindikatoren}
+	\label{fig:btsChartSettings}
+\end{figure}
+
+\subsubsection{Settings-Tabs}
+
+Generell kann hier weider zwischen drei Tabs unterschieden werden. Das erste, das ''General''-Tab ist recht simpel. Es bietet einfach nur die Möglichkeit ein Algorithmus- und ein Daten-File (mit Zeitraum, in dem die Daten ausgelesen werden sollen) auszuwählen. Alle Komponenten dafür sind an die entsprechenden Properties im ViewModel gebunden.\\
+\\
+Das zweite, das ''Orders''-Tab bietet alle Einstellungen bezüglich der Berechnungen der Orders innerhalb der Software. Zuerst kann ein fiktives Kapital konfiguriert werden, mit dem die \gls{bts} mit seinen Berechnungen arbeitet und an dem die absoluten Zahlen für die Performance gemessen werden. Danach kann sowohl eine absolute als auch eine relative (in Prozent) Transaktionsgebühr konfiguriert werden, die dann ebenfalls in  der Berechnungen der \gls{bts} von jeder Transaktion bzw. dem Gewinn oder Verlust jeder Transaktion abgezogen wird. Weiters kann ein sog. Price Premium konfiguriert werden, bei dem die \gls{bts} daraufhin in weiteren Berechnungen davon ausgeht, dass die Aktien nicht immer zum normalen Handelspreis, sondern zum Handelspreis plus dem Price Premium gekauft oder dem Handelspreis minus dem Price Premium verkauft werden.  Zu guter Letzt kann noch mittels vertikaler \textit{Slider} und \textit{TextBox}en eingestellt werden, wie viele Round Lots (größere Mengen von Aktien, deren Größe direkt darunter konfiguriert werden kann) die \gls{bts} fiktiv bei dem jeweiligen Signal des Algorithmus kaufen bzw. verkaufen soll. All diese \gls{gui}-Komponenten werden ebenfalls mit Hilfe von Data Binding mit dem ViewModel verknüpft. Um bei den \textit{TextBox}en nur die Eingabe von Zahlen zu ermöglichen, kam auch folgende Methode öfter im Feld \textit{PreviewTextInput} der \textit{TextBox}en zum Einsatz:
+
+\begin{verbatim}
+private void NumericOnly_WithDecimalPlace(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+{
+    Regex reg = new Regex("[^0-9,]");
+    e.Handled = reg.IsMatch(e.Text);
+}
+\end{verbatim}
+
+Das dritte, das ''Chart''-Tab ist das technologisch wohl spannendste der drei Tabs. Hier können einzelne Indikatoren ausgewählt und hinzugefügt werden, die nach einer Berechnung automatisch in das Chart im Orders-Tab eingezeichnet werden. Wenn man einen solchen Indikator hinzufügt, wird intern ein neues \textit{StackPanel} mit den jeweiligen Optionen für den Indikator eingeblendet. Die Informationen dieser \textit{StackPanel}s werden nicht wie gewöhnlich im ViewModel gespeichert, sondern nur intern in einer Liste mit allen \textit{StackPanel}s verwaltet, aus denen direkt die Informationen der einzelnen Panels ausgelesen werden können. Jedes \textit{StackPanel} besitzt, wie man in Abbildung \ref{fig:btsChartSettings} erkennen kann, auch einen \textit{ColorPicker} mit dem die Farbe ausgewählt werden kann, in die der der Indikator eingezeichnet werden soll. Dieser \textit{ColorPicker} ist nicht direkt in das .NET-Framework integriert, er muss zusätzlich aus dem Extended WPF Toolkit \cite{extended-wpf-toolkit} von Xceed bezogen werden, das die normale .NET-Library um einige \gls{wpf}-Komponenten erweitert. 
