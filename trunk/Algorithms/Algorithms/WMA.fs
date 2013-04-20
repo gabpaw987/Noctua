@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator88=
+    module DecisionCalculator34=
         (* This method calculates the sum from 1 to n *)
         let sum (n:int)= 
             let mutable result = 0m
@@ -71,20 +71,16 @@
             signals
 
         let signalgeber(shortn:int, longn:int,list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>) =
-            for i = 0 to longn - 1 do
-                signals.Add(0)
-            let short = wma(shortn, list2D)
-            let long = wma(longn, list2D)
-            let mover = longn - shortn
-            let mutable abw = 0m
-            for i = 0 to long.Length-1 do
-                if short.[i+mover] > long.[i] then
-                    signals.Add(1)
-                if short.[i+mover] < long.[i] then
-                    signals.Add(-1)
-                if short.[i+mover] = long.[i] then
+            let shortlist =List.append [for i in 0..shortn-2 -> 0m] (wma(shortn, list2D))
+            let longlist = List.append [for i in 0..longn-2 -> 0m] (wma(longn, list2D))
+            for i = 0 to longlist.Length-1 do
+                if shortlist.[i] = 0m || longlist.[i] = 0m then
                     signals.Add(0)
+                else if shortlist.[i] < longlist.[i] then
+                    signals.Add(-1)
+                else if shortlist.[i] > longlist.[i] then
+                    signals.Add(1)
             signals
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            tripleCrossed (10,40, 90, list2D, signals)
+            signalgeber (10,40, list2D, signals)
