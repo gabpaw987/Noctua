@@ -1,7 +1,7 @@
 ﻿
 // Weitere Informationen zu F# unter "http://fsharp.net".
 namespace Algorithm
-    module DecisionCalculator55=        
+    module DecisionCalculator56=        
         (* This function calculates the simple moving average for a list of lists of decimal and returns the calculated values in a list of decimals*)
         let sma(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let mutable sma = [];
@@ -11,6 +11,13 @@ namespace Algorithm
                     mom <- mom + liste2D.[j].Item5
                 sma <- List.append sma [mom / decimal n]
             sma
+
+        let sma3(n:int, prices:decimal array)=
+            [|for i = n to prices.Length - 1 do 
+                yield 
+                    Array.sub prices (i - n) n
+                    |> Array.average 
+            |]
 
         let sma2(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")

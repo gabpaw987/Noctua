@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator7=
+    module DecisionCalculator8=
         let nToAlpha (n)=
             (2.0m / (n+1.0m))
 
