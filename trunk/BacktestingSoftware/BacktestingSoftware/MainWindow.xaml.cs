@@ -71,9 +71,17 @@ namespace BacktestingSoftware
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
             {
-                if (Properties.Settings.Default.IndicatorPanels.Count != 0)
+                try
                 {
-                    this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(Properties.Settings.Default.IndicatorPanels);
+                    if (Properties.Settings.Default.IndicatorPanels.Count != 0)
+                    {
+                        this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(Properties.Settings.Default.IndicatorPanels);
+                    }
+                }
+                catch (Exception)
+                {
+                    this.mainViewModel.IndicatorPanels = new List<StackPanel>();
+                    Properties.Settings.Default.IndicatorPanels = new System.Collections.Specialized.StringCollection();
                 }
             }
             else
@@ -96,10 +104,10 @@ namespace BacktestingSoftware
             {
                 newList.Add((StackPanel)XamlReader.Parse(strings[i]));
 
-                for (int j = 0; j < newList[i].Children.Count; j++)
+                for (int j = 0; j < newList[i / 2].Children.Count; j++)
                 {
-                    if (newList[i].Children[j] is System.Windows.Controls.TextBox)
-                        ((System.Windows.Controls.TextBox)newList[i].Children[j]).PreviewTextInput += NumericOnly;
+                    if (newList[i / 2].Children[j] is System.Windows.Controls.TextBox)
+                        ((System.Windows.Controls.TextBox)newList[i / 2].Children[j]).PreviewTextInput += NumericOnly;
                 }
 
                 string[] argb = strings[i + 1].Split(';');

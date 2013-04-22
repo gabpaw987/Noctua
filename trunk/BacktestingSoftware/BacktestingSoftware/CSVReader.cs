@@ -25,7 +25,7 @@ namespace BacktestingSoftware
                    select line.Split(',')
                        into fields
                        let timeStamp = DateTime.ParseExact(fields[1] + " " + fields[2], "MM/dd/yy HH:mm", new CultureInfo("en-US"))
-                       let open = decimal.Parse(fields[3], CultureInfo..InvariantCulture)
+                       let open = decimal.Parse(fields[3], CultureInfo.InvariantCulture)
                        let high = decimal.Parse(fields[4], CultureInfo.InvariantCulture)
                        let low = decimal.Parse(fields[5], CultureInfo.InvariantCulture)
                        let close = decimal.Parse(fields[6], CultureInfo.InvariantCulture)
