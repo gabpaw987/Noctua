@@ -6,7 +6,7 @@
           | _, [] -> []
           | n, _::xs -> skip (n-1) xs
 
-    module DecisionCalculator=
+    module DecisionCalculator123456789=
 
         let alphaToN (a) : int=
             int ((2.0m/a)-1.0m)

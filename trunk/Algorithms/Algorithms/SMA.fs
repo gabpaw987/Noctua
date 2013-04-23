@@ -19,6 +19,19 @@ namespace Algorithm
                     |> Array.average 
             |]
 
+        let wma(n:int, prices:decimal array)=
+            [|for i = n to prices.Length - 1 do 
+                let nom = ref 0m
+                let denom = ref 0m
+                let nprices = Array.sub prices (i - n) n
+                for j in nprices.Length - 1 .. 0 do
+                    nom := !nom + decimal(j + 1) * nprices.[j]
+                    denom := !denom + decimal (j + 1)
+                yield !nom / !denom
+            |]
+        let tma(n1:int, n2:int, prices:decimal array)=
+            sma3 (n2, (sma3(n1, prices)))
+
         let sma2(n:int, liste2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick

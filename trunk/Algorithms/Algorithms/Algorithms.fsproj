@@ -62,8 +62,8 @@
     <Compile Include="Test.fs" />
     <Compile Include="ADX.fs" />
     <Compile Include="IndexWeighting.fs" />
-    <Compile Include="Noctua_Algo.fs" />
     <Compile Include="FinFormulaPerformance.fs" />
+    <Compile Include="Noctua_Algo.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />

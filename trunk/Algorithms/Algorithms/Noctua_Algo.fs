@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator9=(*111*)
+    module DecisionCalculator=(*44*)
 
         (*
          * Divides one value by another
@@ -19,6 +19,7 @@
         let ema (n:int, prices:List<decimal>)=
             let alpha = nToAlpha n
             // t-1: calculate average of first n-1 elements as initial value for the ema
+
             let tm1 =
                 prices
                 |> Seq.take (n-1)
@@ -27,10 +28,12 @@
             let ema : decimal array = Array.zeroCreate (List.length prices)
             // put initial ema value into output as first t-1 value
             ema.[n-2] <- tm1
-            for i in n-1 .. List.length prices - 1 do
-                let c = prices.[i]
-                let prev = ema.[i-1]
-                ema.[i] <- alpha * c + (1m - alpha) * prev
+            // calculate ema for each price in the list
+            prices
+            |> List.iteri (fun i p -> 
+                match i with
+                | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
+                | _              -> ignore i)
             // set initial ema value (sma) to 0
             ema.[n-2] <- 0m
             ema
@@ -81,7 +84,7 @@
                 match i with
                 | _ when i > n-2 ->
                     let c = decimal (c (alpha1, alpha2, prices.[i-erp+1..i]))
-                    printfn "Length of AMA is now %d" (alphaToN c)
+                    //printfn "%d-%d\t c: %d" n1 n2 (alphaToN c)
                     ama.[i] <- c * p + (1m - c) * ama.[i-1]
                     //ama.[i] <- decimal(alphaToN c)
                     //printfn "%d" i
@@ -113,31 +116,44 @@
                 //ergebnis1 <- List.append ergebnis1 [[decimal c1.Series.["bbh"].Points.[i].YValues.[0]; decimal c1.Series.["bbl"].Points.[i].YValues.[0]]]
             ergebnis1
 
+        let bollinger2(n:int, sigma:decimal, prices:decimal array)=
+            let result = [|for p in prices do yield (0m,0m)|]
+            let ma = ema (n,Array.toList (prices))
+            for i in n-1 .. prices.Length - 1 do
+                let std = ref 0m
+                for value in Array.sub prices (i - (n - 1) ) n do
+                    std := !std + decimal((float)(value - ma.[i])**2.0)
+                std := decimal((float)(!std/decimal(n-1))**0.5)
+                let higher = ma.[i] + (!std * sigma)
+                let lower = ma.[i] - (!std * sigma)
+                result.[i] <- (higher,lower)
+            result
+
         (* return [supportlevel2, supportlevel1, pivotpoint, resistancelevel1, resistancelevel2]*)
         let pivotpointcalcultor(n : int, prices : System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>) = 
-            let pvpts : decimal[][] = Array.zeroCreate ((int)(ceil((decimal prices.Count)/(decimal n))))
-            for i in 0..n..prices.Count do
+            //let pvpts : decimal[][] = Array.zeroCreate ((int)(floor((decimal prices.Count)/(decimal n))))
+            let pvpts : decimal[][] = Array.zeroCreate prices.Count
+            for i in 0..n-1 do
+                pvpts.[i] <- [|0m; 0m; 0m; 0m; 0m|]
+            for i in 0..n..prices.Count-n do
                 let bars = prices.GetRange(i,n)
-                let mutable o = 0m
-                let mutable h = 0m
-                let mutable l = 0m
-                let mutable c = 0m
-                let mutable pivot = 0m
-                let mutable supportlevel1 = 0m
-                let mutable resistancelevel1 = 0m
-                let mutable supportlevel2 = 0m
-                let mutable resistancelevel2 = 0m
-                for j in 0 .. pvpts.Length-1 do
-                    o <- bars.[0].Item2
-                    h <- List.max [for j in bars -> j.Item3]
-                    l <- List.min [for j in bars -> j.Item4]
-                    c <- bars.[bars.Count-1].Item5
-                    pivot <- (h+l+c)/3m
-                    supportlevel1 <- 2m*pivot - h
-                    resistancelevel1 <- 2m*pivot - l
-                    supportlevel2 <- pivot - (resistancelevel1 - supportlevel1)
-                    resistancelevel2 <- (pivot - supportlevel1) + resistancelevel1
-                    pvpts.[j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
+
+                let o = bars.[0].Item2
+                let h = List.max [for j in bars -> j.Item3]
+                let l = List.min [for j in bars -> j.Item4]
+                let c = bars.[bars.Count-1].Item5
+                let pivot = (h+l+c)/3m
+                let supportlevel1 = 2m*pivot - h
+                let resistancelevel1 = 2m*pivot - l
+                let supportlevel2 = pivot - (resistancelevel1 - supportlevel1)
+                let resistancelevel2 = (pivot - supportlevel1) + resistancelevel1
+
+                if (i + 2*(n-1) < pvpts.Length) then
+                    for j in 0..n-1 do
+                        pvpts.[n-1 + i + j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
+                else
+                    for j in 0..(pvpts.Length - (n-1 + i) - 1) do
+                        pvpts.[n-1 + i + j] <- [|supportlevel2; supportlevel1; pivot; resistancelevel1; resistancelevel2|]
             pvpts
 
         (*
@@ -317,6 +333,9 @@
             let mutable lastCross = 0
             printfn "Finished Bollinger Bands"
 
+            // pivot points
+            let pvpts = pivotpointcalcultor(14,prices)
+
             // amas for triple crossing in trend phases
             let short = ama(erp, s1, s2, cPrices)
             printfn "Finished short AMA"
@@ -330,7 +349,7 @@
             let rsi = rsi(rsiN, ocPrices)
 
             // TODO: short regression
-            let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
+            //let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
             
             // adx
             let adx = adx (14, prices)
@@ -361,7 +380,6 @@
                         lastCross <- 1
 
                 // AMA
-
                 amaSig <-
                     if short.[i] + (cPrices.[i]*signalFilter) < middle.[i] && short.[i] + (cPrices.[i]*signalFilter) < long.[i] then
                         if middle.[i] < long.[i] then
@@ -386,27 +404,42 @@
                 if i < firstI then
                     signals.Add(0)
                 else
-                    // if adx indicates sideways markets                   
-                    if adx.[i] < 20m then
-                        printfn "adx indicates sideways market"
+                    // if er indicates sideways markets
+                    //if adx.[i] < 20m then
+                    if adx.[i] < 40m then
                         sw <- sw+1
+                        // print price between support2 and resistance2
+                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
                         // price between bbs
                         if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
-                            if lastCross = 1 && bInd.[i]<0m then
+                            // either with PVPTS:
+                            if lastCross = 1 && bInd.[i] < 0.8m && cPrices.[i] < pvpts.[i].[3] then
                                 signals.Add(1)
-                            else if lastCross = -1 && bInd.[i]>0m then
+                            else if lastCross = -1 && bInd.[i] > -0.8m && cPrices.[i] > pvpts.[i].[1] then
                                 signals.Add(-1)
                             else
                                 signals.Add(0)
+                            // or without PVPTS:
+//                            if lastCross = 1 && bInd.[i] < 0.0m then
+//                                signals.Add(1)
+//                            else if lastCross = -1 && bInd.[i] > 0.0m then
+//                                signals.Add(-1)
+//                            else
+//                                signals.Add(0)
                         else
                             signals.Add(0)
                     // trending market
-                    else //if adx.[i] > 40m then
-                        printfn "adx indicates trending market"
+                    else
                         trend <- trend+1
-                        // contradictory ama and rsi signals  && abs amaSig = 1
+                        // contradictory ama and rsi signals
                         if (sign amaSig <> sign rsiSig) then
-                            signals.Add(0)
+                            // check pvpts for supp/res
+                            if (amaSig > 0 && cPrices.[i] > pvpts.[i].[1]) then
+                                signals.Add(amaSig)
+                            else if (amaSig < 0 && cPrices.[i] < pvpts.[i].[3]) then
+                                signals.Add(amaSig)
+                            else
+                                signals.Add(0)
                         else
                             // + 3
                             // ama and rsi on buy
@@ -419,10 +452,6 @@
                             // +/- 1,2
                             else
                                 signals.Add(amaSig)
-//                    else
-//                        signals.Add(0)
-                    // output of different indicator decisions
-                    //printfn "%d\t%d\t%d" amaSig rsiSig signals.[i]
 
                     // Signal Smoothing:    signals can only get bigger, neutral or in the other direction
                     // Cutloss:             neutralise if loss is too big (% of price movement!)
@@ -458,6 +487,12 @@
             printfn "Cut Losses: %d" cutlossCount
             signals
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
+        let startCalculation1 (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
             //       erp  s1  s2  m1  m2  l1  l2   bN  sig cutloss
-            strategy (50, 10, 10, 30, 30, 60, 60, 20, 2m, 5.0m, prices, signals)
+            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 5.0m, prices, signals)
+
+        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
+            let pricess = [|for p in prices do yield p.Item5|]
+            let test1 = bollinger(20,2m,prices)
+            let test2 = bollinger2(20,2m,pricess)
+            signals
