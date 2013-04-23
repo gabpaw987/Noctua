@@ -1,0 +1,46 @@
+\subsection{Berechnung der Performancedaten}
+
+In der \gls{bts} finden sich zwei verschiedene Arten von Performancedaten. Da wären zum einen die Order-spezifischen, die Daten zu jeder fiktiven Kaufentscheidung in der Vergangenheit generieren und die allgemeinen, die die Performance des Algorithmus über den gesamten Zeitraum der Daten widerspiegelt. Wie die einzelnen Daten der beiden Kategorien berechnet werden, soll im Folgenden erläutert werden.
+
+\subsubsection{Order-spezifische Performancedaten}
+
+Die Order-spezifischen Performancedaten kann man sich auf dem Orders-Tab der \gls{bts} für jede Order ansehen. Sie werden wie folgt berechnet:
+
+\begin{itemize}
+\item \textbf{Time} \\
+	Time gibt den fiktiven Zeitpunkt in der Vergangenheit an, zu dem diese Order unter Echtzeiteinsatz des Algorithmus ausgeführt worden wäre.
+\item \textbf{Signal Strength} \\
+	Gibt die Stärke des Signals (-3 bis +3) aus, das der Algorithmus bei dieser Order gegeben hätte.
+\item \textbf{Position} \\
+	Position (Pos) beschreibt die Anzahl an Round Lots die durch die Einstellungen in der \gls{bts} bei der vorliegenden Signal Strength gehandelt werden.
+\item \textbf{Price} \\
+	Gibt den Preis (P) an zu dem die Order zum gegebenen Zeitpunkt platziert worden wäre. Es handelt sich hierbei um den historischen Close-Wert des entsprechenden Bars. Handelt es sich um eine Kaufentscheidung wird hierzu noch der PricePremiumPercentage addiert, handelt es sich um eine Verkaufsentscheidung wird er subtrahiert.
+\item \textbf{Transaction Price} \\
+	Der Transaktionspreis (TP) gibt an, wie viel Kapital nun investiert werden muss, um die gegebene Anzahl an Round Lots zum gegebenen Preis (Price) handeln zu können. Die Round Lots die gekauft werden müssen (RLA) sind die Differenz von der alten zur neuen Position. War die alte Position also bspw. -1 und das neue ist 1, dann müssen zwei Round Lots gekauft werden. Hierzu werden auch alle zu zahlenden Gebühren addiert. In der folgenden Gleichung ist RLS die Größe eines Round Lots.
+	\begin{equation}
+		\label{Transaction Price}
+		TP = (P * RLS * RLA) + PF
+	\end{equation}
+\item \textbf{Paid Fee} \\
+	Paid Fee (PF) ist die Gesamtheit aus allen relativen (R) und absoluten (A) Transaktionsgebühren, die in der \gls{bts} eingestellt wurden für diese Order bezahlt hätten werden müssen. Dabei wird klarerweise mit dem TP vor Addition der Gebühren gerechnet (TP0).
+	\begin{equation}
+		\label{Paid Fee}
+		PF = (\frac{R}{100} * TP0) + A
+	\end{equation}
+\item \textbf{Gain/Loss [\%]} \\
+	GainLoss (GL) beschreibt die prozentuelle Kapitalveränderung durch vorherige Trades bis zum jetzigen relativ auf das eingesetzte Investitionskapital, also TP. Dabei wird kein unrealisierter Profit/Verlust angeschrieben, sondern nur der wirklich realisierte. Das bedeutet, dass bei einer Verstärkung der Position der aktuellen Order im Vergleich zu der der letzten GL 0 ist. Wenn dies bei der ersten Order berechnet werden soll, kann man hier nur die Gebühren durch den TP0 dividieren, da sonst kein realisierter Profit/Verlust zustande kommt:
+	\begin{equation}
+		\label{Gain/Loss}
+		GL = \frac{-PF}{TP0} * 100
+	\end{equation}
+	Handelt es sich allerdings nicht um die erste Order und die Positionen:
+	\begin{equation}
+		\label{Gain/Loss}
+		GL = \frac{oldPos * (P - oldP - PF)}{oldP} * 100
+	\end{equation}
+	Wird allerdings bei einem Trade generell nur die Position des letzten Trades verstärkt, ist GL 0.
+\item \textbf{Cumulative Gain/Loss [\%]} \\
+	Hierbei werden einfach nur kumulativ die GL-Werte aller bisherigen Orders aufaddiert ausgegeben.
+\item \textbf{Portfolio Performance [\%]} \\
+	Die Portfolio Performance (PP) ist eine der wichtigsten Performancedaten. Sie gibt an, um wie viel 
+\end{itemize}

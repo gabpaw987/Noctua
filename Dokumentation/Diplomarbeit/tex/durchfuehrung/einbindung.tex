@@ -39,7 +39,7 @@ Bar,Date,Time,Open,High,Low,Close
 ...
 \end{verbatim}
 
-Es können natürlich unendlich viele Bars in der Datei gespeichert werden, die Berechnungen dauern dadurch einfach entsprechend länger. Weiters wird die erste Zeile nicht berücksichtigt, da hier meist Header-Informationen gespeichert sind. Befindet sich hier auch schon ein Bar, wir dieser ignoriert.\\
+Das Datum muss im Format MM/DD/YY und die Uhrzeit im Format hh:mm gespeichert werden. Die Dezimalstellen von Open, High, Low und Close müssen durch einen Punkt und ohne Tausendertrennzeichen angegeben werden. Es können natürlich unendlich viele Bars in der Datei gespeichert werden, die Berechnungen dauern dadurch einfach entsprechend länger. Weiters wird die erste Zeile nicht berücksichtigt, da hier meist Header-Informationen gespeichert sind. Befindet sich hier auch schon ein Bar, wird dieser ignoriert. Noch genauere Informationen hierzu können dem Benutzerhandbuch von Noctua entnommen werden\\
 \\
 Ist der Pfad in der \gls{bts} richtig gewählt und die Berechnung wird gestartet, wird das \gls{csv}-File in der \gls{bts} ausgelesen. Dies geschieht mit Hilfe der \gls{linq}-Technologie (Siehe \ref{linq} ''LINQ'') und sieht im Code wie folgt aus:
 
