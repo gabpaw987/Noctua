@@ -1,16 +1,15 @@
 \lstset{language=FSharp,caption={Descriptive Caption Text},label=DescriptiveLabel}
-\section{F-Sharp Grundlagen}
-F-Sharp (Visual F\# oder auch F\#,) ist eine, im Grunde gesehen, funktionale Programmiersprache, welche auf große Datenmengen und schnelle Berechnungen optimiert ist. Die mögliche Interoperabilität mit allen .NET-Sprachen macht die Sprache zu einer idealen Komponente eines Softwareprodukts. F-Sharp ist konzipiert um auf eine große Menge an Daten zu wirken, dies wird mittels zusätzlichen Methoden für Listen, Sequenzen und Arrays möglich gemacht. \cite{fsharp}  \\
+F-Sharp (Visual F\# oder auch F\#,) ist eine, im Grunde gesehen, funktionale Programmiersprache, welche auf große Datenmengen und schnelle Berechnungen optimiert ist. Die mögliche Interoperabilität mit allen .NET-Sprachen macht die Sprache zu einer idealen Komponente eines Softwareprodukts. F-\# ist konzipiert um auf eine große Menge an Daten zu wirken, dies wird mittels zusätzlichen Methoden für Listen, Sequenzen und Arrays möglich gemacht. \cite{fsharp}  \\
 Der Begriff funktionale Programmiersprache beschreibt eine Programmiersprache die nur aus Funktionen besteht. Bei einer Funktion handelt es sich um eine Prozedur, die als Ziel eine Auswertung hat. Im Gegenzug dazu steht die imperative Programmierung, ein Programm, das in solch einer Sprache geschrieben ist, folgt den einzelnen Anweisungen des Quellcodes. \cite{programmingparadigms}\\
-Durch die Anbindung an das .Net-Framework wird F-Sharp allerdings zu einer Multi-Paradigmen-Sprache. Es wird ermöglicht funktional, objektorientiert, aber auch imperativ arbeiten zu können. \cite{fsharp}\\
+Durch die Anbindung an das .Net-Framework wird F-\# allerdings zu einer Multi-Paradigmen-Sprache. Es wird ermöglicht funktional, objektorientiert, aber auch imperativ arbeiten zu können. \cite{fsharp}\\
 \begin{figure}[h]
 	\centering
      \includegraphics[scale=1]{graphics/fgrundlagen/VisualFsharp.jpg} 
 	\caption{Visual F-Sharp}
 	\label{Visual F-Sharp}
 \end{figure}
-\subsection{Funktionen in F-Sharp}\label{fsharpfunktionen}
-Die Programmiersprache F-Sharp verwendet zur Methodendefinition den Befehl \textbf{let}. Jede definierte Funktion ist im gleichen Namespace erreichbar. Prinzipiell ist eine einmal definierte Funktion nicht mehr änderbar, allerdings gibt es eine Ausnahme, es ist möglich durch die Zusatzdefinition \textbf{mutable} eine Funktion bereits beim Erzeugen als änderbar zu kennzeichnen. \clearpage
+\subsection{Funktionen in F-\#}\label{fsharpfunktionen}
+Die Programmiersprache F-\# verwendet zur Methodendefinition den Befehl \textbf{let}. Jede definierte Funktion ist im gleichen Namespace erreichbar. Prinzipiell ist eine einmal definierte Funktion nicht mehr änderbar, allerdings gibt es eine Ausnahme, es ist möglich durch die Zusatzdefinition \textbf{mutable} eine Funktion bereits beim Erzeugen als änderbar zu kennzeichnen. \clearpage
 \begin{lstlisting}[label=Funktionen in F-Sharp,caption=Funktionen in F-Sharp]
 //hier sieht man eine Funktionsdefinition
 let funktion a b = a*b
@@ -19,17 +18,17 @@ let mutable funktion = 11
 //nun kann man diese Funktion wieder veraendern
 funktion <- 12
 \end{lstlisting}
-\subsection{Arrays in F-Sharp}\label{fsharparrays}
-Arrays sind in F-Sharp veränderbare Sammlungen von längenmäßig fixierten gleichen Datentypen. Sie werden auf folgende Art und Weise definiert:
+\subsection{Arrays in F-\#}\label{fsharparrays}
+Arrays sind in F-\# veränderbare Sammlungen von längenmäßig fixierten gleichen Datentypen. Sie werden auf folgende Art und Weise definiert:
 \begin{lstlisting}[label=Erzeugen eines Arrays,caption=Erzeugen eines Arrays]
 let array = [| 1; 2; 3 |]
 \end{lstlisting}
 Also sind die beinhalteten Werte umgeben von \begin{math} [\vert \end{math} und \begin{math} \vert] \end{math}, die verschiedenen Werte die intern verwendet werden sind mittels \textbf{;} voneinander getrennt.\\
-F-Sharp erlaubt dem Benutzer Inline-Erzeugung von Arrays. Dies kann mittels einer for-Schleife (auch mit foreach) vollzogen werden. 
+F-\# erlaubt dem Benutzer Inline-Erzeugung von Arrays. Dies kann mittels einer for-Schleife (auch mit foreach) vollzogen werden. 
 \begin{lstlisting}[label=Dynamisch Arrays erzeugen,caption=Dynamisch Arrays erzeugen]
 let array = [| for i = 0 to 9 do yield (i ** 2) |]
 \end{lstlisting}
-Für mathematische Berechnungen besitzen die F-Sharp-Arrays zusätzliche Funktionen.
+Für mathematische Berechnungen besitzen die F-\#-Arrays zusätzliche Funktionen.
 \begin{itemize}
 	\item Array.max gibt den höchsten Wert des Arrays zurück
 	\item Array.min gibt den niedrigsten Wert des Arrays zurück
@@ -40,9 +39,9 @@ Für mathematische Berechnungen besitzen die F-Sharp-Arrays zusätzliche Funktione
 	\item Array.toSeq wandelt das Array in eine Sequenz um 
 	\item Array.toList wandelt das Array in eine Liste um
 \end{itemize}
-Ein weiterer Vorteil von Arrays in F-Sharp ist die Möglichkeit spezifische Einträge einzeln anzusprechen, also ohne ein Durchsuchen des Arrays einen einzelnen Wert zu finden. \cite{arraysfs}
-\subsection{Sequenzen in F-Sharp} \label{fsharpsequenzen}
-Sequenzen in F-Sharp sind Aneinanderreihungen von Daten des gleichen Daten\-typs mit einer fixierten Größe. Der Vorteil gegenüber Listen in F-Sharp besteht in der Art der Auswertung. Während Listen nur mit evaluierten Werten befüllt werden, also mit Ergebnissen aus den Funktionen, wird eine Sequenz prinzipiell nur mit einer Menge an Anweisungen befüllt. Deswegen ist die Art der Mengenspeicherung am Besten für Datenmengen geeignet die möglicherweise nicht vollständig gelesen wird. \cite{seqfs} 
+Ein weiterer Vorteil von Arrays in F-\# ist die Möglichkeit spezifische Einträge einzeln anzusprechen, also ohne ein Durchsuchen des Arrays einen einzelnen Wert zu finden. \cite{arraysfs}
+\subsection{Sequenzen in F-\#} \label{fsharpsequenzen}
+Sequenzen in F-\# sind Aneinanderreihungen von Daten des gleichen Daten\-typs mit einer fixierten Größe. Der Vorteil gegenüber Listen in F-\# besteht in der Art der Auswertung. Während Listen nur mit evaluierten Werten befüllt werden, also mit Ergebnissen aus den Funktionen, wird eine Sequenz prinzipiell nur mit einer Menge an Anweisungen befüllt. Deswegen ist die Art der Mengenspeicherung am Besten für Datenmengen geeignet die möglicherweise nicht vollständig gelesen wird. \cite{seqfs} 
 \begin{lstlisting}[label=Sequenzen erzeugen,caption=Sequenzen erzeugen]
 let sequenz = seq{1 .. 4}
 \end{lstlisting}
@@ -57,7 +56,7 @@ let seqInfinite = Seq.initInfinite (fun index ->
     		      -1.0)))
 printfn "%A" seqInfinite
 \end{lstlisting}
-Weitere interessante Funktionen von F-Sharp Sequenzen sind:
+Weitere interessante Funktionen von F-\# Sequenzen sind:
 \begin{itemize}
 	\item Seq.sort oder Seq.sortBy sortiert die Sequenz 
 	\item Seq.windowed oder Seq.pairwise geben die Möglichkeit die Sequenz in eine Menge an Subsequenzen zu spalten, also einem Subsequence-Array
@@ -67,12 +66,12 @@ Weitere interessante Funktionen von F-Sharp Sequenzen sind:
 	\item Array.toList wandelt das Array in eine Liste um
 \end{itemize}
 \clearpage
-\subsection{Listen in F-Sharp} \label{fsharplisten}
-F-Sharp unterstützt allerdings auch dynamischere Datenmengen, Listen, welche nicht durch die Länge eingeschränkt wird. Im Vergleich zu Arrays sind die gespeicherten Werte in den Listen nicht mehr änderbar. Das Problem, welches durch die Verwendung von F-Sharp-Listen aufkommt, ist, dass bei einem Zugriff auf einen Eintrag der Liste, jedes einzelne Mal die gesamte Liste durcharbeiten muss, bis der gewünschte Eintrag gefunden wurde. \cite{listfs}
+\subsection{Listen in F-\#} \label{fsharplisten}
+F-\# unterstützt allerdings auch dynamischere Datenmengen, Listen, welche nicht durch die Länge eingeschränkt wird. Im Vergleich zu Arrays sind die gespeicherten Werte in den Listen nicht mehr änderbar. Das Problem, welches durch die Verwendung von F-\#-Listen aufkommt, ist, dass bei einem Zugriff auf einen Eintrag der Liste, jedes einzelne Mal die gesamte Liste durcharbeiten muss, bis der gewünschte Eintrag gefunden wurde. \cite{listfs}
 \begin{lstlisting}[label=Erzeugen einer Liste,caption=Erzeugen einer Liste]
 let list = [ 1; 2; 3 ]
 \end{lstlisting}
-In F-Sharp ist es möglich solche Listen innerhalb einer Zeile dynamisch zu erzeugen. 
+In F-\# ist es möglich solche Listen innerhalb einer Zeile dynamisch zu erzeugen. 
 \begin{lstlisting}[label=Generieren einer Liste,caption=Generieren einer Liste]
 let list = [ for i in 0 .. 100 -> i+i ]
 \end{lstlisting}
@@ -80,7 +79,7 @@ Um bei einer Liste weitere Daten hinzuzufügen ist folgende Anweisung notwendig:
 \begin{lstlisting}[label=Ergaenzen eines Elements in eine Liste,caption=Ergaenzen eines Elements in eine Liste]
 let newList = 100 :: oldList
 \end{lstlisting}
-F-Sharp bietet folgende Eigenschaften um mit Listen arbeiten zu können:
+F-\# bietet folgende Eigenschaften um mit Listen arbeiten zu können:
 \begin{itemize}
 	\item List.Head übergibt das erste Dokument
 	\item List.Empty ist eine statische Funktion, welche immer eine leere Liste mit n Einträgen zurückgibt
@@ -91,8 +90,8 @@ F-Sharp bietet folgende Eigenschaften um mit Listen arbeiten zu können:
 \end{itemize}
 Listen eignen sich sehr gut für rekursive Funktionen, weil durch die Prozeduren List.Head und List.Tail das im ersten Absatz dieses Kapitels genannten Problem nicht auftreten kann. \cite{listfs}
 \clearpage
-\subsection{Tupeln in F-Sharp}
-Eine Tupel ist eine bestimmte Menge an unterschiedlichen geordneten Werten in F-Sharp. Solche Tupeln haben eine feste Größe und die Werte in einer solchen Menge müssen bestimmte Datentypen besitzen und dürfen von diesen nicht abweichen. Werte die in Tupeln gespeichert sind können nicht verändert werden, das bedeutet, dass keine mutable (veränderbaren) Werte gespeichert werden können. \cite{tupelfs}
+\subsection{Tupeln in F-\#}
+Eine Tupel ist eine bestimmte Menge an unterschiedlichen geordneten Werten in F-\#. Solche Tupeln haben eine feste Größe und die Werte in einer solchen Menge müssen bestimmte Datentypen besitzen und dürfen von diesen nicht abweichen. Werte die in Tupeln gespeichert sind können nicht verändert werden, das bedeutet, dass keine mutable (veränderbaren) Werte gespeichert werden können. \cite{tupelfs}
 \begin{lstlisting}[label=Erzeugen einer Tupel,caption=Erzeugen einer Tupel]
 let tupel = ("Hello", 17m, true, 'a', 0.01, 1)
 \end{lstlisting}
@@ -113,8 +112,8 @@ Bei Algorithmen, die Werte wie Datum, Uhrzeit, Open (Dezimalzahl), High, Low und
 Es gibt bereits definierte Funktionen um Tupelzugriffe auf das erste und zweite Element einer Tupel durchzuführen. Allerdings funktionieren diese vordefinierten Funktionen nur bei Tupeln die 2 Einträge besitzen. \\
 Tuplen bieten also die Funktionalität zusammengehörende Daten vernünftig zu speichern. Dieser Effekt bietet einige Vorteile, jedoch gibt es nur wenige vordefinierten Funktionen um auf die eingeschlossenen Daten zu wirken. \cite{tupelfs}
 \clearpage
-\subsection{Pattern Matching in F-Sharp}
-In F-Sharp gibt es eine Möglichkeit Entscheidungen mittels Pattern Matching zu verwirklichen. Diese Funktionalität der Programmiersprache ist vergleichbar mit der Switch-Case-Anweisung aus bekannteren Sprachen wie JAVA oder C\#. Mit Pattern Matching können Datenmengen mittels einer Entscheidungslogik bearbeitet werden. \\
+\subsection{Pattern Matching in F-\#}
+In F-\# gibt es eine Möglichkeit Entscheidungen mittels Pattern Matching zu verwirklichen. Diese Funktionalität der Programmiersprache ist vergleichbar mit der Switch-Case-Anweisung aus bekannteren Sprachen wie JAVA oder C\#. Mit Pattern Matching können Datenmengen mittels einer Entscheidungslogik bearbeitet werden. \\
 Eine Beispielanwendung wäre ein emulierter Signalgeber. Bei einer Signalspitze soll das Programm eine Ausgabe schreiben. \cite{pmfs}
 \begin{lstlisting}[label=Pattern Matching Beispiel,caption=Pattern Matching Beispiel]
 let signalgeber x =
@@ -141,14 +140,14 @@ let getClass x =
 	| | :? string -> printfn "string"
 	| _ -> printfn "Not found"
 \end{lstlisting}
-\subsection{Pipe Operator in F-Sharp}
-In F-Sharp existiert ein zusätzlicher Parameter um Ergebnisse von Funktionen in weitere Funktionen zu übergeben. Der Zweck von diesem Operator ist, dass man nicht zu viele Zwischenspeichervariablen und Funktionen definieren muss. Das Prinzip hinter diesem Operator ist sehr simpel, das Ergebnis aus dem ersten Funktionsaufruf wird als letzter Übergabeparameter der nächsten Funktion übergeben.
+\subsection{Pipe Operator in F-\#}
+In F-\# existiert ein zusätzlicher Parameter um Ergebnisse von Funktionen in weitere Funktionen zu übergeben. Der Zweck von diesem Operator ist, dass man nicht zu viele Zwischenspeichervariablen und Funktionen definieren muss. Das Prinzip hinter diesem Operator ist sehr simpel, das Ergebnis aus dem ersten Funktionsaufruf wird als letzter Übergabeparameter der nächsten Funktion übergeben.
 \begin{lstlisting}[label=Pipeoperator in F-Sharp,caption=Pipeoperator in F-Sharp]
 1+1
 |> sum 1
 \end{lstlisting}
 Das Beispiel berechnet die Summe aus 1 + 1 + 1, in der ersten Zeile wird die Summe von 1 + 1 berechnet, anstatt das Ergebnis dieser Berechnung zwischen zu speichern, wird hier das evaluierte Ergebnis sofort an die nachfolgende Funktion weitergegeben. Das bedeutet, dass die Funktion sum aus die Summe aus 1 + 2 berechnet, weil sie  aufgrund des Pipeoperators mit dem Zwischenergebnis beliefert wird. \\
-Sehr oft macht es keinen Sinn Zwischenergebnisse zu speichern, weil diese nur einmal verwendet werden müssen. Deswegen sollte man, wenn man mit F-Sharp arbeitet, meistens den Pipeoperator benutzen, außer es ist explizit nicht notwendig, weil man das evaluierte Ergebnis noch einmal benötigt. \cite{sofs}
+Sehr oft macht es keinen Sinn Zwischenergebnisse zu speichern, weil diese nur einmal verwendet werden müssen. Deswegen sollte man, wenn man mit F-\# arbeitet, meistens den Pipeoperator benutzen, außer es ist explizit nicht notwendig, weil man das evaluierte Ergebnis noch einmal benötigt. \cite{sofs}
 \subsection{Performancevergleich der Speicherlisten} \label{fsharpperformance}
 In den vorherigen Kapiteln: \nameref{fsharplisten}, sowie \nameref{fsharparrays} und  \nameref{fsharpsequenzen} wurde erläutert, welches Verhalten die unter\-schiedlichen Speicherverfahren haben und wie diese intern funktionieren. Um die effizienteste Methode zu finden, wurde ein Performancetest der vor\-her Angeführten Methoden durchgeführt. Es wurde die gleiche Aufgabe von jeder der 3 Typen durchgeführt. Die verschiedenen Speicherverfahren sollten jeweils einen Exponetial Moving Average berechnen, die ~fertige Be\-rechnung wurde ein weiteres Mal durchgerechnet, um auch etwaige Leistungsschwächen während der Berechnung mit den Ergebnissen aufzudecken. Bei der Evaluierung von 966 Datenpaaren kamen folgende Messungen zustande: \\
 \begin{lstlisting}[label=Performancemessung in F-Sharp,caption=Performancemessung in F-Sharp]
@@ -157,8 +156,8 @@ Verwendung von Arrays:    0.004245 Sekunden
 Verwendung von Sequenzen: 0.008914 Sekunden
 \end{lstlisting}
 Aufgrund der langsameren Zugriffszeiten eignen sich Listen als Speicher für Datenmengen, auf die oft zugegriffen werden müssen, nicht gut. Sequenzen sind bei der Erzeugung schneller, allerdings muss für ein validiertes Ergebnis mehr Leistung aufgebracht werden. Ein Array eignet sich am Besten um darauf öfters zuzugreifen, außerdem sind die Inhalte eines Arrays bereits ausgewertet und können sofort weiterverarbeitet werden. Anhand des folgenden Codestücks soll erklärt werden wie die Berechnung funktionieren soll
-\subsection{Schreiben eines SMAs in F-Sharp} \label{fsharpsma}
-In diesem Abschnitt wird prägnant erklärt wie man einen SMA in F-Sharp implementiert.
+\subsection{Schreiben eines SMAs in F-\#} \label{fsharpsma}
+In diesem Abschnitt wird prägnant erklärt wie man einen SMA in F-\# implementiert.
 \begin{lstlisting}[label=SMA in F-Sharp,caption=SMA in F-Sharp]
 (* 
  * Diese Funktion soll einen SMA berechnen
