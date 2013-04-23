@@ -1,0 +1,65 @@
+\subsection{Einbindung des Algorithmus}
+
+Da die \gls{bts} natürlich nicht nur einen Algorithmus testen können soll, ist es wichtig das die Algorithmen nicht direkt im Code verankert sind, sondern zur Laufzeit geladen werden können. Dazu kann der Benutzer einen Pfad angeben, von dem der Algorithmus in Form einer \gls{dll}-Datei (Siehe \ref{dll} ''Dynamic Link Library'') gelesen werden kann. Damit die \gls{bts} den Algorithmus aber auch ausführen kann, muss dieser zuerst in die lokale Domäne des Benutzers bzw. der \gls{bts} geladen werden. \\
+Dazu gibt es zwei Möglichkeiten:
+
+\begin{itemize}
+\item \textbf{\textit{LoadFrom}} \\
+	Die \textit{LoadFrom}-Methode ermöglicht es eine Assembly (bspw. unser \gls{dll}-File) in die lokale Domäne zu laden und Methoden dieser Assembly aufzurufen. Ein kleines Problem hierbei ist allerdings, dass man die geladene Assembly in der Domäne nur sehr aufwendig überschreiben oder löschen kann, daher ist sie für unsere Anwendung nicht perfekt geeignet.
+\item \textbf{\textit{LoadFile}} \\
+	Die \textit{LoadFrom}-Methode erfüllt nahezu den gleichen Zweck, wie die \textit{LoadFile}-Methode, nur dass man hier einfach eine zweite Assembly in die Domäne laden kann und die erste wird überschrieben. Daher wird in der \gls{bts} diese Methode genutzt.
+\end{itemize}
+
+Der komplette Codeausschnitt zum Laden eines Algorithmus sieht nun wie folgt aus:
+
+\begin{verbatim}
+//Laden des Assemblys
+Assembly assembly = Assembly.LoadFile(this.mainViewModel.AlgorithmFileName);
+//Laden des Assemblys in die Domäne
+AppDomain.CurrentDomain.Load(assembly.GetName());
+//Speichern der Klasse, zum spaeteren Ausfuehren von Methoden
+Type t = assembly.GetType("Algorithm.DecisionCalculator");
+
+//Uebergabeparameter der Methode, die aufgerufen wird,
+//muessen als Objektarray uebergeben werden
+Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
+//Invokieren der Methoden mit den Uebergabeparametern
+t.GetMethod("startCalculation").Invoke(null, oa);
+\end{verbatim}
+
+\subsection{Auslesen der Aktien-Preisdaten}
+
+Die Aktein-Preisdaten werden in Form von Bars über einen bestimmten Zeitraum erwartet. Ob es sich hierbei um Minute-, Daily- oder andere Bars handelt ist hierbei grundsätzlich egal. Sie müssen lediglich in Form einer \gls{csv}-Datei mit folgendem Format gespeichert werden:
+
+\begin{verbatim}
+Bar,Date,Time,Open,High,Low,Close
+1,01/02/90,00:00,8.8125,9.375, 8.75,9.3125
+2,01/03/90,00:00,9.375, 9.50,9.375,9.375
+3,01/04/90,00:00,9.375,9.6875,9.3125,9.40625
+...
+\end{verbatim}
+
+Es können natürlich unendlich viele Bars in der Datei gespeichert werden, die Berechnungen dauern dadurch einfach entsprechend länger. Weiters wird die erste Zeile nicht berücksichtigt, da hier meist Header-Informationen gespeichert sind. Befindet sich hier auch schon ein Bar, wir dieser ignoriert.\\
+\\
+Ist der Pfad in der \gls{bts} richtig gewählt und die Berechnung wird gestartet, wird das \gls{csv}-File in der \gls{bts} ausgelesen. Dies geschieht mit Hilfe der \gls{linq}-Technologie (Siehe \ref{linq} ''LINQ'') und sieht im Code wie folgt aus:
+
+\begin{verbatim}
+public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
+{
+    // Geht alle Zeilen durch und ueberspringt den Header
+    return from line in File.ReadLines(filePath).Skip(1)
+           select line.Split(',')
+               into fields
+               //Parst die das Datum und die Uhrezit und speichert es in den Tupel
+               let timeStamp = DateTime.ParseExact(fields[1] + " " + fields[2], "MM/dd/yy HH:mm", new CultureInfo("en-US"))
+               //Speichert alle anderen Werte in den Tupel und beruecksichtigt Dezimalzahlen 
+               let open = decimal.Parse(fields[3], CultureInfo.InvariantCulture)
+               let high = decimal.Parse(fields[4], CultureInfo.InvariantCulture)
+               let low = decimal.Parse(fields[5], CultureInfo.InvariantCulture)
+               let close = decimal.Parse(fields[6], CultureInfo.InvariantCulture)
+               //Liest nur die Bars im gewählten Bereich aus
+               where timeStamp.Date >= startDate.Date && timeStamp.Date <= endDate.Date
+               //Erzeugt den Tupel und speichert ihn in das Rueckgabe-IEnumerable
+               select new Tuple<DateTime, decimal, decimal, decimal, decimal>(timeStamp, open, high, low, close);
+}
+\end{verbatim}

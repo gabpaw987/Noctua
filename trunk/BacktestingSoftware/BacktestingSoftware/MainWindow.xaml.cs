@@ -354,7 +354,7 @@ namespace BacktestingSoftware
         {
             Chart chart = this.FindName("MyWinformChart") as Chart;
 
-            Series series = new Series("Data"); // <<== make sure to name the series "price"
+            Series series = new Series("Data");
             chart.Series.Add(series);
 
             // Set series chart type
