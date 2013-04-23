@@ -2,9 +2,9 @@
 
 \subsection{Dynamic Link Library} \label{dll}
 
-Alle .Net-Sprachen bieten die Funktionalität Bibliotheksprojekte zu entwickeln. Normalerweise werden ausführbare Programme entwickelt, während bei einem DLL-Projekt oder einer Bibliotheksanwendung nur eine Funktionalität implementiert werden muss. \cite{dllmsdn1}\\ \\
-Eine DLL enthält Code und Daten. Man kann diese von mehreren Programmen gleichzeitig verwenden. Ihre Funktionalität ist allerdings nicht begrenzt, das bedeutet man kann mit ihnen genau die gleichen Ergebnisse erzielen, wie mit einer ausführbaren Software, allerdings agiert eine DLL nicht von alleine. \\ \\
-Prinzipiell werden DLLs programmiert um eine Software in unterschiedliche Komponenten (oder auch Modulen) zu trennen. Der Vorteil bei der Verwendung von DDLs ist die Einbindung in ein bestehendes Softwarekonstrukt zur Laufzeit, dass erhöht die Erweiterbarkeit und Skalierbarkeit von Softwareprodukten. \cite{dllmsdn2} \\ \\
+Alle .Net-Sprachen bieten die Funktionalität Bibliotheksprojekte zu entwickeln. Normalerweise werden ausführbare Programme entwickelt, während bei einem \gls{dll}-Projekt oder einer Bibliotheksanwendung nur eine Funktionalität implementiert werden muss. \cite{dllmsdn1}\\ \\
+Eine DLL enthält Code und Daten. Man kann diese von mehreren Programmen gleichzeitig verwenden. Ihre Funktionalität ist allerdings nicht begrenzt, das bedeutet man kann mit ihnen genau die gleichen Ergebnisse erzielen, wie mit einer ausführbaren Software, allerdings agiert eine \gls{dll} nicht von alleine. \\ \\
+Prinzipiell werden \gls{dll}s programmiert um eine Software in unterschiedliche Komponenten (oder auch Modulen) zu trennen. Der Vorteil bei der Verwendung von \gls{dll}s ist die Einbindung in ein bestehendes Softwarekonstrukt zur Laufzeit, dass erhöht die Erweiterbarkeit und Skalierbarkeit von Softwareprodukten. \cite{dllmsdn2} \\ \\
 Bei einem Software-Update-Vorgang können beispielsweise nur die veränderten Komponenten vertauscht werden. Ein erneutes Installieren der Software ist somit nicht nötig und kann vermieden werden. Im abstrakteren Geschehen bedeutet das, dass der Programmkern eine Veränderung der Funktionen nicht bemerkt und auch kein Teil der Erweiterung oder der Fehlerbehebung sein muss. Achtet man darauf komplexere Berechnungen in auswechselbaren Komponenten zu benutzen und die Komplexität des Kernprodukts gering zu halten, kann man ein Softwareprodukt leichter warten und weiterentwickeln. \cite{dllmsdn1}
 \subsubsection{DLL-Typen}
 Es gibt zwei Möglichkeiten die Funktionen einer DLL aufzurufen:
@@ -13,4 +13,4 @@ Es gibt zwei Möglichkeiten die Funktionen einer DLL aufzurufen:
 	\item Run-Time Dynamic Linking
 \end{itemize}
 Beim Load-Time Dynamic Linking wird bereits zur Kompilierzeit ein explizites Interface bereitgestellt, um die bereitgestellten Methoden explizit aufrufen zu können.\\ \\
-Das Run-Time Dynamic Linking verwendet dynamische Methodenaufrufe, das bedeutet das auch beim Kompiliervorgang noch nicht klar ist welche Methoden die DLL bereitstellt. Die DLL wird erst während der Laufzeit in die Software eingebunden. \cite{dllmsdn2}
+Das Run-Time Dynamic Linking verwendet dynamische Methodenaufrufe, das bedeutet das auch beim Kompiliervorgang noch nicht klar ist welche Methoden die DLL bereitstellt. Die \gls{dll}s wird erst während der Laufzeit in die Software eingebunden. \cite{dllmsdn2}
