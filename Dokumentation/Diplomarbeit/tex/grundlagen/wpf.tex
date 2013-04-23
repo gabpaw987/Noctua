@@ -19,7 +19,7 @@ Hierbei werden zuerst die nötigen von Microsoft definierten \gls{xaml}-Namespace
 \\
 Zu der MainWindow.xaml-Datei wird auch noch eine weitere Datei mit dem Namen MainWindow.xaml.cs erstellt. Diese wird auch als \textit{Code-Behind}-Datei bezeichnet und beinhaltet den Teil der Programmlogik der direkt mit der graphischen Oberfläche verknüpft ist. Möchte man also bspw. die Logik implementieren, die beschreibt was bei einem Klick auf den Button passiert, müsste man dies in eben dieser MainWindow.xaml.cs-Datei durchführen. \cite{visualcsharp}
 
-\subsection{MVVM}
+\subsubsection{MVVM}
 Als \gls{mvvm} wird ein Entwicklungsmuster (Design-Pattern) verstanden, dass sehr oft in Verbindung mit der Implementierung von \gls{wpf}-Oberflächen eingesetzt wird. Dabei werden die einzelnen Aufgaben einer Anwendung mit graphischer Oberfläche in drei Teile aufgeteilt. Es gibt nun ein View, ein Model und ein ViewModel. Deren Interaktion kann in der Abbildung \ref{fig:mvvm} sehr schön nachvollzogen werden. \cite{msdn-mvvm}\\
 
 \begin{figure}[h]
@@ -35,7 +35,7 @@ Der ViewModel-Teil kapselt nun die Presentationslogik und die von der \gls{gui} 
 \\
 Das Model ist nun die eigentliche Geschäfts- oder Programmlogik und die damit verbundenen allgemeinen Daten. Hierbei handelt es sich um eine ganz normale Geschäftslogik wie in anderen Anwendungen auch, nur dass noch einmal speziell Wert darauf gelegt werden sollte die einzelnen Codestücke nicht Task-spezifisch zu implementieren, um die einzelnen Stück später möglicherweise an anderen Stellen wiederverwenden zu können. Außerdem besteht das Model entgegen dem View und dem Viewmodel meist aus vielen einzelnen Model-Klassen, die alle mit dem selben ViewModel kommunizieren. Möchte das Model auch mit dem View interagieren gibt es auch hier die Möglichkeit Notifications zu benutzen.\cite{msdn-mvvm}
 
-\subsection{Data Binding} \label{databinding}
+\subsubsection{Data Binding} \label{databinding}
 
 Das Data Binding (auch: Datenbindung) ermöglicht \gls{gui}-Komponenten den Zugriff auf Daten, die sie anzeigen können. In WinForms war die Datenbindung auch schon integriert, lediglich war man mit den damaligen Methoden auf wenige Controls beschränkt. Mit \gls{wpf} ist man dies nun nicht mehr. Daten können hiermit nämlich direkt aus einer der folgenden Datenquellen entnommen werden \cite{visualcsharp}:
 

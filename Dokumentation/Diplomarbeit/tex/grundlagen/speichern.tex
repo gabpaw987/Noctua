@@ -1,8 +1,8 @@
-\section{Binäre Serialisierung}
+\subsection{Binäre Serialisierung}
 
 Objekte in .NET-Sprachen sind grundsätzlich flüchtig, dass bedeutet das sie nach der Beendung und einem anschließenden Neustart der Anwendung nicht mehr vorhanden sind. Oft benötigen Entwickler allerdings die Funktion solche Objekte zu persistieren, sie also nach einem Neustart der Applikation weiterhin verfügbar zu machen. Dies kann durch binäre Serialisierung erreicht werden. Bei diesem Verfahren können über einen sog. \textit{BinaryFormatter} alle als \textit{Serializable} gekennzeichneten Objekte und deren aktueller Zustand, sprich all deren Variablenwerte, in binären Code umgewandelt werden. Dieser binäre Code könnte bspw. in einer persistenten Datei, einer Datenbank oder einer Anwendungskonfigurationsdatei (Siehe \ref{akd}) gespeichert werden. Weiters könnte dieser serialisierte Binärcode eines Objektes auch leicht über das Netzwerk übertragen werden, ohne dass die einzelnen Softwarekomponenten auf dem Weg des Objekts auch dessen Definition (Klasse) kennen müssen. \cite{visualcsharp}
 
-\subsection{Anwendung}
+\subsubsection{Anwendung}
 
 Neben der einfachen Serialisierung mit dem \textit{BinaryFormatter}, bietet das .NET-Framework auch einen \textit{SoapFormatter} und einen \textit{XmlSerializer}. Der \textit{SoapFormatter}, überträgt den aktuellen Zustand eines Objekts nich in ein binäres, sondern ein \gls{soap}-Format. Dieses wird bei der Übertragung von Daten über das Netzwerk mittels einer \gls{soap}-Verbindung benötigt, um Objekte übertragen zu können. Der \textit{XmlSerializer} überträgt die Daten des betroffenen Objekts in ein \gls{xml}-Format, um es als \gls{xml}-Datei abspeichern und ggf. später wieder auslesen zu können. Im folgenden werde ich allerdings nur auf den wichtigsten, den \textit{BinaryFormatter}, eingehen, der Objekte einfach in ein binäres Format überführt und auf einen Stream legt. Dazu müssen lediglich alle globalen Variablen bzw. deren Werte in Binärcode umgewandelt und gespeichert werden. Methodendefinitionen, etc, müssen dabei nicht serialisiert werden, da zur Deserialisierung und anschließenden Nutzung des Objekts die Klassendefinition des Objekts ohnehin vorhanden sein muss. Die Serialisierung funktioniert wie folgt \cite{visualcsharp}:
 
@@ -31,11 +31,11 @@ BinaryFormatter bFormatter = new BinaryFormatter();
 Object object = (Object) bFormatter.Deserialize(stream);
 \end{verbatim}
 
-\section{Konfigurationsdateien}
+\subsection{Konfigurationsdateien}
 
 Das .NET-Framework unterstützt die Nutzung vieler verschiedener Konfigurationsdateien. Diese Konfigurationsdateien beinhalten grundsätzlich einfach nur Daten, die zur Laufzeit von der Anwendung ausgelesen werden können. Dadurch kann bspw. das Laufzeitverhalten der Anwendung komplett verändert werden, oder einfach nur ein einfach verwalteter Datenspeicher eingerichtet werden. Es gibt Anwendungskonfigurationsdateien, Herausgeberrichtliniendateien und die Maschienenkonfigurationsdatei, die beim Start der Anwendung auch in dieser Reihenfolge aufgerufen werden. Im folgenden wird allerdings lediglich auf die Anwendungskonfigurationsdatei eingegangen.  \cite{visualcsharp}
 
-\subsection{Anwendungskonfigurationsdateien} \label{akd}
+\subsubsection{Anwendungskonfigurationsdateien} \label{akd}
 
 Eine Anwendungskonfigurationsdatei ist für die Ausführung einer Anwendung optional. Ist sie allerdings vorhanden, so dient sie zur Verwaltung und Sicherung der Stammdaten der gesamten Anwendung im \gls{xml}-Format. Diese Datei befindet sich immer Stammverzeichnis der Anwendung und ihr Name setzt sich aus dem Namen der Anwendung und dem Suffix \textit{.config} zusammen. Meist wird sie dazu verwendet, den aktuellen Zustand einer Anwendung, dass bedeutet alle zur Laufzeit gesetzten Variablen, zu sichern, um sie später im selben Zustand neu starten zu können. Dazu werden meist alle wichtigen Daten beim Beenden der Applikation in die Anwendungskonfigurationsdatei gespeichert und beim Start der Anwendung erneut aus dieser ausgelesen. \cite{visualcsharp}\\
 \\
