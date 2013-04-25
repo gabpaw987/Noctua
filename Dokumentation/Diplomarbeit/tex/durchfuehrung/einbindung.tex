@@ -27,6 +27,8 @@ Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
 t.GetMethod("startCalculation").Invoke(null, oa);
 \end{verbatim}
 
+Durch Aufruf der \textit{startCalculation}-Methode des Algorithmus werden die Signale in die übergebene Liste aus dem ViewModel gespeichert. Diese können von dort anschließend für die Berechnungen benutzt werden. Hierzu ist noch wichtig zu erwähnen, dass von der \gls{bts} an den letzten Bar noch ein Signal mit dem Wert 0 gesetzt wird, damit später in den Berechnungen alle noch offenen Positionen aufgelöst werden und man die fiktive letztendliche Performance betrachten kann, die in diesem Fall aufgetreten wäre.
+
 \subsection{Auslesen der Aktien-Preisdaten}
 
 Die Aktein-Preisdaten werden in Form von Bars über einen bestimmten Zeitraum erwartet. Ob es sich hierbei um Minute-, Daily- oder andere Bars handelt ist hierbei grundsätzlich egal. Sie müssen lediglich in Form einer \gls{csv}-Datei mit folgendem Format gespeichert werden:

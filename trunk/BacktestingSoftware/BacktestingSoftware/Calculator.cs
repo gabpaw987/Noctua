@@ -101,10 +101,12 @@ namespace BacktestingSoftware
                                 priceOfThisTrade -= decimal.Parse(this.mainViewModel.PricePremium);
                             }
 
+                            //Calculation of absolute portfolio performance
                             decimal currentGainLoss = 0;
                             currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize;
                             currentGainLoss -= addableFee;
 
+                            //Calculation of portfolio Performance
                             decimal portfolioPerformance = 0;
                             if (this.mainViewModel.NetWorth == 0)
                             {
@@ -120,7 +122,7 @@ namespace BacktestingSoftware
                             decimal partialPortfolioPerformancePercent = (currentGainLoss / decimal.Parse(this.mainViewModel.Capital) * 100);
                             this.mainViewModel.PortfolioPerformancePercent += partialPortfolioPerformancePercent;
 
-                            // strengthening the signal or first trade
+                            //if strengthening the signal or first trade
                             decimal percentageOfThisTrade = 0;
                             if ((oldWeightingMultiplier == 0) ||
                                 (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
