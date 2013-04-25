@@ -1,4 +1,4 @@
-\subsection{Persistente Sicherung der Einstellungen}
+\subsection{Persistente Sicherung der Einstellungen} \label{Einstellungen-sichern}
 
 Die \gls{bts} bietet auf dem Settings-Tab eine Vielzahl an Einstellungen, die ein Benutzer normalerweise einmal wählt und danach nur noch selten verändert. Deshalb werden die gewählten Einstellungen bei jedem Schließen der \gls{bts} persistent in einer Anwendungskonfigurationsdatei (Siehe \ref{akd} ''Anwendungskonfigurationsdatei'') gespeichert, um beim nächsten Start der Software wieder geladen werden zu können.\\
 \\
@@ -27,21 +27,58 @@ public StringCollection storeIndicatorStackPanels(List<StackPanel> stackPanels)
     //Wenn StackPanels vorhanden sind, fortfahren
     if (stackPanels.Count != 0)
     {
-    	//Das folgende soll für jedes StackPanel durchgeführt werden
+    	//Das folgende soll für jedes StackPanel durchgefuehrt werden
         foreach (StackPanel sp in stackPanels)
         {
         	//Wenn es ein richtig initialisiertes StackPanel ist, fortfahren
             if (sp.Children[sp.Children.Count - 1].GetType().IsAssignableFrom((new ColorPicker()).GetType()))
             {
-            	//Speichern und Löäschen 
+            	//Speichern und Loeschen des nicht-serialisiertbaren ColorPickers
                 ColorPicker cp = ((ColorPicker)sp.Children[sp.Children.Count - 1]);
                 sp.Children.Remove(cp);
+                //Serialisieren des restlichen StackPanels
                 strings.Add(XamlWriter.Save(sp));
+                //Speichern der Farbe des ColorPickers
                 strings.Add(cp.SelectedColor.A + ";" + cp.SelectedColor.R + ";" + cp.SelectedColor.G + ";" + cp.SelectedColor.B);
+                //Erneutes Hinzufügen des ColorPickers zum StackPanel
                 sp.Children.Add(cp);
             }
         }
     }
     return strings;
+}
+\end{verbatim}
+
+Die daraus resultierende \textit{StringCollection} kann natürlich auch in die Anwendungskonfigurationsdatei gespeichert werden. Beim Auslesen können die \textit{StackPanel}s wie folgt wieder aufgebaut werden:
+
+\begin{verbatim}
+public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
+{
+    List<StackPanel> newList = new List<StackPanel>();
+
+	//Durchlaufen der StringCollection
+    for (int i = 0; i < strings.Count; i += 2)
+    {
+    	//Deserialisieren des StackPanels
+        newList.Add((StackPanel)XamlReader.Parse(strings[i]));
+
+		//Neues Speichern der Listener zu jeder TextBox
+        for (int j = 0; j < newList[i / 2].Children.Count; j++)
+        {
+            if (newList[i / 2].Children[j] is System.Windows.Controls.TextBox)
+                ((System.Windows.Controls.TextBox)newList[i / 2].Children[j]).PreviewTextInput += NumericOnly;
+        }
+
+		//Erzeugen eines neuen ColorPickers und Setzen der gespeicherten Farbe
+        string[] argb = strings[i + 1].Split(';');
+        ColorPicker cp = this.AddColorPicker();
+        cp.SelectedColor = System.Windows.Media.Color.FromArgb(Convert.ToByte(argb[0]), Convert.ToByte(argb[1]), Convert.ToByte(argb[2]), Convert.ToByte(argb[3]));
+        newList[i / 2].Children.Add(cp);
+
+		//Hinzufügen des Listeners für den Remove-Button
+        ((System.Windows.Controls.Button)newList[i / 2].Children[0]).Click += RemoveIndicatorButton_Click;
+    }
+
+    return newList;
 }
 \end{verbatim}

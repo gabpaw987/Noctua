@@ -1,4 +1,4 @@
-\subsection{Binäre Serialisierung}
+\subsection{Binäre Serialisierung} \label{Binaere-Serialisierung}
 
 Objekte in .NET-Sprachen sind grundsätzlich flüchtig, dass bedeutet das sie nach der Beendung und einem anschließenden Neustart der Anwendung nicht mehr vorhanden sind. Oft benötigen Entwickler allerdings die Funktion solche Objekte zu persistieren, sie also nach einem Neustart der Applikation weiterhin verfügbar zu machen. Dies kann durch binäre Serialisierung erreicht werden. Bei diesem Verfahren können über einen sog. \textit{BinaryFormatter} alle als \textit{Serializable} gekennzeichneten Objekte und deren aktueller Zustand, sprich all deren Variablenwerte, in binären Code umgewandelt werden. Dieser binäre Code könnte bspw. in einer persistenten Datei, einer Datenbank oder einer Anwendungskonfigurationsdatei (Siehe \ref{akd}) gespeichert werden. Weiters könnte dieser serialisierte Binärcode eines Objektes auch leicht über das Netzwerk übertragen werden, ohne dass die einzelnen Softwarekomponenten auf dem Weg des Objekts auch dessen Definition (Klasse) kennen müssen. \cite{visualcsharp}
 
