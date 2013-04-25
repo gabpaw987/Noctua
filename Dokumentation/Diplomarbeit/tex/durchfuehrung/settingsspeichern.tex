@@ -1,0 +1,47 @@
+\subsection{Persistente Sicherung der Einstellungen}
+
+Die \gls{bts} bietet auf dem Settings-Tab eine Vielzahl an Einstellungen, die ein Benutzer normalerweise einmal wählt und danach nur noch selten verändert. Deshalb werden die gewählten Einstellungen bei jedem Schließen der \gls{bts} persistent in einer Anwendungskonfigurationsdatei (Siehe \ref{akd} ''Anwendungskonfigurationsdatei'') gespeichert, um beim nächsten Start der Software wieder geladen werden zu können.\\
+\\
+Folgende Daten werden auf diese Art und Weise persistent gespeichert:
+
+\begin{easylist}[itemize]
+& \textbf{General-Settings}
+	&& Pfad zum Algorithmus- und Daten-File als \textit{string}s
+	&& Gewählte Berechnungsperiode als \textit{DateTime}s
+& \textbf{Orders-Settings}
+	&& Startkapital als \textit{string}
+	&& Absolute und relative Transaktionsgebühr sowie der Price Premium Prozentsatz als \textit{string}s
+	&& Slider-Werte zur Beschreibung der Order Größen sowie die Round Lot Größe als \textit{int}
+& \textbf{Chart-Settings}
+	&& Serialisierte \textit{StackPanel}s zum Wiederaufbau der konfigurierten Indikatoren als \textit{StringCollection}
+\end{easylist}
+
+Generell werden all diese Einstellungen direkt aus dem ViewModel in die Anwendungskonfigurationsdatei abgelegt. Die einzige Ausnahme davon stellen die Chart-Settings dar, da diese im ViewModel als \textit{List<StackPanel>} gespeichert werden. Anwendungskonfigurationsdateien unterstützten allerdings nur ein gewisses Spektrum an Standarddatentypen, zu denen \textit{List<StackPanel>} leider nicht gehört. Daher wurde hier auf eine \textit{StringCollection} ausgewichen.\\
+\\
+Dazu müssen klarerweise die einzelnen \textit{StackPanel}s in der Liste in einzelne \textit{string}s umgewandelt werden, die in der \textit{StringCollection} gespeichert werden können. Dies funktioniert durch Serialisierung jedes einzelnen Panels. Leider die benutzten \gls{wpf}-\gls{gui}-Elemente allerdings nicht als serialisierbar gekennzeichnet und können nur über einen speziellen \textit{XamlWriter} in ein \gls{xaml}-Format serialisiert werden, dass von einem entsprechenden \textit{XamlReader} wieder ausgelesen und zurück in echte \textit{StackPanel}s umgewandelt werden kann. Weiters wird in jedem der \textit{StackPanel}s auch ein \textit{ColorPicker} aus dem Extended WPF Toolkit \cite{extended-wpf-toolkit} von Xceed benutzt. Dieser besitzt leider nicht die Möglichkeit über einen \textit{XamlWriter} serialisiert zu werden. Dieses Problem wurde umgangen, indem der \textit{ColorPicker} vor der Serialisierung aus dem \textit{StackPanel} entfernt wird. Zur \textit{StringCollection} wird dann ein weiterer \textit{string} hinzugefügt, der die ausgewählte Farbe des \textit{ColorPicker}s speichert, damit diese beim Wiederaufbau der \textit{StackPanel}s einfach neu Initialisiert und auf die entsprechend zuvor gewählte Farbe gesetzt werden kann. Anschließend wird der \textit{ColorPicker} natürlich auch wieder zum \textit{StackPanel} hinzugefügt, damit er nicht in der Anzeige der Chart-Settings fehlt. Die hierzu verwendete Methode sieht so aus:
+
+\begin{verbatim}
+public StringCollection storeIndicatorStackPanels(List<StackPanel> stackPanels)
+{
+    StringCollection strings = new StringCollection();
+    //Wenn StackPanels vorhanden sind, fortfahren
+    if (stackPanels.Count != 0)
+    {
+    	//Das folgende soll für jedes StackPanel durchgeführt werden
+        foreach (StackPanel sp in stackPanels)
+        {
+        	//Wenn es ein richtig initialisiertes StackPanel ist, fortfahren
+            if (sp.Children[sp.Children.Count - 1].GetType().IsAssignableFrom((new ColorPicker()).GetType()))
+            {
+            	//Speichern und Löäschen 
+                ColorPicker cp = ((ColorPicker)sp.Children[sp.Children.Count - 1]);
+                sp.Children.Remove(cp);
+                strings.Add(XamlWriter.Save(sp));
+                strings.Add(cp.SelectedColor.A + ";" + cp.SelectedColor.R + ";" + cp.SelectedColor.G + ";" + cp.SelectedColor.B);
+                sp.Children.Add(cp);
+            }
+        }
+    }
+    return strings;
+}
+\end{verbatim}
