@@ -16,6 +16,13 @@ Für jene, die sich zusätzlich noch mit makroökonomischen Zusammenhängen befassen
 Um die Performance von Trendfolgemethoden zu optimieren, sollen verschiedene Marktzustände unterschieden werden, die sich auf den Kursverlauf auswirken. Zu diesem Zweck können diverse Kriterien untersucht werden. Angefangen bei unterschiedlich langen Trendverläufen, plötzliche Kursbewegungen, Dauer eines Trends usw.\\
 Beispielsweise könnte sich herausstellen, dass bei einem sehr langfristigen Aufwärtstrend bei Kaufsignalen die Long-Positionen immer größer ausfallen sollten als die Short-Positionen bei Verkaufssignalen oder dass erhöhte Volatilität einen Kurseinbruch oder eine Trendumkehr ankündigen.\\
 
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/trend_types.png}
+	\caption[Typen von Trends]{Typen von Trends: Aufwärts-, abwärts und seitwärts gerichteter Markt \cite{murphy-technische}}
+	\label{fig:trend_types}
+\end{figure}
+
 Bei der Trendbestimmung in Börsenkursen gelten gleitende Durchschnitte, oder \glspl{ma}, als ein beliebtes Mittel und infolge dessen häufig genutzter Indikator. Die klassische technische Analyse ist oft subjektiv und unterliegt einem gewissen Interpretationsspielraum, während ür algorithmische Handelssysteme klare Entscheidungen generieren werden müssen, weshalb einerseits immer wieder Fehlentscheidungen getroffen werden, andererseits das Handelssystem ausreichend viele Faktoren einbeziehen sollte.
 
 Ein \gls{ma} ist wie der Name bereits verrät eine Art statistischer Durchschnitt einer Reihe von Werten. "`Gleitend"' oder "`moving"' bedeutet, dass nicht alle historischen Daten in die Durchschnittsberechnung einfließen, sondern nur eine beschränkte Anzahl der vergangenen Daten. Es gibt unterschiedliche Varianten von \glspl{ma} die sich darin unterscheiden wie viele historische Daten verwendet werden und wie die einzelnen Datensätze gewichtet werden. Klassisch werden Schlusskurse zur \gls{ma}-Berechnung verwendet, wobei manche Trader es vorziehen, Open- oder Mittelwerte aus Open- und Close heranzuziehen. Eine weitere Variante ist eine separate Berechnung von \glspl{ma} für High- und Low-Kurse, wodurch ein Band entsteht, das einen Art Neutralbereich anzeigt, der beispielsweise als Signalfilter verwendet werden kann.Prinzipiell sind alle \glspl{ma} Trendfolge-Indikatoren, sie antizipieren keine zukünftigen Kursveränderungen, so wie viele andere Methoden der technischen Analyse, sondern reagieren nur auf bereits stattgefundene Trendwenden.\\

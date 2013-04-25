@@ -21,6 +21,13 @@ Ein \gls{sma} wird wie folgt berechnet:
 
 Dabei ist $P^{*}_t$ der geglättete Wert zum Zeitpunkt $t$, $n$ die Anzahl an einzubeziehenden Werten und $P_{t-i}$ der Preis zum Zeitpunkt $t-i$. \cite{elder_living} \cite{murphy-technische}
 
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/sma.png}
+	\caption[20- und 2-Tage SMA]{Vergleich eines 20- und 2-Tage SMA \cite{murphy-technische}}
+	\label{fig:sma}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Linear Weighted Moving Average}
 
@@ -53,8 +60,14 @@ Die folgende Formel soll die Berechnung des exponentiell geglätteten Preises $P^
 	\label{Exponential Moving Average}
 	P^{*}_t = \alpha * P_{t} + (1 - \alpha) * P^{*}_{t-1}
 \end{equation}
-
 \cite{murphy-technische} \cite{elder_living}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/sma_ema}
+	\caption[Vergleich SMA mit EMA]{Vergleich eines 40-Tage SMA mit einem 40-Tage EMA \cite{murphy-technische}}
+	\label{fig:sma_ema}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Double und Triple Exponential Moving Average}
@@ -96,16 +109,23 @@ Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berech
 
 Der \gls{macd} ist ein Indikator, um die Differenz zwischen zwei \glspl{ema} darzustellen. Der längere \gls{ema} wird vom kürzeren abgezogen, um bei einem Kreuzungspunkt genau einen Wert von 0 zu erhalten. Eine andere Möglichkeit eines \gls{macd}-basierten Handelssystems ist den \gls{macd} mit einem zusätzlichen \gls{ema} zu vergleichen, der kürzer ist als beide zur Berechnung des \gls{macd} verwendeten \glspl{ema}. Dies wird als Signallinie bezeichnet. Obwohl die Signallinie den kürzesten Zeitraum abbildet, ist der \gls{macd} näher am tatsächlichen Kurs. Wenn der \gls{macd} die Signallinie von unten schneidet, entspricht dies daher einem Kaufsignal und umgekehrt. \cite{elder_living}
 
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/macd.png}
+	\caption[9,18 MACD-Histogramm]{9,18 MACD-Histogramm am Beispiel des S\&P 500 \cite{murphy-technische}}
+	\label{fig:macd}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{AMA}
 
-Ein Problem des \gls{ema} ist es, die bestmögliche Länge zu wählen, um einen möglichst aussagekräftigen Durchschnitt zu erhalten. Perry Kaufman schlägt eine variable Länge als Lösung des Problems vor. Dabei wird der Glättungsfaktor eines \gls{ema} anhand der Volatilität des Preises der letzten $n$ Perioden bestimmt. Der resultierende Indikator wird folglich \gls{ama} genannt.
+Ein Problem des \gls{ema} ist es, die bestmögliche Länge zu wählen, um einen möglichst aussagekräftigen Durchschnitt zu erhalten. Perry Kaufman schlägt eine variable Länge als Lösung des Problems vor. Dabei wird der Glättungsfaktor eines \gls{ema} anhand der Volatilität des Preises der letzten $n$ Perioden bestimmt. Der resultierende Indikator wird folglich \gls{ama} genannt. \cite{murphy-technische}
 
 Kaufman bestimmt die Volatilität durch einen \gls{er}, der berechnet wird indem die absolute Gesamtpreisbewegung, i.e. Preis am Ende der Periode abzüglich dem Preis am Beginn, durch die Summe der absoluten Preisbewegungen in einer Periode dividiert wird. Aufgrund des \gls{er} und zwei gegebenen Längen ($\alpha$ zwischen 0 und 1) wird nun ein tatsächlicher \gls{sf} berechnet. Dieser sollte zwischen den beiden gegebene Werten liegen, was jedoch nur dann immer der Fall ist, wenn in der Berechnung des \gls{sf} $1$, nicht $2$ als Exponent gewählt wird.
 
 \begin{equation}
 	\label{Efficiency Ratio}
-	ER = (Gesamtpreisbewegung) / (Summe der Bewegungen pro Bar)
+	ER = (\textrm{Gesamtpreisbewegung}) / (\textrm{Summe der Bewegungen pro Bar})
 \end{equation}
 
 \begin{equation}
@@ -139,10 +159,55 @@ Dadurch erhält man $k$ und $d$ der Regressionsgeraden. In der praktischen Anwend
 Wird die Anzahl an historischen Preisen variiert, erhält man so Richtung und stärke verschieden langer Trends.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{ADX}
+\subsubsection{Average Directional Index}
 
+Der \gls{adx} ist ein Indikator, der es auf einfache Weise ermöglicht, die Stärke eines Trends zu bestimmen, jedoch nicht, ob es sich um einen Aufwärts- oder Abwärtstrend handelt. Er wurde Ende der Siebziger von Welles Wilder entwickelt, der u.a. auch für den RSI (s. \ref{subsubsection:rsi}) verantwortlich ist. Der \gls{adx} ist ein Indikator, der sich aus der True Range (TR) und den Directional Movement-Indikatoren $DM_+$ und $DM_-$ zusammensetzt. Alle zusammen werden auch als Directional System bezeichnet. \cite{atr_whs} \cite{elder_living}
 
-\cite{elder_living}
+Der \gls{adx} wird in 5 Schritten berechnet.
+
+\begin{enumerate}
+	\item{Directional Movement ($DM_+$, $DM_-$) berechnen\\
+		Directional Movement bezeichnet die Spanne, in der sich der Preis in der aktuellen Periode über oder unter der Preisspanne der letzten Periode bewegt hat.
+		$DM_+$ ist dabei die Spanne darüber, $DM_-$ jene darüber. Der $DM$ ist dabei immer positiv, es wird also der Betrag der Differenz verwendet. (siehe Abbildung \ref{fig:dm})}
+	\item{True Range ($TR$) berechnen\\
+		Die True Range soll die tatsächliche Preisbewegung abbilden, also auch Bewegungen zwischen Perioden, bei denen Close- und Open-Preise
+		nicht ident sind. Dafür wird für die $TR$ immer der größte der folgenden 3 Werte herangezogen, die sich aufgrund von Preisen des aktuellen und 
+		vorhergehenden Bars berechnet.
+		\begin{enumerate}
+			\item{$\left|\textrm{Aktuelles Hoch} - \textrm{Aktuelles Tief}\right|$}
+			\item{$\left|\textrm{Aktuelles Hoch} - \textrm{Vorheriges Tief}\right|$}
+			\item{$\left|\textrm{Aktuelles Tief} - \textrm{Vorheriges Tief}\right|$}
+		\end{enumerate}}
+	\item{Directional Indicators ($DI_+$, $DI_-$) berechnen\\
+		 Die Directional Indicators sind das Verhältnis der Trendbewegung zur True Range, es gilt also:\\
+		\begin{equation}
+			DI_+ = \frac{DM_+}{TR}
+		\end{equation}
+		\begin{equation}
+			DI_- = \frac{DM_-}{TR}
+		\end{equation}}
+	\item{Directional Indicators glätten\\
+		Die Directional Indicators ($DI_{n+}$ und $DI_{n-}$) erhält man indem die Directional Indicators ($DI_+$, $DI_-$) mit einem \gls{ma} geglättet werden,
+		wofür in der Regel ein \gls{ema} verwendet wird. Die Länge des verwendeten \gls{ma} ist dabei auf die Tradingstrategie anzupassen.
+		$DI_{n+}$ und $DI_{n-}$ sind bereits für ein Handelssystem geeignet, da sie das Verhältnis von relativer Trendbewegung zur True Range geglättet angeben.
+		Aufgrund der Kreuzung der beiden Indikatoren können so auch Kauf- und Verkauf-Signale gegeben werden.}
+	\item{$ADX$ berechnen\\
+		Der \gls{adx} ist nun die nochmals geglättete Differenz zwischen $DI_{n+}$ und $DI_{n-}$ und wird wie folgt berechnet:\\
+		\begin{equation}
+			ADX = EMA(\frac{DI_{n+} - DI_{n-}}{DI_{n+} + DI_{n-}})
+		\end{equation}}
+\end{enumerate} 
+
+% V: Directional Movement Graph
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/dm.png}
+	\caption[Berechnung des Directional Movement]{Berechnung des Directional Movement \cite{elder_living}}
+	\label{fig:dm}
+\end{figure}
+
+Der \gls{adx} ist hilfreich, indem er anzeigt, ob sich der Markt in einer Trendphase befindet, in der Handelssysteme, die auf Trendfolgesystemen basieren, gut funktionieren, oder in einer Seitwärtsphase,
+in der sich andere Systeme eher rentieren. (z.B. Fading, siehe \ref{subsection:fading})  \cite{elder_living}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Momentum}
@@ -156,11 +221,17 @@ Der Momentum-Indikator berechnet sich nach folgender Formel:
 	\label{Momentum}
 	M_t = P_t - P_{t-n}
 \end{equation}
-
 \cite{elder_living}
 
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/momentum.png}
+	\caption[10-Tage Momentum]{10-Tage Momentum, der Überkauft- und Überverkauft-Level anzeigt. \cite{murphy-technische}}
+	\label{fig:momentum}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Relative Strength Index}
+\subsubsection{Relative Strength Index} \label{subsubsection:rsi}
 
 Der \gls{rsi} gibt ähnliche Informationen, wie das Momentum, schafft aber Abhilfe bei einigen Schwachstellen. Beispielsweise gibt es beim Momentum keine maximale Unter- und Obergrenze, wodurch es schwierig ist festzustellen, ob es sich momentan um eine Extremsituation handelt oder nicht. Der \gls{rsi} bewegt sich hingegen immer zwischen 0 und 100.
 Eine wesentlich schwerwiegendere Schwachstelle des Momentums ist aber seine absolute Abhängigkeit von dem Kurs vor genau $n$ Zeitperioden. Sollte der Kurs zu der Zeit ein Hoch oder Tief erreicht haben, hat dies Auswirkungen auf das aktuelle Momentum, selbst wenn sich der aktuelle Kurs gar nicht oder nur kaum verändert.\\
@@ -177,7 +248,7 @@ Der \gls{rsi} wird aus dem Durchschnitt der Schlusskurse von $n$ Tagen mit steig
 	RS_{Down} = \frac{-\sum\limits_{i=0}^{n-1}{min(P_{t-i} - P_{t-i-1} ; 0)}}{n}
 \end{equation}
 
-Damit der \gls{rsi} immer zwischen 0 und 100 schwankt, kann nicht einfach $RS_{Up}/RS_{Down}$ berechnet werden, sondern es wird eine Normalisierung vorgenommen, die nichts an dem Aussehen
+Damit der \gls{rsi} immer zwischen 0 und 100 schwankt, kann nicht einfach $RS_{Up} / RS_{Down}$ berechnet werden, sondern es wird eine Normalisierung vorgenommen, die nichts an dem Aussehen
 der \gls{rsi}-Kurve verändert, sondern nur am Wertebereich.
 
 \begin{equation}
@@ -185,7 +256,14 @@ der \gls{rsi}-Kurve verändert, sondern nur am Wertebereich.
 	RSI = \frac{RS_{Up}}{RS_{Up} + RS_{Down}}
 \end{equation}
 
-Der Erfinder sah ursprünglich eine Zeitperiode von $n = 14$ Tagen vor, wobei aber für unterschiedliche Volatilität auch andere Parameter gewählt werden können. Interessant ist der \gls{rsi}, wenn er im Vorhinein festgelegte Level überschreitet. Diese sind standardmäßig bei 70 und 30 für die Überkauft- und Überverkauft-Level, können aber beispielsweise als Anpassung für Bullenmärkte auf 80 oder für Bärenmärkte auf 20 verändert werden. \cite{elder_living}
+Der Erfinder sah ursprünglich eine Zeitperiode von $n = 14$ Tagen vor, wobei aber für unterschiedliche Volatilität auch andere Parameter gewählt werden können. Interessant ist der \gls{rsi}, wenn er im Vorhinein festgelegte Level überschreitet. Diese sind standardmäßig bei 70 und 30 für die Überkauft- und Überverkauft-Level, können aber beispielsweise als Anpassung für Bullenmärkte auf 80 oder für Bärenmärkte auf 20 verändert werden.\cite{elder_living}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/rsi.png}
+	\caption[14-Tage RSI]{14-Tage RSI am Beispiel des S\&P 100 \cite{murphy-technische}}
+	\label{fig:rsi}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Prozentbänder}
@@ -199,6 +277,38 @@ Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikato
 
 Dabei dienen die Bänder meist als Kursziele, so dass beim Ansteigen des Kurses vom unteren Bollinger-Band das obere als Ziel angenommen wird. Diese Strategie wird auch als "`Fading"' bezeichnet und ist nur in Seitwärtsphasen gewinnbringend, da der Preis während starken Trends lange Zeit entlang dem oberen oder unteren Rand des Bandes verlaufen kann. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler. Verschmälern sich die Bänder in relativ kurzer Zeit, kann meist mit einem Ausbruch und einsetzendem Trend gerechnet werden. Bollinger Bänder können insgesamt sehr vielseitig eingesetzt werden, nicht nur in Seitwärtsphasen, es existieren unterschiedliche Interpretations-Varianten.
 
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{graphics/fingrundlagen/bollinger.png}
+	\caption[20-Tage Bollinger Bänder]{20-Tage Bollinger Bänder mit doppelter Standardabweichung am Beispiel des Dow Jones \cite{murphy-technische}}
+	\label{fig:bollinger}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Pivot Points}
 
+Pivot Points sind eine sehr häufig genutzte Variante zur Berechnung von horizontalen Support- und Resistance-Leveln. Dazu werden jeweils für eine Periode die Preisbewegungen der vorherigen Periode als Berechnungsgrundlage herangezogen. Als erstes wird der Typical Price (TP) der letzten Periode wie folgt berechnet.
+
+\begin{equation}
+TP = \frac{High+Low+Close}{3}
+\end{equation}
+
+Dieser wird als auch als Haupt-Pivot-Point bezeichnet, da von ihm ausgehend alle Unterstützungs- und Widerstandslevel festgelegt werden. Zur Berechnung verwendet werden immer die Daten aus der letzten Periode. Es werden zwei Level sowohl von Support- ($SL_1$ und $SL_2$), als auch von Resistance-Level ($RL_1$ und $RL_2$) berechnet, die je nach Marktsituation für unterschiedliche Zwecke ausgewählt werden können.
+
+\begin{equation}
+SL_1 = 2*TP - High
+\end{equation} 
+
+\begin{equation}
+SL_2 = TP - (High - Low)
+\end{equation} 
+
+\begin{equation}
+RL_1 = 2*TP - Low
+\end{equation} 
+
+\begin{equation}
+RL_2 = TP + (High - Low)
+\end{equation} 
+
+\cite{tradimo_pivot_points}
