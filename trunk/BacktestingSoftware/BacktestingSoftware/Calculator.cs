@@ -74,6 +74,8 @@ namespace BacktestingSoftware
                     //To remove all the remaining positions in the end
                     this.mainViewModel.Signals[this.mainViewModel.Signals.Count - 1] = 0;
 
+                    decimal paidForGainLoss = 0m;
+
                     for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                     {
                         if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.BarList[i].Item2 != 0
@@ -122,27 +124,34 @@ namespace BacktestingSoftware
                             decimal percentageOfThisTrade = 0;
                             if ((oldWeightingMultiplier == 0) ||
                                 (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
-                                (WeightingMultiplier - oldWeightingMultiplier) == Math.Sign(WeightingMultiplier)))
+                                (Math.Abs(WeightingMultiplier) - Math.Abs(oldWeightingMultiplier)) > 0))
                             {
-                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) * 100;
+                                percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) * 100;
+                                paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i));
                             }
                             // if not strengthening the signal
                             else if (oldWeightingMultiplier != 0)
                             {
+                                //if there was no last trade... should not happen
                                 if (priceOfLastTrade == 0)
                                 {
-                                    percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) * 100;
+                                    percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) * 100;
+                                    paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i));
                                 }
                                 else
                                 {
                                     //This is to be able to only show realised profit
                                     if (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier))
                                     {
-                                        percentageOfThisTrade = (((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade)) / priceOfLastTrade) * 100) - (addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
+                                        decimal partOfPaidForGainLoss = (paidForGainLoss / Math.Abs(oldWeightingMultiplier)) * this.GetAbsWeightedSignalDifference(i);
+                                        percentageOfThisTrade = ((((this.GetAbsWeightedSignalDifference(i) * priceOfThisTrade) - partOfPaidForGainLoss) / partOfPaidForGainLoss) * 100) - (addableFee / (priceOfThisTrade * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
+                                        paidForGainLoss -= partOfPaidForGainLoss;
                                     }
+                                    //if signs unequal
                                     else
                                     {
-                                        percentageOfThisTrade = (((this.GetAbsWeightedSignalDifference(i) * (priceOfThisTrade - priceOfLastTrade)) / priceOfLastTrade) * 100) - (addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
+                                        percentageOfThisTrade = ((((Math.Abs(oldWeightingMultiplier) * priceOfThisTrade) - paidForGainLoss) / paidForGainLoss) * 100) - (addableFee / (priceOfThisTrade * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
+                                        paidForGainLoss = (priceOfThisTrade * Math.Abs(WeightingMultiplier));
                                     }
                                 }
                             }
@@ -169,8 +178,6 @@ namespace BacktestingSoftware
                         Order order = this.mainViewModel.Orders[i];
 
                         decimal ZeroWithFeePaid = Math.Round((-order.PaidFee / (order.Price * RoundLotSize * this.GetAbsWeightedSignalDifferenceForOrders(i))) * 100, 3);
-
-                        Console.WriteLine(ZeroWithFeePaid + "   " + order.GainLossPercent);
 
                         //Get all the normal profit and dont take fee into account for good trades or bad trades
                         if (order.GainLossPercent > ZeroWithFeePaid)
