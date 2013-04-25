@@ -118,28 +118,32 @@ namespace BacktestingSoftware
                             decimal partialPortfolioPerformancePercent = (currentGainLoss / decimal.Parse(this.mainViewModel.Capital) * 100);
                             this.mainViewModel.PortfolioPerformancePercent += partialPortfolioPerformancePercent;
 
+                            // strengthening the signal or first trade
                             decimal percentageOfThisTrade = 0;
                             if ((oldWeightingMultiplier == 0) ||
                                 (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
                                 (WeightingMultiplier - oldWeightingMultiplier) == Math.Sign(WeightingMultiplier)))
                             {
-                                percentageOfThisTrade = 0;
-
-                                //If its the first trade, divide by transaction price
-                                if (priceOfLastTrade == 0)
-                                {
-                                    percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
-                                }
+                                percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) * 100;
                             }
+                            // if not strengthening the signal
                             else if (oldWeightingMultiplier != 0)
                             {
                                 if (priceOfLastTrade == 0)
                                 {
-                                    percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i))) * 100;
+                                    percentageOfThisTrade = (-addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i))) * 100;
                                 }
                                 else
                                 {
-                                    percentageOfThisTrade = ((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade - addableFee)) / priceOfLastTrade) * 100;
+                                    //This is to be able to only show realised profit
+                                    if (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier))
+                                    {
+                                        percentageOfThisTrade = (((oldWeightingMultiplier * (priceOfThisTrade - priceOfLastTrade)) / priceOfLastTrade) * 100) - (addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
+                                    }
+                                    else
+                                    {
+                                        percentageOfThisTrade = (((this.GetAbsWeightedSignalDifference(i) * (priceOfThisTrade - priceOfLastTrade)) / priceOfLastTrade) * 100) - (addableFee / (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
+                                    }
                                 }
                             }
 
@@ -149,8 +153,8 @@ namespace BacktestingSoftware
                             absCumGainLoss += currentGainLoss;
                             this.mainViewModel.NetWorth += currentGainLoss;
 
-                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * this.GetWeightingMultiplier(i)) - addableFee;
-                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.GetWeightingMultiplier(i), this.mainViewModel.BarList[i].Item5, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
+                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * (this.GetAbsWeightedSignalDifference(i) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
+                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.GetWeightingMultiplier(i), priceOfThisTrade, transactionPriceToDisplay, addableFee, percentageOfThisTrade, this.mainViewModel.GainLossPercent, portfolioPerformance, this.mainViewModel.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, this.mainViewModel.NetWorth));
 
                             priceOfLastTrade = priceOfThisTrade;
                         }
@@ -163,30 +167,35 @@ namespace BacktestingSoftware
                     for (int i = 1; i < this.mainViewModel.Orders.Count; i++)
                     {
                         Order order = this.mainViewModel.Orders[i];
-                        //Get all the normal profit
-                        if (order.GainLossPercent > 0)
+
+                        decimal ZeroWithFeePaid = Math.Round((-order.PaidFee / (order.Price * RoundLotSize * this.GetAbsWeightedSignalDifferenceForOrders(i))) * 100, 3);
+
+                        Console.WriteLine(ZeroWithFeePaid + "   " + order.GainLossPercent);
+
+                        //Get all the normal profit and dont take fee into account for good trades or bad trades
+                        if (order.GainLossPercent > ZeroWithFeePaid)
                         {
                             this.mainViewModel.NoOfGoodTrades++;
                             this.mainViewModel.GainPercent += (order.CumulativePortfolioPerformance -
                                                                this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
                         }
-                        else if (order.GainLossPercent < 0)
+                        else if (order.GainLossPercent < ZeroWithFeePaid)
                         {
                             this.mainViewModel.NoOfBadTrades++;
                             this.mainViewModel.LossPercent += (order.CumulativePortfolioPerformance -
                                                                this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
                         }
-                        else if (order.GainLossPercent == 0)
+                        else if (order.GainLossPercent == ZeroWithFeePaid)
                         {
                             decimal portfolioPerformanceRelativeToCapital = (order.CumulativePortfolioPerformance -
                                                                              this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
                             //Get all the unrealised profit
-                            if (portfolioPerformanceRelativeToCapital > 0)
+                            if (portfolioPerformanceRelativeToCapital > ZeroWithFeePaid)
                             {
                                 this.mainViewModel.NoOfGoodTrades++;
                                 this.mainViewModel.GainPercent += portfolioPerformanceRelativeToCapital;
                             }
-                            else if (portfolioPerformanceRelativeToCapital < 0)
+                            else if (portfolioPerformanceRelativeToCapital < ZeroWithFeePaid)
                             {
                                 this.mainViewModel.NoOfBadTrades++;
                                 this.mainViewModel.LossPercent += portfolioPerformanceRelativeToCapital;
@@ -226,6 +235,18 @@ namespace BacktestingSoftware
             {
                 return "Algorithm File is wrong!";
             }
+        }
+
+        private int GetAbsWeightedSignalDifferenceForOrders(int index)
+        {
+            for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+            {
+                if (this.mainViewModel.Orders[index].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
+                {
+                    return this.GetAbsWeightedSignalDifference(i);
+                }
+            }
+            return 0;
         }
 
         private int GetAbsWeightedSignalDifference(int index)

@@ -22,25 +22,87 @@ Die Order-spezifischen Performancedaten kann man sich auf dem Orders-Tab der \gl
 		TP = (P * RLS * RLA) + PF
 	\end{equation}
 \item \textbf{Paid Fee} \\
-	Paid Fee (PF) ist die Gesamtheit aus allen relativen (R) und absoluten (A) Transaktionsgebühren, die in der \gls{bts} eingestellt wurden für diese Order bezahlt hätten werden müssen. Dabei wird klarerweise mit dem TP vor Addition der Gebühren gerechnet (TP0).
+	Paid Fee (PF) ist die Gesamtheit aus allen relativen (RT) und absoluten (AT) Transaktionsgebühren, die in der \gls{bts} eingestellt wurden für diese Order bezahlt hätten werden müssen. Dabei wird klarerweise mit dem TP vor Addition der Gebühren gerechnet (TP0).
 	\begin{equation}
 		\label{Paid Fee}
-		PF = (\frac{R}{100} * TP0) + A
+		PF = (\frac{RT}{100} * TP0) + AT
 	\end{equation}
 \item \textbf{Gain/Loss [\%]} \\
-	GainLoss (GL) beschreibt die prozentuelle Kapitalveränderung durch vorherige Trades bis zum jetzigen relativ auf das eingesetzte Investitionskapital, also TP. Dabei wird kein unrealisierter Profit/Verlust angeschrieben, sondern nur der wirklich realisierte. Das bedeutet, dass bei einer Verstärkung der Position der aktuellen Order im Vergleich zu der der letzten GL 0 ist. Wenn dies bei der ersten Order berechnet werden soll, kann man hier nur die Gebühren durch den TP0 dividieren, da sonst kein realisierter Profit/Verlust zustande kommt:
+	GainLoss (GL) beschreibt die prozentuelle Kapitalveränderung durch vorherige Trades bis zum jetzigen relativ auf das eingesetzte Investitionskapital, also TP. Dabei wird kein unrealisierter Profit/Verlust angeschrieben, sondern nur der wirklich realisierte. Das bedeutet, dass bei einer Verstärkung der Position der aktuellen Order im Vergleich zu der der letzten GL nur der um den entsprechenden Anteil an Gebühren die zu zahlen sind negativ ist. Der Anteil an den Gesamtgebühren (PF), der hier eingesetzt wird, kann wie folgt berechnet werden:
+	\begin{equation}
+		\label{Gebuehren fuer GL}
+		GL0 = \frac{-PF}{TP0} * 100
+	\end{equation}
+	Wenn es sich daher um die Verstärkung einer Position oder die erste Order (hier gibt es keinen Preis der letzten Transaktion oldP) handelt, kann nur GL0 angeschrieben werden. Handelt es sich allerdings nicht um die erste Order, muss der gesamte realisierte Gewinn relativ zum investierten Kapital hier ausgegeben werden. Deshalb muss alles mit der Anzahl an realisierten Positionen (relPos) multipliziert werden. Dies wäre bspw. bei einem Wechsel von -3 auf -2 nur eine Position, also die direkte Differenz, bei einem Wechsel von -3 auf 2 wäre es allerdings 3 und nicht 5, da hier ja nur die Position eines 3-Signals realisiert wird. Weiters muss vom Preisanstieg bzw. -abstieg, der über die Periode angefallen ist, noch der zuvor berechnete entsprechende Anteil an Gebühren (GL0) abgezogen werden:
 	\begin{equation}
 		\label{Gain/Loss}
-		GL = \frac{-PF}{TP0} * 100
+		GL = \frac{((relPos * (P - oldP)}{oldP}) * 100) - GL0
 	\end{equation}
-	Handelt es sich allerdings nicht um die erste Order und die Positionen:
-	\begin{equation}
-		\label{Gain/Loss}
-		GL = \frac{oldPos * (P - oldP - PF)}{oldP} * 100
-	\end{equation}
-	Wird allerdings bei einem Trade generell nur die Position des letzten Trades verstärkt, ist GL 0.
 \item \textbf{Cumulative Gain/Loss [\%]} \\
 	Hierbei werden einfach nur kumulativ die GL-Werte aller bisherigen Orders aufaddiert ausgegeben.
 \item \textbf{Portfolio Performance [\%]} \\
-	Die Portfolio Performance (PP) ist eine der wichtigsten Performancedaten. Sie gibt an, um wie viel 
+	Die Portfolio Performance (PP) ist eine der wichtigsten Performancedaten. Sie gibt an, um wie viel Prozent sich das gesamte Kapital bei dieser einen Order im Vergleich zur vorherigen verändert hat, also wie groß die Auswirkung dieses Trades auf das Kapital ist. Hierzu wird als Grundlage einfach das aktuelle Vermögen (vgl.''Net Worth'' (NW) weiter unten) und die absolute Kapitalveränderung (vgl. ''Absolute Portfolio Performance'' (APP) weiter unten) genommen:
+	\begin{equation}
+		\label{Portfolio Performance}
+		GL = \frac{APP}{NW} * 100
+	\end{equation}
+\item \textbf{Cumulative Portfolio Performance [\%]} \\
+	Hierbei werden einfach kumulativ die vorherigen Prozentwerte der Kapitalveränderung aufaddiert. Es wird hier allerdings nicht mit der PP gearbeitet, sondern statt dem Net Worth durch das Startkapital (K) dividiert, um die gesamte Performance in Bezug auf das Gesamtkapital zeigen zu können. Die Formel zu Berechnung der einzelnen Werte sieht hier daher so aus:
+	\begin{equation}
+		\label{Cumulative Portfolio Performance}
+		GL = \frac{APP}{NW} * 100
+	\end{equation}
+\item \textbf{Absolute Portfolio Performance} \\
+	Dieser Wert hat grundsätzlich die gleiche Aussage, wie die PP, nur dass er absolut angegeben wird und als Grundlage der Berechnung der PP genutzt wird. 
+\end{itemize}
+
+\subsubsection{Allgemeine Performancedaten}
+
+Zusätzlich zu den spezifischen Performancedaten für jede Order auf dem Orders-Tab, können in der \gls{bts} auf dem Performance-Tab allgemeine Performancedaten gefunden werden. Diese beschreiben, wie gut der Algorithmus über die gesamte ausgewählte Periode der Aktien-Preisdaten abgeschnitten hätte, wenn er unter normalen Bedingungen auf der Börse gehandelt hätte. Hier gibt es folgende Daten:
+
+\begin{itemize}
+\item \textbf{Net Worth} \\
+	Hier ist der Net Worth das gesamte Kapital, dass sich dem Einsatz des Algorithmus über die gesamte gewählte Periode besessen hätte. Es berechnet sich aus den Gewinnen und Verlusten aus allen Trades und dem Startkapital. Der Net Worth ist daher außerdem gleich mit Order-spezifischen Net Worth nach der letzten Order.
+\item \textbf{Portfolio Performance [\%]} \\
+	Die allgemeine Portfolio Performance (GPP) beschreibt den gesamten prozentuellen Gewinn bzw. Verlust den der Algorithmus unter normalem Einsatz über die gesamte gewählte Periode der Aktien-Preisdaten gemacht hätte. Er berechnet sich aus den prozentuellen Einzelgewinnen/-verlusten aller Orders relativ zum Startkapital und ist damit gleich der Order-spezifischen kumulativen Portfolio Performance nach dem letzten Trade.
+\item \textbf{Sharpe Ratio} \\
+	Der Sharpe Ratio ist quasi ein Wirkungsgrad der angibt, wie viele Gewinne bzw. Verluste der Algorithmus über die gewählte Periode machen konnte relativ zum dabei eingegangenen Risiko, als der Volatilität. Zur Beschreibung der Volatilität wurde in der Berechnung die Standardabweichung der Portfolio Performance (vgl. ''Mean Deviation of Portfolio Performance [\%]'' (MDPP) weiter unten). Außerdem muss hier von den Gewinnen noch der Prozentsatz abgezogen werden, den man bei einer risikofreien Investition des gleichen Kapitals erreichen hätte können (RF), um die eigentliche Qualität des Algorithmus widerspiegeln zu können. Die allgemeine Formel zur Berechnung des Sharpe Ratio lautet daher:
+	\begin{equation}
+		\label{Sharpe Ratio}
+		SR = \frac{GPP - RF}{MDPP}
+	\end{equation}
+	Der Standardzinssatz (p) bei einer risikofreien Anlagen bewegt sich hierbei meist um 1.5\% pro Jahr. Daher muss hier um an RF zu kommen eine Zinseszins-Rechnung der gewählten Anzahl an Jahren (n), über die der Algorithmus rechnet, durchgeführt werden. Das Kapital das man durch risikofreie Anlagen aus dem Startkapital erhälten hätte lässt sich daher wie folgt berechnen:
+	\begin{equation}
+		\label{Zinseszins-Berechnung}
+		NWRF = K * (1 + \frac{p}{100})^n
+	\end{equation}
+	Um nun herauszufinden wie hoch dieser Prozentsatz gewesen wäre muss nun folgende Berechnung durchgeführt werden:
+	\begin{equation}
+		\label{Risikofreie Portfolio Performance}
+		RF = \frac{NWRF - K}{K} * 100
+	\end{equation}
+\item \textbf{Mean Deviation of Portfolio Performance [\%]} \\
+	Die Mean Deviation of Portfolio Performance ist die Standardabweichung der Order-spezifischen Portfolio Performance aller Orders. Generell wird die Standardabweichung wie folgt berechnet:
+	\begin{equation}
+		\label{Standardabweichung}
+		s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i-\overline{x})^2}
+	\end{equation}
+\item \textbf{Mean Deviation of Equity Price} \\
+	Die Mean Deviation of Equity Price ist die Standardabweichung aller Close-Werte der Aktien-Preisbars in der gewählten Periode. Diese soll dem Nutzer einen Überblick über die allgemeine Volatilität der übergebenen Daten verschaffen. Die Standardabweichung wird auch hier mit der allgemeinen Formel berechnet, die bspw. in der Gleichung \ref{Standardabweichung} nachgelesen werden kann.
+\item \textbf{Return on Investment [\%]} \\
+	Return on Investment (ROI) beschreibt die prozentuelle Kapitalveränderung, ähnlich wie die Portfolio Performance, nur dass hier das wirklich investierte Kapital jedes Trades als Basis der Prozentrechnung herangezogen wird. Bei der Portfolio Performance ist dies nämlich das insgesamt verfügbare Kapital. Dieser Wert ist gleich dem Order-spezifischen kumulativen Gain/Loss nach der letzten Order.
+\item \textbf{Number of Good Trades} \\
+	Die Number of Good Trades (NoGT) gibt die Anzahl an Handlungen an, durch die der Algorithmus im echten Betrieb einen Gewinn erzielt hätte. Die Klassifizierung eines Trades als Good Trade passiert allerdings bevor die entsprechend zu zahlenden Gebühren hier mitgerechnet werden, da sonst ein Trade ohne Neutralisierung alter Positionen, bei denen nur Gebühren gezahlt werden müssen automatisch als Bad Trade klassifiziert werden würden.
+\item \textbf{Gain From Good Trades [\%]} \\
+	Der Gain From Good Trades gibt an, wie viel Gewinn durch alle Good Trades zusammen gemacht hätte werden können, gäbe es keine Bad Trades. Als Grundlage dieser Berechnung wird die Portfolio Performance jedes Good Trades relativ zum Startkapital herangezogen. Es wird hier also bei jedem Good Trade der Wert addiert, der auch zur Order-spezifischen kumulativen Portfolio Performance bei jedem Trade addiert wird.
+\item \textbf{Number of Bad Trades} \\
+	Die Number of Bad Trades (NoBT) gibt die Anzahl an Handlungen an, durch die der Algorithmus im echten Betrieb einen Verlust erzielt hätte. (vgl. ''Number of Good Trades'' weiter oben bezüglich der Berechnung)
+\item \textbf{Loss From Bad Trades [\%]} \\
+	Der Loss From Bad Trades gibt an, wie viel Verlust durch alle Bad Trades zusammen gemacht worden wäre, gäbe es keine Good Trades. (vgl. ''Gain From Good Trades'' weiter oben bezüglich der Berechnung)
+\item \textbf{Ratio of Good Trades - Bad Trades} \\
+	Der Ratio zwischen Good und Bad Trades beschreibt deren mengenmäßiges Verhältnis an. Dabei wird die Anzahl an Good Trades durch die Anzahl an Bad Trades dividiert. Dadurch entsteht quasi ein Wirkungsgrad bei dem Ergebnisse größer als 1 darauf hindeuten, dass mehr Good Trades als Bad Trades vom Algorithmus berechnet wurden. Die Berechnung funktioniert wie folgt:
+	\begin{equation}
+		\label{Ratio of Good Trades - Bad Trades}
+		R = \frac{NoGT}{NoBT}
+	\end{equation}
 \end{itemize}
