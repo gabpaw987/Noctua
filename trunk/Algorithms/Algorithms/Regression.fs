@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator723=
+    module DecisionCalculator=
         let regression(prices:decimal array)=
             let mutable xy = 0m
             let mutable xx = 0m
@@ -14,7 +14,29 @@
             let a = (y - b*x)/decimal prices.Length
             //decimal liste2D.Count*b + a
             b
-
+        let regression2(prices:decimal array)=
+            let x = 
+                [|0 .. prices.Length - 1|] 
+                |> Array.sum 
+                |> decimal
+            let y = 
+                [| for i in 0 .. prices.Length - 1 -> 
+                    prices.[i]|] 
+                |> Array.sum
+            let xy = 
+                [| for i in 0 .. prices.Length - 1 -> 
+                    prices.[i] * decimal i|] 
+                |> Array.sum
+            let xx = 
+                [| for i in 0 .. prices.Length - 1 -> 
+                    i*i|] 
+                |> Array.sum 
+                |> decimal
+            let b = (decimal prices.Length * xy - (x*y))/
+                    (decimal prices.Length * xx - x*x)
+            let a = (y - b*x)/decimal prices.Length
+            //decimal liste2D.Count*b + a
+            b
         (*  *)
         let signalgeber(n:int,prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>) =
             // skip already calculated signals
@@ -91,9 +113,9 @@
 //                    lowestk <- 0m  
             signals
 
-        let startCalculation1 (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            signalgeber (20, list2D, signals)
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            signals.AddRange(seq{for i in 0 .. list2D.Count - 1 do yield 0})
-            signals
+            signalgeber (20, list2D, signals)
+//        let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
+//            signals.AddRange(seq{for i in 0 .. list2D.Count - 1 do yield 0})
+//            signals
             
