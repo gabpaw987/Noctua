@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=(*44*)
+    module DecisionCalculator54323=(*44*)
 
         (*
          * Divides one value by another
@@ -17,9 +17,8 @@
             (2.0m / (decimal n + 1.0m))
 
         let ema (n:int, prices:List<decimal>)=
-            let alpha = nToAlpha n
+            let alpha = (2.0m / (decimal n + 1.0m))
             // t-1: calculate average of first n-1 elements as initial value for the ema
-
             let tm1 =
                 prices
                 |> Seq.take (n-1)
@@ -84,7 +83,7 @@
                 match i with
                 | _ when i > n-2 ->
                     let c = decimal (c (alpha1, alpha2, prices.[i-erp+1..i]))
-                    //printfn "%d-%d\t c: %d" n1 n2 (alphaToN c)
+                    printfn "Current n of AMA is %d" (alphaToN c)
                     ama.[i] <- c * p + (1m - c) * ama.[i-1]
                     //ama.[i] <- decimal(alphaToN c)
                     //printfn "%d" i
@@ -126,6 +125,20 @@
                 std := decimal((float)(!std/decimal(n-1))**0.5)
                 let higher = ma.[i] + (!std * sigma)
                 let lower = ma.[i] - (!std * sigma)
+                result.[i] <- (higher,lower)
+            result
+
+        let bollinger3(n:int, sigma:decimal, prices:decimal array)=
+            let result = [|for p in prices do yield (0m,0m)|]
+            let ma = ema (n,Array.toList (prices))
+            for i in n-1 .. prices.Length - 1 do
+                let mutable std = 
+                    [| for value in Array.sub prices (i - (n - 1) ) n do 
+                        yield decimal((float)(value - ma.[i])**2.0)|]
+                    |> Array.sum 
+                std <- decimal((float)(std/decimal(n-1))**0.5)                
+                let higher = ma.[i] + (std * sigma)
+                let lower = ma.[i] - (std * sigma)
                 result.[i] <- (higher,lower)
             result
 
@@ -273,7 +286,16 @@
                 let tr3 = prices.[i-1].Item5-prices.[i].Item4
                 let max = [tr1;tr2;tr3] |> List.max
                 tr.[i] <- max
+            let a = (0m,0m,0m,0m)
             Array.toList tr
+
+        let sec (_,c,_,_) = c
+        let third (_,_,c,_) = c
+        let fourth (_,_,_,c) = c
+        let trueRange(newBar:(decimal * decimal * decimal * decimal), oldBar:(decimal * decimal * decimal * decimal))=
+            [sec newBar - third newBar; sec newBar - fourth oldBar; fourth oldBar - third newBar]
+            |> List.max
+
 
         let adx(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             // calculate the directional movements (pos & neg)
@@ -487,12 +509,12 @@
             printfn "Cut Losses: %d" cutlossCount
             signals
 
-        let startCalculation1 (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
+        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
             //       erp  s1  s2  m1  m2  l1  l2   bN  sig cutloss
             strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 5.0m, prices, signals)
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
-            let pricess = [|for p in prices do yield p.Item5|]
-            let test1 = bollinger(20,2m,prices)
-            let test2 = bollinger2(20,2m,pricess)
-            signals
+//        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
+//            let pricess = [|for p in prices do yield p.Item5|]
+//            let test1 = bollinger(20,2m,prices)
+//            let test2 = bollinger2(20,2m,pricess)
+//            signals
