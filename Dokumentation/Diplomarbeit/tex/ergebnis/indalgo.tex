@@ -1,0 +1,167 @@
+% !TEX root = ../../Noctua_Diplomarbeit.tex
+
+\clearpage
+
+\subsection{Signalgeber mit Indikator-Kombination}
+
+Ein ausgefeiltes Handelssystem sollte sich in der Regel nicht auf einen einzelnen Indikator verlassen,
+da die meisten zumindest in gewissen Phasen Schwächen aufweisen. Es war daher Teil des Projektes,
+eine kluge Kombination mehrerer Indikatoren zu entwickeln, die sich wechselseitig positiv ergänzen.
+Zusätzlich ist nicht jede Strategie jederzeit gewinnbringend einsetzbar. Obwohl temporäre Verluste
+aufgrund von unvorhersehbaren Kursänderungen nie komplett verhindert werden können, eignen sich
+gewisse Strategien besser für manche Marktzustände als andere.
+
+Der Algorithmus soll außerdem die Möglichkeit stärkere und schwächere Signale im Bereich von -3 bis +3 generieren zu
+können möglichst günstig ausnutzen, woraufhin in Folge das Marktrisiko variiert werden kann.
+
+Im folgenden wird ein entwickelter Algorithmus beschrieben, dessen Ziel es war auf Marktzustände
+einzugehen und Parameter bzw. Entscheidungsgrundlagen daraufhin zu verändern.
+
+\subsubsection{Marktzustandsadaption}
+
+Als grundlegend unterschiedlich wurden für diesen Algorithmus die beiden Phasen Trend- und
+Seitwärtsphase unterschieden, für die jeweils eine komplett unterschiedliche Entscheidungsgrundlage
+verwendet wird. Während Trendphasen primär ein \gls{ma}-System zugrunde liegt, wird in Seitwärtsphasen
+ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} und \ref{subsection:fading})
+
+Die Entscheidung, welche Phase aktuelle vorliegt wird aufgrund des aktuellen \gls{adx}-Wertes getroffen.
+Es wird für diesen Zweck ein ADX über 14 Bars berechnet, wobei bei Werten unter 25 kein ausgeprägter Trend erkannt wird
+und daher das Seitwärtssystem die Entscheidungen trifft. Liegt der ADX darüber, wird das Trendphasensystem angewendet.\\
+
+Ein alternativer Ansatz, einen Marktzustand über die Kopplung des Preises mit einem Marktindex zu erreichen,
+erzielte kein zufriedenstellendes Resultat. Die Idee war es, einen Zusammenhang einer Kursbewegung mit
+einem marktbestimmenden Index herzustellen. Bei einem Aufwärtstrend des gesamten Marktes wurde eine
+entsprechende Reaktion des gehandelten Instruments erwartet --- steigt beispielsweise der NASDAQ,
+so könnte auch ein darin enthaltenes Symbol von der positiven Marktentwicklung profitieren. Das Problem bestand
+nun darin, zu aller erst einen zeitlichen Zusammenhang festzustellen. Nur wenn der Index dem Einzelsymbol
+zeitlich in Trendbildung zuvorkommt, ist es möglich daraus eine Handelsempfehlung für das Einzelsymbol
+zu berechnen, d.h. wenn der Index-Lag negativ ist. Ist hingegen ein positiver Index-Lag vorhanden, wäre
+der Zusammenhang zwar möglicherweise für den Handel von Instrumenten mit den Index als Basiswert interessant,
+jedoch nicht für das Einzelsymbol.
+
+Zur Feststellung des Lags wurde ein simples Handelssystem mit zwei sich schneidenden \glspl{tema} verwendet,
+das jeweils auf das Einzelsymbol und auf den Index angewandt wurde. Die aus dem Handelssystem entstehenden
+Entscheidungslisten, bestehend aus Kauf- und Verkaufsignalen (1,-1) wurden nun um bis zu 50\% gegeneinander
+verschoben, um herauszufinden bei welchen Lag eine maximale Übereinstimmung der Signale festzustellen ist.
+Der Lag und der Grad der Übereinstimmung wurde dabei erfasst.
+
+Ein häufig auftretender optimaler Zusammenhang bei einem Lag von 0 oder sogar einem positiven Wert
+war der Grund, dass dieses System nicht in den Algorithmus inkorporiert wurde.
+
+\subsubsection{Trendphasensystem}
+
+In Trendphasen wird ein \gls{ma}-System, bestehend aus 3 \glspl{ama}, zur primären Signalgenerierung angewandt.
+Alle 3 haben eine unterschiedliche Länge, die jeweils als Bereich angegeben wird. Im folgenden werden die \glspl{ama}
+als kurz (n ist zwischen 5 und 10), mittel (n ist zwischen 10 und 20) und lang (n ist zwischen 20 und 40) bezeichnet.
+
+Dabei liegt laut dem \gls{ama}-Basissignal eine 1 vor (schwaches Kaufsignal), wenn der kurze \gls{ama} über
+dem mittleren und langen \gls{ama} liegt. Liegt zusätzlich der mittlere noch über dem langen, so liegt eine 2 vor (mittleres Kaufsignal).
+Mit Verkaufsignalen verhält es sich genau umgekehrt, ansonsten ist eine 0 (Neutralposition) vorgesehen.
+Um zu kurz andauernde Signale auszufiltern wurde die Idee eines Signalfilters erprobt, der
+zu den \glspl{ama} einen fixen Anteil des aktuellen Preises addiert bzw. subtrahiert, damit die Überschneidungen
+erst später auftreten. Dieser wurde in der Endversion auf 0 gesetzt, da der spätere Einstieg in Summe
+schlechtere Ergebnisse erwirtschaftete. 
+
+\begin{lstlisting}[label=AMA Basissignal, caption=AMA Basissignal]
+amaSig <-
+    if short.[i] + (cPrices.[i]*signalFilter) < middle.[i] && short.[i] + (cPrices.[i]*signalFilter) < long.[i] then
+        if middle.[i] < long.[i] then
+            -2
+        else
+            -1
+    else if short.[i] - (cPrices.[i]*signalFilter) > middle.[i] && short.[i] - (cPrices.[i]*signalFilter) > long.[i] then
+        if middle.[i] > long.[i] then
+            2
+        else
+            1
+    else
+        0
+\end{lstlisting}
+
+Um die Entscheidung durch die \glspl{ama} abzusichern, wurde zusätzlich der \gls{rsi} berechnet.
+Dabei empfiehlt der \gls{rsi} einen Kauf unterhalb der Überverkauft-Marke von 30 und einen Verkauf
+oberhalb der Überkauft-Marke von 70.
+
+\begin{lstlisting}[label=RSI Signal, caption=RSI Signal]
+if (rsi.[i] < 30m) then
+    rsiSig <- 1 
+else if (rsi.[i] > 70m) then
+    rsiSig <- -1
+\end{lstlisting}
+
+Bei widersprüchlichen RSI- und AMA-Signalen werden die S1- und R1-Level der Pivot Points
+als zusätzliche Support- und Resistance-Level herangezogen. Wenn diese auch durchbrochen wurden,
+wird das Signal auf 0 geschaltet.
+
+Ein dem AMA-Signal gleichgerichtetes RSI-Signal verstärkt dieses um 1, d.h. aus 1 wird 2, aus 2 wird 3. 
+
+\begin{lstlisting}[label=Trendsignal, caption=Trendsignal]
+// widerspruechliches AMA- und RSI-Signal 
+if (sign amaSig <> sign rsiSig) then
+    // Pivot Points als Support/Resistance ueberpruefen
+    // AMA-Kaufsignal und Preis ueber S1
+    if (amaSig > 0 && cPrices.[i] > pvpts.[i].[1]) then
+        signals.Add(amaSig)
+    // AMA-Verkaufsignal und Preis unter R1
+    else if (amaSig < 0 && cPrices.[i] < pvpts.[i].[3]) then
+        signals.Add(amaSig)
+    // widerspruechliche Signale durch Pivot Points bestaetigt
+    else
+        signals.Add(0)
+// RSI und AMA deuten in die gleiche Richtung
+else
+    // + 3
+    // ama and rsi on buy
+    if (sign amaSig = 1 && rsiSig = 1) then
+        signals.Add(amaSig + 1)
+    // -3
+    // same for sell
+    else if (sign amaSig = -1 && rsiSig = -1) then
+        signals.Add(amaSig - 1)
+    // +/- 1,2
+    else
+        signals.Add(amaSig)
+\end{lstlisting}
+
+\subsubsection{Seitwärtsphasensystem}
+
+\subsubsection{Signal-Smoothing und Cutloss}
+
+Das bisher beschriebene Handelssystem wurde um 2 essenzielle Elemente erweitert.
+Da sich bisherige Signale als zu volatil erwiesen, musste eine Methode gefunden werden,
+die Entscheidungen seltener revidiert. Als profitabel erwies sich, Signale entweder gleich
+bleibend oder aber stärker werden zu lassen, solange sich das Signal nicht in ein Gegensignal umkehrt 
+oder auf eine Neutralstellung zurückgeht.
+Das bedeutet, dass ein Signal von 2 beispielsweise zu einem späteren Zeitpunkt zwar auf 3 erhöht
+werden kann, jedoch nicht auf 1 gesenkt. Erst eine 0 oder ein Verkaufsignal kann die 3 in Folge aufheben.
+
+% V: Cutloss
+
+\begin{lstlisting}[label=Signal-Smoothing, caption=Signal-Smoothing]
+// aktuell gleiche Signalrichtung, als beim vorherigen Signal
+if (sign signals.[i] = sign signals.[i-1]) then
+    // Aktuelles Preisextrem? (Ausgangspunkt fuer Cutloss)
+    if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
+        priceExtreme <- cPrices.[i]
+
+    // aktuell schwaecheres Signal, als beim vorherigen Signal
+    if (abs signals.[i] < abs signals.[i-1]) then
+        // aktuelles mit altem, staerkeren Signal ueberschreiben
+        signals.[i] <- signals.[i-1]
+
+// neues Signal in andere Richtung
+if (signals.[i] <> 0 && sign signals.[i] <> sign signals.[i-1]) then
+    entryPrice <- cPrices.[i]
+    // Preisextrem fuer neuen Trade zuruecksetzten
+    priceExtreme <- cPrices.[i]
+// gleiche Signalrichtung, als zuvor
+else if (signals.[i] <> 0) then
+    // Cutloss ueberpruefen
+    if (abs (priceExtreme - cPrices.[i]) > cutloss*0.01m*entryPrice) then
+        // Neutralsignal ausgeben
+        signals.[i] <- 0
+\end{lstlisting}
+
+\subsubsection{Technische Umsetzung}
+
+% Beginn bei neuem Signal (Beschneidung der Listen)

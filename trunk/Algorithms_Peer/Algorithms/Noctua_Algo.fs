@@ -392,8 +392,7 @@
                     signals.Add(0)
                 else
                     // if er indicates sideways markets
-                    //if adx.[i] < 20m then
-                    if adx.[i] < 40m then
+                    if adx.[i] < 25m then
                         sw <- sw+1
                         // print price between support2 and resistance2
                         //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
