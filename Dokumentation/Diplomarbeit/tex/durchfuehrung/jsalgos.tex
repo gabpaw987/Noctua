@@ -1,5 +1,5 @@
 \lstset{language=FSharp,caption={Descriptive Caption Text},label=DescriptiveLabel}
-\subsection{Implementierung eines Simple Moving Averages}
+\subsection{Implementierung des Simple Moving Averages}
 Der \gls{sma} ist der arithmetische Mittelwert über eine Menge an Preisdaten, man berechnet einen 5-Day-\gls{sma} folgendermaßen: \\\\
 \begin{equation}
 \frac{(P_1+P_2+P_3+P_4+P_5)}{5}
@@ -29,7 +29,7 @@ let sma(n:int, prices:decimal array)=
 	//zurueck
 \end{lstlisting}
 \clearpage
-\subsection{Implementierung eines Weighted Moving Averages}
+\subsection{Implementierung des Weighted Moving Averages}
 Der \gls{wma} ist der gewichtete arithmetische Mittelwert über eine Menge an Preisdaten. Bei der Gewichtung wird darauf geachtet, dass jüngere Preisdaten  einen größeren Einfluss auf das Ergebnis des Mittelwertes haben. Man berechnet einen 5-Day-\gls{wma} folgendermaßen: \\\\
 \begin{equation} 
 \frac{(P_1*(5)+P_2*(5-1)+P_3*(5-2)+P_4*(5-3)+P_5*(5-4))}{(5+(5-1)+(5-2)+(5-3)+(5-4))}
@@ -66,7 +66,7 @@ let wma(n:int, prices:decimal array)=
             |]
 \end{lstlisting}
 \clearpage
-\subsection{Implementierung eines Triangular Moving Averages}
+\subsection{Implementierung des Triangular Moving Averages}
 Der \gls{tma} ist der doppelte arithmetische Mittelwert über eine Menge an Preisdaten. Bei der Berechnung des \gls{tma} wird meist mit unterschiedlichen Längen gearbeitet.  Man berechnet einen 3-5-Day-\gls{wma} folgendermaßen: \\\\
 \begin{equation} 
 \frac{(\frac{P_1+P_2+P-3}{3}+\frac{P_2+P_3+P_4}{3}+\frac{P_3+P_4+P_5}{3}+\frac{P_4+P_5+P_6}{3}+\frac{P_5+P_6+P_7}{3}}{5}
@@ -85,7 +85,8 @@ let tma(n1:int, n2:int, prices:decimal array)=
 	sma (n2, (sma(n1, prices)))
 \end{lstlisting}
 \clearpage
-\subsection{Implementierung eines \gls{ema}s}
+
+\subsection{Implementierung des Exponential Moving Averages}
 Die Berechnung eines \gls{ema}, also der exponentiellen Glättung einer Datenmenge funktioniert in F-\# folgendermaßen:
 \begin{lstlisting}[label=EMA in F-Sharp,caption=EMA in F-Sharp]
 (* 
@@ -126,7 +127,180 @@ let ema (n:int, prices:List<decimal>)=
     ema
 \end{lstlisting}
 \clearpage
-\subsection{Implementierung eines Pivot Point Calculators}
+
+\subsection{Implementierung des Adaptive Moving Averages}
+Ein \gls{ama}, also ein \gls{ema} mit variabler Länge benötigt wurde in F-\# folgendermaßen implementiert (ama-Methode)
+und benötigt einen Aufruf der Methoden zur Berechnung des Efficiency Ratio (er) und der Anpassung des ER an die gegebenen Periodenspanne (c)  je AMA-Wert.
+\begin{lstlisting}[label=AMA in F-Sharp,caption=AMA in F-Sharp]
+(* 
+ * Berechnung eines Adaptive Moving Average (AMA)
+ * Uebergabeparameter: 
+ * erp ... Efficiency Ratio Period; 
+ *         Periode ueber die der ER fuer jeden Wert
+      berechnet werden soll.
+ * n1 ... Minimale Laenge des AMA
+ * n2 ... Maximale Laenge des AMA
+ * prices ... Preise mit denen gerechnet werden soll
+ *)
+let ama (erp:int, n1:int, n2:int, prices:decimal[])=
+    // Periode, fuer die noch keine Daten vorhanden sind
+    let n = if (erp > n2) then erp else n2
+    // n1 und n2 in Smoothing Factors umrechnen
+    // (alpha1, alpha2)
+    let alpha1 = nToAlpha n1
+    let alpha2 = nToAlpha n2
+    // Fuer den Zeitpunkt t-1 Mittelwert
+    // der ersten n2-1 Elemente berechnen
+    let tm1 =
+        prices
+        |> Seq.take (n2-1)
+        |> Seq.average
+    // Output Array erstellen
+    let ama : decimal array =
+        Array.zeroCreate (prices.Length)
+    // Ausgangswert t-1 in Array schreiben (Mittelwert)
+    ama.[n-2] <- tm1
+    // Alle weiteren AMA Werte berechnen
+    prices
+    |> Array.iteri (fun i p -> 
+        match i with
+        // Werte berechnebar
+        | _ when i > n-2 ->
+            // aktuellen Smoothing Factor berechnen (c)
+            let c =
+                decimal (c (alpha1, alpha2,
+                    prices.[i-erp+1..i]))
+            // AMA laut Formel berechnen
+            ama.[i] <- c * p + (1m - c) * ama.[i-1]
+        // noch keine Berechnung möglich
+        | _              -> ignore i)
+    // den Ausgangswert wieder aus dem Array entfernen,
+    // da dieser keinen "echten" AMA darstellt
+    ama.[n-2] <- 0m
+    // AMA zurueckliefern
+    ama
+
+(* 
+ * Berechnet den Efficiency Ratio ER
+ * ER = (gesamte Preisaenderung ueber eine Periode)
+ *  / (Summe der absoluten Preisaenderungen je Bar)
+ * Uebergabeparameter:
+ * prices ... Preise mit denen gerechnet werden soll
+ *)
+let er (prices:decimal[]) =
+    // gesamte Preisaenderung ueber die gegebene Periode
+    let totalPriceChange =
+        abs (prices.[prices.Length-1] - prices.[0])
+    // kumulative Preisaenderung
+    let mutable cumulativePriceChange = 0m
+    // vorheriger Preis
+    let mutable oldPrice = prices.[0]
+    // Schleife durch alle Preis
+    for i = 1 to prices.Length-1 do
+        // Absolute Preisaenderung aufaddieren
+        cumulativePriceChange <-
+            cumulativePriceChange +
+            abs (prices.[i] - oldPrice)
+        oldPrice <- prices.[i]
+    totalPriceChange / cumulativePriceChange
+
+(* 
+ * Berechnet den Smoothing Factor fuer die
+ * nach ER zwischen alpha1 und alpha2 angepasste Periode.
+ *
+ * C = [(ER * (SCF - SCS)) + SCS]
+ * SCF der SF des kuerzesten zulaessigen EMA,
+ * SCS der SF des laensten zulaessigen EMA
+ * und ER der Efficiency Ratio ist.
+ *
+ * Uebergabeparameter:
+ * alpha1 ... Minimale Laenge des AMA
+ * alpha2 ... Maximale Laenge des AMA
+ * prices ... Preise mit denen gerechnet werden soll
+ *)
+let c (alpha1:decimal, alpha2:decimal, prices:decimal[]) =
+    // ER berechnen
+    let er = er (prices)
+    // Berechnung des SF;
+    // der Exponent kann fuer eine
+    // Bereichsanpassung variiert werden
+    double(er * (alpha1 - alpha2) + alpha2)**1.00
+\end{lstlisting}
+\clearpage
+
+\subsection{Implementierung des Relative Strength Index}
+
+Der \gls{rsi} dient dazu günstige Kauf- und Verkaufssignale zu berechnen, indem Überkauft-
+und Überverkauft-Level aufgrund von vergangenen Kursbewegungen festgestellt werden.
+Zur Berechnung des Relative Strength Index (RSI) wird Welles Wilders ursprünglich
+vorgesehene Glättungstechnik angewandt, um auf- und abwärts gerichtete Preisdifferenzen
+zu glätten. Die Technik funktioniert ähnlich einer exponentiellen Glättung, da immer
+ein Restbestandteil vorheriger Werte in neue Werte einfließt. Die Berechnung wird
+mit folgender Formel beschrieben.
+
+\begin{equation} 
+x_{t*} = \frac{x_{t-1} * (n-1) + x_t}{n}
+\end{equation} 
+
+\begin{lstlisting}[label=Pivot Points in F-Sharp,caption=Pivot Points in F-Sharp]
+(*
+ * Berechnet den Relative Strength Index (RSI) mit Welles Wilders
+ * urspruenglich vorgesehenen Smoothing-Technik.
+ * Uebergabeparameter:
+ * n ... Periode zur RSI-Berechnung
+ * prices ... Preise mit denen gerechnet werden soll
+ *)
+let rsi(n:int, prices:(decimal*decimal)[])=
+    // Array mit Preisdifferenzen von Open- zu Close-Preise berechnen
+    let priceChanges = prices |> Array.map (fun bar -> snd bar - fst bar)
+    
+    // Array fuer die ersten n-1 auf- und abwaerts laufenden
+    // Preise erstellen (ungeglaetted)
+    let firstUp = Array.zeroCreate (n)
+    let firstDown = Array.zeroCreate (n)
+    // Arrays fuer alle restlichen, geglaetteten Auf-
+    // und Abwaerts-Differenzen
+    let up = Array.zeroCreate (prices.Length-n+1)
+    let down = Array.zeroCreate (prices.Length-n+1)
+    
+    // Preisdifferenzen für die ersten n-1 Werte berechnen
+    for i in 0..n-2 do
+        firstUp.[i]   <- List.max [    priceChanges.[i]   ; 0m]
+        firstDown.[i] <- List.max [-1m*priceChanges.[i+1] ; 0m]
+    // first value is the n.th; e.g. 14.
+    // Ersten fuer den RSI verwendbaren aufwaerts- und abwaerts
+    // Wert berechnen
+    up.[0]   <- Array.average firstUp
+    down.[0] <- Array.average firstDown
+
+    // Alle restlichen auf- und abwaerts Werte werden durch
+    // Wilders Glaettungstechnik berechnet. Dabei wird immer
+    // der vorherige Wert mit n-1 multipliziert, der neue addiert
+    // und die Gesamtsumme durch n dividiert.
+    
+    up
+    |> Array.iteri (fun i p -> 
+        match i with
+        | _ when i > 0 ->
+            // Aufwaerts
+            up.[i]   <- (up.[i-1]  *decimal(n-1) + List.max [    priceChanges.[i] ; 0m])/decimal(n)
+            // Abwaerts
+            down.[i] <- (down.[i-1]*decimal(n-1) + List.max [-1m*priceChanges.[i] ; 0m])/decimal(n)
+        | _ -> ignore i)
+    
+    // Aus auf-/abwaerts-Werten RSI zwichen 0 und 100
+    // berechnen
+    (up, down) 
+    ||> Array.map2 (fun u d -> 
+        if (u = 0m && d = 0m) then
+            50m
+        else
+            100m*u/(u+d))
+    |> Array.append (Array.zeroCreate (n-1))
+\end{lstlisting}
+\clearpage
+
+\subsection{Implementierung des Pivot Point Calculators}
 Durch Pivot Points wird versucht einen Zusammenhang aus den letzten Bars für die Zukünftigen zu erzeugen. Ein Pivot Point besteht meist aus 5 bis 7 berechneten Punkten. Im folgenden Beispiel werden 5 Punkte berechnet. Davon sind 2 Support Level, 2 Resistance Level und 1 Typical Price. \\\\
 Um einen Pivot Point für mehr als nur einen Bar zu berechnen, muss man den höchsten High-Wert und den niedrigsten Low-Wert der Datenmenge berechnen.
 \begin{lstlisting}[label=Pivot Points in F-Sharp,caption=Pivot Points in F-Sharp]
@@ -210,7 +384,7 @@ let regression(prices:decimal array)=
         (decimal prices.Length * xy - (x*y))/
         (decimal prices.Length * xx - x*x)
 \end{lstlisting}
-\subsection{Implementierung eines \gls{adx}}
+\subsection{Implementierung des Average Directional Index}
 Der \gls{adx} ist eine Indikatoren-Gruppe aus den positiven Kursbewegungen, den negativen Kursbewegungen und der True Range. Dieser Indikator errechnet die momentane Stärke des Kurses, jedoch nicht die Kursrichtung. 
 \subsubsection{Positive Kursbewegungen}
 Es handelt sich um eine positive Kursbewegung, wenn die Differenz aus dem momentanen High und dem letzten High größer ist als die Differenz aus dem letzten Low und dem momentanen Low. Handelt es sich um eine positive Kursbewegung, ist diese also die Differenz aus dem momentanen High und dem letzten High, es sei denn, es ist eine negative Zahl, dann wird 0 verwendet.
@@ -306,7 +480,7 @@ Zur Berechnung des \gls{adx} wird eine Menge an bereits berechneten DXs für die 
 ADX=EMA(100*DX)
 \end{equation}
 \clearpage
-\subsection{Implementieren der Bollinger Bänder}
+\subsection{Implementierung der Bollinger Bänder}
 Bollinger Bänder besteht aus 3 Teilschritten um sie zu berechnen. Der erste Schritt ist die Berechnung eines Moving Average (meist ein \gls{sma} oder ein \gls{ema}) dieser Wert ergibt das mittlere Bollinger Band. Um den dritten Schritt zu berechnen muss man zuerst die Varianz der verwendeten Werte berechnen. Der dritte Schritt ist nun das Addieren und Subtrahieren der Varianz vom Moving Average um das obere und untere Band zu berechnen.
 \begin{lstlisting}[label=Bollinger Baender in F-Sharp,caption=Bollinger Baender in F-Sharp]
 (* 
