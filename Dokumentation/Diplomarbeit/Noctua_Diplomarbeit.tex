@@ -223,6 +223,10 @@ numberfirstline=true
 \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
 \lstset{frame=lrb,xleftmargin=0.08in,xrightmargin=-0.07in}
 
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{multirow}
+
 % INLINE LISTINGS
 \def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]}
 
@@ -289,13 +293,13 @@ numberfirstline=true
   \@starttoc{toc}}
 \makeatother
 
-\clearpage%
+%\clearpage
 \tableofcontents
-\clearpage
+%\clearpage
 \listoffigures
-\clearpage
+%\clearpage
 \lstlistoflistings %\listoftables
-\clearpage 
+%\clearpage 
 \markboth{Contents}{Contents}
 
 
@@ -312,6 +316,7 @@ numberfirstline=true
 
 
 % include chapters
+\include{tex/Gruppe}
 \include{tex/1-einleitung}%
 %\include{tex/chapter2}%
 \include{tex/2-grundlagen}%
