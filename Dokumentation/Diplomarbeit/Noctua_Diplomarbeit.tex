@@ -34,6 +34,8 @@
 \usepackage{capt-of}
 \usepackage{glossaries}
 \usepackage[ampersand]{easylist}
+\usepackage{newverbs}
+\usepackage{listings}
 
 \input{tex/acronyms}
 %%-----------------------------------------------------------------------
@@ -191,6 +193,9 @@
     
 %activate automatic line breaks
 \lstset{breaklines=true}
+
+% INLINE LISTINGS
+\def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]}
 
 %%-----------------------------------------------------------------------
 % Colored grafix
