@@ -1,3 +1,4 @@
+\lstset{style=sharpc}
 \subsection{Microsoft Chart Controls} \label{charting}
 
 Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die es ermöglicht in WinForms-Anwendungen oder auf Webseiten mit ASP.NET Charts und Diagramme zu zeichnen. Die Möglichkeiten sind dermaßen umfangreich, dass es im Folgenden nur Sinn macht, die Funktionen zu erläutern, die für die Darstellung finanzieller Charts erheblich sind. Zu den Hauptfeatures zählen daher \cite{msdn-charting}:
@@ -17,7 +18,7 @@ Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die
 
 Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich, man kann diese Einschränkung allerdings umgehen indem man einen sog. \textit{WinFormsHost} erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem \textit{MSChart} kann so erstellt werden:
 
-\begin{verbatim}
+\begin{lstlisting}
 <WindowsFormsHost Name="WfHost" Grid.Row="0">
 	<MSChart:Chart x:Name="MyWinformChart">
 	    <MSChart:Chart.ChartAreas>
@@ -25,21 +26,21 @@ Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältli
 	    </MSChart:Chart.ChartAreas>
 	</MSChart:Chart>
 </WindowsFormsHost>
-\end{verbatim}
+\end{lstlisting}
 
 Hier wurde außer dem primitiven \textit{MSChart} auch gleich eine \textit{ChartArea} hinzugefügt. Eine \textit{ChartArea} ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses WinFormsHost-Element allerdings funktioniert müssen für das gesamte \textit{Window} noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
 
-\begin{verbatim}
+\begin{lstlisting}
 xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
 xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
 xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection{Darstellung einfacher Graphen}
 
 Nachdem eine leere \textit{ChartArea}, in die ein Graph gezeichnet werden kann, bereits im \gls{xaml} erzeugt wurde, muss man im C\#-Code nur noch das \textit{Chart} suchen, in das gezeichnet werden soll und eine \textit{Series} erstellen. In diese Series werden dann die Daten eingespeist, die gezeichnet werden soll. Wenn man nun auch noch einen Typ für den Graphen konfiguriert wird dieser auch schon in der \textit{ChartArea} angezeigt. Um bspw. eine Sinusfunktion darzustellen müsste man nun folgenden Code schreiben: \cite{msdn-charting}
 
-\begin{verbatim}
+\begin{lstlisting}
 //Lookup des bereits im XAMl-Code definierten Charts
 Chart chart = this.FindName("MyWinformChart") as Chart;
 
@@ -56,7 +57,7 @@ sinus.ChartType = SeriesChartType.FastLine;
  
 // Hinzufuegen des Graphs zum Chart
 chart.Series.Add(sinus);
-\end{verbatim} \cite{mschart-grundlagen}
+\end{lstlisting} \cite{mschart-grundlagen}
 
 In diesem Beispiel wurde jeder Punkt des Sinus einzeln berechnet und zur \textit{Series} hinzugefügt. Dies könnte man natürlich auch mit jeder anderen Datenquelle wie zum Beispiel einer Liste machen, in dem man jeden Wert einzeln hinzufügt. \cite{msdn-charting}
 
@@ -75,8 +76,8 @@ Die wichtigsten Formeln in der \textit{FinancialFormula}-Sammlung der MS Chart C
 
 Im Code würde der Einsatz von \textit{FinancialFormula} so aussehen:
 
-\begin{verbatim}
+\begin{lstlisting}
 chart.DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, 90, "Data", "FinFor");
-\end{verbatim} \cite{msdn-charting}
+\end{lstlisting} \cite{msdn-charting}
 
 Dieser Aufruf erzeugt einen \gls{ma} der Länge 90. Dazu holt er sich die Daten aus der Series ''\textit{Data}'', berechnet den \gls{ma} und schreibt die errechneten Daten in die \textit{Series FinFor}. Damit diese Berechnung möglich ist muss die \textit{Series FinFor} bereits zuvor erzeugt und die \textit{Series Data} ebenfalls bereits zuvor erzeugt auch wirklich mit Daten gefüllt sein. \cite{msdn-charting}
