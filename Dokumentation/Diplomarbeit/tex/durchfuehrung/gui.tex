@@ -3,7 +3,7 @@
 
 Als Grundelement der \gls{gui} der \gls{bts} wurde innerhalb des obligatorischen \textit{Window}s das \textit{DockPanel} gewählt. In diesem können weitere Elemente eingehängt werden. Damit einige der inneren Elemente über eine Bindung ihre Daten erhalten bzw. speichern können, wurde im \textit{Window} auch noch der \textit{DataContext} auf die \textit{MainViewModel} Klasse gesetzt, in der alle \gls{gui}-relevanten Informationen gespeichert werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Setzen des DataContext in XAML,caption=Setzen des DataContext in XAML]
 <Window.DataContext>
     <local:MainViewModel x:Name="mainViewModel" />
 </Window.DataContext>
@@ -13,7 +13,7 @@ Als Grundelement der \gls{gui} der \gls{bts} wurde innerhalb des obligatorischen
 
 Als erstes wurde die Menüleiste (mit Hilfe des \textit{Menu}-Elements) ins \textit{Top} des \textit{DockPanel}s hinzugefügt. In dieser können \textit{MenuItem}s definiert werden. Diese stellen die einzelnen Buttons in der Menüleiste dar. Innerhalb dieser \textit{MenuItem}s können erneut \textit{MenuItem}s definiert werden. Diese beschreiben wiederum die Unterpunkte der einzelnen Buttons, die beim Darüberhalten der Maus angezeigt werden. Auf ähnliche Art und Weise könnten hier auch noch weitere Ebenen ergänzt werden. Statt der \textit{MenuItem}s können auch immer sog. \textit{Separator}s definiert werden. Diese separieren optisch Gruppen von \textit{MenuItem}s von einander und werden als senkrechte oder waagrechte Trennlinie angezeigt. Um die \textit{MenuItem}s auch noch jeweils mit einer Aktion zu versehen, kann einfach das \textit{Click}-Feld der einzelnen Items mit einem entsprechenden Methodenkopf gefüttert werden, der das richtige Senderobjekt und \textit{RoutedEventArgs} als Parameter übergeben bekommt und die gewünschte Aktion be einem Klick beschreibt. Ein Teil des Menüs der \gls{bts} sieht demnach so aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Teil der Menüleiste der BTS,caption=Teil der Menüleiste der BTS]
 <Menu IsMainMenu="True" DockPanel.Dock="Top">
     <MenuItem Header="_File">
         <MenuItem Header="_Open" Click="LoadButton_Click"/>
@@ -29,7 +29,7 @@ Als erstes wurde die Menüleiste (mit Hilfe des \textit{Menu}-Elements) ins \text
 
 Die nächste Zeile wurde mit Hilfe der \textit{ToolBar} realisiert. In dieser können alle möglichen Arten von \textit{Button}s und ebenfalls \textit{Separator}s angezeigt werden. Hier wurden die \textit{Button}s auch noch mit Icons versehen. Wie dies und ein Teil der \textit{ToolBar} der \gls{bts} funktionieren kann man hier sehen:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Teil der Toolbar der BTS,caption=Teil der Toolbar der BTS]
 <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
     <Button ToolTip="Start Performance Measurement" Click="StartButton_Click" Height="25" Width="25">
         <Image Source="images/start.ico"></Image>
@@ -39,7 +39,7 @@ Die nächste Zeile wurde mit Hilfe der \textit{ToolBar} realisiert. In dieser kön
 
 Die Statusleiste unten im Fenster der \gls{bts} wurde mit der \textit{StatusBar} realisiert, die hauptsächlich den aktuellen Zustand der Anwendung anzeigt. Im \gls{xaml}-Code sieht dies wie folgt aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Teil der Statusleiste der BTS,caption=Teil der Statusleiste der BTS]
 <StatusBar DockPanel.Dock="Bottom">
     <StatusBarItem HorizontalContentAlignment="Stretch">
         <TextBlock Name="StatusLabel">Ready</TextBlock>
@@ -76,13 +76,13 @@ Das erste Tab ist das ''Performance''-Tab, dass die allgemeinen Performance-Date
 
 Das zweite Tab ist der ''Orders''-Tab, der durch ein Grid-Layout in zwei gleich große Teile geteilt wird. Oben wird mittels eines \textit{WinFormsHost}s (Siehe Abschnitt \ref{winformshost} ''Nutzung mit WPF'') eine Microsoft Chart Control gezeichnet, die nach dem Einlesen der Daten-Datei in der \gls{bts} entsprechende Chart mit ggf. auch entsprechenden Indikatoren anzeigt. Im unteren Bereich wird ein \textit{DataGrid} angezeigt, dass alle wichtigen Informationen über jede Handelsaktion ausgibt, die der Algorithmus über die historischen Aktien-Preisdaten getätigt hätte. Die Daten bekommt das \textit{DataGrid} über eine spezielle Art des Data Bindings, bei der der \textit{DataContext} des DataGrids im C\#-Code manuell auf die \textit{Orders}-Liste des ViewModels gesetzt wird. Die funktioniert so:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Setzen des DataContext eines DataGrids,caption=Setzen des DataContext eines DataGrids]
 this.orders.DataContext = this.mainViewModel.Orders;
 \end{lstlisting}
 
 Das \textit{DataGrid} muss daraufhin im \gls{xaml}-Code wie folgt erzeugt werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Orders-DataGrid der BTS in XAML,caption=Orders-DataGrid der BTS in XAML]
 <DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
  HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn"/>
 \end{lstlisting}
@@ -98,7 +98,7 @@ Das Aussehen dieses Tabs nach einer Beispielberechnung kann der Abbildung entnom
 
 Der dritte und letzte Tab ist der ''Settings''-Tab. Auf diesem können jegliche Einstellungen, die das Laufzeitverhalten der \gls{bts} beeinflussen getroffen werden. Dieses Tab nutzt auf der linken Seite einen \textit{TreeView} zur Auswahl der verschiedenen Seiten des Settings-Tabs. Die einzelnen Seiten auf der rechten Seite wiederum wurden durch ein weiteres \textit{TabControl} realisiert, bei dem der Kopf (in dem man normalerweise zwischen den einzelnen Tabs wechseln kann) einfach ausgeblendet wurde. Wann immer allerdings im \textit{TreeView} ein neues Item ausgewählt wird, wird eine besondere Methode aufgerufen, die den \textit{TabControl} auf der rechten Seite auf das richtige Tab wechseln lässt. Dies erweckt den Anschein, dass man durch die Auswahl eines Elements im \textit{TreeView} direkt das Fenster auf der rechten Seite wechseln kann. Der \textit{TreeView} sieht im \gls{xaml}-Code wie folgt aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Settings-TreeView der BTS in XAML,caption=Settings-TreeView der BTS in XAML]
 <TreeView Grid.Row="0" Grid.Column="0">
     <TreeViewItem Name="GeneralSettingsTabSelector" Header="General" Selected="TreeViewItem_Selected">
     </TreeViewItem>
@@ -111,7 +111,7 @@ Der dritte und letzte Tab ist der ''Settings''-Tab. Auf diesem können jegliche E
 
 Die dazugehörige Methode \textit{TreeViewItem\_Selected} sieht so aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Methode zum Wechseln von Tabs aus einem TreeView,caption=Methode zum Wechseln von Tabs aus einem TreeView]
 private void TreeViewItem_Selected(object sender, RoutedEventArgs e)
 {
     if (e.Source == this.GeneralSettingsTabSelector)
@@ -138,7 +138,7 @@ Generell kann hier weider zwischen drei Tabs unterschieden werden. Das erste, da
 \\
 Das zweite, das ''Orders''-Tab bietet alle Einstellungen bezüglich der Berechnungen der Orders innerhalb der Software. Zuerst kann ein fiktives Kapital konfiguriert werden, mit dem die \gls{bts} mit seinen Berechnungen arbeitet und an dem die absoluten Zahlen für die Performance gemessen werden. Danach kann sowohl eine absolute als auch eine relative (in Prozent) Transaktionsgebühr konfiguriert werden, die dann ebenfalls in  der Berechnungen der \gls{bts} von jeder Transaktion bzw. dem Gewinn oder Verlust jeder Transaktion abgezogen wird. Weiters kann ein sog. Price Premium konfiguriert werden, bei dem die \gls{bts} daraufhin in weiteren Berechnungen davon ausgeht, dass die Aktien nicht immer zum normalen Handelspreis, sondern zum Handelspreis plus dem Price Premium gekauft oder dem Handelspreis minus dem Price Premium verkauft werden.  Zu guter Letzt kann noch mittels vertikaler \textit{Slider} und \textit{TextBox}en eingestellt werden, wie viele Round Lots (größere Mengen von Aktien, deren Größe direkt darunter konfiguriert werden kann) die \gls{bts} fiktiv bei dem jeweiligen Signal des Algorithmus kaufen bzw. verkaufen soll. All diese \gls{gui}-Komponenten werden ebenfalls mit Hilfe von Data Binding mit dem ViewModel verknüpft. Um bei den \textit{TextBox}en nur die Eingabe von Zahlen zu ermöglichen, kam auch folgende Methode öfter im Feld \textit{PreviewTextInput} der \textit{TextBox}en zum Einsatz:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Zahleneingabefilter mit dem TextCompositionEvent,caption=Zahleneingabefilter mit dem TextCompositionEvent]
 private void NumericOnly_WithDecimalPlace(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
 {
     Regex reg = new Regex("[^0-9,]");

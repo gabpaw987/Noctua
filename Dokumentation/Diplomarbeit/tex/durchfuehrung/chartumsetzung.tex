@@ -7,7 +7,7 @@ Generell soll nach jeder Berechnung in der \gls{bts} zusätzlich zur Ausgabe der 
 
 Nach dem anfänglichen Erstellen eines \textit{Chart}s und einer \textit{Series}, muss die neue \textit{Series} zunächst so konfiguriert werden, dass es nach einem echten Candlestick-Chart aussieht. Dies funktioniert so:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Konfiguration des Charts der BTS,caption=Konfiguration des Charts der BTS]
 // Typ der Series auf Candlestick setzen
 chart.Series["Data"].ChartType = SeriesChartType.Candlestick;
 
@@ -35,7 +35,7 @@ chart.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = false;
 
 Ein weiterer wichtiger Bestandteil der Darstellung ist auch noch die Skalierung und das Zooming zu Beginn. Anfangs wird auf die letzten 100 Werte gezoomt, sofern mindestens so viele vorhanden sind. Insgesamt soll das Diagramm allerdings auch nur einen ein wenig größeren Bereich darstellen, als Daten vorhanden sind und nicht die gesamte Skala bis hinunter zu 0. Die X-Achse wird vom Chart selbst automatisch entsprechend skaliert. Es müssen also zuerst der größte und der kleinste Wert sowohl in der gesamten Aktien-Preisdatenliste als auch in den letzten 100 Bars gesucht und gespeichert werden. Nachdem diese gefunden wurden, müssen 5\% aufgeschlagen werden, um das Diagramm schöner zu machen und entsprechend auf die gefundenen Werte für das gesamte Chart skaliert werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Darstellungsbereich des Charts konfigurieren,caption=Darstellungsbereich des Charts konfigurieren]
 decimal margin = (max - min) * 5 / 100;
 chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
 chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
@@ -43,7 +43,7 @@ chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
 
 Beim Zooming geschieht etwas sehr ähnliches, lediglich muss hier eine andere Variable der \textit{ChartArea} beeinflusst werden. Für den Zoom der X-Achse muss das Datum 100 Bars vor dem letzten und das des letzten eingestellt werden. Dies wird allerdings aufgrund der Datentypenfreiheit dieser Angabe als double-Wert verlangt und muss deshalb mit Hilfe der Methode \textit{ToOADate()} in ein Datum im OLE Automation Format umgerechnet werden. Weiters müssen die Grenzen der y-Achse erneut mit einem Aufschlag von 5\% auf die zuvor gesuchten Werte definiert werden. Im Code sieht das wie folgt aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Anfangszoom des Charts konfigurieren,caption=Anfangszoom des Charts konfigurieren]
 chart.ChartAreas[0].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
                              this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
 decimal margin100 = (max100 - min100) * 5 / 100;
@@ -52,7 +52,7 @@ chart.ChartAreas[0].AxisY.ScaleView.Zoom(Math.Round(Convert.ToDouble(min100 - ma
 
 Nun da das Aussehen der \textit{Series} definiert ist, müssen nun nur noch die Daten, die vom Benutzer übergeben wurden korrekt in diese übernommen werden. Dazu muss die gesamte Preisliste in einer Schleife durchgegangen werden, um aus jedem Bar-Tupel den Open-, den High-, den Low- und den Close-Wert auslesen und in die \textit{Series} speichern zu können. Dies muss für jeden Bar-Tupel so durchgeführt werden, wobei auch die Reihenfolge sehr wichtig ist:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Hinzufügen der Werte eines Bars zur Series,caption=Hinzufügen der Werte eines Bars zur Series]
 // Hinzufuegen des TimeStamos und des High-Werts
 chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.BarList[i].Item3));
 // Hinzufuegen des Low-Werts
@@ -67,7 +67,7 @@ chart.Series["Data"].Points[i].YValues[3] = Convert.ToDouble(this.mainViewModel.
 
 Im Laufe des Projekts wurde entschieden, dass die Entscheidungen des Algorithmus im Chart in Form von \textit{ArrowAnnotation}s dargestellt werden sollen. Diese sind einfache Pfeile, die an einen bestimmten Bar in der \textit{Series} angehängt werden können. Farblich wurden für die Pfeile der Verkaufssignale -1, -2 und -3 drei unterschiedliche Rottöne gewählt. Entsprechend wurden für die Kaufsignale 1, 2 und 3 drei unterschiedliche Grüntöne gewählt. Außerdem zeigen die roten Pfeile nach unten und die grünen nach oben. Neutralpfeile, die das Signal 0 darstellen, sind die weißer Farbe gehalten. Da es sich bei Neutralpfeile immer um eine Neutralisierung der zuvor eingegangenen Position sind, zeigen die Neutralpfeile bei der Neutralisierung einer Short-Position (-1, -2 oder -3) nach oben, da gekauft werden muss und bei der Neutralisierung einer Long-Position (1, 2 oder 3) nach unten, da verkauft werden muss. Die \textit{Annotation}s werden zu einer eigenen Eigenschaft des Charts, nämlich \textit{Annotations} hinzugefügt und die Berechnung des Aussehens der einzelnen Pfeile erfolgt direkt beim Hinzufügen jedes einzelnen Bars, sofern an diesem ein Signalwechsel des Algorithmus vorliegt. Die Berechnung der Signale muss daher klarerweise vor dem Aufbau des Charts erfolgen. Im Code sind \textit{ArrowAnnotation}s für einen roten Pfeil wie folgt realisiert. Für die anderen Pfeile müssen nur die jeweiligen Eigenschaften geändert werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Konfiguration der ArrowAnnotations im Chart,caption=Konfiguration der ArrowAnnotations im Chart]
 //Erzeugen der ArrowAnnotation
 ArrowAnnotation a = new ArrowAnnotation();
 //Vergabe eines Namens, da nicht alle gleich heissen duerfen
@@ -124,7 +124,7 @@ Wurden diese Indikatoren festgelegt, wird bei folgenden Berechnungen nach der ei
 \\
 Beim zuletzt erwähnten, dem \gls{macd} gilt es allerdings noch eine weitere Problematik zu beachten. Als einziger der implementierten Indikatoren fluktuiert der \gls{macd} nämlich nicht um die Aktien-Preisdaten herum, sondern um die X-Achse. Da dies in der selben Zeichnung nicht wirklich schön aussehen würde, wird zur Darstellung des \gls{macd} nun eine extra \textit{ChartArea} erzeugt, die sich unter der Haupt-Area befindet. Eine solche zweite \textit{ChartArea} lässt sich grundsätzlich auch recht einfach auf die selbe Art und Weise wie die erste erzeugen, nur dass sie noch auf die erste \textit{ChartArea} ausgerichtet werden muss. Hier wurde eine Größe von 70\% des gesamten Charts für die Candlestick-Area und 30\% für die \gls{macd}-Area festgelegt. Dies funktioniert wie folgt:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Zeichnen einer zweiten ChartArea,caption=Zeichnen einer zweiten ChartArea]
 public void drawSecondChartArea(Chart chart)
 {
 	//Erzeugen und hinzufügen der zweiten ChartArea

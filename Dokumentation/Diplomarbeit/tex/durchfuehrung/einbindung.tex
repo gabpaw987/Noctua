@@ -13,7 +13,7 @@ Dazu gibt es zwei Möglichkeiten:
 
 Der komplette Codeausschnitt zum Laden eines Algorithmus sieht nun wie folgt aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Einbindung und Nutzung einer DLL,caption=Einbindung und Nutzung einer DLL]
 //Laden des Assemblys
 Assembly assembly = Assembly.LoadFile(this.mainViewModel.AlgorithmFileName);
 //Laden des Assemblys in die Domäne
@@ -34,7 +34,7 @@ Durch Aufruf der \textit{startCalculation}-Methode des Algorithmus werden die Si
 
 Die Aktein-Preisdaten werden in Form von Bars über einen bestimmten Zeitraum erwartet. Ob es sich hierbei um Minute-, Daily- oder andere Bars handelt ist hierbei grundsätzlich egal. Sie müssen lediglich in Form einer \gls{csv}-Datei mit folgendem Format gespeichert werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Format des CSV-Daten-Files,caption=Format des CSV-Daten-Files]
 Bar,Date,Time,Open,High,Low,Close
 1,01/02/90,00:00,8.8125,9.375, 8.75,9.3125
 2,01/03/90,00:00,9.375, 9.50,9.375,9.375
@@ -46,7 +46,7 @@ Das Datum muss im Format MM/DD/YY und die Uhrzeit im Format hh:mm gespeichert we
 \\
 Ist der Pfad in der \gls{bts} richtig gewählt und die Berechnung wird gestartet, wird das \gls{csv}-File in der \gls{bts} ausgelesen. Dies geschieht mit Hilfe der \gls{linq}-Technologie (Siehe \ref{linq} ''LINQ'') und sieht im Code wie folgt aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=LINQ zum Auslesen des CSV-Daten-Files,caption=LINQ zum Auslesen des CSV-Daten-Files]
 public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
 {
     // Geht alle Zeilen durch und ueberspringt den Header

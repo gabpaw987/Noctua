@@ -7,7 +7,7 @@ Objekte in .NET-Sprachen sind grundsätzlich flüchtig, dass bedeutet das sie nach
 
 Neben der einfachen Serialisierung mit dem \textit{BinaryFormatter}, bietet das .NET-Framework auch einen \textit{SoapFormatter} und einen \textit{XmlSerializer}. Der \textit{SoapFormatter}, überträgt den aktuellen Zustand eines Objekts nich in ein binäres, sondern ein \gls{soap}-Format. Dieses wird bei der Übertragung von Daten über das Netzwerk mittels einer \gls{soap}-Verbindung benötigt, um Objekte übertragen zu können. Der \textit{XmlSerializer} überträgt die Daten des betroffenen Objekts in ein \gls{xml}-Format, um es als \gls{xml}-Datei abspeichern und ggf. später wieder auslesen zu können. Im folgenden werde ich allerdings nur auf den wichtigsten, den \textit{BinaryFormatter}, eingehen, der Objekte einfach in ein binäres Format überführt und auf einen Stream legt. Dazu müssen lediglich alle globalen Variablen bzw. deren Werte in Binärcode umgewandelt und gespeichert werden. Methodendefinitionen, etc, müssen dabei nicht serialisiert werden, da zur Deserialisierung und anschließenden Nutzung des Objekts die Klassendefinition des Objekts ohnehin vorhanden sein muss. Die Serialisierung funktioniert wie folgt \cite{visualcsharp}:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Serialisierung mit einem BinaryFormatter,caption=Serialisierung mit einem BinaryFormatter]
 BinaryFormatter bFormatter = new BinaryFormatter();
 bFormatter.Serialize(stream, object);
 \end{lstlisting}
@@ -16,7 +16,7 @@ Dazu wird also zuerst ein neuer BinaryFormatter initialisiert und anschließend d
 \\
 Eine Klasse kann wie folgt bei der Deklaration mit dem \textit{Serializable()}-Attribut gekennzeichnet werden \cite{visualcsharp}:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Markierung einer Klasse als Serializable,caption=Markierung einer Klasse als Serializable]
 [Serializable()]
 class Klasse{
 	...
@@ -27,7 +27,7 @@ Dies ist lediglich die Markierung der Klasse über ein sog. Markup-Interface. Dad
 \\
 Möchte man ein bereits serialisiertes Objekt aus dem Binärcode wieder auslesen und als Objekt speichern, benötigt man ebenfalls die Klasse \textit{BinaryFormatter} und dessen \textit{Deserialize}-Methode. Dieser muss nur der Stream übergeben werden, der sich ohnehin mit seinem internen Zeiger auf einer Position befindet. Mit dem Aufruf der \textit{Deserialize}-Methode wird ab der aktuellen Zeigerposition das nächste serialisierte Objekt gesucht, zurück in ein normales Objekt umgewandelt und als \textit{Object} zurückgegeben. Damit dieses \textit{Object} wieder als das ursprüngliche erkannt werden kann und mit der richtigen Klassendefinition verknüpft wird, muss es zusätzlich noch auf den gewünschten Typ gecastet werden. \cite{visualcsharp}
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Deserialisierung mit einem BinaryFormatter,caption=Deserialisierung mit einem BinaryFormatter]
 BinaryFormatter bFormatter = new BinaryFormatter();
 Object object = (Object) bFormatter.Deserialize(stream);
 \end{lstlisting}
@@ -64,7 +64,7 @@ Da die manuelle Erstellung einer solchen Anwendungskonfigurationsdatei sehr komp
 
 Hier wurden schon einige Datensätze hinzugefügt. Wie man sehen kann muss lediglich für jeden neuen Datensatz eine neue Zeile angelegt werden. Danach muss der Einstellung ein Name und ein Datentyp zugewiesen werden. Spezifische Datentypen bzw. eigens kreierte Objekte können nicht als Einstellung in der Anwendungskonfigurationsdatei definiert werden, sie können allerdings bspw. in serialisierter Form als String gespeichert werden. Nun muss nur noch eine der zuvor beschriebenen Code-Sektionen als Bereich und ein Startwert, der nach der Erzeugung der \gls{xml}-Datei zu Anfang als Wert dieses Datensatzes gespeichert wird, definiert werden und schon kann der Datensatz im Programmcode benutzt werden. Das Lesen und Schreiben in ein solches File im Programmcode am Beispiel eines \textit{string}s für den Namen der Algorithmus-\gls{dll}-Datei funktioniert wie folgt \cite{visualcsharp}:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Nutzung einer Anwendungskonfigurationsdatei,caption=Nutzung einer Anwendungskonfigurationsdatei]
 string algorithmFileName = "algorithm.dll";
 //Schreiben
 Properties.Settings.Default.AlgorithmFileName = algorithmFileName;

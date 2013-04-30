@@ -21,7 +21,7 @@ Generell werden all diese Einstellungen direkt aus dem ViewModel in die Anwendun
 \\
 Dazu müssen klarerweise die einzelnen \textit{StackPanel}s in der Liste in einzelne \textit{string}s umgewandelt werden, die in der \textit{StringCollection} gespeichert werden können. Dies funktioniert durch Serialisierung jedes einzelnen Panels. Leider die benutzten \gls{wpf}-\gls{gui}-Elemente allerdings nicht als serialisierbar gekennzeichnet und können nur über einen speziellen \textit{XamlWriter} in ein \gls{xaml}-Format serialisiert werden, dass von einem entsprechenden \textit{XamlReader} wieder ausgelesen und zurück in echte \textit{StackPanel}s umgewandelt werden kann. Weiters wird in jedem der \textit{StackPanel}s auch ein \textit{ColorPicker} aus dem Extended WPF Toolkit \cite{extended-wpf-toolkit} von Xceed benutzt. Dieser besitzt leider nicht die Möglichkeit über einen \textit{XamlWriter} serialisiert zu werden. Dieses Problem wurde umgangen, indem der \textit{ColorPicker} vor der Serialisierung aus dem \textit{StackPanel} entfernt wird. Zur \textit{StringCollection} wird dann ein weiterer \textit{string} hinzugefügt, der die ausgewählte Farbe des \textit{ColorPicker}s speichert, damit diese beim Wiederaufbau der \textit{StackPanel}s einfach neu Initialisiert und auf die entsprechend zuvor gewählte Farbe gesetzt werden kann. Anschließend wird der \textit{ColorPicker} natürlich auch wieder zum \textit{StackPanel} hinzugefügt, damit er nicht in der Anzeige der Chart-Settings fehlt. Die hierzu verwendete Methode sieht so aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=XML-Serialisierung der IndicatorStackPanels,caption=XML-Serialisierung der IndicatorStackPanels]
 public StringCollection storeIndicatorStackPanels(List<StackPanel> stackPanels)
 {
     StringCollection strings = new StringCollection();
@@ -52,7 +52,7 @@ public StringCollection storeIndicatorStackPanels(List<StackPanel> stackPanels)
 
 Die daraus resultierende \textit{StringCollection} kann natürlich auch in die Anwendungskonfigurationsdatei gespeichert werden. Beim Auslesen können die \textit{StackPanel}s wie folgt wieder aufgebaut werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=XML-Deserialisierung der IndicatorStackPanels,caption=XML-Deserialisierung der IndicatorStackPanels]
 public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
 {
     List<StackPanel> newList = new List<StackPanel>();

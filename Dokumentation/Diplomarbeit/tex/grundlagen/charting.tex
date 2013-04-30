@@ -18,7 +18,7 @@ Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die
 
 Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich, man kann diese Einschränkung allerdings umgehen indem man einen sog. \textit{WinFormsHost} erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem \textit{MSChart} kann so erstellt werden:
 
-\begin{lstlisting}
+\begin{lstlisting}[label=MSChart in einer WinFormsHost-Umgebung,caption=MSChart in einer WinFormsHost-Umgebung]
 <WindowsFormsHost Name="WfHost" Grid.Row="0">
 	<MSChart:Chart x:Name="MyWinformChart">
 	    <MSChart:Chart.ChartAreas>
@@ -30,7 +30,7 @@ Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältli
 
 Hier wurde außer dem primitiven \textit{MSChart} auch gleich eine \textit{ChartArea} hinzugefügt. Eine \textit{ChartArea} ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses WinFormsHost-Element allerdings funktioniert müssen für das gesamte \textit{Window} noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Namespaces für MSChart und WinFormsHost,caption=Namespaces für MSChart und WinFormsHost]
 xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
 xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
 xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
@@ -40,7 +40,7 @@ xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsI
 
 Nachdem eine leere \textit{ChartArea}, in die ein Graph gezeichnet werden kann, bereits im \gls{xaml} erzeugt wurde, muss man im C\#-Code nur noch das \textit{Chart} suchen, in das gezeichnet werden soll und eine \textit{Series} erstellen. In diese Series werden dann die Daten eingespeist, die gezeichnet werden soll. Wenn man nun auch noch einen Typ für den Graphen konfiguriert wird dieser auch schon in der \textit{ChartArea} angezeigt. Um bspw. eine Sinusfunktion darzustellen müsste man nun folgenden Code schreiben: \cite{msdn-charting}
 
-\begin{lstlisting}
+\begin{lstlisting}[label=Erstellung einer Series,caption=Erstellung einer Series]
 //Lookup des bereits im XAMl-Code definierten Charts
 Chart chart = this.FindName("MyWinformChart") as Chart;
 
@@ -76,7 +76,7 @@ Die wichtigsten Formeln in der \textit{FinancialFormula}-Sammlung der MS Chart C
 
 Im Code würde der Einsatz von \textit{FinancialFormula} so aussehen:
 
-\begin{lstlisting}
+\begin{lstlisting} [label=Berechnung eines WMA mit FinancialFormula,caption=Berechnung eines WMA mit FinancialFormula]
 chart.DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, 90, "Data", "FinFor");
 \end{lstlisting} \cite{msdn-charting}
 
