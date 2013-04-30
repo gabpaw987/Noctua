@@ -4,7 +4,7 @@ Nachdem eine Berechnung in der \gls{bts} erfolgreich durchgeführt wurde und die 
 \\
 Beim Speichern werden alle Einstellungen des Settings-Tab sowie alle allgemeinen und Order-spezifischen Performancedaten binär serialisiert (Siehe \ref{Binaere-Serialisierung} ''Binäre Serialisierung'') und in ein spezielles .bts-File gespeichert. Dieses kann zu einem späteren Zeitpunkt auch wieder geladen werden, wobei der komplette Zustand der \gls{bts} bis auf das gezeichnete Chart wiederhergestellt wird. Dies funktioniert vor allem recht einfach, da bei jedem Speicher- sowie Lese-Vorgang die serialisierten Daten in der selben Reihenfolge gespeichert bzw. ausgelesen werden können. Wie die \gls{bts} nach dem Laden ohne Chart aussieht, kann der Abbildung \ref{fig:bts_order_geladen} entnommen werden.\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_order_geladen.png}
 	\caption{Beispielhafte Darstellung des Orders-Tab nach Laden eines .bts-Files}
@@ -33,7 +33,7 @@ Ratio of Good Trades - Bad Trades:             2,143
 
 Sowohl das Speichern und Laden als auch das exportieren benutzen speziellen FileDialogs (\textit{OpenFileDialog} und \textit{SaveFileDialog}) zur Auswahl der zu ladenden Datei bzw. dem gewünschten Speicherort der Datei. Diese FileDialog sieht bspw. beim Speichern eines .bts-Files aus wie in Abbildung \ref{fig:bts_speichern}.\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_speichern.png}
 	\caption{\textit{SaveFileDialog} beim Speichern eines .bts-Files}
@@ -42,7 +42,7 @@ Sowohl das Speichern und Laden als auch das exportieren benutzen speziellen File
 
 Nach dem Speichern/Exportieren befinden sich die Dateien dann auch wirklich im angegebenen Ordner, wie man in Abbildung \ref{fig:bts_settings_export} erkennen kann.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_settings_export.png}
 	\caption{Ordner mit einem gespeicherten Zustand und einem Export der BTS}

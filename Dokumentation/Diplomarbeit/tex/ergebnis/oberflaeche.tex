@@ -1,10 +1,10 @@
-\section{Oberfläche}
+\subsection{Oberfläche}
 
 Der allgemeine Aufbau der \gls{gui} der \gls{bts} wurde schon im Punkt \ref{aufbauGUI} ''Aufbau der grafischen Benutzeroberfläche'' erläutert. Im Folgenden soll allerdings zusätzlich ein Einblick in die Darstellung erfolgreicher Berechnungen gegeben werden.\\
 \\
 Nachdem in der \gls{bts} ein entsprechendes Algorithmus-\gls{dll}-File und ein Daten-\gls{csv}-File ausgewählt wurden, können ggf. noch Einstellungen angepasst und anschließend die Berechnung gestartet werden. Nun wird zuerst das Daten-File eingelesen, dann mit dem Algorithmus Signale berechnet und schlussendlich errechnet die \gls{bts} Performancedaten und aktualisiert die \gls{gui}. Bei unserem fertigen Regressionsalgorithmus und einem passenden Daten-File von Google über 300 Tage (daily-Bars) werden die allgemeinen Performancedaten bei Standardeinstellungen und einem Startkapital von 100,00.00 \$ wie in Abbildung \ref{fig:bts_performance} ersichtlich, angezeigt.\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=1.00\textwidth]{graphics/ergebnis/bts_performance.png}
 	\caption{Beispielhafte Darstellung allgemeiner Performancedaten nach einer Berechnung}
@@ -13,7 +13,7 @@ Nachdem in der \gls{bts} ein entsprechendes Algorithmus-\gls{dll}-File und ein D
 
 Auf dem Orders-Tab erwartet den Benutzer bei selber Konfiguration der Inhalt von Abbildung \ref{fig:bts_orders}.\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_orders.png}
 	\caption{Beispielhafte Darstellung des Orders-Tab nach einer Berechnung}
@@ -22,14 +22,14 @@ Auf dem Orders-Tab erwartet den Benutzer bei selber Konfiguration der Inhalt von
 
 Nun könnte man bspw. auf dem Settings-Tab unter ''Orders'' neue Einstellungen, wie einen Price Premium (hierbei werden Aktien auch um einen geringfügig höheren/niedrigeren Betrag als den Ask/Bid gekauft/verkauft) und sowohl relative als auch absolute Transaktionsgebühren (Abgabe an den Broker für jede Transaktion) definieren. Diese haben teilweise drastische Auswirkungen für die Ergebnisse der Performance-Berechnung. So zum Beispiel senken relativ realitätsnahe Einstellungen für die zuvor genannten Werte (Siehe Abbildung \ref{fig:bts_fees}) bei der Nutzung der selben Daten und des selben Algorithmus die allgemeine Portfolio Performance von ca. 30\% auf ca. 15\% (Siehe Abbildung \ref{fig:bts_performance_fees}).\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_fees.png}
 	\caption{Konfiguration von Transaktionsgebühren und einem Price Premium}
 	\label{fig:bts_fees}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_performance_fees.png}
 	\caption{Performancedaten nach Veränderung der Einstellungen}
@@ -38,7 +38,7 @@ Nun könnte man bspw. auf dem Settings-Tab unter ''Orders'' neue Einstellungen, w
 
 Weiters gibt es die Möglichkeit die Anzahl an gekauften/verkauften Round Lots bei verschiedenen Signalen zu ändern. Auch dies kann die Performance von Grund auf verändern. Wenn man nun erneut mit den selben Einstellungen, die Regler für alle verschiedenen Signale auf eine einheitliche Zahl (hier 2) stellt, werden bei jedem positiven Signal (1, 2 oder 3) gleich viele Round Lots verkauft und bei jedem negativen Signal (-1, -2 oder -3) gleich viele Round Lots verkauft. Zum Beispiel sinkt mit den Einstellungen aus Abbildung \ref{fig:bts_orderSizes} und allen anderen Einstellungen wie zuvor, die allgemeine Portfolio Performance weiter auf nur ca. 8\%.\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.50\textwidth]{graphics/ergebnis/bts_orderSizes.png}
 	\caption{Konfiguration von gleichen Order Sizes für alle Signale}
@@ -47,7 +47,7 @@ Weiters gibt es die Möglichkeit die Anzahl an gekauften/verkauften Round Lots be
 
 Auf dem Orders-Tab kann man hier nun im unteren \textit{DataGrid} erkennen, dass die Einstellungen auch wirklich übernommen wurden (Siehe Abbildung \ref{fig:bts_order_feesNsizes}).\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_order_feesNsizes.png}
 	\caption{Orders-Tab mit gleichen Order Sizes für alle Signale}
@@ -56,14 +56,14 @@ Auf dem Orders-Tab kann man hier nun im unteren \textit{DataGrid} erkennen, dass
 
 Neben den performancetechnischen Daten, können aber auch noch die rein optischen Indikatoren Konfiguriert werden. Diese haben keinen Einfluss auf die eigentliche Berechnung, sie werden nur im Chart angezeigt und dienen als Erleichterung für den Benutzer. Es kann bspw. ein einfacher \gls{ma} mit der Länge 10 und der Farbe Rot, ein \gls{wma} mit der Länge 45 und der Farbe Grün, ein \gls{wma} mit der Länge 90 und der Farbe Blau und ein \gls{macd} mit den Längen 10 und 90 und der Farbe Schwarz konfiguriert werden (Siehe Abbildung \ref{fig:bts_indicators}) und sie werden genau so ins Chart eingezeichnet (Siehe Abbildung \ref{fig:bts_chart_indicator}). Für den \gls{macd} wird hierbei sogar eine eigene \textit{ChartArea} eingefügt, da er um die Nulllinie fluktuiert.\\
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_indicators.png}
 	\caption{Konfiguration von verschiedenen Indikatoren zur Darstellung im Chart}
 	\label{fig:bts_indicators}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_chart_indicator.png}
 	\caption{Darstellung verschiedener Indikatoren}
