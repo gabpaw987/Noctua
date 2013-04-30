@@ -125,6 +125,43 @@ else
 
 \subsubsection{Seitw‰rtsphasensystem}
 
+In Seitw‰rtsphasen wird ein Fading-Algorithmus mittels Bollinger B‰nder verwendet, der die B‰nder als Preisziel verwendet, d.h. es wird versucht, nahe dem unteren Band zu kaufen und nahe dem oberen zu verkaufen.
+Ein vorbereitendes Signal (\inline{lastCross}) wird gespeichert, sobald der Preis unter das untere Bollinger Band f‰llt (1) oder ¸ber das obere steigt (-1).
+
+\begin{lstlisting}[label=Trendsignal, caption=Trendsignal]
+// ueberpruefen, ob der Preis die Bollinger Baender 
+// uberschritten (vorbereitendes Verkaufsignal) ...
+if cPrices.[i] > (bollinger.[i] |> fst) then
+    lastCross <- -1
+// ... oder unterschritten hat. (vorbereitendes Kaufsignal)
+else if cPrices.[i] < (bollinger.[i] |> snd) then
+    lastCross <- 1
+\end{lstlisting}
+
+Dabei wird dann ein Kaufsignal generiert, wenn der Preis wieder innerhalb den B‰ndern liegt, das so lange aufrecht bleibt bis der Preis in die entfernten 20\% des Bollinger Bands vorstˆﬂt. Da beim Fading sehr schnell Verluste eingefahren werden kˆnnen, werden die S1- und R1-Level der Pivot Points zus‰tzlich als Sicherung in Seitw‰rtsphasen verwendet. 
+
+\begin{lstlisting}[label=Trendsignal, caption=Trendsignal]
+// Preis liegt innerhalb der Bollinger Baender
+if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
+    // Preis liegt bei vorbereitendem Kaufsignal in den unteren 80% der
+    // Bollinger B‰nder und unterhalb des R1 Pivot Point
+    if lastCross = 1 && bInd.[i] < 0.8m && cPrices.[i] < pvpts.[i].[3] then
+        // Kaufsignal
+        signals.Add(1)
+    // Preis liegt bei vorbereitendem Verkaufsignal in den oberen 80% der
+    // Bollinger B‰nder und ueberhalb des S1 Pivot Point
+    else if lastCross = -1 && bInd.[i] > -0.8m && cPrices.[i] > pvpts.[i].[1] then
+        // Verkaufsignal
+        signals.Add(-1)
+    else
+        // Neutralsignal
+        signals.Add(0)
+// Preis auﬂerhalb der B‰nder
+else
+    // Neutralsignal
+    signals.Add(0)
+\end{lstlisting}
+
 \subsubsection{Signal-Smoothing und Cutloss}
 
 Das bisher beschriebene Handelssystem wurde um 2 essenzielle Elemente erweitert.
