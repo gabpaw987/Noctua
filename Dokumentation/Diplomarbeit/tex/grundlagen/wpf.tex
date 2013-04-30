@@ -1,10 +1,11 @@
+\lstset{style=sharpc}
 \subsection{Windows Presentation Foundation} \label{wpf}
 
 Mit Version 3.0 des .NET-Frameworks wurde wie bereits erwähnt zusätzlich zur altbewährten WinForms-Variante, eine neue Variante integriert um Benutzeroberflächen einfach zu implementieren. Diese heißt \gls{wpf}. \cite{visualcsharp}\\
 \\
 Das wichtigste Merkmal von \gls{wpf} gegenüber anderen Methoden zur \gls{gui}-Erstellung ist, dass bei \gls{wpf} die Programmlogik nach strengsten Richtlinien von der Beschreibung der Oberfläche trennt. Diese Beschreibung der Oberfläche erfolgt mittels einer speziellen Version der normalen \gls{xml}, der \gls{xaml}. Mit dieser Sprache werden alle \gls{gui}-Komponenten, erzeugt und in die entsprechende Position gebracht. Bei \gls{wpf} wird allerdings trotzdem auch eine \gls{api} für den Zugriff auf \gls{xaml}-\gls{gui}-Komponenten innerhalb der Programmlogik bereit gestellt. Bei der Erstellung eines \gls{wpf}-Projektes, bekommt man automatisch ein MainWindow.xaml-File. Ein solches \gls{xaml}-File das lediglich einen Button als \gls{gui} anzeigt, würde nun in etwa so aussehen: \cite{visualcsharp}\\
 \\
-\begin{verbatim}
+\begin{lstlisting}
 <Window x:Class="Wpf1Application1.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,7 +14,7 @@ Das wichtigste Merkmal von \gls{wpf} gegenüber anderen Methoden zur \gls{gui}-Er
     	<Button Name="button1">Button</Button>
     <\Grid>
 </Window>
-\end{verbatim}
+\end{lstlisting}
 
 Hierbei werden zuerst die nötigen von Microsoft definierten \gls{xaml}-Namespaces angegeben. Anschließend werden ein Titel (der ganz oben im Fenster angezeigt wird) und die Größe des Fensters angegeben, dass später unseren Button beinhalten soll. Danach wird ein einfaches Grid-Layout mit einem Button mit dem Text "Button" gezeichnet. Ab Microsoft Visual Studio 2008, wird auch ein \gls{wpf}-\gls{gui}-Builder bei der Installation mitgegeben, mit dem man diese \gls{xaml}-Dateien einfach mit graphischer Oberfläche erstellen kann. \cite{visualcsharp}\\
 \\
@@ -52,7 +53,7 @@ Zur Nutzung von Data Binding sind nun zwei Klassen wichtig, DataContext und Bind
 \\
 Das einfachste Beispiel für eine Bindung könnte nun in etwa so aussehen:
 
-\begin{verbatim}
+\begin{lstlisting}
 <Window x:Class="Wpf1Application1.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -67,13 +68,13 @@ Das einfachste Beispiel für eine Bindung könnte nun in etwa so aussehen:
     	</TextBox>
     </StackPanel>
 </Window>
-\end{verbatim} \cite{visualcsharp}
+\end{lstlisting} \cite{visualcsharp}
 
 Zuerst wird hier der \textit{DataContext} auf das ViewModel gesetzt. Dies wäre hier zwar noch nicht notwendig, da keine Bindung auf ein Property aus dem ViewModel erfolgt, es zeigt allerdings die angesprochene Funktionsweise und wird im nächsten Beispiel von Bedeutung sein. Danach werden zwei \textit{TextBoxen} erstellt von denen die Text-Variable der unteren eine Bindung auf die Text-Variable der oberen besitzt. Dadurch wird der Text der unteren \textit{TextBox} automatisch an den Text der oberen \textit{TextBox} angepasst, falls sich dieser ändert. Eine Bindung in dieser Art könnte aber auch auf jedes andere Attribute der \textit{TextBoxen} (z.B. Größe, Schriftart, etc.) angewendet werden. Dazu müsste lediglich der \textit{Path} der Bindung geändert werden. \cite{visualcsharp}\\
 \\
 Eine etwas kompliziertere Bindung ist die auf ein Property aus dem ViewModel. Dazu muss man zuerst im ViewModel ein Property erzeugen und dessen setter-Methode für die Nutzung von Notifications implementieren. Das Property, das die Lieblingsfarbe einer Person speichert, könnte dann in etwa so aussehen \cite{msdn-mvvm}:
 
-\begin{verbatim}
+\begin{lstlisting}
 public class MyViewModel : INotifyPropertyChanged
 {
     private string favoriteColor;
@@ -96,11 +97,11 @@ public class MyViewModel : INotifyPropertyChanged
         }
     }
 }
-\end{verbatim} \cite{msdn-mvvm}
+\end{lstlisting} \cite{msdn-mvvm}
 
 Hierbei wird einfach eine globale Variable (\textit{favoriteColor}) mit einem Property (\textit{FavoriteColor}) versehen, das die setter-Methode so implementiert hat, dass ein \textit{PropertyChangedEvent} gesendet wird, sobald der Wert der Lieblingsfarbe geändert wird. Dies ist notwendig, wenn man das Property an ein \gls{gui}-Element binden will, da sich das \gls{gui}-Element, sonst im Falle einer Änderung der Lieblingsfarbe nicht aktualisieren würde. Möchte man dieses Property nun im \gls{xaml}-Code an ein \gls{gui}-Element binden, muss man lediglich das Folgende schreiben:
 
-\begin{verbatim}
+\begin{lstlisting}
 <Window x:Class="Wpf1Application1.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -114,6 +115,6 @@ Hierbei wird einfach eine globale Variable (\textit{favoriteColor}) mit einem Pr
     	</TextBox>
     </StackPanel>
 </Window>
-\end{verbatim}
+\end{lstlisting}
 
 Diesmal ist die Definition des ViewModels als \textit{DataContext} notwendig. Aus diesem wird nämlich einfach in der Bindung das \textit{FavoriteColor}-Property aufgerufen. Schon steht zu jeder Zeit die aktuelle Lieblingsfarbe aus dem ViewModel in der \textit{TextBox}.

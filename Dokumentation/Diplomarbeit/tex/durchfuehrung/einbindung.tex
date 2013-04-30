@@ -1,3 +1,4 @@
+\lstset{style=sharpc}
 \subsection{Einbindung des Algorithmus}
 
 Da die \gls{bts} natürlich nicht nur einen Algorithmus testen können soll, ist es wichtig das die Algorithmen nicht direkt im Code verankert sind, sondern zur Laufzeit geladen werden können. Dazu kann der Benutzer einen Pfad angeben, von dem der Algorithmus in Form einer \gls{dll}-Datei (Siehe \ref{dll} ''Dynamic Link Library'') gelesen werden kann. Damit die \gls{bts} den Algorithmus aber auch ausführen kann, muss dieser zuerst in die lokale Domäne des Benutzers bzw. der \gls{bts} geladen werden. \\
@@ -12,7 +13,7 @@ Dazu gibt es zwei Möglichkeiten:
 
 Der komplette Codeausschnitt zum Laden eines Algorithmus sieht nun wie folgt aus:
 
-\begin{verbatim}
+\begin{lstlisting}
 //Laden des Assemblys
 Assembly assembly = Assembly.LoadFile(this.mainViewModel.AlgorithmFileName);
 //Laden des Assemblys in die Domäne
@@ -25,7 +26,7 @@ Type t = assembly.GetType("Algorithm.DecisionCalculator");
 Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
 //Invokieren der Methoden mit den Uebergabeparametern
 t.GetMethod("startCalculation").Invoke(null, oa);
-\end{verbatim}
+\end{lstlisting}
 
 Durch Aufruf der \textit{startCalculation}-Methode des Algorithmus werden die Signale in die übergebene Liste aus dem ViewModel gespeichert. Diese können von dort anschließend für die Berechnungen benutzt werden. Hierzu ist noch wichtig zu erwähnen, dass von der \gls{bts} an den letzten Bar noch ein Signal mit dem Wert 0 gesetzt wird, damit später in den Berechnungen alle noch offenen Positionen aufgelöst werden und man die fiktive letztendliche Performance betrachten kann, die in diesem Fall aufgetreten wäre.
 
@@ -33,19 +34,19 @@ Durch Aufruf der \textit{startCalculation}-Methode des Algorithmus werden die Si
 
 Die Aktein-Preisdaten werden in Form von Bars über einen bestimmten Zeitraum erwartet. Ob es sich hierbei um Minute-, Daily- oder andere Bars handelt ist hierbei grundsätzlich egal. Sie müssen lediglich in Form einer \gls{csv}-Datei mit folgendem Format gespeichert werden:
 
-\begin{verbatim}
+\begin{lstlisting}
 Bar,Date,Time,Open,High,Low,Close
 1,01/02/90,00:00,8.8125,9.375, 8.75,9.3125
 2,01/03/90,00:00,9.375, 9.50,9.375,9.375
 3,01/04/90,00:00,9.375,9.6875,9.3125,9.40625
 ...
-\end{verbatim}
+\end{lstlisting}
 
 Das Datum muss im Format MM/DD/YY und die Uhrzeit im Format hh:mm gespeichert werden. Die Dezimalstellen von Open, High, Low und Close müssen durch einen Punkt und ohne Tausendertrennzeichen angegeben werden. Es können natürlich unendlich viele Bars in der Datei gespeichert werden, die Berechnungen dauern dadurch einfach entsprechend länger. Weiters wird die erste Zeile nicht berücksichtigt, da hier meist Header-Informationen gespeichert sind. Befindet sich hier auch schon ein Bar, wird dieser ignoriert. Noch genauere Informationen hierzu können dem Benutzerhandbuch von Noctua entnommen werden\\
 \\
 Ist der Pfad in der \gls{bts} richtig gewählt und die Berechnung wird gestartet, wird das \gls{csv}-File in der \gls{bts} ausgelesen. Dies geschieht mit Hilfe der \gls{linq}-Technologie (Siehe \ref{linq} ''LINQ'') und sieht im Code wie folgt aus:
 
-\begin{verbatim}
+\begin{lstlisting}
 public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
 {
     // Geht alle Zeilen durch und ueberspringt den Header
@@ -64,4 +65,4 @@ public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> E
                //Erzeugt den Tupel und speichert ihn in das Rueckgabe-IEnumerable
                select new Tuple<DateTime, decimal, decimal, decimal, decimal>(timeStamp, open, high, low, close);
 }
-\end{verbatim}
+\end{lstlisting}

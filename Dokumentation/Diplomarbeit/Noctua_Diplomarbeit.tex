@@ -180,6 +180,7 @@
 \definecolor{turqusnumbers}{rgb}{0.17,0.57,0.69}
 \definecolor{redstrings}{rgb}{0.5,0,0}
 
+
 \lstdefinelanguage{FSharp}
                 {morekeywords={let, new, match, with, rec, open, module, namespace, type, of, member, and, for, in, do, begin, end, fun, function, try, mutable, if, then, else},
     keywordstyle=\color{bluekeywords},
@@ -190,6 +191,21 @@
     morestring=[b]",
     stringstyle=\color{redstrings}
     }
+    
+\lstdefinestyle{sharpc}{language=[Sharp]C,
+  basicstyle= \textbf,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)},
+  commentstyle=\color{greencomments},
+  keywordstyle=\color{bluekeywords},
+  stringstyle=\color{redstrings},
+  basicstyle=\ttfamily,
+  tabsize=2
+  }
     
 %activate automatic line breaks
 \lstset{breaklines=true}
@@ -257,6 +273,10 @@ numberfirstline=true
 \include{tex/abstracta}%
 \selectlanguage{ngerman}%
 \include{tex/kurzzfsg}%
+
+
+
+%\newfontfamily\listingsfont[Scale=0.7]{Arial}
 
 
 %%-----------------------------------------------------------------------

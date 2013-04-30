@@ -1,10 +1,11 @@
+\lstset{style=sharpc}
 \subsection{C\# Tupel}
 
 Ein Tupel ist prinzipiell eine Ansammlung von Werten. Dabei können sie beliebig viele Werte mit verschiedenen Datentypen haben. Eben diese Anzahl und die dazugehörigen Datentypen müssen allerdings schon im Vorhinein festgelegt werden, wenn der Tupel erzeugt wird. Ein \textit{Tuple} in C\# könnte bspw. so aussehen \cite{cs-tuple}:
 
-\begin{verbatim}
+\begin{lstlisting}
 Tuple<int, bool> tuple = new Tuple<int, bool>(1, true);
-\end{verbatim}
+\end{lstlisting}
 
 Dabei handelt es sich um einen sehr einfachen Tuple der lediglich einen Integer-Wert zu einem dazugehörigen Boolean-Wert speichert.\\
 Der Tupel ist eine Klasse dessen Werte in ihm gespeichert werden. Deshalb muss er einen separaten Ort im Heap allokieren. \cite{cs-tuple} Dies bedeutet, dass bspw. ein Tupel mit zwei Werte in der Erstellung wesentlich länger benötigt als ein \textit{KeyValuePair}, er aber später in der Nutzung eine deutlich höhere Performance aufweist. \cite{tuple-performance} Außerdem können durch diese Tatsache die Datentypen der Felder des Tupels nach dessen Erstellung absolut nicht mehr geändert werden, was den \textit{Tuple} eigentlich mehr einer \textit{struct} ähneln lässt. \cite{cs-tuple}\\
