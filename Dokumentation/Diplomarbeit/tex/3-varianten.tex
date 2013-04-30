@@ -1,2 +1,5 @@
 \chapter{Realisierungsvarianten} \label{chapter:varianten}
 
+\section{Programmiersprachen}
+Bei der Programmierung der \gls{bts} ist es wichtig die Interoperabilität zu einem dynamisch ladbaren Algorithmus zu erhalten. Weitere wichtige Punkte, die erfüllt werden müssen, sind die mathematische Berechnung von performancerelevanten Daten und das effiziente einlesen und abarbeiten von Daten. \\
+Eine gute Wahl ist die Kombination einer objektorientieren und einer funktionalen Programmiersprache, eine C\#, F\#-Kombination bietet sich hierbei an. Bei dieser Kombination ist die C\#-Seite die \gls{bts}, welche Daten einliest und Ergebnisse interpretiert. Bei dem F\# Softwareprodukt handelt es sich nicht um eine gewohnte Konsolen- oder GUI-Applikation, sondern um eine DLL, welche dynamisch in die \gls{bts} eingebunden werden kann und diese mit Entscheidungen versorgt. Bei dieser Lösung kommt es zu keinem Problem, wenn der Algorithmus (ursprünglich F\#) auch in einer anderen .Net-Sprache geschrieben wird, und als Programmbibliothek exportiert wird. 
