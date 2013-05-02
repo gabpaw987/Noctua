@@ -7,7 +7,7 @@ Ein Tupel ist prinzipiell eine Ansammlung von Werten. Dabei können sie beliebig 
 Tuple<int, bool> tuple = new Tuple<int, bool>(1, true);
 \end{lstlisting}
 
-Dabei handelt es sich um einen sehr einfachen Tuple der lediglich einen Integer-Wert zu einem dazugehörigen Boolean-Wert speichert.\\
+Dabei handelt es sich um einen sehr einfachen \textit{Tuple} der lediglich einen Integer-Wert zu einem dazugehörigen Boolean-Wert speichert.\\
 Der Tupel ist eine Klasse dessen Werte in ihm gespeichert werden. Deshalb muss er einen separaten Ort im Heap allokieren. \cite{cs-tuple} Dies bedeutet, dass bspw. ein Tupel mit zwei Werte in der Erstellung wesentlich länger benötigt als ein \textit{KeyValuePair}, er aber später in der Nutzung eine deutlich höhere Performance aufweist. \cite{tuple-performance} Außerdem können durch diese Tatsache die Datentypen der Felder des Tupels nach dessen Erstellung absolut nicht mehr geändert werden, was den \textit{Tuple} eigentlich mehr einer \textit{struct} ähneln lässt. \cite{cs-tuple}\\
 \\
 In der Praxis werden selten einzelne Tupeln verwendet. Es ist allerdings oft von Vorteil eine Liste aus Tupeln zu erzeugen, wenn man quasi eine \textit{Map} (bzw. ein \textit{Dictionary}) mit mehreren Werten oder anderen Datentypen benötigt. So können z.B. Aktienpreis-Bars als Tupel aus einem \textit{TimeStamp} und Feldern für Open, High, Low und Close realisiert werden. Daraus kann dann eine Liste erstellt werden, um die Bars adäquat speichern zu können.
