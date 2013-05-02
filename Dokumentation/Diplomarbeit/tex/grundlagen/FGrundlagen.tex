@@ -1,16 +1,16 @@
 \lstset{language=FSharp,caption={Descriptive Caption Text},label=DescriptiveLabel}
-F-Sharp (Visual F\# oder auch F\#,) ist eine, im Grunde gesehen, funktionale Programmiersprache, welche auf große Datenmengen und schnelle Berechnungen optimiert ist. Die mögliche Interoperabilität mit allen .NET-Sprachen macht die Sprache zu einer idealen Komponente eines Softwareprodukts. F-\# ist konzipiert um auf eine große Menge an Daten zu wirken, dies wird mittels zusätzlichen Methoden für Listen, Sequenzen und Arrays möglich gemacht. \cite{fsharp}  \\
-Der Begriff funktionale Programmiersprache beschreibt eine Programmiersprache die nur aus Funktionen besteht. Bei einer Funktion handelt es sich um eine Prozedur, die als Ziel eine Auswertung hat. Im Gegenzug dazu steht die imperative Programmierung, ein Programm, das in solch einer Sprache geschrieben ist, folgt den einzelnen Anweisungen des Quellcodes. \cite{programmingparadigms}\\
-Durch die Anbindung an das .Net-Framework wird F-\# allerdings zu einer Multi-Paradigmen-Sprache. Es wird ermöglicht funktional, objektorientiert, aber auch imperativ arbeiten zu können. \cite{fsharp}\\
+F-Sharp (Visual F\# oder auch F\#) ist eine, im Grunde gesehen, funktionale Programmiersprache, welche auf große Datenmengen und schnelle Berechnungen optimiert ist. Die mögliche Interoperabilität mit allen .NET-Sprachen macht die Sprache zu einer idealen Komponente eines Softwareprodukts. F\# ist konzipiert, um auf eine große Menge an Daten zu wirken, dies wird mittels zusätzlichen Methoden für Listen, Sequenzen und Arrays möglich gemacht. \cite{fsharp}  \\ \\
+Der Begriff funktionale Programmiersprache beschreibt eine Sprache, welche nur aus Funktionen besteht. Bei einer Funktion handelt es sich um eine Prozedur, die als Ziel eine Auswertung hat. Im Gegenzug dazu steht die imperative Programmierung, ein Programm, das in einer solchen Sprache geschrieben ist, folgt den einzelnen Anweisungen des Quellcodes. \cite{programmingparadigms}\\ \\
+Durch die Anbindung an das .NET-Framework wird F\# allerdings zu einer Multi-Paradigmen-Sprache. Es wird ermöglicht, funktional, objektorientiert, aber auch imperativ arbeiten zu können. \cite{fsharp}\\ \\
 \begin{figure}[h]
 	\centering
      \includegraphics[scale=1]{graphics/fgrundlagen/VisualFsharp.jpg} 
-	\caption{Visual F-Sharp}
-	\label{Visual F-Sharp}
+	\caption{Logo}
+	\label{Logo}
 \end{figure}
-\subsection{Funktionen in F-\#}\label{fsharpfunktionen}
-Die Programmiersprache F-\# verwendet zur Methodendefinition den Befehl \textbf{let}. Jede definierte Funktion ist im gleichen Namespace erreichbar. Prinzipiell ist eine einmal definierte Funktion nicht mehr änderbar, allerdings gibt es eine Ausnahme, es ist möglich durch die Zusatzdefinition \textbf{mutable} eine Funktion bereits beim Erzeugen als änderbar zu kennzeichnen. \clearpage
-\begin{lstlisting}[label=Funktionen in F-Sharp,caption=Funktionen in F-Sharp]
+\subsection{Funktionen in F\#}\label{fsharpfunktionen}
+Die Programmiersprache F\# verwendet zur Methodendefinition den Befehl \textit{let}. Jede definierte Funktion ist im gleichen Namespace erreichbar. Prinzipiell ist eine einmal definierte Funktion nicht mehr änderbar, allerdings gibt es eine Ausnahme: es ist möglich durch die Zusatzdefinition \textit{mutable} eine Funktion bereits beim Erzeugen als änderbar zu kennzeichnen. \clearpage
+\begin{lstlisting}[label=Definition einer Funktionen,caption=Definition einer Funktionen]
 //hier sieht man eine Funktionsdefinition
 let funktion a b = a*b
 //eine aenderbare Funktion definiert man so
@@ -18,36 +18,36 @@ let mutable funktion = 11
 //nun kann man diese Funktion wieder veraendern
 funktion <- 12
 \end{lstlisting}
-\subsection{Arrays in F-\#}\label{fsharparrays}
-Arrays sind in F-\# veränderbare Sammlungen von längenmäßig fixierten gleichen Datentypen. Sie werden auf folgende Art und Weise definiert:
+\subsection{Arrays in F\#}\label{fsharparrays}
+Arrays sind in F\# veränderbare Sammlungen von längenmäßig fixierten gleichen Datentypen. Sie werden auf folgende Art und Weise definiert:
 \begin{lstlisting}[label=Erzeugen eines Arrays,caption=Erzeugen eines Arrays]
 let array = [| 1; 2; 3 |]
 \end{lstlisting}
 Also sind die beinhalteten Werte umgeben von \begin{math} [\vert \end{math} und \begin{math} \vert] \end{math}, die verschiedenen Werte die intern verwendet werden sind mittels \textbf{;} voneinander getrennt.\\
-F-\# erlaubt dem Benutzer Inline-Erzeugung von Arrays. Dies kann mittels einer for-Schleife (auch mit foreach) vollzogen werden. 
+F\# erlaubt dem Benutzer Inline-Erzeugung von Arrays. Dies kann mittels einer for-Schleife (auch mit foreach) vollzogen werden. 
 \begin{lstlisting}[label=Dynamisch Arrays erzeugen,caption=Dynamisch Arrays erzeugen]
 let array = [| for i = 0 to 9 do yield (i ** 2) |]
 \end{lstlisting}
-Für mathematische Berechnungen besitzen die F-\#-Arrays zusätzliche Funktionen.
+Für mathematische Berechnungen besitzen die F\#-Arrays zusätzliche Funktionen.
 \begin{itemize}
-	\item Array.max gibt den höchsten Wert des Arrays zurück
-	\item Array.min gibt den niedrigsten Wert des Arrays zurück
-	\item Array.init erzeugt ein neues Array mit einer übergebenen Funktion
-	\item Array.averaged oder Array.averagedBy berechnet einen Durchschnitt für alle Elemente im Array
-	\item Array.fold erzeugt ein invertiertes Array aus dem Vorhandenen
-	\item Array.find überprüft ob das gegebene Element in der Liste zu finden ist
-	\item Array.toSeq wandelt das Array in eine Sequenz um 
-	\item Array.toList wandelt das Array in eine Liste um
+	\item \textit{Array.max} gibt den höchsten Wert des Arrays zurück
+	\item \textit{Array.min} gibt den niedrigsten Wert des Arrays zurück
+	\item \textit{Array.init} erzeugt ein neues Array mit einer übergebenen Funktion
+	\item \textit{Array.averaged} oder \textit{Array.averagedBy} berechnet einen Durchschnitt für alle Elemente im Array
+	\item \textit{Array.fold} erzeugt ein invertiertes Array aus dem Vorhandenen
+	\item \textit{Array.find} überprüft ob das gegebene Element in der Liste zu finden ist
+	\item \textit{Array.toSeq} wandelt das Array in eine Sequenz um 
+	\item \textit{Array.toList} wandelt das Array in eine Liste um
 \end{itemize}
-Ein weiterer Vorteil von Arrays in F-\# ist die Möglichkeit spezifische Einträge einzeln anzusprechen, also ohne ein Durchsuchen des Arrays einen einzelnen Wert zu finden. \cite{arraysfs}
-\subsection{Sequenzen in F-\#} \label{fsharpsequenzen}
-Sequenzen in F-\# sind Aneinanderreihungen von Daten des gleichen Daten\-typs mit einer fixierten Größe. Der Vorteil gegenüber Listen in F-\# besteht in der Art der Auswertung. Während Listen nur mit evaluierten Werten befüllt werden, also mit Ergebnissen aus den Funktionen, wird eine Sequenz prinzipiell nur mit einer Menge an Anweisungen befüllt. Deswegen ist die Art der Mengenspeicherung am Besten für Datenmengen geeignet die möglicherweise nicht vollständig gelesen wird. \cite{seqfs} 
+Ein weiterer Vorteil von Arrays in F\# ist die Möglichkeit, spezifische Einträge einzeln anzusprechen, also einen einzelnen Wert ohne ein Durchsuchen des Arrays zu finden. \cite{arraysfs}
+\subsection{Sequenzen in F\#} \label{fsharpsequenzen}
+Sequenzen in F\# sind Aneinanderreihungen von Daten des gleichen Daten\-typs mit einer fixierten Größe. Der Vorteil gegenüber Listen in F\# besteht in der Art der Auswertung. Während Listen nur mit evaluierten Werten befüllt werden, also mit Ergebnissen aus den Funktionen, wird eine Sequenz prinzipiell nur mit einer Menge an Anweisungen befüllt. Deswegen ist die Art der Mengenspeicherung am Besten für Datenmengen geeignet, die möglicherweise nicht vollständig gelesen wird. \cite{seqfs} 
 \begin{lstlisting}[label=Sequenzen erzeugen,caption=Sequenzen erzeugen]
 let sequenz = seq{1 .. 4}
 \end{lstlisting}
-An diesem Beispiel erkennt man, dass man einer Sequenz eine Anweisung gibt, in diesem Fall: "`Zähle von 1 bis 4"'. In dieser Sequenz ist dieser Befehl gespeichert, wird allerdings erst dann ausgeführt, wenn auf die Daten zugegriffen werden soll. \cite{seqfs} 
-Durch das Berechnen beim Aufrufen und nicht beim Speichern ist es auch möglich "`unendliche"' Sequenzen zu erzeugen, welche über ihren Index und der erzeugenden Funktion jeden beliebigen Wert berechnen können. 
-\begin{lstlisting}[label=Unendliche Sequenzen in F-Sharp,caption=Unendliche Sequenzen in F-Sharp]
+An diesem Beispiel erkennt man, wie man einer Sequenz eine Anweisung gibt, in diesem Fall:"`Zähle von 1 bis 4"'. In der Sequenz ist dieser Befehl gespeichert, wird allerdings erst dann ausgeführt, wenn auf die Daten zugegriffen werden soll. \cite{seqfs} 
+Durch das Berechnen beim Aufrufen und nicht beim Speichern ist es auch möglich, "`unendliche"' Sequenzen zu erzeugen, welche über ihren Index und der erzeugenden Funktion jeden beliebigen Wert berechnen können. 
+\begin{lstlisting}[label=Unendliche Sequenzen,caption=Unendliche Sequenzen]
 let seqInfinite = Seq.initInfinite (fun index ->
     let n = float( index + 1 )
     1.0 / (n * n * (if ((index + 1) % 2 = 0) then 
@@ -58,20 +58,20 @@ printfn "%A" seqInfinite
 \end{lstlisting}
 Weitere interessante Funktionen von F-\# Sequenzen sind:
 \begin{itemize}
-	\item Seq.sort oder Seq.sortBy sortiert die Sequenz 
-	\item Seq.windowed oder Seq.pairwise geben die Möglichkeit die Sequenz in eine Menge an Subsequenzen zu spalten, also einem Subsequence-Array
-	\item Seq.cache sorgt dafür, dass schon einmal evaluierte Ergebnisse nicht noch einmal berechnet werden müssen
-	\item Seq.take oder Seq.truncate erzeugt aus einer vorhandenen Sequenz eine Subsequenz, also einen Teil der vorhandenen Sequenz
-	\item Array.toArray wandelt das Array in eine Sequenz um 
-	\item Array.toList wandelt das Array in eine Liste um
+	\item \textit{Seq.sort} oder \textit{Seq.sortBy} sortiert die Sequenz 
+	\item \textit{Seq.windowed} oder \textit{Seq.pairwise} geben die Möglichkeit, die Sequenz in eine Menge Subsequenzen zu spalten, also einem Subsequence-Array
+	\item \textit{Seq.cache} sorgt dafür, dass schon einmal evaluierte Ergebnisse nicht noch einmal berechnet werden müssen
+	\item \textit{Seq.take} oder \textit{Seq.truncate} erzeugt aus einer vorhandenen Sequenz eine Subsequenz, also einen Teil der vorhandenen Sequenz
+	\item \textit{Seq.toArray} wandelt die Sequenz in ein Array um 
+	\item \textit{Seq.toList} wandelt die Sequenz in eine Liste um
 \end{itemize}
 \clearpage
-\subsection{Listen in F-\#} \label{fsharplisten}
-F-\# unterstützt allerdings auch dynamischere Datenmengen, Listen, welche nicht durch die Länge eingeschränkt wird. Im Vergleich zu Arrays sind die gespeicherten Werte in den Listen nicht mehr änderbar. Das Problem, welches durch die Verwendung von F-\#-Listen aufkommt, ist, dass bei einem Zugriff auf einen Eintrag der Liste, jedes einzelne Mal die gesamte Liste durcharbeiten muss, bis der gewünschte Eintrag gefunden wurde. \cite{listfs}
+\subsection{Listen in F\#} \label{fsharplisten}
+F\# unterstützt allerdings auch dynamischere Datenmengen, Listen, welche nicht durch die Länge eingeschränkt wird. Im Vergleich zu Arrays sind die gespeicherten Werte in den Listen nicht mehr änderbar. Das Problem, welches durch die Verwendung von F\#-Listen aufkommt, ist, dass bei einem Zugriff auf einen Eintrag der Liste, jedes einzelne Mal die gesamte Liste durchgearbeitet werden muss, bis der gewünschte Eintrag gefunden wurde. \cite{listfs}
 \begin{lstlisting}[label=Erzeugen einer Liste,caption=Erzeugen einer Liste]
 let list = [ 1; 2; 3 ]
 \end{lstlisting}
-In F-\# ist es möglich solche Listen innerhalb einer Zeile dynamisch zu erzeugen. 
+In F\# ist es möglich, solche Listen innerhalb einer Zeile dynamisch zu erzeugen. 
 \begin{lstlisting}[label=Generieren einer Liste,caption=Generieren einer Liste]
 let list = [ for i in 0 .. 100 -> i+i ]
 \end{lstlisting}
@@ -79,57 +79,57 @@ Um bei einer Liste weitere Daten hinzuzufügen ist folgende Anweisung notwendig:
 \begin{lstlisting}[label=Ergaenzen eines Elements in eine Liste,caption=Ergaenzen eines Elements in eine Liste]
 let newList = 100 :: oldList
 \end{lstlisting}
-F-\# bietet folgende Eigenschaften um mit Listen arbeiten zu können:
+F\# bietet folgende Eigenschaften, um mit Listen arbeiten zu können:
 \begin{itemize}
-	\item List.Head übergibt das erste Dokument
-	\item List.Empty ist eine statische Funktion, welche immer eine leere Liste mit n Einträgen zurückgibt
-	\item List.IsEmpty überprüft die Liste ob die leer ist
-	\item List.Item gibt das n-te Element der Liste zurück
-	\item List.Length zeigt die Länge der Liste
-	\item List.Tail gibt die Liste ohne dem ersten Eintrag zurück
+	\item \textit{List.Head} übergibt das erste Dokument
+	\item \textit{List.Empty} ist eine statische Funktion, welche immer eine leere Liste mit n Einträgen zurückgibt
+	\item \textit{List.IsEmpty} überprüft die Liste, ob sie leer ist
+	\item \textit{List.Item} gibt das n-te Element der Liste zurück
+	\item \textit{List.Length} zeigt die Länge der Liste
+	\item \textit{List.Tail} gibt die Liste ohne de ersten Eintrag zurück
 \end{itemize}
-Listen eignen sich sehr gut für rekursive Funktionen, weil durch die Prozeduren List.Head und List.Tail das im ersten Absatz dieses Kapitels genannten Problem nicht auftreten kann. \cite{listfs}
+Listen eignen sich sehr gut für rekursive Funktionen, weil durch die Prozeduren List.Head und List.Tail das im ersten Absatz dieses Kapitels genannter Problem nicht auftreten kann. \cite{listfs}
 \clearpage
-\subsection{Tupeln in F-\#}
-Eine Tupel ist eine bestimmte Menge an unterschiedlichen geordneten Werten in F-\#. Solche Tupeln haben eine feste Größe und die Werte in einer solchen Menge müssen bestimmte Datentypen besitzen und dürfen von diesen nicht abweichen. Werte die in Tupeln gespeichert sind können nicht verändert werden, das bedeutet, dass keine mutable (veränderbaren) Werte gespeichert werden können. \cite{tupelfs}
+\subsection{Tupel in F\#}
+Ein Tupel ist eine bestimmte Menge an unterschiedlichen geordneten Werten in F\#. Solche Tupel haben eine feste Größe und die Werte in einer solchen Menge müssen bestimmte Datentypen besitzen und dürfen von diesen nicht abweichen. Werte, die in Tupeln gespeichert sind, können nicht verändert werden, das bedeutet, dass keine mutable (veränderbaren) Werte gespeichert werden können. \cite{tupelfs}
 \begin{lstlisting}[label=Erzeugen einer Tupel,caption=Erzeugen einer Tupel]
 let tupel = ("Hello", 17m, true, 'a', 0.01, 1)
 \end{lstlisting}
-An dem Beispiel erkennt man, dass eine Tupel Unterschiedliche Datentypen verwenden kann. \\ Tupeln werden prinzipiell in runden Klammern () definiert. Man kann auch in der Funktionsdefinition beschreiben wie die Tupel aussehen soll. \cite{tupelfs}
+An dem Beispiel \ref{Erzeugen einer Tupel} erkennt man, dass einer Tupel unterschiedliche Datentypen verwenden kann. \\ \\ Eine Tupel wird prinzipiell in runden Klammern () definiert. Man kann auch in der Funktionsdefinition beschreiben wie der Tupel aussehen soll. \cite{tupelfs}
 \begin{lstlisting}[label=Vordefinition von Tupeln,caption=Vordefinition von Tupeln]
-let f:(string * decimal * bool * char * float * int)=.
+let f:(string * decimal * bool * char * float * int)= ...
 \end{lstlisting}
-Um auf die Werte einer Tupel zugreifen zu können, muss man zusätzliche Funktionen implementieren:
+Um auf die Werte eines Tupel zugreifen zu können, muss man zusätzliche Funktionen implementieren:
 \begin{lstlisting}[label=Tupelzugriffe,caption=Tupelzugriffe]
-//Das dritte Element einer Tupel mit genau 5 
+//Das dritte Element eines Tupels mit genau 5 
 //Eintraegen wird zurueckgegeben
 let thirdElement (_, _, c, _, _) = c
-//Das siebte Element einer Tupel mit genau 7 
+//Das siebte Element eines Tupels mit genau 7 
 //Eintraegen wird zurueckgegeben
 let seventhElement (_, _, _, _, _, _, g) = g
 \end{lstlisting}
-Bei Algorithmen, die Werte wie Datum, Uhrzeit, Open (Dezimalzahl), High, Low und Close eignen sich Tupellisten oder Tupelarrays sehr gut.\\ In solchen Tupeln können die Datenstrukturen perfekt übernommen werden, und man kann sich auf eine Datenmenge konzentrieren, ohne andauernd mehrere Arrays oder Listen durchzurechnen, um die jeweils passenden Daten zu erhalten. \\
-Es gibt bereits definierte Funktionen um Tupelzugriffe auf das erste und zweite Element einer Tupel durchzuführen. Allerdings funktionieren diese vordefinierten Funktionen nur bei Tupeln die 2 Einträge besitzen. \\
-Tuplen bieten also die Funktionalität zusammengehörende Daten vernünftig zu speichern. Dieser Effekt bietet einige Vorteile, jedoch gibt es nur wenige vordefinierten Funktionen um auf die eingeschlossenen Daten zu wirken. \cite{tupelfs}
+Bei Algorithmen, die Werte wie Datum, Uhrzeit, Open (Dezimalzahl), High, Low und Close ist der grundlegende Vorteil eines Tupels klar deutlich.\\ In solchen Tupeln können die Datenstrukturen perfekt übernommen werden, und man kann sich auf eine Datenmenge konzentrieren, ohne andauernd mehrere Arrays oder Listen durchzurechnen, um die jeweils passenden Daten zu erhalten. \\
+Es gibt bereits definierte Funktionen um Tupelzugriffe auf das erste und zweite Element eines Tupels durchzuführen. Allerdings funktionieren diese vordefinierten Funktionen nur bei Tupeln die 2 Einträge besitzen. \\ \\
+Tuple bieten also die Funktionalität, zusammengehörende Daten vernünftig zu speichern. Dieser Effekt bietet einige Vorteile, jedoch gibt es nur wenige vordefinierten Funktionen, um auf die eingeschlossenen Daten zu wirken. \cite{tupelfs}
 \clearpage
-\subsection{Pattern Matching in F-\#}
-In F-\# gibt es eine Möglichkeit Entscheidungen mittels Pattern Matching zu verwirklichen. Diese Funktionalität der Programmiersprache ist vergleichbar mit der Switch-Case-Anweisung aus bekannteren Sprachen wie JAVA oder C\#. Mit Pattern Matching können Datenmengen mittels einer Entscheidungslogik bearbeitet werden. \\
-Eine Beispielanwendung wäre ein emulierter Signalgeber. Bei einer Signalspitze soll das Programm eine Ausgabe schreiben. \cite{pmfs}
+\subsection{Pattern Matching in F\#}
+In F\# gibt es eine Möglichkeit, Entscheidungen mittels Pattern Matching zu verwirklichen. Diese Funktionalität der Programmiersprache ist vergleichbar mit der Switch-Case-Anweisung aus bekannteren Sprachen wie JAVA oder C\#. Mit Pattern Matching können Datenmengen mittels einer Entscheidungslogik bearbeitet werden. \\ \\
+Eine Beispielanwendung wäre ein vereinfachter Signalgeber. Bei einer Signalspitze soll das Programm eine Ausgabe schreiben. \cite{pmfs}
 \begin{lstlisting}[label=Pattern Matching Beispiel,caption=Pattern Matching Beispiel]
 let signalgeber x =
 	match x with
 	| 1 -> printfn "Signal"
 	| _ -> ()
 \end{lstlisting}
-Diese Funktion soll mit einer ganzzahligen Zahl aufgerufen. Wird der Fall 1 erreicht schreibt das Programm "`Signal"' in die Konsole. \\ \cite{pmfs}
-Es ist möglich ODER-Abhängigkeiten zu erzeugen:
+Diese Funktion soll mit einer ganzzahligen Zahl aufgerufen werden. Wird der Fall 1 erreicht, schreibt das Programm "`Signal"' in die Konsole.\cite{pmfs} \\ \\ 
+Es ist möglich, ODER-Abhängigkeiten zu erzeugen:
 \begin{lstlisting}[label=ODER Pattern Matching,caption=ODER Pattern Matching]
 let signalgeber x =
 	match x with
 	| 1 | 2 | 3 |-> printfn "Signal"
 	| _ -> ()
 \end{lstlisting}
-Nun wird ein Signal auch dann generiert, wenn eine 2 oder eine 3 übergeben wird. Eine Bedingung beginnt mit einem \begin{math} \vert] \end{math}, danach soll die tatsächliche Abfrage stehen. Mit einem -\begin{math} > \end{math} zeigt man auf die Anweisung, die bei einer positiven Abfrage geschehen soll. Bei dem oben angeführten Beispiel handelt es sich um eine Konsolenausgabe, es können allerdings auch komplexere Anweisungen und weitere Funktionsaufrufe passieren.\\ Eine mögliche Anwendung findet sich beim Filtern eines Arrays, man kann beispielsweise alle negativen Werte eines Arrays filtern.\cite{pmfs} \\ 
+Nun wird ein Signal auch dann generiert, wenn eine 2 oder eine 3 übergeben wird. Eine Bedingung beginnt mit einem \begin{math} \vert \end{math}, danach soll die tatsächliche Abfrage stehen. Mit einem -\begin{math} > \end{math} zeigt man auf die Anweisung, die bei einer positiven Abfrage geschehen soll. Bei dem oben angeführten Beispiel handelt es sich um eine Konsolenausgabe, es können allerdings auch komplexere Anweisungen und weitere Funktionsaufrufe stattfinden.\\ \\ Eine mögliche Anwendung findet sich beim Filtern eines Arrays, man kann beispielsweise alle negativen Werte eines Arrays filtern.\cite{pmfs} \\ \\
 Handelt es sich um einen undefinierten Übergabewert, kann man auch ohne Probleme den Datentyp überprüfen:
 \begin{lstlisting}[label=Typueberpruefung mit Pattern Matching,caption=Typueberpruefung mit Pattern Matching]
 let getClass x =
@@ -140,25 +140,25 @@ let getClass x =
 	| | :? string -> printfn "string"
 	| _ -> printfn "Not found"
 \end{lstlisting}
-\subsection{Pipe Operator in F-\#}
-In F-\# existiert ein zusätzlicher Parameter um Ergebnisse von Funktionen in weitere Funktionen zu übergeben. Der Zweck von diesem Operator ist, dass man nicht zu viele Zwischenspeichervariablen und Funktionen definieren muss. Das Prinzip hinter diesem Operator ist sehr simpel, das Ergebnis aus dem ersten Funktionsaufruf wird als letzter Übergabeparameter der nächsten Funktion übergeben.
-\begin{lstlisting}[label=Pipeoperator in F-Sharp,caption=Pipeoperator in F-Sharp]
+\subsection{Pipe Operator in F\#}
+In F\# existiert ein zusätzlicher Parameter, um Ergebnisse von Funktionen in weitere Funktionen zu übergeben. Der Zweck dieses Operators ist, dass man nicht zu viele Zwischenspeichervariablen und Funktionen definieren muss. Das Prinzip hinter diesem Operator ist sehr simpel, das Ergebnis aus dem ersten Funktionsaufruf wird als letzter Übergabeparameter der nächsten Funktion übergeben.
+\begin{lstlisting}[label=Pipeoperator,caption=Pipeoperator]
 1+1
 |> sum 1
 \end{lstlisting}
-Das Beispiel berechnet die Summe aus 1 + 1 + 1, in der ersten Zeile wird die Summe von 1 + 1 berechnet, anstatt das Ergebnis dieser Berechnung zwischen zu speichern, wird hier das evaluierte Ergebnis sofort an die nachfolgende Funktion weitergegeben. Das bedeutet, dass die Funktion sum aus die Summe aus 1 + 2 berechnet, weil sie  aufgrund des Pipeoperators mit dem Zwischenergebnis beliefert wird. \\
-Sehr oft macht es keinen Sinn Zwischenergebnisse zu speichern, weil diese nur einmal verwendet werden müssen. Deswegen sollte man, wenn man mit F-\# arbeitet, meistens den Pipeoperator benutzen, außer es ist explizit nicht notwendig, weil man das evaluierte Ergebnis noch einmal benötigt. \cite{sofs}
+Das Beispiel berechnet die Summe aus 1 + 1 + 1, in der ersten Zeile wird die Summe von 1 + 1 berechnet, anstatt das Ergebnis dieser Berechnung zwischen zu speichern, wird hier das evaluierte Ergebnis sofort an die nachfolgende Funktion weitergegeben. Das bedeutet, dass die Funktion sum aus die Summe aus 1 + 2 berechnet, weil sie  aufgrund des Pipeoperators mit dem Zwischenergebnis beliefert wird. \\ \\
+Sehr oft macht es keinen Sinn Zwischenergebnisse zu speichern, weil diese nur einmal verwendet werden müssen. Deswegen sollte man, wenn man mit F\# arbeitet, meistens den Pipeoperator benutzen, außer es ist explizit nicht notwendig, weil man das evaluierte Ergebnis noch einmal benötigt. \cite{sofs}
 \subsection{Performancevergleich der Speicherlisten} \label{fsharpperformance}
-In den vorherigen Kapiteln: \nameref{fsharplisten}, sowie \nameref{fsharparrays} und  \nameref{fsharpsequenzen} wurde erläutert, welches Verhalten die unter\-schiedlichen Speicherverfahren haben und wie diese intern funktionieren. Um die effizienteste Methode zu finden, wurde ein Performancetest der vor\-her Angeführten Methoden durchgeführt. Es wurde die gleiche Aufgabe von jeder der 3 Typen durchgeführt. Die verschiedenen Speicherverfahren sollten jeweils einen Exponetial Moving Average berechnen, die ~fertige Be\-rechnung wurde ein weiteres Mal durchgerechnet, um auch etwaige Leistungsschwächen während der Berechnung mit den Ergebnissen aufzudecken. Bei der Evaluierung von 966 Datenpaaren kamen folgende Messungen zustande: \\
-\begin{lstlisting}[label=Performancemessung in F-Sharp,caption=Performancemessung in F-Sharp]
+In den vorherigen Kapiteln: \nameref{fsharplisten}, sowie \nameref{fsharparrays} und  \nameref{fsharpsequenzen} wurde erläutert, welches Verhalten die unter\-schiedlichen Speicherverfahren haben und wie diese intern funktionieren. Um die effizienteste Methode zu finden, wurde ein Performancetest der vor\-her angeführten Methoden durchgeführt. Es wurde die gleiche Aufgabe von jeder der 3 Typen durchgeführt. Die verschiedenen Speicherverfahren sollten jeweils einen Exponetial Moving Average berechnen, die ~fertige Be\-rechnung wurde ein weiteres Mal durchgerechnet, um auch etwaige Leistungsschwächen während der Berechnung mit den Ergebnissen aufzudecken. Bei der Evaluierung von 966 Datenpaaren kamen folgende Messungen zustande:
+\begin{lstlisting}[label=Performancemessung Array Liste und Sequenz,caption=Performancemessung Array Liste und Sequenz]
 Verwendung von Listen:    0.012477 Sekunden
 Verwendung von Arrays:    0.004245 Sekunden
 Verwendung von Sequenzen: 0.008914 Sekunden
 \end{lstlisting}
-Aufgrund der langsameren Zugriffszeiten eignen sich Listen als Speicher für Datenmengen, auf die oft zugegriffen werden müssen, nicht gut. Sequenzen sind bei der Erzeugung schneller, allerdings muss für ein validiertes Ergebnis mehr Leistung aufgebracht werden. Ein Array eignet sich am Besten um darauf öfters zuzugreifen, außerdem sind die Inhalte eines Arrays bereits ausgewertet und können sofort weiterverarbeitet werden. Anhand des folgenden Codestücks soll erklärt werden wie die Berechnung funktionieren soll
+Aufgrund der langsameren Zugriffszeiten eignen sich Listen als Speicher für Datenmengen, auf die oft zugegriffen werden müssen, nicht gut. Sequenzen sind bei der Erzeugung schneller, allerdings muss für ein validiertes Ergebnis mehr Leistung aufgebracht werden. Ein Array eignet sich am Besten, um darauf öfter zuzugreifen, außerdem sind die Inhalte eines Arrays bereits ausgewertet und können sofort weiterverarbeitet werden. Anhand des folgenden Codestücks soll erklärt werden wie die Berechnung funktionieren soll
 \subsection{Schreiben eines SMAs in F-\#} \label{fsharpsma}
-In diesem Abschnitt wird prägnant erklärt wie man einen SMA in F-\# implementiert.
-\begin{lstlisting}[label=SMA in F-Sharp,caption=SMA in F-Sharp]
+In diesem Abschnitt wird prägnant erklärt, wie man einen SMA in F\# implementiert.
+\begin{lstlisting}[label=SMA,caption=SMA]
 (* 
  * Diese Funktion soll einen SMA berechnen
  * Uebergabeparameter: 
