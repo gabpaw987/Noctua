@@ -2,12 +2,12 @@
 
 \section{Musskriterien}
 
-Es soll ein Algorithmus in einer populären Sprache zur vollautomatischen Bestimmung von möglichst profitablen Handelsaktionen (Trades) auf transparenten Handelsmärkten, primär dem Aktienmarkt, entwickelt werden. Um dieses Ziel zu erreichen, sollen Indikatoren aus der technischen Analyse ausgeforscht und im Entwicklungsprozess bewertet werden, um in Folge dessen ein möglichst profitables Handelssystem zu entwickeln. Zusätzlich wird versucht, verschiedene Marktzustände, und die dadurch entstehenden Implikationen auf Kursbewegungen von börsennotierten Handelspapieren, von einander zu unterscheiden. Ein Marktzustand ist hier als unterscheidbares Verhalten der Kurse bzw. Kursbewegungen zu verstehen. Der Einsatz einer weit verbreiteten Programmiersprache ist hierbei besonders wichtig, da sich viele Menschen keine neue Sprache aneignen wollen, sondern es bevorzugen, die ihnen bekannten Sprachen weiter zu benützen.\\
+Es soll ein Algorithmus in einer populären Sprache zur vollautomatischen Bestimmung von möglichst profitablen Handelsaktionen (Trades) auf transparenten Handelsmärkten, primär dem Aktienmarkt, entwickelt werden. Um dieses Ziel zu erreichen, sollen Indikatoren aus der technischen Analyse ausgeforscht und im Entwicklungsprozess bewertet werden, um in Folge dessen ein möglichst profitables Handelssystem zu entwickeln. Zusätzlich wird versucht, verschiedene Marktzustände und die dadurch entstehenden Implikationen auf Kursbewegungen von börsennotierten Handelspapieren voneinander zu unterscheiden. Ein Marktzustand ist hier als unterscheidbares Verhalten der Kurse bzw. Kursbewegungen zu verstehen. Der Einsatz einer weit verbreiteten Programmiersprache ist hierbei besonders wichtig, da sich viele Menschen keine neue Sprache aneignen wollen, sondern es bevorzugen, die ihnen bekannten Sprachen weiter zu benützen.\\
 \\
 Dabei sollen mögliche Anwendungen von verschiedenen Moving-Averages (\glspl{ma}, gleitende Durchschnitte), Oszillatoren zur Support- und Resistance-Level Bestimmung und andere mehr oder weniger häufig genutzte Daten zur algorithmischen Entscheidungsfindung herangezogen werden.\\
 \\
 Eine Auswahl üblicher technischer Indikatoren und damit verbundene Handels\-strategien sollen auf Performance und Risiko überprüft und mögliche Optimierungen erkannt und umgesetzt werden.
-Um diese Größen vergleichbar zu machen, soll Software entwickelt werden, die als Backtesting-Modul fungiert und anhand von historischen Kursverläufen relevante Kennzahlen und Messgrößen errechnet.\\
+Um diese Größen vergleichbar zu machen, soll eine Software entwickelt werden, die als Backtesting-Modul fungiert und anhand von historischen Kursverläufen relevante Kennzahlen und Messgrößen errechnet.\\
 \\
 Märkte verhalten sich in unterschiedlichen Zeitperioden und unter anderen Randbedingungen unterschiedlich. Zeitweise so stark, dass Tradingstrategien, die zeitweise gut oder sogar sehr gut funktionieren, unter anderen Randbedingungen wesentlich niedrigere Erträge einbringen oder sogar Verluste verursachen. Um genau das zu vermeiden und die Volatilität und damit das Risiko zu verringern, soll versucht werden, diese Randbedingungen zu bestimmen und somit spezielle Marktzustände zu identifizieren. \\
 
@@ -18,10 +18,10 @@ Um die wichtigsten Ziele des Projektes zusammenzufassen, können folgende Punkte 
 	\item{Entwickeln eines \emph{parametrisierbaren} Algorithmus (Signalgenerators)\\
 		Beispielweise soll der Algorithmus für unterschiedliche Marktzustände andere Parametersätze anwenden oder die Strategie selbst adaptieren.}
 	\item{Entwickeln von Software zur Prüfung von Performance und Risiko (Backtesting)\\
-		Um die Entwicklung dahingehend zu unterstützen, dass fundierte Entscheidungen und Optimierungen getroffen werden können, sowie die Ergebnisse der Forschung objektiv bewerten zu können, ist eine solche Software unerlässlich.}
+		Um die Entwicklung dahingehend zu unterstützen, dass fundierte Entscheidungen und Optimierungen getroffen werden können, sowie die Ergebnisse der Forschung objektiv zu bewerten, ist eine solche Software unerlässlich.}
 \end{itemize}
 
-Die folgenden Leistungen müssen im Laufe des Projektes erfüllt werden und müssen sich, abhängig von den Ergebnissen, nicht zwangsweise in das Endprodukt einfließen.\\
+Die folgenden Leistungen müssen im Laufe des Projektes erfüllt werden, sie müssen, abhängig von den Ergebnissen, allerdings nicht zwangsweise in das Endprodukt einfließen.\\
 
 \begin{itemize}
 	\item{Testen der Performance eines Handelssystems mit 2 \glspl{sma} und 2 \glspl{ema}, die durch Kreuzungen Entscheidungen treffen.}
@@ -37,6 +37,6 @@ Neben Daten, welche wie die Kurse selbst, Reaktionen der Märkte auf Ereignisse d
 
 \section{Abgrenzungskriterien}
 
-Teil des fertigen Produktes ist ein entwickeltes Handelssystem, das algorithmisch umgesetzt wurde. Dazu werden vorhandene Indikatoren und Strategien aufgegriffen und mithilfe der \gls{bts} quantifiziert. Es ist hingegen \emph{nicht} vorgesehen, komplett neue Indikatoren selbst zu entwickeln.\\
+Teil des fertigen Produktes ist ein entwickeltes Handelssystem, das algorithmisch umgesetzt wird. Dazu werden vorhandene Indikatoren und Strategien aufgegriffen und mithilfe der \gls{bts} quantifiziert. Es ist hingegen \emph{nicht} vorgesehen, komplett neue Indikatoren selbst zu entwickeln.\\
 \\
 Im Projektverlauf wird der Algorithmus anhand von realen historischen Daten getestet und dessen Performance überprüft. Die Integration oder Entwicklung einer Trading-Umgebung, die die aktuellen Kaufentscheidungen des Algorithmus umsetzt, ist \emph{nicht} Bestandteil des Projektes.
