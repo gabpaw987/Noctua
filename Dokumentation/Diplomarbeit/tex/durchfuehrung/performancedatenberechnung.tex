@@ -1,6 +1,6 @@
 \subsection{Berechnung der Performancedaten}
 
-In der \gls{bts} finden sich zwei verschiedene Arten von Performancedaten. Da wären zum einen die Order-spezifischen, die Daten zu jeder fiktiven Kaufentscheidung in der Vergangenheit generieren und die allgemeinen, die die Performance des Algorithmus über den gesamten Zeitraum der Daten widerspiegeln. Wie die einzelnen Daten der beiden Kategorien berechnet werden, soll im Folgenden erläutert werden.
+In der \gls{bts} finden sich zwei verschiedene Arten von Performancedaten. Da sind zum einen die Order-spezifischen, die Daten zu jeder fiktiven Kaufentscheidung in der Vergangenheit generieren und die allgemeinen, die die Performance des Algorithmus über den gesamten Zeitraum der Daten widerspiegeln. Wie die einzelnen Daten der beiden Kategorien berechnet werden, soll im Folgenden erläutert werden.
 
 \subsubsection{Order-spezifische Performancedaten}
 
@@ -12,17 +12,17 @@ Die Order-spezifischen Performancedaten kann man sich auf dem Orders-Tab der \gl
 \item \textbf{Signal Strength} \\
 	Gibt die Stärke des Signals (-3 bis +3) aus, das der Algorithmus bei dieser Order gegeben hätte.
 \item \textbf{Position} \\
-	Position (Pos) beschreibt die Anzahl an Round Lots die durch die Einstellungen in der \gls{bts} bei der vorliegenden Signal Strength gehandelt werden.
+	Position (Pos) beschreibt die Anzahl an Round Lots, die durch die Einstellungen in der \gls{bts} bei der vorliegenden Signal Strength gehandelt werden.
 \item \textbf{Price} \\
-	Gibt den Preis (P) an zu dem die Order zum gegebenen Zeitpunkt platziert worden wäre. Es handelt sich hierbei um den historischen Close-Wert des entsprechenden Bars. Handelt es sich um eine Kaufentscheidung wird hierzu noch der PricePremiumPercentage addiert, handelt es sich um eine Verkaufsentscheidung wird er subtrahiert.
+	Gibt den Preis (P) an, zu dem die Order zum gegebenen Zeitpunkt platziert worden wäre. Es handelt sich hierbei um den historischen Close-Wert des entsprechenden Bars. Handelt es sich um eine Kaufentscheidung, wird hierzu noch der PricePremiumPercentage addiert, handelt es sich um eine Verkaufsentscheidung, wird er subtrahiert.
 \item \textbf{Transaction Price} \\
-	Der Transaktionspreis (TP) gibt an, wie viel Kapital nun investiert werden muss, um die gegebene Anzahl an Round Lots zum gegebenen Preis (Price) handeln zu können. Die Round Lots die gekauft werden müssen (RLA) sind die Differenz von der alten zur neuen Position. War die alte Position also bspw. -1 und das neue ist 1, dann müssen zwei Round Lots gekauft werden. Hierzu werden auch alle zu zahlenden Gebühren addiert. In der folgenden Gleichung ist RLS die Größe eines Round Lots.
+	Der Transaktionspreis (TP) gibt an, wie viel Kapital nun investiert werden muss, um die gegebene Anzahl an Round Lots zum gegebenen Preis (P) handeln zu können. Die Round Lots, die gekauft werden müssen (RLA), sind die Differenz von der alten zur neuen Position. War die alte Position also bspw. -1 und die neue ist 1, dann müssen zwei Round Lots gekauft werden. Hierzu werden auch alle zu zahlenden Gebühren addiert. In der folgenden Gleichung ist RLS die Größe eines Round Lots.
 	\begin{equation}
 		\label{Transaction Price}
 		TP = (P * RLS * RLA) + PF
 	\end{equation}
 \item \textbf{Paid Fee} \\
-	Paid Fee (PF) ist die Gesamtheit aus allen relativen (RT) und absoluten (AT) Transaktionsgebühren, die in der \gls{bts} eingestellt wurden für diese Order bezahlt hätten werden müssen. Dabei wird klarerweise mit dem TP vor Addition der Gebühren gerechnet (TP0).
+	Paid Fee (PF) ist die Gesamtheit aus allen relativen (RT) und absoluten (AT) Transaktionsgebühranteilen, die in der \gls{bts} eingestellt und für diese Order bezahlt hätten werden müssen. Dabei wird klarerweise mit dem TP vor Addition der Gebühren gerechnet (TP0).
 	\begin{equation}
 		\label{Paid Fee}
 		PF = (\frac{RT}{100} * TP0) + AT
@@ -33,14 +33,14 @@ Die Order-spezifischen Performancedaten kann man sich auf dem Orders-Tab der \gl
 		\label{Gebuehren fuer GL}
 		GL0 = \frac{-PF}{TP0} * 100
 	\end{equation}
-	Wenn es sich daher um die Verstärkung einer Position oder die erste Order (hier gibt es keinen Preis der letzten Transaktion oldP) handelt, kann nur GL0 angeschrieben werden. Weiters muss man bei einer Verstärkung der Position auch noch den Preis zu dieser Zeit multipliziert mit der Quantität um die verstärkt wurde  zwischengespeichert werden. Die Quantität, um die verstärkt wurde (diffPos) ist lediglich die absolute Differenz zwischen dem alten und dem neuen Signal. Das Ganze wird in einer Zwischenvariable namens Ausgabe (A) gespeichert, um später noch wissen zu können wie viel für die gerade verfügbaren Positionen gezahlt wurde.
+	Wenn es sich daher um die Verstärkung einer Position oder die erste Order (hier gibt es keinen Preis der letzten Transaktion oldP) handelt, kann nur GL0 angeschrieben werden. Weiters muss bei einer Verstärkung der Position auch noch der Preis zu dieser Zeit multipliziert mit der Quantität, um die verstärkt wurde, zwischengespeichert werden. Die Quantität, um die verstärkt wurde (diffPos), ist lediglich die absolute Differenz zwischen dem alten und dem neuen Signal. Das Ganze wird in einer Zwischenvariable namens Ausgabe (A) gespeichert, um später noch wissen zu können, wie viel für die gerade verfügbaren Positionen gezahlt wurde.
 	\begin{equation}
 		\label{Ausgabe bei Verstärkung der Position}
 		A = A + (P * |diffPos|)
 	\end{equation}
-	Wird nun allerdings wirklich Positionen realisiert werden, muss der gesamte realisierte Gewinn relativ zum investierten Kapital hier angegeben werden. Hierbei sind erneut zwei Fälle möglich. \\
+	Wenn nun allerdings wirklich Positionen realisiert werden, muss der gesamte realisierte Gewinn relativ zum investierten Kapital hier angegeben werden. Hierbei sind erneut zwei Fälle möglich. \\
 	\\
-	Zum einen könnte es sein, dass nicht alle Positionen abgebaut werden, die Vorzeichen der alten und der neuen Position also gleich sind. Dafür muss zuerst herausgefunden werden, wie viel für die Positionen, die man besitzt bezahlt wurde. Dies kann nur angenähert werden, indem man den Anteil an A ausrechnet, der gerade realisiert wird:
+	Zum einen könnte es sein, dass nicht alle Positionen abgebaut werden, die Vorzeichen der alten und der neuen Position also gleich sind. Dafür muss zuerst herausgefunden werden, wie viel für die Positionen, die man besitzt, bezahlt wurde. Dies kann nur angenähert werden, indem man den Anteil an A ausrechnet, der gerade realisiert wird:
 	\begin{equation}
 		\label{Berechnung des realisierten Anteils an der Ausgabe}
 		relA = \frac{A}{oldPos} * |diffPos|
@@ -65,21 +65,21 @@ Die Order-spezifischen Performancedaten kann man sich auf dem Orders-Tab der \gl
 \item \textbf{Cumulative Gain/Loss [\%]} \\
 	Hierbei werden kumulativ die GL-Werte aller bisherigen Orders aufaddiert ausgegeben.
 \item \textbf{Portfolio Performance [\%]} \\
-	Die Portfolio Performance (PP) ist eine der wichtigsten Performancedaten. Sie gibt an, um wie viel Prozent sich das gesamte Kapital bei dieser einen Order im Vergleich zur vorherigen verändert hat, also wie groß die Auswirkung dieses Trades auf das Kapital ist. Hierzu wird als Grundlage einfach das aktuelle Vermögen (vgl.''Net Worth'' (NW) weiter unten) und die absolute Kapitalveränderung (vgl. ''Absolute Portfolio Performance'' (APP) weiter unten) genommen:
+	Die Portfolio Performance (PP) ist eine der wichtigsten Performancedaten. Sie gibt an, um wie viel Prozent sich das gesamte Kapital bei dieser einen Order im Vergleich zur vorherigen verändert hat, also wie groß die Auswirkung dieses Trades auf das Kapital ist. Hierzu wird als Grundlage einfach das aktuelle Vermögen (vgl. "`Net Worth"' (NW) weiter unten) und die absolute Kapitalveränderung (vgl. "`Absolute Portfolio Performance"' (APP) weiter unten) genommen:
 	\begin{equation}
 		\label{Portfolio Performance}
 		PP = \frac{APP}{NW} * 100
 	\end{equation}
 \item \textbf{Cumulative Portfolio Performance [\%]} \\
-	Hierbei werden einfach kumulativ die vorherigen Prozentwerte der Kapitalveränderung aufaddiert. Es wird hier allerdings nicht mit der PP gearbeitet, sondern statt dem Net Worth durch das Startkapital (K) dividiert, um die gesamte Performance in Bezug auf das Gesamtkapital zeigen zu können. Die Formel zu Berechnung der einzelnen Werte sieht hier daher so aus:
+	Hierbei werden einfach kumulativ die vorherigen Prozentwerte der Kapitalveränderung aufaddiert. Es wird hier allerdings nicht mit der PP gearbeitet. Es wird nämlich nicht durch den Net Worth, sondern durch das Startkapital (K) dividiert, um die gesamte Performance in Bezug auf das Gesamtkapital zeigen zu können. Die Formel zu Berechnung der einzelnen Werte sieht hier daher so aus:
 	\begin{equation}
 		\label{Cumulative Portfolio Performance}
 		cPP = \frac{APP}{K} * 100
 	\end{equation}
 \item \textbf{Absolute Portfolio Performance} \\
-	Dieser Wert hat grundsätzlich die gleiche Aussage, wie die PP, nur dass er absolut angegeben wird und als Grundlage der Berechnung der PP dient. Er ähnelt in der Berechnung sehr dem GL, nur dass hier bei jeder Order auch der unrealisierte Gewinn/Verlust ausgegeben wird. Der unrealisierte Gewinn/Verlust ist die Kapitalveränderung, die das Portfolio erfahren würde, wenn man alle Aktien zum aktuellen Preis verkaufen würde. Daher wird beim APP jede Order intern so berechnet, wie wenn man alle vorherigen Positionen verkaufen und sich die aktuellen Positionen alle neu kaufen würde. Die Gebühren werden hierfür allerdings nicht abgezogen, da dieser Handel ja nicht wirklich durchgeführt wird, er dient nur zur Veranschaulichung der Performance des letzten Trades. \\
+	Dieser Wert hat grundsätzlich die gleiche Aussage wie die PP, nur dass er absolut angegeben wird und als Grundlage der Berechnung der PP dient. Er ähnelt in der Berechnung sehr dem GL, nur dass hier bei jeder Order auch der unrealisierte Gewinn/Verlust ausgegeben wird. Der unrealisierte Gewinn/Verlust ist die Kapitalveränderung, die das Portfolio erfahren würde, wenn man alle Aktien zum aktuellen Preis verkaufen würde. Daher wird beim APP jede Order intern so berechnet, wie wenn man alle vorherigen Positionen verkaufen und sich die aktuellen Positionen alle neu kaufen würde. Die Gebühren werden hierfür allerdings nicht abgezogen, da dieser Handel ja nicht wirklich durchgeführt wird, er dient nur zur Veranschaulichung der Performance des letzten Trades. \\
 	\\
-	Zur Berechnung müssen jegliche fiktive Veränderungen des Kapitals durch den Ankauf bzw. Verkauf von Aktien in der vorherigen Order mitberechnet werden. Das heißt, dass die Preisänderungen unabhängig von der aktuellen Position immer nur für alle alten Positionen evaluiert werden müssen. Dies erweckt den Anschein, dass alle vorherigen Positionen neutralisiert werden, deren fiktiver Gewinn angegeben wird und sie dann quasi wieder neu aufgebaut werden. Dies funktioniert in allen Fällen, da nur die alte Position bzw. deren Performance bis zur aktuellen Order berücksichtigt wird. Weiters muss mit der gewählten Größe eines Round Lots (RLS) multipliziert werden, da es sich ja um absolute Werte handelt und ausschließlich in Round Lots gehandelt wird. Die Berechnung der APP funktioniert wie folgt:
+	Zur Berechnung müssen alle fiktiven Veränderungen des Kapitals durch den Ankauf bzw. Verkauf von Aktien in der vorherigen Order mitberechnet werden. Das heißt, dass die Preisänderungen unabhängig von der aktuellen Position immer nur für alle alten Positionen evaluiert werden müssen. Dies erweckt den Anschein, dass alle vorherigen Positionen neutralisiert werden, deren fiktiver Gewinn angegeben wird, und sie dann quasi wieder neu aufgebaut werden. Dies funktioniert in allen Fällen, da nur die alte Position bzw. deren Performance bis zur aktuellen Order berücksichtigt wird. Weiters muss mit der gewählten Größe eines Round Lots (RLS) multipliziert werden, da es sich ja um absolute Werte handelt und ausschließlich in Round Lots gehandelt wird. Die Berechnung der APP funktioniert wie folgt:
 	\begin{equation}
 		\label{Berechnung der Absolute Portfolio Performance}
 		APP = (P - oldP) * oldPos * RLS
