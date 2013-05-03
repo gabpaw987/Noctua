@@ -5,12 +5,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Simple Moving Average}
 
-Die einfachste Möglichkeit um Trends in Aktienkursen sichtbar zu machen ist eine Glättung des Preisverlaufs, also eine Art von Durchschnittsberechnung.
+Die einfachste Möglichkeit, um Trends in Aktienkursen sichtbar zu machen, ist eine Glättung des Preisverlaufs, also eine Art Durchschnittsberechnung.
 Dadurch erhält man einen stabileren Überblick über die Richtung, in die sich der Kurs bewegt, ohne dass einmaligen Ausbrüchen zu viel Gewicht geschenkt wird.
 
-Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten ein arithmetischer Mittelwert berechnet. Soll aus einer Reihe von Close-Kursen ein 10-Tages-\gls{sma} berechnet werden, werden dazu die letzten 10 Schlusskurse addiert und anschließend durch 10 dividiert um einen Wert zu erhalten. Für den folgenden Mittelwert wird der älteste subtrahiert, ein weiterer neuer Wert addiert und die Summe anschließend wieder für einen Mittelwert durch 10 dividiert. Auf diese Weise entsteht ein geglätteter Kurs, der kurzzeitige Preisveränderungen abschwächt, wodurch Trends klarer erkennbar werden.
+Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten ein arithmetischer Mittelwert berechnet. Soll aus einer Reihe von Close-Kursen ein 10-Tages-\gls{sma} berechnet werden, werden dazu die letzten 10 Schlusskurse addiert und anschließend durch 10 dividiert, um einen Wert zu erhalten. Für den folgenden Mittelwert wird der älteste subtrahiert, ein weiterer neuer Wert addiert und die Summe anschließend wieder für einen Mittelwert durch 10 dividiert. Auf diese Weise entsteht ein geglätteter Kurs, der kurzzeitige Preisveränderungen abschwächt, wodurch Trends klarer erkennbar werden.
 
-Zwei häufig kritisierte Eigenschaften des \gls{sma} sind, dass erstens nicht alle vorhandenen Daten in die Berechnung mit einbezogen werden und zweitens alle verwendeten Kursdaten mit gleicher Gewichtung in das Resultat eingehen. Bei einem 10-Tage-\gls{sma} hat jeder Kurswert, unabhängig vom Alter, eine Gewichtung von 10\%, bei einem 20-Tage-\gls{sma} 5\%.\\
+Zwei häufig kritisierte Eigenschaften des \gls{sma} sind, dass erstens nicht alle vorhandenen Daten in die Berechnung einbezogen werden und zweitens alle verwendeten Kursdaten mit gleicher Gewichtung in das Resultat eingehen. Bei einem 10-Tage-\gls{sma} hat jeder Kurswert, unabhängig vom Alter, eine Gewichtung von 10\%, bei einem 20-Tage-\gls{sma} 5\%.\\
 
 Ein \gls{sma} wird wie folgt berechnet:
 
@@ -19,7 +19,7 @@ Ein \gls{sma} wird wie folgt berechnet:
 	P^{*}_t = \frac{1}{n} * \sum\limits_{i=0}^n{P_{t-i}}
 \end{equation}
 
-Dabei ist $P^{*}_t$ der geglättete Wert zum Zeitpunkt $t$, $n$ die Anzahl an einzubeziehenden Werten und $P_{t-i}$ der Preis zum Zeitpunkt $t-i$. \cite{elder_living} \cite{murphy-technische}
+Dabei ist $P^{*}_t$ der geglättete Wert zum Zeitpunkt $t$, $n$ die Anzahl an einbezogenen Werten und $P_{t-i}$ der Preis zum Zeitpunkt $t-i$. \cite{elder_living} \cite{murphy-technische}
 
 \begin{figure}
 	\centering
@@ -31,7 +31,7 @@ Dabei ist $P^{*}_t$ der geglättete Wert zum Zeitpunkt $t$, $n$ die Anzahl an ein
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Linear Weighted Moving Average}
 
-Um eines der Probleme des \gls{sma} zu vermeiden, nämlich die gleiche Gewichtung aller Daten über die Zeit, kann ein \gls{lwma} verwendet werden. Dabei werden Daten zu früheren Zeitpunkten geringer gewichtet, als aktuellere Daten. Konkret wird der neueste Eintrag mit $n$ multipliziert, der davor mit $n-1$ und so weiter bis der letzte den Multiplikationsfaktor 1 erhält. Die daraus gebildete Summe muss anschließend noch durch die Summe der Multiplikatoren dividiert werden, um einen Durchschnitt zu erhalten. Bei einem 10-Tage-\gls{lwma} werden die Kursdaten von neu nach alt mit $10, 9, 8, 7,\dots, 1$ multipliziert und die anschließend gebildete Summe durch $10+9+8+7+\dots+1$ dividiert.
+Um eines der Probleme des \gls{sma} zu vermeiden, nämlich die gleiche Gewichtung aller Daten über die Zeit, kann ein \gls{lwma} verwendet werden. Dabei werden Daten zu früheren Zeitpunkten geringer gewichtet, als aktuellere Daten. Konkret wird der neueste Eintrag mit $n$ multipliziert, der vorangehende mit $n-1$ und so weiter bis der letzte den Multiplikationsfaktor 1 erhält. Die daraus gebildete Summe muss anschließend noch durch die Summe der Multiplikatoren dividiert werden, um einen Durchschnitt zu erhalten. Bei einem 10-Tage-\gls{lwma} werden die Kursdaten von neu nach alt mit $10, 9, 8, 7,\dots, 1$ multipliziert und die anschließend gebildete Summe durch $10+9+8+7+\dots+1$ dividiert.
 
 \begin{equation}
 	\label{Linear Weighted Moving Average}
@@ -43,16 +43,16 @@ $P^{*}_t$ ist hier wiederum der geglättete Preis zum Zeitpunkt $t$, $P_t$ der Pr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Exponential Moving Average}
 
-Der \gls{ema} versucht beide Hauptkritikpunkte am \gls{sma} zu lösen, indem er neuere Werte immer stärker gewichtet und alle zur Verfügung stehenden Daten in die Berechnung mit einbezieht. Man spricht auch vom exponentiell geglätteten gleitenden Durchschnitt. Dazu muss ein \emph{\gls{sf}}, auch Glättungsfaktor genannt und meist als $\alpha$ bezeichnet, zwischen 0 und 1 gewählt werden, mit dem ein neuer Wert multipliziert wird. Der vorherige Wert wird mit der Differenz des \gls{sf} mit 1 multipliziert. Der aktuelle Wert des\gls{ema} ergibt sich dann aus der Addition dieser beiden gewichteten Werte. Dadurch bleibt jeder Kurswert unendlich lange in der weiteren Berechnung bestehen, die Bedeutung älterer Kurswerte konvergiert jedoch gegen 0. Aus ebendiesem Grund handelt es sich mathematisch rigoros betrachtet bei dem \gls{ema} nicht wirklich um einen \emph{moving} average, da sich der Wertebereich nicht verschiebt, sondern immer alle Werte zur Berechnung verwendet werden. \cite{klinker-exponential}
+Der \gls{ema} versucht beide Hauptkritikpunkte am \gls{sma} zu lösen, indem er neuere Werte immer stärker gewichtet und alle zur Verfügung stehenden Daten in die Berechnung einbezieht. Man spricht auch vom exponentiell geglätteten gleitenden Durchschnitt. Dazu muss ein \emph{\gls{sf}}, auch Glättungsfaktor genannt und meist als $\alpha$ bezeichnet, zwischen 0 und 1 gewählt werden, mit dem ein neuer Wert multipliziert wird. Der vorherige Wert wird mit der Differenz des \gls{sf} zu 1 multipliziert. Der aktuelle Wert des \gls{ema} ergibt sich dann aus der Addition dieser beiden gewichteten Werte. Dadurch bleibt jeder Kurswert unendlich lange in der weiteren Berechnung bestehen, die Bedeutung älterer Kurswerte konvergiert jedoch gegen 0. Aus ebendiesem Grund handelt es sich, mathematisch rigoros betrachtet, beim \gls{ema} nicht wirklich um einen \emph{moving} average, da sich der Wertebereich nicht verschiebt, sondern immer alle Werte zur Berechnung verwendet werden. \cite{klinker-exponential}
 
-Um exponentielle Durchschnittswerte mit normalen \gls{ma}-Werten vergleichen zu können, wird $\alpha$ meist mit einer Formel berechnet, die näherungsweise die gleiche Periode wie ein bestimmtes $n$ ergibt.
+Um exponentielle Durchschnittswerte mit normalen \gls{ma}-Werten vergleichen zu können, wird $\alpha$ meist mit einer Formel berechnet, die näherungsweise die gleiche Periode für ein bestimmtes $n$ ergibt.
 
 \begin{equation}
 	\label{Glättungsfaktor alpha}
 	\alpha = 2/(n+1)
 \end{equation}
 	
-Soll nur der aktuelle Wert berechnet werden ist eine rekursive Berechnung naheliegend. Eine möglichst performante Berechnung einer exponentiell geglätteten Zeitreihe beginnt meistens mit einem arithmetischen Mittel über die ersten $n$ Werte, um einen Anfangswert zu erhalten, der einen \gls{ema}-Wert besser approximiert, als wenn der erste Preis als Anfangswert herangezogen würde.
+Soll nur der aktuelle Wert berechnet werden, ist eine rekursive Berechnung naheliegend. Eine möglichst performante Berechnung einer exponentiell geglätteten Zeitreihe beginnt meistens mit einem arithmetischen Mittel über die ersten $n$ Werte, um einen Anfangswert zu erhalten, der einen \gls{ema}-Wert besser approximiert, als wenn der erste Preis als Anfangswert herangezogen würde.
 
 Die folgende Formel soll die Berechnung des exponentiell geglätteten Preises $P^{*}_t$ zum Zeitpunkt $t$ verdeutlichen. Dabei ist $\alpha$ der \gls{sf} und $P^{*}_{t-1}$ der exponentiell geglättete Preis zum Zeitpunkt $t-1$.
 
@@ -72,9 +72,9 @@ Die folgende Formel soll die Berechnung des exponentiell geglätteten Preises $P^
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Double und Triple Exponential Moving Average}
 
-Um den Lag, also das Hinterherhinken der geglätteten Zeitreihe hinter dem tatsächlichen Kurs, zu reduzieren, gibt es die Möglichkeit neue Daten noch stärker zu gewichten als bei einem normalen \gls{ema}.
+Um den Lag, also das Hinterherhinken der geglätteten Zeitreihe hinter dem tatsächlichen Kurs, zu reduzieren, gibt es die Möglichkeit, neue Daten noch stärker zu gewichten als bei einem normalen \gls{ema}.
 1994 von Patrick Mulloy eingeführt, schaffen sowohl der \gls{dema} als auch der noch stärker neue Daten gewichtende \gls{tema} bei dieser Problematik Abhilfe.
-Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berechneten \gls{ema} vorstellen. Das würde zu einer ungewünschten starken Abwertung aktueller Daten führen, wie an den Gewichtungsgraphen in Abbildung \ref{fig:wrong_dema_tema} zu sehen ist. Tatsächlich wird der \gls{dema} aus einer Zusammensetzung aus einem einfachen und einem doppelten \gls{ema} berechnet, wodurch ein neuer \gls{ma} entsteht mit weniger Lag als jede der Komponenten. \cite{mulloy-smoothing}
+Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berechneten \gls{ema} vorstellen. Das würde zu einer unerwünschten starken Abwertung aktueller Daten führen, wie an den Gewichtungsgraphen in Abbildung \ref{fig:wrong_dema_tema} zu sehen ist. Tatsächlich wird der \gls{dema} aus einer Zusammensetzung aus einem einfachen und einem doppelten \gls{ema} berechnet, wodurch ein neuer \gls{ma} mit weniger Lag als jede der Komponenten entsteht. \cite{mulloy-smoothing}
 
 \begin{equation}
 	\label{Double Exponential Moving Average}
@@ -107,7 +107,7 @@ Den \gls{dema} darf man sich allerdings nicht als \gls{ema} eines bereits berech
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{MACD}
 
-Der \gls{macd} ist ein Indikator, um die Differenz zwischen zwei \glspl{ema} darzustellen. Der längere \gls{ema} wird vom kürzeren abgezogen, um bei einem Kreuzungspunkt genau einen Wert von 0 zu erhalten. Eine andere Möglichkeit eines \gls{macd}-basierten Handelssystems ist den \gls{macd} mit einem zusätzlichen \gls{ema} zu vergleichen, der kürzer ist als beide zur Berechnung des \gls{macd} verwendeten \glspl{ema}. Dies wird als Signallinie bezeichnet. Obwohl die Signallinie den kürzesten Zeitraum abbildet, ist der \gls{macd} näher am tatsächlichen Kurs. Wenn der \gls{macd} die Signallinie von unten schneidet, entspricht dies daher einem Kaufsignal und umgekehrt. \cite{elder_living}
+Der \gls{macd} ist ein Indikator zur Darstellung der Differenz zwischen zwei \glspl{ema}. Der längere \gls{ema} wird vom kürzeren abgezogen, um bei einem Kreuzungspunkt genau einen Wert von 0 zu erhalten. Eine andere Möglichkeit eines \gls{macd}-basierten Handelssystems ist, den \gls{macd} mit einem zusätzlichen \gls{ema} zu vergleichen, der kürzer ist als beide zur Berechnung des \gls{macd} verwendeten \glspl{ema}. Dies wird als Signallinie bezeichnet. Obwohl die Signallinie den kürzesten Zeitraum abbildet, ist der \gls{macd} näher am tatsächlichen Kurs. Wenn der \gls{macd} die Signallinie von unten schneidet, entspricht dies daher einem Kaufsignal und umgekehrt. \cite{elder_living}
 
 \begin{figure}
 	\centering
@@ -121,7 +121,7 @@ Der \gls{macd} ist ein Indikator, um die Differenz zwischen zwei \glspl{ema} dar
 
 Ein Problem des \gls{ema} ist es, die bestmögliche Länge zu wählen, um einen möglichst aussagekräftigen Durchschnitt zu erhalten. Perry Kaufman schlägt eine variable Länge als Lösung des Problems vor. Dabei wird der Glättungsfaktor eines \gls{ema} anhand der Volatilität des Preises der letzten $n$ Perioden bestimmt. Der resultierende Indikator wird folglich \gls{ama} genannt. \cite{murphy-technische}
 
-Kaufman bestimmt die Volatilität durch einen \gls{er}, der berechnet wird indem die absolute Gesamtpreisbewegung, i.e. Preis am Ende der Periode abzüglich dem Preis am Beginn, durch die Summe der absoluten Preisbewegungen in einer Periode dividiert wird. Aufgrund des \gls{er} und zwei gegebenen Längen ($\alpha$ zwischen 0 und 1) wird nun ein tatsächlicher \gls{sf} berechnet. Dieser sollte zwischen den beiden gegebene Werten liegen, was jedoch nur dann immer der Fall ist, wenn in der Berechnung des \gls{sf} $1$, nicht $2$ als Exponent gewählt wird.
+Kaufman bestimmt die Volatilität durch eine \gls{er}, die berechnet wird, indem die absolute Gesamtpreisbewegung, i.e. Preis am Ende der Periode abzüglich des Preises am Beginn, durch die Summe der absoluten Preisbewegungen in einer Periode dividiert wird. Aufgrund der \gls{er} und zwei gegebenen Längen ($\alpha$ zwischen 0 und 1) wird nun ein tatsächlicher \gls{sf} berechnet. Dieser sollte zwischen den beiden gegebenen Werten liegen, was jedoch nur dann immer der Fall ist, wenn in der Berechnung des \gls{sf} $1$, nicht $2$ als Exponent gewählt wird.
 
 \begin{equation}
 	\label{Efficiency Ratio}
@@ -138,15 +138,14 @@ Kaufman bestimmt die Volatilität durch einen \gls{er}, der berechnet wird indem 
 	AMA_t = SF * P_{t} + (1 - SF) * AMA_{t-1}
 \end{equation}
 
-Dabei ist $SF_S$ der schnelle Smoothing Factor und $SF_L$ der langsame, zwischen denen das Ergebnis $SF$ abhängig von $ER$ liegen soll.
-Der Exponent kann als Abwandlung des Indikators auch verändert werden, beispielsweise auf $1$, wenn der resultierende Durchschnitt genau im angegebenen Bereich liegen soll, oder auch $0.75$, falls konservativere Durchschnitte erwünscht sind. \cite{kaufman_systems} \cite{ama_whs}
+Dabei ist $SF_S$ der schnelle Smoothing Factor und $SF_L$ der langsame, zwischen denen das Ergebnis $SF$ abhängig von der $ER$ liegen soll.
+Der Exponent kann als Abwandlung des Indikators auch verändert werden, beispielsweise auf $1$, wenn der resultierende Durchschnitt genau im angegebenen Bereich liegen soll, oder auch auf $0.75$, falls konservativere Durchschnitte erwünscht sind. \cite{kaufman_systems} \cite{ama_whs}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Lineare Regression}
 
-Um aus Zeitreihen einen allgemeinen Trend erkennen zu können wird häufig eine lineare Regression durchgeführt. Dabei wird eine Gerade so gelegt, dass alle Punkte so nahe wie möglich an
-der Geraden liegen, wobei alle Punkte gleich stark gewichtet werden und auch möglichst gleich weit entfernt liegen sollen. Zur Abstandsmessung werden die y-Abstände zwischen Gerade und Preis herangezogen,
-die quadriert werden damit größere Abstände stärker gewichtet werden als kleine. Die Gerade wird nun so gelegt, dass diese Summe der quadratischen Abstände möglichst klein ist.
+Um aus Zeitreihen einen allgemeinen Trend erkennen zu können, wird häufig eine lineare Regression durchgeführt. Dabei wird eine Gerade so gelegt, dass alle Punkte so nahe wie möglich an
+der Geraden liegen, wobei alle Punkte gleich stark gewichtet werden und auch möglichst gleich weit entfernt liegen sollen. Zur Abstandsmessung werden die quadrierten y-Abstände zwischen Gerade und Preis herangezogen, damit größere Abstände stärker gewichtet werden als kleine. Die Gerade wird nun so gelegt, dass diese Summe der quadratischen Abstände möglichst klein ist.
 
 Das Minimum der folgenden Funktion der quadratischen Abstände muss durch partielles Differenzieren gefunden werden.
 
@@ -156,7 +155,7 @@ Das Minimum der folgenden Funktion der quadratischen Abstände muss durch partiel
 \end{equation}
 
 Dadurch erhält man $k$ und $d$ der Regressionsgeraden. In der praktischen Anwendung ist meist besonders die Steigung $k$ der Geraden relevant.
-Wird die Anzahl an historischen Preisen variiert, erhält man so Richtung und stärke verschieden langer Trends.
+Wird die Anzahl an historischen Preisen variiert, erhält man so Richtung und Stärke verschieden langer Trends.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Average Directional Index}
@@ -168,7 +167,7 @@ Der \gls{adx} wird in 5 Schritten berechnet.
 \begin{enumerate}
 	\item{Directional Movement ($DM_+$, $DM_-$) berechnen\\
 		Directional Movement bezeichnet die Spanne, in der sich der Preis in der aktuellen Periode über oder unter der Preisspanne der letzten Periode bewegt hat.
-		$DM_+$ ist dabei die Spanne darüber, $DM_-$ jene darüber. Der $DM$ ist dabei immer positiv, es wird also der Betrag der Differenz verwendet. (siehe Abbildung \ref{fig:dm})}
+		$DM_+$ ist dabei die Spanne darüber, $DM_-$ jene darunter. Der $DM$ ist dabei immer positiv, es wird also der Betrag der Differenz verwendet. (siehe Abbildung \ref{fig:dm})}
 	\item{True Range ($TR$) berechnen\\
 		Die True Range soll die tatsächliche Preisbewegung abbilden, also auch Bewegungen zwischen Perioden, bei denen Close- und Open-Preise
 		nicht ident sind. Dafür wird für die $TR$ immer der größte der folgenden 3 Werte herangezogen, die sich aufgrund von Preisen des aktuellen und 
@@ -187,7 +186,7 @@ Der \gls{adx} wird in 5 Schritten berechnet.
 			DI_- = \frac{DM_-}{TR}
 		\end{equation}}
 	\item{Directional Indicators glätten\\
-		Die Directional Indicators ($DI_{n+}$ und $DI_{n-}$) erhält man indem die Directional Indicators ($DI_+$, $DI_-$) mit einem \gls{ma} geglättet werden,
+		Die Directional Indicators ($DI_{n+}$ und $DI_{n-}$) erhält man, indem die Directional Indicators ($DI_+$, $DI_-$) mit einem \gls{ma} geglättet werden,
 		wofür in der Regel ein \gls{ema} verwendet wird. Die Länge des verwendeten \gls{ma} ist dabei auf die Tradingstrategie anzupassen.
 		$DI_{n+}$ und $DI_{n-}$ sind bereits für ein Handelssystem geeignet, da sie das Verhältnis von relativer Trendbewegung zur True Range geglättet angeben.
 		Aufgrund der Kreuzung der beiden Indikatoren können so auch Kauf- und Verkauf-Signale gegeben werden.}
@@ -212,8 +211,8 @@ in der sich andere Systeme eher rentieren. (z.B. Fading, siehe \ref{subsection:f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Momentum}
 
-Das Momentum ist ein Oszillator, der die Kurssteigung über einen gewissen Zeitraum angibt. Aus der Differenz des Preises zum Zeitpunkt $t$ und des Preises vor $n$ Perioden ergibt sich eine einfach interpretierbare Anzeige für die Stärke eines Trends. Aus einem 10-Tage-Momentum ist ablesbar, ob der Kurs aktuell höher notiert, als noch vor 10 Tagen. Wenn das Momentum negativ ist und ansteigt, ist ersichtlich, dass die Stärke eines aktuellen Abwärtstrends abnimmt, wobei der Trend immer noch abwärts gerichtet sein kann, er wird nur nicht mehr stärker. Erst bei einem positiven Wert des Momentum ist ein Aufwärtstrend zu erkennen.
-Der große Vorteil dieses Indikators liegt in der Frühzeitigkeit seiner Anzeige. Bevor sich der Trend umkehrt, zeigt der Momentum-Oszillator bereits an, dass eine Trendwechsel bevorstehen könnte, aufgrund der abnehmenden Stärke des aktuellen Trends. Ein Problem des Momentum ist, dass die Werte absolut berechnet werden und dadurch die Schwankungsbreite abhängig vom betrachteten Kurs stark variieren kann. Die gleiche Berechnung auf relativer Basis wird nicht Momentum, sondern Rate-of-Change genannt.\\
+Das Momentum ist ein Oszillator, der die Kurssteigung über einen gewissen Zeitraum angibt. Aus der Differenz des Preises zum Zeitpunkt $t$ und des Preises vor $n$ Perioden ergibt sich eine einfach interpretierbare Anzeige für die Stärke eines Trends. Aus einem 10-Tage-Momentum ist ablesbar, ob der Kurs aktuell höher notiert als noch vor 10 Tagen. Wenn das Momentum negativ ist und ansteigt, ist ersichtlich, dass die Stärke eines aktuellen Abwärtstrends abnimmt, wobei der Trend immer noch abwärts gerichtet sein kann, er wird nur nicht mehr stärker. Erst bei einem positiven Wert des Momentum ist ein Aufwärtstrend zu erkennen.
+Der große Vorteil dieses Indikators liegt in der Frühzeitigkeit seiner Anzeige. Bevor sich der Trend umkehrt, zeigt der Momentum-Oszillator aufgrund der abnehmenden Stärke des aktuellen Trends bereits an, dass ein Trendwechsel bevorstehen könnte. Ein Problem des Momentum ist, dass die Werte absolut berechnet werden und dadurch die Schwankungsbreite abhängig vom betrachteten Kurs stark variieren kann. Die gleiche Berechnung auf relativer Basis wird nicht Momentum, sondern Rate-of-Change genannt.\\
 
 Der Momentum-Indikator berechnet sich nach folgender Formel:
 
@@ -231,12 +230,12 @@ Der Momentum-Indikator berechnet sich nach folgender Formel:
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Relative Strength Index} \label{subsubsection:rsi}
+\subsubsection{Relative Strength Indicator} \label{subsubsection:rsi}
 
-Der \gls{rsi} gibt ähnliche Informationen, wie das Momentum, schafft aber Abhilfe bei einigen Schwachstellen. Beispielsweise gibt es beim Momentum keine maximale Unter- und Obergrenze, wodurch es schwierig ist festzustellen, ob es sich momentan um eine Extremsituation handelt oder nicht. Der \gls{rsi} bewegt sich hingegen immer zwischen 0 und 100.
+Der \gls{rsi} gibt ähnliche Informationen wie das Momentum, schafft aber Abhilfe bei einigen Schwachstellen. Beispielsweise gibt es beim Momentum keine maximale Unter- und Obergrenze, wodurch es schwierig ist festzustellen, ob es sich momentan um eine Extremsituation handelt oder nicht. Der \gls{rsi} bewegt sich hingegen immer zwischen 0 und 100.
 Eine wesentlich schwerwiegendere Schwachstelle des Momentums ist aber seine absolute Abhängigkeit von dem Kurs vor genau $n$ Zeitperioden. Sollte der Kurs zu der Zeit ein Hoch oder Tief erreicht haben, hat dies Auswirkungen auf das aktuelle Momentum, selbst wenn sich der aktuelle Kurs gar nicht oder nur kaum verändert.\\
 
-Der \gls{rsi} wird aus dem Durchschnitt der Schlusskurse von $n$ Tagen mit steigenden Kursen, dividiert durch den Durchschnitt der Schlusskurse von $n$ Tagen mit fallenden Kursen berechnet.\\
+Der \gls{rsi} wird aus dem Durchschnitt der Schlusskurse von $n$ Tagen mit steigenden Kursen berechnet, dividiert durch den Durchschnitt der Schlusskurse von $n$ Tagen mit fallenden Kursen.\\
 
 \begin{equation}
 	\label{RS Up}
@@ -256,7 +255,7 @@ der \gls{rsi}-Kurve verändert, sondern nur am Wertebereich.
 	RSI = \frac{RS_{Up}}{RS_{Up} + RS_{Down}}
 \end{equation}
 
-Der Erfinder sah ursprünglich eine Zeitperiode von $n = 14$ Tagen vor, wobei aber für unterschiedliche Volatilität auch andere Parameter gewählt werden können. Interessant ist der \gls{rsi}, wenn er im Vorhinein festgelegte Level überschreitet. Diese sind standardmäßig bei 70 und 30 für die Überkauft- und Überverkauft-Level, können aber beispielsweise als Anpassung für Bullenmärkte auf 80 oder für Bärenmärkte auf 20 verändert werden.\cite{elder_living}
+Der Erfinder sah ursprünglich eine Zeitperiode von $n = 14$ Tagen vor, wobei aber für unterschiedliche Volatilität auch andere Parameter gewählt werden können. Interessant ist der \gls{rsi}, wenn er im Vorhinein festgelegte Level überschreitet. Diese sind standardmäßig bei 70 und 30 für die Überkauft- und Überverkauft-Level, können aber beispielsweise als Anpassung für Bullenmärkte auf 80 oder für Bärenmärkte auf 20 festgelegt werden.\cite{elder_living}
 
 \begin{figure}
 	\centering
@@ -275,7 +274,7 @@ Prozentbänder sind eine andere Möglichkeit, Nachhaltigkeit bzw. Überkauft- oder 
 
 Die Bollinger-Bänder, entwickelt von John Bollinger, sind ein ähnlicher Indikator wie die Prozentbänder. Es wird ebenso ein Bereich oberhalb und unterhalb des \gls{ma} aufgespannt, aber anstatt ihn einfach um einen fixen Prozentwert zu verschieben, wird die Durchschnittslinie um die \emph{Doppelte Standardabweichung}, die meist auf Länge des \gls{ma} berechnet wird, nach oben und nach unten verschoben.\\
 
-Dabei dienen die Bänder meist als Kursziele, so dass beim Ansteigen des Kurses vom unteren Bollinger-Band das obere als Ziel angenommen wird. Diese Strategie wird auch als "`Fading"' bezeichnet und ist nur in Seitwärtsphasen gewinnbringend, da der Preis während starken Trends lange Zeit entlang dem oberen oder unteren Rand des Bandes verlaufen kann. Der Durchmesser der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler. Verschmälern sich die Bänder in relativ kurzer Zeit, kann meist mit einem Ausbruch und einsetzendem Trend gerechnet werden. Bollinger Bänder können insgesamt sehr vielseitig eingesetzt werden, nicht nur in Seitwärtsphasen, es existieren unterschiedliche Interpretations-Varianten.
+Dabei dienen die Bänder meist als Kursziele, so dass beim Ansteigen des Kurses vom unteren Bollinger-Band das obere als Ziel angenommen wird. Diese Strategie wird auch als "`Fading"' bezeichnet und ist nur in Seitwärtsphasen gewinnbringend, da der Preis während starken Trends lange Zeit entlang dem oberen oder unteren Rand des Bandes verlaufen kann. Die Breite der Bänder zeigt die Volatilität des Kurses an, da bei geringer Volatilität die Standardabweichung ebenfalls sinkt, ergo werden die Bänder schmäler. Verschmälern sich die Bänder in relativ kurzer Zeit, kann meist mit einem Ausbruch und einsetzendem Trend gerechnet werden. Bollinger Bänder können insgesamt sehr vielseitig eingesetzt werden, nicht nur in Seitwärtsphasen, es existieren auch unterschiedliche Interpretations-Varianten.
 
 \begin{figure}
 	\centering
@@ -293,7 +292,7 @@ Pivot Points sind eine sehr häufig genutzte Variante zur Berechnung von horizont
 TP = \frac{High+Low+Close}{3}
 \end{equation}
 
-Dieser wird als auch als Haupt-Pivot-Point bezeichnet, da von ihm ausgehend alle Unterstützungs- und Widerstandslevel festgelegt werden. Zur Berechnung verwendet werden immer die Daten aus der letzten Periode. Es werden zwei Level sowohl von Support- ($SL_1$ und $SL_2$), als auch von Resistance-Level ($RL_1$ und $RL_2$) berechnet, die je nach Marktsituation für unterschiedliche Zwecke ausgewählt werden können.
+Dieser wird als auch als Haupt-Pivot-Point bezeichnet, da von ihm ausgehend alle Unterstützungs- und Widerstandslevel festgelegt werden. Zur Berechnung verwendet werden immer die Daten aus der letzten Periode. Es werden zwei Level sowohl von Support- ($SL_1$ und $SL_2$) als auch von Resistance-Level ($RL_1$ und $RL_2$) berechnet, die je nach Marktsituation für unterschiedliche Zwecke ausgewählt werden können.
 
 \begin{equation}
 SL_1 = 2*TP - High

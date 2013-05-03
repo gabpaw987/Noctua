@@ -129,8 +129,8 @@ let ema (n:int, prices:List<decimal>)=
 \clearpage
 
 \subsection{Implementierung des Adaptive Moving Averages}
-Ein \gls{ama}, also ein \gls{ema} mit variabler Länge benötigt wurde in F-\# folgendermaßen implementiert (ama-Methode)
-und benötigt einen Aufruf der Methoden zur Berechnung des Efficiency Ratio (er) und der Anpassung des ER an die gegebenen Periodenspanne (c)  je AMA-Wert.
+Ein \gls{ama}, also ein \gls{ema} mit variabler Länge, wurde in F\# folgendermaßen implementiert (\inline{ama})
+und benötigt einen Aufruf der Methoden zur Berechnung des Efficiency Ratio (\inline{er}) und der Anpassung des ER an die gegebenen Periodenspanne (\inline{c})  je AMA-Wert.
 \begin{lstlisting}[label=AMA in F-Sharp,caption=AMA in F-Sharp]
 (* 
  * Berechnung eines Adaptive Moving Average (AMA)
@@ -226,11 +226,10 @@ let c (alpha1:decimal, alpha2:decimal, prices:decimal[]) =
     // Bereichsanpassung variiert werden
     double(er * (alpha1 - alpha2) + alpha2)**1.00
 \end{lstlisting}
-\clearpage
 
 \subsection{Implementierung des Relative Strength Index}
 
-Der \gls{rsi} dient dazu günstige Kauf- und Verkaufssignale zu berechnen, indem Überkauft-
+Der \gls{rsi} dient dazu, günstige Kauf- und Verkaufssignale zu berechnen, indem Überkauft-
 und Überverkauft-Level aufgrund von vergangenen Kursbewegungen festgestellt werden.
 Zur Berechnung des Relative Strength Index (RSI) wird Welles Wilders ursprünglich
 vorgesehene Glättungstechnik angewandt, um auf- und abwärts gerichtete Preisdifferenzen
@@ -298,7 +297,6 @@ let rsi(n:int, prices:(decimal*decimal)[])=
             100m*u/(u+d))
     |> Array.append (Array.zeroCreate (n-1))
 \end{lstlisting}
-\clearpage
 
 \subsection{Implementierung des Pivot Point Calculators}
 Durch Pivot Points wird versucht einen Zusammenhang aus den letzten Bars für die Zukünftigen zu erzeugen. Ein Pivot Point besteht meist aus 5 bis 7 berechneten Punkten. Im folgenden Beispiel werden 5 Punkte berechnet. Davon sind 2 Support Level, 2 Resistance Level und 1 Typical Price. \\\\

@@ -11,10 +11,10 @@ Zusätzlich ist nicht jede Strategie jederzeit gewinnbringend einsetzbar. Obwohl 
 aufgrund von unvorhersehbaren Kursänderungen nie komplett verhindert werden können, eignen sich
 gewisse Strategien besser für manche Marktzustände als andere.
 
-Der Algorithmus soll außerdem die Möglichkeit stärkere und schwächere Signale im Bereich von -3 bis +3 generieren zu
-können möglichst günstig ausnutzen, woraufhin in Folge das Marktrisiko variiert werden kann.
+Der Algorithmus soll außerdem die Möglichkeit, stärkere und schwächere Signale im Bereich von -3 bis +3 generieren zu
+können, möglichst günstig ausnutzen, woraufhin in Folge das Marktrisiko variiert werden kann.
 
-Im folgenden wird ein entwickelter Algorithmus beschrieben, dessen Ziel es war auf Marktzustände
+Im folgenden wird ein entwickelter Algorithmus beschrieben, dessen Ziel es war, auf Marktzustände
 einzugehen und Parameter bzw. Entscheidungsgrundlagen daraufhin zu verändern.
 
 \subsubsection{Marktzustandsadaption}
@@ -24,7 +24,7 @@ Seitwärtsphase unterschieden, für die jeweils eine komplett unterschiedliche Ent
 verwendet wird. Während Trendphasen primär ein \gls{ma}-System zugrunde liegt, wird in Seitwärtsphasen
 ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} und \ref{subsection:fading})
 
-Die Entscheidung, welche Phase aktuelle vorliegt wird aufgrund des aktuellen \gls{adx}-Wertes getroffen.
+Die Entscheidung, welche Phase aktuell vorliegt, wird aufgrund des aktuellen \gls{adx}-Wertes getroffen.
 Es wird für diesen Zweck ein ADX über 14 Bars berechnet, wobei bei Werten unter 25 kein ausgeprägter Trend erkannt wird
 und daher das Seitwärtssystem die Entscheidungen trifft. Liegt der ADX darüber, wird das Trendphasensystem angewendet.\\
 
@@ -32,17 +32,17 @@ Ein alternativer Ansatz, einen Marktzustand über die Kopplung des Preises mit ei
 erzielte kein zufriedenstellendes Resultat. Die Idee war es, einen Zusammenhang einer Kursbewegung mit
 einem marktbestimmenden Index herzustellen. Bei einem Aufwärtstrend des gesamten Marktes wurde eine
 entsprechende Reaktion des gehandelten Instruments erwartet --- steigt beispielsweise der NASDAQ,
-so könnte auch ein darin enthaltenes Symbol von der positiven Marktentwicklung profitieren. Das Problem bestand
-nun darin, zu aller erst einen zeitlichen Zusammenhang festzustellen. Nur wenn der Index dem Einzelsymbol
-zeitlich in Trendbildung zuvorkommt, ist es möglich daraus eine Handelsempfehlung für das Einzelsymbol
+so könnte auch ein im Index inbegriffenes Symbol von der positiven Marktentwicklung profitieren. Das Problem bestand
+nun darin, zu allererst einen zeitlichen Zusammenhang festzustellen. Nur wenn der Index dem Einzelsymbol
+zeitlich in der Trendbildung zuvorkommt, ist es möglich daraus eine Handelsempfehlung für das Einzelsymbol
 zu berechnen, d.h. wenn der Index-Lag negativ ist. Ist hingegen ein positiver Index-Lag vorhanden, wäre
-der Zusammenhang zwar möglicherweise für den Handel von Instrumenten mit den Index als Basiswert interessant,
+der Zusammenhang zwar möglicherweise für den Handel von Instrumenten mit dem Index als Basiswert interessant,
 jedoch nicht für das Einzelsymbol.
 
 Zur Feststellung des Lags wurde ein simples Handelssystem mit zwei sich schneidenden \glspl{tema} verwendet,
 das jeweils auf das Einzelsymbol und auf den Index angewandt wurde. Die aus dem Handelssystem entstehenden
 Entscheidungslisten, bestehend aus Kauf- und Verkaufsignalen (1,-1) wurden nun um bis zu 50\% gegeneinander
-verschoben, um herauszufinden bei welchen Lag eine maximale Übereinstimmung der Signale festzustellen ist.
+verschoben, um herauszufinden, bei welchem Lag eine maximale Übereinstimmung der Signale festzustellen ist.
 Der Lag und der Grad der Übereinstimmung wurde dabei erfasst.
 
 Ein häufig auftretender optimaler Zusammenhang bei einem Lag von 0 oder sogar einem positiven Wert
@@ -50,14 +50,14 @@ war der Grund, dass dieses System nicht in den Algorithmus inkorporiert wurde.
 
 \subsubsection{Trendphasensystem}
 
-In Trendphasen wird ein \gls{ma}-System, bestehend aus 3 \glspl{ama}, zur primären Signalgenerierung angewandt.
+In Trendphasen wird ein \gls{ma}-System, bestehend aus 3 \glspl{ama}, zur primären Sig\-nal\-gen\-er\-ier\-ung angewandt.
 Alle 3 haben eine unterschiedliche Länge, die jeweils als Bereich angegeben wird. Im folgenden werden die \glspl{ama}
 als kurz (n ist zwischen 5 und 10), mittel (n ist zwischen 10 und 20) und lang (n ist zwischen 20 und 40) bezeichnet.
 
 Dabei liegt laut dem \gls{ama}-Basissignal eine 1 vor (schwaches Kaufsignal), wenn der kurze \gls{ama} über
 dem mittleren und langen \gls{ama} liegt. Liegt zusätzlich der mittlere noch über dem langen, so liegt eine 2 vor (mittleres Kaufsignal).
 Mit Verkaufsignalen verhält es sich genau umgekehrt, ansonsten ist eine 0 (Neutralposition) vorgesehen.
-Um zu kurz andauernde Signale auszufiltern wurde die Idee eines Signalfilters erprobt, der
+Um zu kurz andauernde Signale auszufiltern, wurde die Idee eines Signalfilters erprobt, der
 zu den \glspl{ama} einen fixen Anteil des aktuellen Preises addiert bzw. subtrahiert, damit die Überschneidungen
 erst später auftreten. Dieser wurde in der Endversion auf 0 gesetzt, da der spätere Einstieg in Summe
 schlechtere Ergebnisse erwirtschaftete. 
@@ -91,7 +91,7 @@ else if (rsi.[i] > 70m) then
 
 Bei widersprüchlichen RSI- und AMA-Signalen werden die S1- und R1-Level der Pivot Points
 als zusätzliche Support- und Resistance-Level herangezogen. Wenn diese auch durchbrochen wurden,
-wird das Signal auf 0 geschaltet.
+wurde das Signal auf 0 geschaltet.
 
 Ein dem AMA-Signal gleichgerichtetes RSI-Signal verstärkt dieses um 1, d.h. aus 1 wird 2, aus 2 wird 3. 
 
@@ -125,7 +125,7 @@ else
 
 \subsubsection{Seitwärtsphasensystem}
 
-In Seitwärtsphasen wird ein Fading-Algorithmus mittels Bollinger Bänder verwendet, der die Bänder als Preisziel verwendet, d.h. es wird versucht, nahe dem unteren Band zu kaufen und nahe dem oberen zu verkaufen.
+In Seitwärtsphasen wird ein Fading-Algorithmus mittels der Bollinger Bändern verwendet, der die Bänder als Preisziel verwendet, d.h. es wird versucht, nahe dem unteren Band zu kaufen und nahe dem oberen zu verkaufen.
 Ein vorbereitendes Signal (\inline{lastCross}) wird gespeichert, sobald der Preis unter das untere Bollinger Band fällt (1) oder über das obere steigt (-1).
 
 \begin{lstlisting}[label=Vorbereitendes Signal in Seitwärtsphasen, caption=Vorbereitendes Signal in Seitwärtsphasen]
@@ -138,7 +138,7 @@ else if cPrices.[i] < (bollinger.[i] |> snd) then
     lastCross <- 1
 \end{lstlisting}
 
-Dabei wird dann ein Kaufsignal generiert, wenn der Preis wieder innerhalb den Bändern liegt, das so lange aufrecht bleibt bis der Preis in die entfernten 20\% des Bollinger Bands vorstößt. Da beim Fading sehr schnell Verluste eingefahren werden können, werden die S1- und R1-Level der Pivot Points zusätzlich als Sicherung in Seitwärtsphasen verwendet. 
+Dabei wird dann ein Kaufsignal generiert, wenn der Preis wieder innerhalb der Bänder liegt, das so lange aufrecht bleibt, bis der Preis in die entfernten 20\% des Bollinger Bands vorstößt. Da beim Fading sehr schnell Verluste eingefahren werden können, werden die S1- und R1-Level der Pivot Points zusätzlich als Sicherung in Seitwärtsphasen verwendet. 
 
 \begin{lstlisting}[label=Seitwärtssystem, caption=Seitwärtssystem]
 // Preis liegt innerhalb der Bollinger Baender
@@ -170,12 +170,12 @@ else
 \subsubsection{Signal-Smoothing und Cut-Loss}
 
 Das bisher beschriebene Handelssystem wurde um 2 essenzielle Elemente erweitert.
-Da sich bisherige Signale als zu volatil erwiesen, musste eine Methode gefunden werden,
-die Entscheidungen seltener revidiert. Als profitabel erwies sich, Signale entweder gleich
-bleibend oder aber stärker werden zu lassen, solange sich das Signal nicht in ein Gegensignal umkehrt 
+Da sich die bisherigen Signale als zu volatil erwiesen, musste eine Methode gefunden werden,
+die Entscheidungen seltener revidiert. Als profitabel erwies sich, Signale entweder gleichbleibend
+oder aber stärker werden zu lassen, solange sich das Signal nicht in ein Gegensignal umkehrt 
 oder auf eine Neutralstellung zurückgeht.
 Das bedeutet, dass ein Signal von 2 beispielsweise zu einem späteren Zeitpunkt zwar auf 3 erhöht
-werden kann, jedoch nicht auf 1 gesenkt. Erst eine 0 oder ein Verkaufsignal kann die 3 in Folge aufheben.\\
+werden kann, jedoch nicht auf 1 gesenkt wird. Erst eine 0 oder ein Verkaufsignal kann die 3 in Folge aufheben.\\
 
 Die zweite Ergänzung war die Integration eines Cut-Loss Mechanismus in den Algorithmus, der, wie der Name schon sagt, die Aufgabe hat Verluste zu begrenzen. Dabei wird innerhalb jedes Trades das Preisextrem gespeichert, von dem ein prozentuell gegebener Verlust einen Cut-Loss, also den Ausstieg aus allen aktuell gehaltenen Positionen bewirken würde. Bei einem Cut-Loss von 5\% würde ein Kurssturz von 100 auf 95 innerhalb einer Long-Position somit eine 0 als Signal generieren und folglich eine Liquidation auslösen.
 
