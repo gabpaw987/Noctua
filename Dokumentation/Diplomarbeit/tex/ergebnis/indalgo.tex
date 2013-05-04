@@ -76,7 +76,7 @@ amaSig <-
         0
 \end{lstlisting}
 
-Um die Entscheidung durch die \glspl{ama} abzusichern, wurde zusätzlich der \gls{rsi} berechnet.
+Um die Entscheidung durch die \glspl{ama} abzusichern, wurde zusätzlich der \gls{rsi} über 14 Bars berechnet.
 Dabei empfiehlt der \gls{rsi} einen Kauf unterhalb der Überverkauft-Marke von 30 und einen Verkauf
 oberhalb der Überkauft-Marke von 70.
 
@@ -203,3 +203,56 @@ else if (signals.[i] <> 0) then
         // Neutralsignal ausgeben
         signals.[i] <- 0
 \end{lstlisting}
+
+\clearpage
+\subsubsection{BTS-Test} 
+
+\begin{center}
+\begin{tabular}{ | p{4cm} | p{11cm} |} \hline
+\textbf{Komponente} & \textbf{Parameter}\\  \hline 
+ ADX & $n=14$  \\ \hline
+ AMAs & kurz: $n=[5, 10]$, mittel: $n=[10, 20]$, lang: $n=[20-40]$  \\ \hline
+ RSI & $n=14$  \\ \hline
+ Bollinger Bänder & $n=20$, $\sigma=2$  \\ \hline
+ Pivot Points & $n=14$  \\ \hline
+\end{tabular}
+\end{center}
+
+Der Algorithmus entscheidet in Trendphasen aufgrund der Überkreuzung von drei
+\glspl{ama}, verstärkt durch den \gls{rsi} und in Seitwärtsphasen durch eine Fading-Strategie
+mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo}).
+Bei den Daten handelt es sich um 995 daily Bars des Standard \& Poor 500, 965 daily Bars des Nasdaq Composite
+und 875 daily Bars von Apple Inc.
+
+\begin{center}
+\begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
+Kenndaten & \$SPX & \$COMPQ &  AAPL \\ \hline 
+Net Worth [\$] & 118662,00 (+18662,00)& 182646,00 (+82646,00) &  179291,120 (+79291,120) \\ \hline 
+Portfolio Performance [\%] & 18,662& 82,646 &  79,293 \\ \hline 
+Sharpe Ratio & 2,192& 7,470 &  12,979 \\ \hline 
+Mean Deviation of Portfolio Performance [\%] & 5,848& 10,277 &  5,699 \\ \hline 
+Mean Deviation of Equity Price [\$] & 151,617& 386,313 &  145,406 \\ \hline 
+Return on Investment [\%] & 45,255& 59,067 &  93,925 \\ \hline 
+Number of Good Trades & 50& 55 &  49 \\ \hline 
+Gain From Good Trades [\$] & 67,945& 216,761 &  83,001 \\ \hline 
+Number of Bad Trades & 33& 37 &  38 \\ \hline 
+Loss From Bad Trades [\$] & -49,283& -134,115 &  -3,708 \\ \hline 
+Ratio of Good Trades & 1,515& 1,486 &  1,289 \\ \hline 
+\end{tabular}
+\end{center}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{graphics/ergebnis/tests/COMPQpart.PNG}
+\caption{Ausschnitt der Entscheidungen für den COMPQ (Nasdaq Composite)}
+\label{fig:compq_noctua}
+\end{figure}
+
+\textbf{Interpretation} 
+
+Der Algorithmus entscheidet in vielen Fällen gut und erzielt meistens auch eine gute Performance.
+In sehr volatilen Situationen verliert er aber oft wieder einen Teil des 
+Gewinns. Das häufigste Problem sind dabei Signale,
+die wenige oder sogar nur einen Bar lang anhalten,
+was auf Indikatorwerte knapp um die Signalschwellen zurückzuführen ist. Außerdem treten 
+Signalverstärkungen manchmal zu spät im Trend auf.
