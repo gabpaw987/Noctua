@@ -96,21 +96,21 @@ Zusätzlich zu den spezifischen Performancedaten für jede Order auf dem Orders-Ta
 
 \begin{itemize}
 \item \textbf{Net Worth} \\
-	Hier ist der Net Worth das gesamte Kapital, dass sich dem Einsatz des Algorithmus über die gesamte gewählte Periode besessen hätte. Es berechnet sich aus den Gewinnen und Verlusten aus allen Trades und dem Startkapital. Der Net Worth ist daher außerdem gleich mit Order-spezifischen Net Worth nach der letzten Order.
+	Hier ist der Net Worth das gesamte Kapital, das man  nach dem Einsatz des Algorithmus über die gesamte gewählte Periode besessen hätte. Es berechnet sich aus den Gewinnen und Verlusten aus allen Trades und dem Startkapital. Der Net Worth ist daher außerdem gleich mit dem Order-spezifischen Net Worth nach der letzten Order.
 \item \textbf{Portfolio Performance [\%]} \\
-	Die allgemeine Portfolio Performance (GPP) beschreibt den gesamten prozentuellen Gewinn bzw. Verlust den der Algorithmus unter normalem Einsatz über die gesamte gewählte Periode der Aktien-Preisdaten gemacht hätte. Er berechnet sich aus den prozentuellen Einzelgewinnen/-verlusten aller Orders relativ zum Startkapital und ist damit gleich der Order-spezifischen kumulativen Portfolio Performance nach dem letzten Trade.
+	Die allgemeine Portfolio Performance (GPP) beschreibt den gesamten prozentuellen Gewinn bzw. Verlust, den der Algorithmus unter normalem Einsatz über die gesamte gewählte Periode der Aktien-Preisdaten gemacht hätte. Er berechnet sich aus den prozentuellen Einzelgewinnen/-verlusten aller Orders relativ zum Startkapital und ist damit gleich der Order-spezifischen kumulativen Portfolio Performance nach dem letzten Trade.
 \item \textbf{Sharpe Ratio} \\
-	Der Sharpe Ratio ist quasi ein Wirkungsgrad der angibt, wie viele Gewinne bzw. Verluste der Algorithmus über die gewählte Periode machen konnte relativ zum dabei eingegangenen Risiko, als der Volatilität. Zur Beschreibung der Volatilität wurde in der Berechnung die Standardabweichung der Portfolio Performance (vgl. ''Mean Deviation of Portfolio Performance [\%]'' (MDPP) weiter unten). Außerdem muss hier von den Gewinnen noch der Prozentsatz abgezogen werden, den man bei einer risikofreien Investition des gleichen Kapitals erreichen hätte können (RF), um die eigentliche Qualität des Algorithmus widerspiegeln zu können. Die allgemeine Formel zur Berechnung des Sharpe Ratio lautet daher:
+	Der Sharpe Ratio ist quasi ein Wirkungsgrad, der angibt, wie viele Gewinne bzw. Verluste der Algorithmus über die gewählte Periode machen konnte relativ zum dabei eingegangenen Risiko, also der Volatilität. Zur Beschreibung der Volatilität wurde in der Berechnung die Standardabweichung der Portfolio Performance (vgl. "`Mean Deviation of Portfolio Performance [\%]"' (MDPP) weiter unten). Außerdem muss hier von den Gewinnen noch der Prozentsatz abgezogen werden, den man bei einer risikofreien Investition des gleichen Kapitals erreichen hätte können (RF), um die eigentliche Qualität des Algorithmus widerspiegeln zu können. Die allgemeine Formel zur Berechnung des Sharpe Ratio lautet daher:
 	\begin{equation}
 		\label{Sharpe Ratio}
 		SR = \frac{GPP - RF}{MDPP}
 	\end{equation}
-	Der Standardzinssatz (p) bei einer risikofreien Anlagen bewegt sich hierbei meist um 1.5\% pro Jahr. Daher muss hier um an RF zu kommen eine Zinseszins-Rechnung der gewählten Anzahl an Jahren (n), über die der Algorithmus rechnet, durchgeführt werden. Das Kapital das man durch risikofreie Anlagen aus dem Startkapital erhälten hätte lässt sich daher wie folgt berechnen:
+	Der Standardzinssatz (p) bei einer risikofreien Anlagen bewegt sich hierbei meist um 1.5\% pro Jahr. Daher muss hier, um an RF zu kommen, eine Zinseszins-Rechnung der gewählten Anzahl an Jahren (n), über die der Algorithmus rechnet, durchgeführt werden. Das Kapital, das man durch risikofreie Anlagen aus dem Startkapital erhalten hätte, lässt sich daher wie folgt berechnen:
 	\begin{equation}
 		\label{Zinseszins-Berechnung}
 		NWRF = K * (1 + \frac{p}{100})^n
 	\end{equation}
-	Um nun herauszufinden wie hoch dieser Prozentsatz gewesen wäre muss nun folgende Berechnung durchgeführt werden:
+	Um nun herauszufinden, wie hoch dieser Prozentsatz gewesen wäre, muss nun folgende Berechnung durchgeführt werden:
 	\begin{equation}
 		\label{Risikofreie Portfolio Performance}
 		RF = \frac{NWRF - K}{K} * 100
@@ -122,19 +122,19 @@ Zusätzlich zu den spezifischen Performancedaten für jede Order auf dem Orders-Ta
 		s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i-\overline{x})^2}
 	\end{equation}
 \item \textbf{Mean Deviation of Equity Price} \\
-	Die Mean Deviation of Equity Price ist die Standardabweichung aller Close-Werte der Aktien-Preisbars in der gewählten Periode. Diese soll dem Nutzer einen Überblick über die allgemeine Volatilität der übergebenen Daten verschaffen. Die Standardabweichung wird auch hier mit der allgemeinen Formel berechnet, die bspw. in der Gleichung \ref{Standardabweichung} nachgelesen werden kann.
+	Die Mean Deviation of Equity Price ist die Standardabweichung aller Close-Werte der Aktien-Preisbars in der gewählten Periode. Diese soll dem Nutzer einen Überblick über die allgemeine Volatilität der übergebenen Daten verschaffen. Die Standardabweichung wird auch hier mit der allgemeinen Formel berechnet, die in der Gleichung \ref{Standardabweichung} aufgeführt ist.
 \item \textbf{Return on Investment [\%]} \\
 	Return on Investment (ROI) beschreibt die prozentuelle Kapitalveränderung, ähnlich wie die Portfolio Performance, nur dass hier das wirklich investierte Kapital jedes Trades als Basis der Prozentrechnung herangezogen wird. Bei der Portfolio Performance ist dies nämlich das insgesamt verfügbare Kapital. Dieser Wert ist gleich dem Order-spezifischen kumulativen Gain/Loss nach der letzten Order.
 \item \textbf{Number of Good Trades} \\
-	Die Number of Good Trades (NoGT) gibt die Anzahl an Handlungen an, durch die der Algorithmus im echten Betrieb einen Gewinn erzielt hätte. Die Klassifizierung eines Trades als Good Trade passiert allerdings bevor die entsprechend zu zahlenden Gebühren hier mitgerechnet werden, da sonst ein Trade ohne Neutralisierung alter Positionen, bei denen nur Gebühren gezahlt werden müssen automatisch als Bad Trade klassifiziert werden würden.
+	Die Number of Good Trades (NoGT) gibt die Anzahl an Handlungen an, durch die der Algorithmus im echten Betrieb einen Gewinn erzielt hätte. Die Klassifizierung eines Trades als Good Trade passiert allerdings bevor die entsprechend zu zahlenden Gebühren hier mitgerechnet werden, da sonst ein Trade ohne Neutralisierung alter Positionen, bei denen nur Gebühren gezahlt werden müssen, automatisch als Bad Trade klassifiziert werden würde.
 \item \textbf{Gain From Good Trades [\%]} \\
 	Der Gain From Good Trades gibt an, wie viel Gewinn durch alle Good Trades zusammen gemacht hätte werden können, gäbe es keine Bad Trades. Als Grundlage dieser Berechnung wird die Portfolio Performance jedes Good Trades relativ zum Startkapital herangezogen. Es wird hier also bei jedem Good Trade der Wert addiert, der auch zur Order-spezifischen kumulativen Portfolio Performance bei jedem Trade addiert wird.
 \item \textbf{Number of Bad Trades} \\
-	Die Number of Bad Trades (NoBT) gibt die Anzahl an Handlungen an, durch die der Algorithmus im echten Betrieb einen Verlust erzielt hätte. (vgl. ''Number of Good Trades'' weiter oben bezüglich der Berechnung)
+	Die Number of Bad Trades (NoBT) gibt die Anzahl an Handlungen an, durch die der Algorithmus im echten Betrieb einen Verlust erzielt hätte. (vgl. "`Number of Good Trades"' weiter oben bezüglich der Berechnung)
 \item \textbf{Loss From Bad Trades [\%]} \\
-	Der Loss From Bad Trades gibt an, wie viel Verlust durch alle Bad Trades zusammen gemacht worden wäre, gäbe es keine Good Trades. (vgl. ''Gain From Good Trades'' weiter oben bezüglich der Berechnung)
+	Der Loss From Bad Trades gibt an, wie viel Verlust durch alle Bad Trades zusammen gemacht worden wäre, gäbe es keine Good Trades. (vgl. "`Gain From Good Trades"' weiter oben bezüglich der Berechnung)
 \item \textbf{Ratio of Good Trades - Bad Trades} \\
-	Der Ratio zwischen Good und Bad Trades beschreibt deren mengenmäßiges Verhältnis an. Dabei wird die Anzahl an Good Trades durch die Anzahl an Bad Trades dividiert. Dadurch entsteht quasi ein Wirkungsgrad bei dem Ergebnisse größer als 1 darauf hindeuten, dass mehr Good Trades als Bad Trades vom Algorithmus berechnet wurden. Die Berechnung funktioniert wie folgt:
+	Der Ratio zwischen Good und Bad Trades beschreibt deren mengenmäßiges Verhältnis. Dabei wird die Anzahl an Good Trades durch die Anzahl an Bad Trades dividiert. Dadurch entsteht quasi ein Wirkungsgrad, bei dem Ergebnisse größer als 1 darauf hindeuten, dass mehr Good Trades als Bad Trades vom Algorithmus berechnet wurden. Die Berechnung funktioniert wie folgt:
 	\begin{equation}
 		\label{Ratio of Good Trades - Bad Trades}
 		R = \frac{NoGT}{NoBT}
