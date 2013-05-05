@@ -34,19 +34,18 @@ Bei einem erkannten Trend ist es sinnvoll, zu investieren. Durch das verwenden v
 \subsubsection{BTS-Test} 
  
 \begin{center}
-\begin{tabular}{ | p{4cm} | p{11cm} |} \hline
+\begin{tabular}{ | p{4cm} | p{9.5cm} |} \hline
 \textbf{Komponente} & \textbf{Parameter}\\  \hline 
- - & -  \\ \hline
- - & -  \\ \hline
+Regression & 2, 5, 10, 20, 30, 50, 60, 80  \\ \hline
 \end{tabular}
 \end{center}
  
-Bei diesem Algorithmus wird der ladida..
+Bei diesem Algorithmus wird die Regressionsberechnung verwendet, um ein Signal zu erzeugen.
  
 \begin{center}
-\begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
+\begin{tabular}{ | p{5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} |} \hline
 Kenndaten & \$SPX & \$COMPQ &  AAPL \\ \hline 
-Net Worth [\$] & 47554,00 (-52446,00)& 84544,00 (-15456,00) &  203191,600 (+103191,600) \\ \hline 
+Net Worth [\$] & 47554,00 (-52446,00)& 84544,00 (-15456,00) &  203191,60 (+103191,60) \\ \hline 
 Portfolio Performance [\%] & -52,446& -15,456 &  103,191 \\ \hline 
 Sharpe Ratio & -8,287& -0,221 &  20,034 \\ \hline 
 Mean Deviation of Portfolio Performance [\%] & 7,034& 96,444 &  4,885 \\ \hline 
@@ -62,12 +61,12 @@ Ratio of Good Trades & 0,881& 0,895 &  2,333 \\ \hline
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\textwidth]{graphics/ergebnis/tests/AAPLpart.PNG}
-\caption{Name goes here}
-\label{fig:and here}
+\caption{Performance Regressionsalgorithmus}
+\label{regr_perf}
 \end{figure}
- 
+
 \textbf{Interpretation}
  
-Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.Interpretation von den Sachen die ich seh.
+An den Performanceberechnungen des Regressionsalgorithmus erkennt man, dass bereits genannte Problem in trendarmen Phasen zu berechnen. An dem Gewinn von guten Trades bei \$SPX und \$COMPQ erkennt man, dass die Regression gute Performance leifert, allerdings sollte man die Schwellwerte (siehe \ref{cutloss_regr}) an das gehandelte Gut anpassen, um den Verlust bei schlechten Trades minimieren kann. Bei AAPL handelt es sich zuerst um einen starken Aufwärtstrend und danach um einen ebenso starken Abwärtstrend; die Schwäche des Regressionsalgorithmus spielt hierbei kaum eine Rolle (siehe \ref{regr_perf})
  
 \newpage

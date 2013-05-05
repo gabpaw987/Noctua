@@ -1,7 +1,7 @@
 \lstset{style=sharpc}
 \subsection{Persistente Sicherung der Einstellungen} \label{Einstellungen-sichern}
 
-Die \gls{bts} bietet auf dem Settings-Tab eine Vielzahl an Einstellungen, die ein Benutzer normalerweise einmal wählt und danach nur noch selten verändert. Deshalb werden die gewählten Einstellungen bei jedem Schließen der \gls{bts} persistent in einer Anwendungskonfigurationsdatei (Siehe \ref{akd} ''Anwendungskonfigurationsdatei'') gespeichert, um beim nächsten Start der Software wieder geladen werden zu können.\\
+Die \gls{bts} bietet auf dem Settings-Tab eine Vielzahl an Einstellungen, die ein Benutzer normalerweise einmal wählt und danach nur noch selten verändert. Deshalb werden die gewählten Einstellungen bei jedem Schließen der \gls{bts} persistent in einer Anwendungskonfigurationsdatei (Siehe \ref{akd} "`Anwendungskonfigurationsdateien"') gespeichert, um beim nächsten Start der Software wieder geladen werden zu können.\\
 \\
 Folgende Daten werden auf diese Art und Weise persistent gespeichert:
 
@@ -14,39 +14,50 @@ Folgende Daten werden auf diese Art und Weise persistent gespeichert:
 	&& Absolute und relative Transaktionsgebühr sowie der Price Premium Prozentsatz als \textit{string}s
 	&& Slider-Werte zur Beschreibung der Order Größen sowie die Round Lot Größe als \textit{int}
 & \textbf{Chart-Settings}
-	&& Serialisierte \textit{StackPanel}s zum Wiederaufbau der konfigurierten Indikatoren als \textit{StringCollection}
+	&& Serialisierte \textit{StackPanel}s zum Wiederaufbau der konfigurierten Indikatoren als \textit{StringCollection}\\
 \end{easylist}
 
-Generell werden all diese Einstellungen direkt aus dem ViewModel in die Anwendungskonfigurationsdatei abgelegt. Die einzige Ausnahme davon stellen die Chart-Settings dar, da diese im ViewModel als \textit{List<StackPanel>} gespeichert werden. Anwendungskonfigurationsdateien unterstützten allerdings nur ein gewisses Spektrum an Standarddatentypen, zu denen \textit{List<StackPanel>} leider nicht gehört. Daher wurde hier auf eine \textit{StringCollection} ausgewichen.\\
+Generell werden all diese Einstellungen direkt aus dem ViewModel in der Anwendungskonfigurationsdatei abgelegt. Die einzige Ausnahme davon stellen die Chart-Settings dar, da diese im ViewModel als \textit{List<StackPanel>} gespeichert werden. Anwendungskonfigurationsdateien unterstützten allerdings nur ein gewisses Spektrum an Standarddatentypen, zu denen \textit{List<StackPanel>} leider nicht gehört. Daher wurde hier auf eine \textit{StringCollection} ausgewichen.\\
 \\
-Dazu müssen klarerweise die einzelnen \textit{StackPanel}s in der Liste in einzelne \textit{string}s umgewandelt werden, die in der \textit{StringCollection} gespeichert werden können. Dies funktioniert durch Serialisierung jedes einzelnen Panels. Leider die benutzten \gls{wpf}-\gls{gui}-Elemente allerdings nicht als serialisierbar gekennzeichnet und können nur über einen speziellen \textit{XamlWriter} in ein \gls{xaml}-Format serialisiert werden, dass von einem entsprechenden \textit{XamlReader} wieder ausgelesen und zurück in echte \textit{StackPanel}s umgewandelt werden kann. Weiters wird in jedem der \textit{StackPanel}s auch ein \textit{ColorPicker} aus dem Extended WPF Toolkit \cite{extended-wpf-toolkit} von Xceed benutzt. Dieser besitzt leider nicht die Möglichkeit über einen \textit{XamlWriter} serialisiert zu werden. Dieses Problem wurde umgangen, indem der \textit{ColorPicker} vor der Serialisierung aus dem \textit{StackPanel} entfernt wird. Zur \textit{StringCollection} wird dann ein weiterer \textit{string} hinzugefügt, der die ausgewählte Farbe des \textit{ColorPicker}s speichert, damit diese beim Wiederaufbau der \textit{StackPanel}s einfach neu Initialisiert und auf die entsprechend zuvor gewählte Farbe gesetzt werden kann. Anschließend wird der \textit{ColorPicker} natürlich auch wieder zum \textit{StackPanel} hinzugefügt, damit er nicht in der Anzeige der Chart-Settings fehlt. Die hierzu verwendete Methode sieht so aus:
+Dazu müssen klarerweise die einzelnen \textit{StackPanel}s in der Liste in einzelne \textit{string}s umgewandelt werden, die in der \textit{StringCollection} gespeichert werden können. Dies funktioniert durch Serialisierung jedes einzelnen Panels. Leider sind die benutzten \gls{wpf}-\gls{gui}-Elemente allerdings nicht als serialisierbar gekennzeichnet und können nur über einen speziellen \textit{XamlWriter} in ein \gls{xaml}-Format serialisiert werden, das von einem entsprechenden \textit{XamlReader} wieder ausgelesen und zurück in echte \textit{StackPanel}s umgewandelt werden kann. Weiters wird in jedem der \textit{StackPanel}s auch ein \textit{ColorPicker} aus dem Extended WPF Toolkit \cite{extended-wpf-toolkit} von Xceed benutzt. Dieser besitzt leider nicht die Möglichkeit, über einen \textit{XamlWriter} serialisiert zu werden. Dieses Problem wurde umgangen, indem der \textit{ColorPicker} vor der Serialisierung aus dem \textit{StackPanel} entfernt wird. Zur \textit{StringCollection} wird dann ein weiterer \textit{string} hinzugefügt, der die ausgewählte Farbe des \textit{ColorPicker}s speichert, damit diese beim Wiederaufbau der \textit{StackPanel}s einfach neu initialisiert und auf die entsprechend zuvor gewählte Farbe gesetzt werden kann. Anschließend wird der \textit{ColorPicker} natürlich auch wieder zum \textit{StackPanel} hinzugefügt, damit er nicht in der Anzeige der Chart-Settings fehlt. Die hierzu verwendete Methode sieht so aus:
 
 \begin{lstlisting}[label=XML-Serialisierung der IndicatorStackPanels,caption=XML-Serialisierung der IndicatorStackPanels]
 public StringCollection storeIndicatorStackPanels(List<StackPanel> stackPanels)
 {
-    StringCollection strings = new StringCollection();
-    //Wenn StackPanels vorhanden sind, fortfahren
-    if (stackPanels.Count != 0)
-    {
-    	//Das folgende soll für jedes StackPanel durchgefuehrt werden
-        foreach (StackPanel sp in stackPanels)
-        {
-        	//Wenn es ein richtig initialisiertes StackPanel ist, fortfahren
-            if (sp.Children[sp.Children.Count - 1].GetType().IsAssignableFrom((new ColorPicker()).GetType()))
-            {
-            	//Speichern und Loeschen des nicht-serialisiertbaren ColorPickers
-                ColorPicker cp = ((ColorPicker)sp.Children[sp.Children.Count - 1]);
-                sp.Children.Remove(cp);
-                //Serialisieren des restlichen StackPanels
-                strings.Add(XamlWriter.Save(sp));
-                //Speichern der Farbe des ColorPickers
-                strings.Add(cp.SelectedColor.A + ";" + cp.SelectedColor.R + ";" + cp.SelectedColor.G + ";" + cp.SelectedColor.B);
-                //Erneutes Hinzufügen des ColorPickers zum StackPanel
-                sp.Children.Add(cp);
-            }
-        }
-    }
-    return strings;
+	StringCollection strings = new StringCollection();
+	//Wenn StackPanels vorhanden sind, fortfahren
+	if (stackPanels.Count != 0)
+	{
+		//Das folgende soll für jedes StackPanel durchgefuehrt
+		//werden
+		foreach (StackPanel sp in stackPanels)
+		{
+			//Wenn es ein richtig initialisiertes StackPanel
+			//ist, fortfahren
+			if (sp.Children[sp.Children.Count - 1]
+				.GetType().IsAssignableFrom(
+				(new ColorPicker()).GetType()))
+			{
+				//Speichern und Loeschen des
+				//nicht-serialisierbaren ColorPickers
+				ColorPicker cp = ((ColorPicker)sp
+					.Children[sp.Children.Count - 1]);
+				sp.Children.Remove(cp);
+				//Serialisieren des restlichen StackPanels
+				strings.Add(XamlWriter.Save(sp));
+				//Speichern der Farbe des ColorPickers
+				strings.Add(
+					cp.SelectedColor.A + ";" + 
+					cp.SelectedColor.R + ";" + 
+					cp.SelectedColor.G + ";" + 
+					cp.SelectedColor.B);
+				//Erneutes Hinzufuegen des ColorPickers zum
+				//StackPanel
+				sp.Children.Add(cp);
+			}
+		}
+	}
+	return strings;
 }
 \end{lstlisting}
 
@@ -55,31 +66,42 @@ Die daraus resultierende \textit{StringCollection} kann natürlich auch in die An
 \begin{lstlisting}[label=XML-Deserialisierung der IndicatorStackPanels,caption=XML-Deserialisierung der IndicatorStackPanels]
 public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
 {
-    List<StackPanel> newList = new List<StackPanel>();
+	List<StackPanel> newList = new List<StackPanel>();
 
 	//Durchlaufen der StringCollection
-    for (int i = 0; i < strings.Count; i += 2)
-    {
-    	//Deserialisieren des StackPanels
-        newList.Add((StackPanel)XamlReader.Parse(strings[i]));
+	for (int i = 0; i < strings.Count; i += 2)
+	{
+		//Deserialisieren des StackPanels
+		newList.Add((StackPanel)XamlReader.Parse(strings[i]));
 
 		//Neues Speichern der Listener zu jeder TextBox
-        for (int j = 0; j < newList[i / 2].Children.Count; j++)
-        {
-            if (newList[i / 2].Children[j] is System.Windows.Controls.TextBox)
-                ((System.Windows.Controls.TextBox)newList[i / 2].Children[j]).PreviewTextInput += NumericOnly;
-        }
+		for (int j = 0; j < newList[i / 2].Children.Count;
+		     j++)
+		{
+			if (newList[i / 2].Children[j] is
+				System.Windows.Controls.TextBox)
+			{
+				((System.Windows.Controls.TextBox)newList[i/2]
+					.Children[j]).PreviewTextInput += NumericOnly;
+			}
+		}
 
-		//Erzeugen eines neuen ColorPickers und Setzen der gespeicherten Farbe
-        string[] argb = strings[i + 1].Split(';');
-        ColorPicker cp = this.AddColorPicker();
-        cp.SelectedColor = System.Windows.Media.Color.FromArgb(Convert.ToByte(argb[0]), Convert.ToByte(argb[1]), Convert.ToByte(argb[2]), Convert.ToByte(argb[3]));
-        newList[i / 2].Children.Add(cp);
+		//Erzeugen eines neuen ColorPickers und Setzen der
+		//gespeicherten Farbe
+		string[] argb = strings[i + 1].Split(';');
+		ColorPicker cp = this.AddColorPicker();
+		cp.SelectedColor = System.Windows.Media.Color.FromArgb(
+			Convert.ToByte(argb[0]),
+			Convert.ToByte(argb[1]),
+			Convert.ToByte(argb[2]),
+			Convert.ToByte(argb[3]));
+		newList[i/2].Children.Add(cp);
 
 		//Hinzufügen des Listeners für den Remove-Button
-        ((System.Windows.Controls.Button)newList[i / 2].Children[0]).Click += RemoveIndicatorButton_Click;
-    }
+		((System.Windows.Controls.Button)newList[i/2]
+			.Children[0]).Click += RemoveIndicatorButton_Click;
+	}
 
-    return newList;
+	return newList;
 }
 \end{lstlisting}
