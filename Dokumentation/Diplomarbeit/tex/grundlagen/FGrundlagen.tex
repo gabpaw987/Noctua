@@ -41,12 +41,12 @@ Für mathematische Berechnungen besitzen die F\#-Arrays zusätzliche Funktionen.
 \end{itemize}
 Ein weiterer Vorteil von Arrays in F\# ist die Möglichkeit, spezifische Einträge einzeln anzusprechen, also einen einzelnen Wert ohne ein Durchsuchen des Arrays zu finden. \cite{arraysfs}
 \subsection{Sequenzen in F\#} \label{fsharpsequenzen}
-Sequenzen in F\# sind Aneinanderreihungen von Daten des gleichen Daten\-typs mit einer fixierten Größe. Der Vorteil gegenüber Listen in F\# besteht in der Art der Auswertung. Während Listen nur mit evaluierten Werten befüllt werden, also mit Ergebnissen aus den Funktionen, wird eine Sequenz prinzipiell nur mit einer Menge an Anweisungen befüllt. Deswegen ist die Art der Mengenspeicherung am Besten für Datenmengen geeignet, die möglicherweise nicht vollständig gelesen wird. \cite{seqfs} 
+Sequenzen in F\# sind Aneinanderreihungen von Daten des gleichen Daten\-typs mit einer fixierten Größe. Der Vorteil gegenüber Listen in F\# besteht in der Art der Auswertung. Während Listen nur mit evaluierten Werten befüllt werden, also mit Ergebnissen aus den Funktionen, wird eine Sequenz prinzipiell nur mit einer Menge an Anweisungen befüllt. Deswegen ist die Art der Mengenspeicherung am besten für Datenmengen geeignet, die möglicherweise nicht vollständig gelesen werden. \cite{seqfs} 
 \begin{lstlisting}[label=Sequenzen erzeugen,caption=Sequenzen erzeugen]
 let sequenz = seq{1 .. 4}
 \end{lstlisting}
-An diesem Beispiel erkennt man, wie man einer Sequenz eine Anweisung gibt, in diesem Fall:"`Zähle von 1 bis 4"'. In der Sequenz ist dieser Befehl gespeichert, wird allerdings erst dann ausgeführt, wenn auf die Daten zugegriffen werden soll. \cite{seqfs} 
-Durch das Berechnen beim Aufrufen und nicht beim Speichern ist es auch möglich, "`unendliche"' Sequenzen zu erzeugen, welche über ihren Index und der erzeugenden Funktion jeden beliebigen Wert berechnen können. 
+An diesem Beispiel erkennt man, wie man einer Sequenz eine Anweisung gibt, in diesem Fall:"`Zähle von 1 bis 4"'. In der Sequenz ist dieser Befehl gespeichert, er wird allerdings erst dann ausgeführt, wenn auf die Daten zugegriffen werden soll. \cite{seqfs} 
+Durch das Berechnen beim Aufrufen und nicht beim Speichern ist es auch möglich, "`unendliche"' Sequenzen zu erzeugen, welche über ihren Index und die erzeugende Funktion jeden beliebigen Wert berechnen können. 
 \begin{lstlisting}[label=Unendliche Sequenzen,caption=Unendliche Sequenzen]
 let seqInfinite = Seq.initInfinite (fun index ->
     let n = float( index + 1 )
@@ -56,7 +56,7 @@ let seqInfinite = Seq.initInfinite (fun index ->
     		      -1.0)))
 printfn "%A" seqInfinite
 \end{lstlisting}
-Weitere interessante Funktionen von F-\# Sequenzen sind:
+Weitere interessante Funktionen von F\# Sequenzen sind:
 \begin{itemize}
 	\item \textit{Seq.sort} oder \textit{Seq.sortBy} sortiert die Sequenz 
 	\item \textit{Seq.windowed} oder \textit{Seq.pairwise} geben die Möglichkeit, die Sequenz in eine Menge Subsequenzen zu spalten, also einem Subsequence-Array
@@ -95,7 +95,7 @@ Ein Tupel ist eine bestimmte Menge an unterschiedlichen geordneten Werten in F\#
 \begin{lstlisting}[label=Erzeugen einer Tupel,caption=Erzeugen einer Tupel]
 let tupel = ("Hello", 17m, true, 'a', 0.01, 1)
 \end{lstlisting}
-An dem Beispiel \ref{Erzeugen einer Tupel} erkennt man, dass einer Tupel unterschiedliche Datentypen verwenden kann. \\ \\ Eine Tupel wird prinzipiell in runden Klammern () definiert. Man kann auch in der Funktionsdefinition beschreiben wie der Tupel aussehen soll. \cite{tupelfs}
+An dem Beispiel \ref{Erzeugen einer Tupel} erkennt man, dass eine Tupel unterschiedliche Datentypen verwenden kann. \\ \\ Ein Tupel wird prinzipiell in runden Klammern () definiert. Man kann auch in der Funktionsdefinition beschreiben wie der Tupel aussehen soll. \cite{tupelfs}
 \begin{lstlisting}[label=Vordefinition von Tupeln,caption=Vordefinition von Tupeln]
 let f:(string * decimal * bool * char * float * int)= ...
 \end{lstlisting}
@@ -109,8 +109,8 @@ let thirdElement (_, _, c, _, _) = c
 let seventhElement (_, _, _, _, _, _, g) = g
 \end{lstlisting}
 Bei Algorithmen, die Werte wie Datum, Uhrzeit, Open (Dezimalzahl), High, Low und Close ist der grundlegende Vorteil eines Tupels klar deutlich.\\ In solchen Tupeln können die Datenstrukturen perfekt übernommen werden, und man kann sich auf eine Datenmenge konzentrieren, ohne andauernd mehrere Arrays oder Listen durchzurechnen, um die jeweils passenden Daten zu erhalten. \\
-Es gibt bereits definierte Funktionen um Tupelzugriffe auf das erste und zweite Element eines Tupels durchzuführen. Allerdings funktionieren diese vordefinierten Funktionen nur bei Tupeln die 2 Einträge besitzen. \\ \\
-Tuple bieten also die Funktionalität, zusammengehörende Daten vernünftig zu speichern. Dieser Effekt bietet einige Vorteile, jedoch gibt es nur wenige vordefinierten Funktionen, um auf die eingeschlossenen Daten zu wirken. \cite{tupelfs}
+Es gibt bereits definierte Funktionen, um Zugriffe auf das erste und zweite Element eines Tupels durchzuführen. Allerdings funktionieren diese vordefinierten Funktionen nur bei Tupel die 2 Einträge besitzen. \\ \\
+Tupeln bieten also die Funktionalität, zusammengehörende Daten vernünftig zu speichern. Dieser Effekt bietet einige Vorteile, jedoch gibt es nur wenige vordefinierte Funktionen, um auf die eingeschlossenen Daten zu wirken. \cite{tupelfs}
 \clearpage
 \subsection{Pattern Matching in F\#}
 In F\# gibt es eine Möglichkeit, Entscheidungen mittels Pattern Matching zu verwirklichen. Diese Funktionalität der Programmiersprache ist vergleichbar mit der Switch-Case-Anweisung aus bekannteren Sprachen wie JAVA oder C\#. Mit Pattern Matching können Datenmengen mittels einer Entscheidungslogik bearbeitet werden. \\ \\
@@ -155,8 +155,8 @@ Verwendung von Listen:    0.012477 Sekunden
 Verwendung von Arrays:    0.004245 Sekunden
 Verwendung von Sequenzen: 0.008914 Sekunden
 \end{lstlisting}
-Aufgrund der langsameren Zugriffszeiten eignen sich Listen als Speicher für Datenmengen, auf die oft zugegriffen werden müssen, nicht gut. Sequenzen sind bei der Erzeugung schneller, allerdings muss für ein validiertes Ergebnis mehr Leistung aufgebracht werden. Ein Array eignet sich am Besten, um darauf öfter zuzugreifen, außerdem sind die Inhalte eines Arrays bereits ausgewertet und können sofort weiterverarbeitet werden. Anhand des folgenden Codestücks soll erklärt werden wie die Berechnung funktionieren soll
-\subsection{Schreiben eines SMAs in F-\#} \label{fsharpsma}
+Aufgrund der langsameren Zugriffszeiten eignen sich Listen als Speicher für Datenmengen, auf die oft zugegriffen werden müssen, nicht gut. Sequenzen sind bei der Erzeugung schneller, allerdings muss für ein validiertes Ergebnis mehr Leistung aufgebracht werden. Ein Array eignet sich am besten, um darauf öfter zuzugreifen, außerdem sind die Inhalte eines Arrays bereits ausgewertet und können sofort weiterverarbeitet werden. Anhand des folgenden Codestücks soll erklärt werden, wie die Berechnung funktionieren soll
+\subsection{Schreiben eines SMAs in F\#} \label{fsharpsma}
 In diesem Abschnitt wird prägnant erklärt, wie man einen SMA in F\# implementiert.
 \begin{lstlisting}[label=SMA,caption=SMA]
 (* 

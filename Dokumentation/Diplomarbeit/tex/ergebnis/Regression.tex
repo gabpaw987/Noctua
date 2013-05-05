@@ -10,7 +10,7 @@ Eine lange Regression erkennt keine plötzlichen Preiseinbrüche, weil die berechn
 	\label{cutloss_regr_pic}
 \end{figure}
 \subsubsection{Trenderkennung}\label{erken_regr}
-Mit Hilfe der linearen Regression kann man eine Steigung ablesen. Ist diese positiv kann man von einem Aufwärtstrend sprechen, bei einer negativen Steigung ist ein Abwärtstrend ablesbar. Jedoch ist es nicht vernünftig, einen Trend als solchen bereits zu sehen, wenn die Steigung zu gering ist. Es ist wichtig, einen Schwellwert zu definieren, der als Trendindikator fungieren soll. Erreicht die Steigung der Regressionsfunktion diesen Schwellwert kann man von einem Trend sprechen. Mittels unterschiedlich langen Regressionsanwendungen kann man die Trenderkennung verfeinern, beispielsweise kann man einen Trend besser deuten, wenn nicht nur eine Steigung den Schwellwert, überschreitet, sondern möglicherweise die Steigung einer 2ten Regression ebenfalls den Grenzwert erreicht hat. Man erkennt anhand der Abbildung \ref{trerk_regr}, wie mit der linearen Regression Trends erkannt werden.
+Mit Hilfe der linearen Regression kann man eine Steigung ablesen. Ist diese positiv, kann man von einem Aufwärtstrend sprechen, bei einer negativen Steigung ist ein Abwärtstrend ablesbar. Jedoch ist es nicht vernünftig, einen Trend als solchen bereits zu sehen, wenn die Steigung zu gering ist. Es ist wichtig, einen Schwellwert zu definieren, der als Trendindikator fungieren soll. Erreicht die Steigung der Regressionsfunktion diesen Schwellwert, kann man von einem Trend sprechen. Mittels unterschiedlich langen Regressionsanwendungen kann man die Trenderkennung verfeinern, beispielsweise kann man einen Trend besser deuten, wenn nicht nur eine Steigung den Schwellwert überschreitet, sondern möglicherweise die Steigung einer 2ten Regression ebenfalls den Grenzwert erreicht hat. Man erkennt anhand der Abbildung \ref{trerk_regr}, wie mit der linearen Regression Trends erkannt werden.
 \begin{figure}[h]
 	\centering
      \includegraphics[width=1\textwidth]{graphics/ergebnis/regr_trend_erk.jpg} 
@@ -19,7 +19,7 @@ Mit Hilfe der linearen Regression kann man eine Steigung ablesen. Ist diese posi
 \end{figure}
 
 \subsubsection{Trendnachhaltigkeit} \label{nachh_regr}
-Um eine Kaufs- oder Verkaufsentscheidung zusätzlich zu verstärken, eignet sich eine Regression über eine größere Menge an Bars. Wählt man zum Beispiel zur Trenderkennung Regressionen mit den Längen 30 und 50, kann man zu deren Verstärkung oder Nachhaltigkeitsbestimmung weitere Regressionsberechnungen mit den Längen 80 und 100 zu berechnen. Aufgrund deren Aussage lassen sich die Entscheidungen, die auf Grund der Trenderkennung getroffen wurden, zusätzlich verstärken und bestätigen. An der Abbildung \ref{trendnach_regr} erkennt man, wie ein bereits erkannter Trend mittels einer Regression über eine größere Menge an Daten bestätigt werden kann.
+Um eine Kaufs- oder Verkaufsentscheidung zusätzlich zu verstärken, eignet sich eine Regression über eine größere Menge an Bars. Wählt man zum Beispiel zur Trenderkennung Regressionen mit den Längen 30 und 50, kann man zu deren Verstärkung oder Nachhaltigkeitsbestimmung weitere Regressionen mit den Längen 80 und 100 berechnen. Aufgrund deren Aussage lassen sich die Entscheidungen, die auf Grund der Trenderkennung getroffen wurden, zusätzlich verstärken und bestätigen. An der Abbildung \ref{trendnach_regr} erkennt man, wie ein bereits erkannter Trend mittels einer Regression über eine größere Menge an Daten bestätigt werden kann.
 \begin{figure}[h]
 	\centering
      \includegraphics[width=1\textwidth]{graphics/ergebnis/regr_trend_nachh.jpg} 
@@ -27,8 +27,8 @@ Um eine Kaufs- oder Verkaufsentscheidung zusätzlich zu verstärken, eignet sich e
 	\label{trendnach_regr}
 \end{figure}
 \subsubsection{Kombination}
-Durch die Kombination der Berechnung von Kurseinbrüchen (\ref{cutloss_regr}), Trenderkennung (\ref{erken_regr}) und Trend\-nachhaltigkeit (\ref{nachh_regr}) mit Hilfe der Regressions\-methode, lassen sich Entscheidungen generieren die sich selbst bestätigen und versuchen Trends zu erkennen und diese auszunützen. \\
-Bei einem erkannten Trend ist es sinnvoll, zu investieren. Durch das verwenden von nicht allzu langen Regressionen wird erreicht, dass der Trend noch zu Beginn erkannt wurde und deswegen noch ein Gewinn möglich ist. Wird dieser Trend durch die längeren Regressionen auf lange Sicht bestätigt, kann das Investitionskapital erhöht werden. Um bei einem rapiden Fall der Preise keinen Verlust zu machen, werden die kurzen Regressionen genutzt, um so viel Kapital wie möglich sichern zu können. Das letztere Verfahren könnte man auch durch einen prozentuellen Abfall des Preises vom Höchstpreis ersetzen. Ebenso kann man andere Signal-Verstärkungsmethoden als die Trendnachhaltigkeitsberechnung durch die Regression einsetzen.
+Durch die Kombination der Berechnung von Kurseinbrüchen (\ref{cutloss_regr}), Trenderkennung (\ref{erken_regr}) und Trend\-nachhaltigkeit (\ref{nachh_regr}) mit Hilfe der Regressions\-methode, lassen sich Entscheidungen generieren, die sich selbst bestätigen und versuchen Trends zu erkennen und diese auszunützen. \\
+Bei einem erkannten Trend ist es sinnvoll, zu investieren. Durch das Verwenden von nicht allzu langen Regressionen wird erreicht, dass der Trend noch zu Beginn erkannt wurde und deswegen noch ein Gewinn möglich ist. Wird dieser Trend durch die längeren Regressionen auf lange Sicht bestätigt, kann das Investitionskapital erhöht werden. Um bei einem rapiden Fall der Preise keinen Verlust zu machen, werden die kurzen Regressionen genutzt, um so viel Kapital wie möglich sichern zu können. Das letztere Verfahren könnte man auch durch einen prozentuellen Abfall des Preises vom Höchstpreis ersetzen. Ebenso kann man andere Signal-Verstärkungsmethoden als die Trendnachhaltigkeitsberechnung durch die Regression einsetzen.
 
 \newpage
 \subsubsection{BTS-Test} 
@@ -67,6 +67,6 @@ Ratio of Good Trades & 0,881& 0,895 &  2,333 \\ \hline
 
 \textbf{Interpretation}
  
-An den Performanceberechnungen des Regressionsalgorithmus erkennt man, dass bereits genannte Problem in trendarmen Phasen zu berechnen. An dem Gewinn von guten Trades bei \$SPX und \$COMPQ erkennt man, dass die Regression gute Performance leifert, allerdings sollte man die Schwellwerte (siehe \ref{cutloss_regr}) an das gehandelte Gut anpassen, um den Verlust bei schlechten Trades minimieren kann. Bei AAPL handelt es sich zuerst um einen starken Aufwärtstrend und danach um einen ebenso starken Abwärtstrend; die Schwäche des Regressionsalgorithmus spielt hierbei kaum eine Rolle (siehe \ref{regr_perf})
+An den Performanceberechnungen des Regressionsalgorithmus erkennt man, dass bereits genannte Problem der Berechnung in trendarmen Phasen. An dem Gewinn von guten Trades bei \$SPX und \$COMPQ erkennt man, dass die Regression gute Performance leifert, allerdings sollte man die Schwellwerte (siehe \ref{cutloss_regr}) an das gehandelte Gut anpassen, um den Verlust bei schlechten Trades zu minimieren. Bei AAPL handelt es sich zuerst um einen starken Aufwärtstrend und danach um einen ebenso starken Abwärtstrend; die Schwäche des Regressionsalgorithmus spielt hierbei kaum eine Rolle (siehe Abbildung \ref{regr_perf})
  
 \newpage
