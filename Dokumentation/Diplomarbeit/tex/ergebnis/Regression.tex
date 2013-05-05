@@ -44,18 +44,18 @@ Bei diesem Algorithmus wird die Regressionsberechnung verwendet, um ein Signal z
  
 \begin{center}
 \begin{tabular}{ | p{5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} |} \hline
-Kenndaten & \$SPX & \$COMPQ &  AAPL \\ \hline 
-Net Worth [\$] & 47554,00 (-52446,00)& 84544,00 (-15456,00) &  203191,60 (+103191,60) \\ \hline 
-Portfolio Performance [\%] & -52,446& -15,456 &  103,191 \\ \hline 
-Sharpe Ratio & -8,287& -0,221 &  20,034 \\ \hline 
-Mean Deviation of Portfolio Performance [\%] & 7,034& 96,444 &  4,885 \\ \hline 
-Mean Deviation of Equity Price [\$] & 151,617& 386,313 &  145,406 \\ \hline 
-Return on Investment [\%] & -4,138& 21,277 &  69,529 \\ \hline 
-Number of Good Trades & 37& 34 &  21 \\ \hline 
-Gain From Good Trades [\$] & 49,839& 125,031 &  69,197 \\ \hline 
-Number of Bad Trades & 42& 38 &  9 \\ \hline 
-Loss From Bad Trades [\$] & -102,285& -140,487 &  33,994 \\ \hline 
-Ratio of Good Trades & 0,881& 0,895 &  2,333 \\ \hline 
+Kenndaten & \$GOOG & \$COMPQ &  \$AAPL \\ \hline 
+Net Worth [\$] & 130033,60 (+30033,60)& 100241,282 (+241,282) &  203191,60 (+103191,60) \\ \hline 
+Portfolio Performance [\%] & 30,034& 0,242 &  103,191 \\ \hline 
+Sharpe Ratio & 9,996& -5,971 &  20,034 \\ \hline 
+Mean Deviation of Portfolio Performance [\%] & 2,824& 0,598 &  4,885 \\ \hline 
+Mean Deviation of Equity Price [\$] & 51,993& 5,079 &  145,406 \\ \hline 
+Return on Investment [\%] & 12,733& 2,375 &  69,529 \\ \hline 
+Number of Good Trades & 13& 3 &  21 \\ \hline 
+Gain From Good Trades [\$] & 30,784& 0,242 &  69,197 \\ \hline 
+Number of Bad Trades & 9& 0 &  9 \\ \hline 
+Loss From Bad Trades [\$] & -0,75& 0 &  33,994 \\ \hline 
+Ratio of Good Trades & 1,444& 0 &  2,333 \\ \hline 
 \end{tabular}
 \end{center}
 \begin{figure}[h]
@@ -67,6 +67,6 @@ Ratio of Good Trades & 0,881& 0,895 &  2,333 \\ \hline
 
 \textbf{Interpretation}
  
-An den Performanceberechnungen des Regressionsalgorithmus erkennt man, dass bereits genannte Problem der Berechnung in trendarmen Phasen. An dem Gewinn von guten Trades bei \$SPX und \$COMPQ erkennt man, dass die Regression gute Performance leifert, allerdings sollte man die Schwellwerte (siehe \ref{cutloss_regr}) an das gehandelte Gut anpassen, um den Verlust bei schlechten Trades zu minimieren. Bei AAPL handelt es sich zuerst um einen starken Aufwärtstrend und danach um einen ebenso starken Abwärtstrend; die Schwäche des Regressionsalgorithmus spielt hierbei kaum eine Rolle (siehe Abbildung \ref{regr_perf})
+An den Performanceberechnungen des Regressionsalgorithmus erkennt man, dass bereits genannte Problem der Berechnung in trendarmen Phasen. An dem Gewinn von guten Trades bei \$COMPQ erkennt man, dass die Regression gute Performance leifert, allerdings sollte man die Schwellwerte (siehe \ref{cutloss_regr}) an das gehandelte Gut anpassen, um den Verlust bei schlechten Trades zu minimieren. Bei \$AAPL handelt es sich zuerst um einen starken Aufwärtstrend und danach um einen ebenso starken Abwärtstrend; die Schwäche des Regressionsalgorithmus spielt hierbei kaum eine Rolle (siehe Abbildung \ref{regr_perf})
  
 \newpage
