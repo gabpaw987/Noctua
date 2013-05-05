@@ -20,7 +20,7 @@ einzugehen und Parameter bzw. Entscheidungsgrundlagen daraufhin zu verändern.
 Als grundlegend unterschiedlich wurden für diesen Algorithmus die beiden Phasen Trend- und
 Seitwärtsphase unterschieden, für die jeweils eine komplett unterschiedliche Entscheidungsgrundlage
 verwendet wird. Während Trendphasen primär ein \gls{ma}-System zugrunde liegt, wird in Seitwärtsphasen
-ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} und \ref{subsection:fading})
+ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} Handelsstrategien mit MAs und \ref{subsection:fading} Fading-Strategie mit Bollinger Bändern)
 
 Die Entscheidung, welche Phase aktuell vorliegt, wird aufgrund des aktuellen \gls{adx}-Wertes getroffen.
 Es wird für diesen Zweck ein ADX über 14 Bars berechnet, wobei bei Werten unter 25 kein ausgeprägter Trend erkannt wird
@@ -32,7 +32,7 @@ einem marktbestimmenden Index herzustellen. Bei einem Aufwärtstrend des gesamten
 entsprechende Reaktion des gehandelten Instruments erwartet --- steigt beispielsweise der NASDAQ,
 so könnte auch ein im Index inbegriffenes Symbol von der positiven Marktentwicklung profitieren. Das Problem bestand
 nun darin, zu allererst einen zeitlichen Zusammenhang festzustellen. Nur wenn der Index dem Einzelsymbol
-zeitlich in der Trendbildung zuvorkommt, ist es möglich daraus eine Handelsempfehlung für das Einzelsymbol
+zeitlich in der Trendbildung zuvorkommt, ist es möglich, daraus eine Handelsempfehlung für das Einzelsymbol
 zu berechnen, d.h. wenn der Index-Lag negativ ist. Ist hingegen ein positiver Index-Lag vorhanden, wäre
 der Zusammenhang zwar möglicherweise für den Handel von Instrumenten mit dem Index als Basiswert interessant,
 jedoch nicht für das Einzelsymbol.
@@ -204,9 +204,48 @@ else if (signals.[i] <> 0) then
         signals.[i] <- 0
 \end{lstlisting}
 
-\clearpage
-\subsubsection{BTS-Test} 
+\newpage
+\subsubsection{Trendperformance} 
+\begin{center}
+\begin{tabular}{ | p{4cm} | p{11cm} |} \hline
+\textbf{Komponente} & \textbf{Parameter}\\  \hline 
+ AMAs & kurz: $n=[5, 10]$, mittel: $n=[10, 20]$, lang: $n=[20-40]$  \\ \hline
+ RSI & $n=14$  \\ \hline
+ Pivot Points & $n=14$  \\ \hline
+\end{tabular}
+\end{center}
+Hierbei handelt es sich um den Algorithmusbestandteil, der für Trendphasen konzipiert wurde.
+Dieser entscheidet in diesem Test auch in Phasen, die als Seitwärtsphasen erkannt werden würden.
+Bei den Daten handelt es sich um 995 daily Bars des Standard \& Poor 500, 965 daily Bars des Nasdaq Composite
+und 875 daily Bars von Apple Inc.\\
+\begin{center}
+\begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
+Kenndaten & \$SPX & \$COMPQ &  AAPL \\ \hline 
+Net Worth [\$] & 115599,00 (+15599,00)& 133368,00 (+33368,00) &  166976,520 (+66976,520) \\ \hline 
+Portfolio Performance [\%] & 15,599& 33,368 &  66,976 \\ \hline 
+Sharpe Ratio & 1,007& 0,128 &  7,843 \\ \hline 
+Mean Deviation of Portfolio Performance [\%] & 9,693& 215,252 &  7,860 \\ \hline 
+Mean Deviation of Equity Price [\$] & 151,617& 386,313 &  145,406 \\ \hline 
+Return on Investment [\%] & 58,507& 56,499 &  100,914 \\ \hline 
+Number of Good Trades & 44& 42 &  41 \\ \hline 
+Gain From Good Trades [\$] & 68,139& 269,698 &  69,443 \\ \hline 
+Number of Bad Trades & 18& 26 &  30 \\ \hline 
+Loss From Bad Trades [\$] & -52,540& -236,330 &  -2,467 \\ \hline 
+Ratio of Good Trades & 2,444& 1,615 &  1,367 \\ \hline 
+\end{tabular}
+\end{center}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{graphics/ergebnis/tests/AAPLpart_trend.PNG}
+\caption{Ausschnitt der Entscheidungen für Apple Inc.}
+\label{fig:and here}
+\end{figure}\textbf{Interpretation} \\
+Wie zu erwarten war, erzielt der Algorithmus besonders in Trendphasen eine gut Performance,
+entscheidet jedoch in Seitwärtsphasen häufiger falsch.
 
+
+\newpage
+\subsubsection{Performance ohne Cut-Loss und Signal-Smoothing} 
 \begin{center}
 \begin{tabular}{ | p{4cm} | p{11cm} |} \hline
 \textbf{Komponente} & \textbf{Parameter}\\  \hline 
@@ -217,12 +256,56 @@ else if (signals.[i] <> 0) then
  Pivot Points & $n=14$  \\ \hline
 \end{tabular}
 \end{center}
+Dieser Test soll die Auswirkungen von Cut-Loss und Signal-Smoothing dahingehend demonstrieren,
+wie sich die Performance verändert, sobald diese Bestandteile nicht Teil des Algorithmus sind.\\
+\begin{center}
+\begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
+Kenndaten & \$SPX & \$COMPQ &  AAPL \\ \hline 
+Net Worth [\$] & 146651,00 (+46651,00)& 220670,00 (+120670,00) &  160037,350 (+60037,350) \\ \hline 
+Portfolio Performance [\%] & 46,651& 120,670 &  60,038 \\ \hline 
+Sharpe Ratio & 6,984& 12,370 &  10,348 \\ \hline 
+Mean Deviation of Portfolio Performance [\%] & 5,843& 9,280 &  5,287 \\ \hline 
+Mean Deviation of Equity Price [\$] & 151,617& 386,313 &  145,406 \\ \hline 
+Return on Investment [\%] & 51,291& 67,012 &  135,655 \\ \hline 
+Number of Good Trades & 52& 56 &  48 \\ \hline 
+Gain From Good Trades [\$] & 80,336& 229,625 &  67,935 \\ \hline 
+Number of Bad Trades & 36& 40 &  37 \\ \hline 
+Loss From Bad Trades [\$] & -33,685& -108,955 &  -7,897 \\ \hline 
+Ratio of Good Trades & 1,444& 1,4 &  1,297 \\ \hline 
+\end{tabular}
+\end{center}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{graphics/ergebnis/tests/SPXpart_wo_cl_ss.PNG}
+\caption{Ausschnitt der Entscheidungen für den S\&P 500}
+\label{fig:and here}
+\end{figure}\textbf{Interpretation} \\
+Der Algorithmus entscheidet in vielen Fällen gut und erzielt meistens auch eine gute Performance.
+In sehr volatilen Situationen verliert er aber oft wieder einen Teil des 
+Gewinns. Das häufigste Problem sind dabei Signale,
+die wenige oder sogar nur einen Bar lang anhalten,
+was auf Indikatorwerte knapp um die Signalschwellen zurückzuführen ist. Außerdem treten 
+Signalverstärkungen manchmal zu spät im Trend auf.
+
+
+\clearpage
+\subsubsection{Gesamtperformance}
+
+\begin{center}
+\begin{tabular}{ | p{4cm} | p{11cm} |} \hline
+\textbf{Komponente} & \textbf{Parameter}\\  \hline 
+ ADX & $n=14$  \\ \hline
+ AMAs & kurz: $n=[5, 10]$, mittel: $n=[10, 20]$, lang: $n=[20-40]$  \\ \hline
+ RSI & $n=14$  \\ \hline
+ Bollinger Bänder & $n=20$, $\sigma=2$  \\ \hline
+ Pivot Points & $n=14$  \\ \hline
+ Cut-Loss & $5\%$  \\ \hline
+\end{tabular}
+\end{center}
 
 Der Algorithmus entscheidet in Trendphasen aufgrund der Überkreuzung von drei
-\glspl{ama}, verstärkt durch den \gls{rsi} und in Seitwärtsphasen durch eine Fading-Strategie
-mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo}).
-Bei den Daten handelt es sich um 995 daily Bars des Standard \& Poor 500, 965 daily Bars des Nasdaq Composite
-und 875 daily Bars von Apple Inc.
+\glspl{ama}, verstärkt durch den \gls{rsi}, und in Seitwärtsphasen durch eine Fading-Strategie
+mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo} Signalgeber mit Indikator-Kombination).
 
 \begin{center}
 \begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
@@ -248,11 +331,8 @@ Ratio of Good Trades & 1,515& 1,486 &  1,289 \\ \hline
 \label{fig:compq_noctua}
 \end{figure}
 
-\textbf{Interpretation} 
-
-Der Algorithmus entscheidet in vielen Fällen gut und erzielt meistens auch eine gute Performance.
-In sehr volatilen Situationen verliert er aber oft wieder einen Teil des 
-Gewinns. Das häufigste Problem sind dabei Signale,
-die wenige oder sogar nur einen Bar lang anhalten,
-was auf Indikatorwerte knapp um die Signalschwellen zurückzuführen ist. Außerdem treten 
-Signalverstärkungen manchmal zu spät im Trend auf.
+\textbf{Interpretation} \\
+Dieser Test veranschaulicht, dass Signal-Smoothing und Cut-Loss nicht in jeder Situation
+die Performance verbessert, da Signal-Smoothing eine Reduktion der Market-Exposure
+für unsichere Signale verhindert. In Märkten, in denen ausgeprägte Trends vorherrschen,
+ist dadurch jedoch eine Gewinnoptimierung möglich.
