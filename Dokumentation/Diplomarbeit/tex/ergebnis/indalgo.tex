@@ -20,7 +20,7 @@ einzugehen und Parameter bzw. Entscheidungsgrundlagen daraufhin zu verändern.
 Als grundlegend unterschiedlich wurden für diesen Algorithmus die beiden Phasen Trend- und
 Seitwärtsphase unterschieden, für die jeweils eine komplett unterschiedliche Entscheidungsgrundlage
 verwendet wird. Während Trendphasen primär ein \gls{ma}-System zugrunde liegt, wird in Seitwärtsphasen
-ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} und \ref{subsection:fading})
+ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} Handelsstrategien mit MAs und \ref{subsection:fading} Fading-Strategie mit Bollinger Bändern)
 
 Die Entscheidung, welche Phase aktuell vorliegt, wird aufgrund des aktuellen \gls{adx}-Wertes getroffen.
 Es wird für diesen Zweck ein ADX über 14 Bars berechnet, wobei bei Werten unter 25 kein ausgeprägter Trend erkannt wird
@@ -32,7 +32,7 @@ einem marktbestimmenden Index herzustellen. Bei einem Aufwärtstrend des gesamten
 entsprechende Reaktion des gehandelten Instruments erwartet --- steigt beispielsweise der NASDAQ,
 so könnte auch ein im Index inbegriffenes Symbol von der positiven Marktentwicklung profitieren. Das Problem bestand
 nun darin, zu allererst einen zeitlichen Zusammenhang festzustellen. Nur wenn der Index dem Einzelsymbol
-zeitlich in der Trendbildung zuvorkommt, ist es möglich daraus eine Handelsempfehlung für das Einzelsymbol
+zeitlich in der Trendbildung zuvorkommt, ist es möglich, daraus eine Handelsempfehlung für das Einzelsymbol
 zu berechnen, d.h. wenn der Index-Lag negativ ist. Ist hingegen ein positiver Index-Lag vorhanden, wäre
 der Zusammenhang zwar möglicherweise für den Handel von Instrumenten mit dem Index als Basiswert interessant,
 jedoch nicht für das Einzelsymbol.
@@ -304,8 +304,8 @@ Signalverstärkungen manchmal zu spät im Trend auf.
 \end{center}
 
 Der Algorithmus entscheidet in Trendphasen aufgrund der Überkreuzung von drei
-\glspl{ama}, verstärkt durch den \gls{rsi} und in Seitwärtsphasen durch eine Fading-Strategie
-mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo}).
+\glspl{ama}, verstärkt durch den \gls{rsi}, und in Seitwärtsphasen durch eine Fading-Strategie
+mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo} Signalgeber mit Indikator-Kombination).
 
 \begin{center}
 \begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
