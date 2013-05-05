@@ -2,7 +2,7 @@
 
 Nachdem eine Berechnung in der \gls{bts} erfolgreich durchgeführt wurde und die Performancedaten angezeigt werden, gibt es zwei Möglichkeiten, diese zu sichern: das Speichern und das Exportieren. \\
 \\
-Beim Speichern werden alle Einstellungen des Settings-Tabs sowie alle allgemeinen und Order-spezifischen Performancedaten binär serialisiert (Siehe \ref{Binaere-Serialisierung} "`Binäre Serialisierung"') und in einem speziellen .bts-File gespeichert. Dieses kann zu einem späteren Zeitpunkt auch wieder geladen werden, wobei der komplette Zustand der \gls{bts} bis auf das gezeichnete Chart wiederhergestellt wird. Dies funktioniert vor allem recht einfach, da bei jedem Speicher- sowie Lese-Vorgang die serialisierten Daten in derselben Reihenfolge gespeichert bzw. ausgelesen werden können. Wie die \gls{bts} nach dem Laden ohne Chart aussieht, kann der Abbildung \ref{fig:bts_order_geladen} entnommen werden.\\
+Beim Speichern werden alle Einstellungen des Settings-Tabs sowie alle allgemeinen und Order-spezifischen Performancedaten binär serialisiert (siehe \ref{Binaere-Serialisierung} "`Binäre Serialisierung"') und in einem speziellen .bts-File gespeichert. Dieses kann zu einem späteren Zeitpunkt auch wieder geladen werden, wobei der komplette Zustand der \gls{bts} bis auf das gezeichnete Chart wiederhergestellt wird. Dies funktioniert vor allem recht einfach, da bei jedem Speicher- sowie Lese-Vorgang die serialisierten Daten in derselben Reihenfolge gespeichert bzw. ausgelesen werden können. Wie die \gls{bts} nach dem Laden ohne Chart aussieht, kann der Abbildung \ref{fig:bts_order_geladen} entnommen werden.\\
 
 \begin{figure}[!h]
 	\centering
@@ -31,12 +31,12 @@ Loss From Bad Trades [%]:                     -13,179
 Ratio of Good Trades - Bad Trades:             2,143
 \end{verbatim}
 
-Sowohl das Speichern und Laden als auch das Exportieren benützen spezielle FileDialogs (\textit{OpenFileDialog} und \textit{SaveFileDialog}) zur Auswahl der zu ladenden Datei bzw. des gewünschten Speicherorts der Datei. Diese FileDialog sieht bspw. beim Speichern eines .bts-Files aus wie in Abbildung \ref{fig:bts_speichern}.\\
+Sowohl das Speichern und Laden als auch das Exportieren benützen spezielle FileDialogs (\inline{OpenFileDialog} und \inline{SaveFileDialog}) zur Auswahl der zu ladenden Datei bzw. des gewünschten Speicherorts der Datei. Diese FileDialog sieht bspw. beim Speichern eines .bts-Files aus wie in Abbildung \ref{fig:bts_speichern}.\\
 
 \begin{figure}[!h]
 	\centering
 		\includegraphics[width=0.90\textwidth]{graphics/ergebnis/bts_speichern.png}
-	\caption{\textit{SaveFileDialog} beim Speichern eines .bts-Files}
+	\caption{\inline{SaveFileDialog} beim Speichern eines .bts-Files}
 	\label{fig:bts_speichern}
 \end{figure}
 

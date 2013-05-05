@@ -1,14 +1,14 @@
 \lstset{style=sharpc}
 \subsection{Einbindung des Algorithmus}
 
-Da die \gls{bts} natürlich nicht nur einen Algorithmus testen können soll, ist es wichtig, dass die Algorithmen nicht direkt im Code verankert sind, sondern zur Laufzeit geladen werden können. Dazu kann der Benutzer einen Pfad angeben, von dem der Algorithmus in Form einer \gls{dll}-Datei (Siehe \ref{dll} "`Dynamic Link Library"') gelesen werden kann. Damit die \gls{bts} den Algorithmus aber auch ausführen kann, muss dieser zuerst in die lokale Domäne des Benutzers bzw. der \gls{bts} geladen werden. \\
+Da die \gls{bts} natürlich nicht nur einen Algorithmus testen können soll, ist es wichtig, dass die Algorithmen nicht direkt im Code verankert sind, sondern zur Laufzeit geladen werden können. Dazu kann der Benutzer einen Pfad angeben, von dem der Algorithmus in Form einer \gls{dll}-Datei (siehe \ref{dll} "`Dynamic Link Library"') gelesen werden kann. Damit die \gls{bts} den Algorithmus aber auch ausführen kann, muss dieser zuerst in die lokale Domäne des Benutzers bzw. der \gls{bts} geladen werden. \\
 Dazu gibt es zwei Möglichkeiten:
 
 \begin{itemize}
-\item \textbf{\textit{LoadFrom}} \\
-	Die \textit{LoadFrom}-Methode ermöglicht es, eine Assembly (bspw. unser \gls{dll}-File) in die lokale Domäne zu laden und Methoden dieser Assembly aufzurufen. Ein kleines Problem hierbei ist allerdings, dass man die geladene Assembly in der Domäne nur sehr aufwendig überschreiben oder löschen kann, daher ist sie für unsere Anwendung nicht perfekt geeignet.
-\item \textbf{\textit{LoadFile}} \\
-	Die \textit{LoadFile}-Methode erfüllt nahezu den gleichen Zweck, wie die \textit{LoadFrom}-Methode, nur dass man hier einfach eine zweite Assembly in die Domäne laden kann und die erste wird überschrieben. Daher wird in der \gls{bts} diese Methode genutzt.
+\item \textbf{\inline{LoadFrom}} \\
+	Die \inline{LoadFrom}-Methode ermöglicht es, eine Assembly (bspw. unser \gls{dll}-File) in die lokale Domäne zu laden und Methoden dieser Assembly aufzurufen. Ein kleines Problem hierbei ist allerdings, dass man die geladene Assembly in der Domäne nur sehr aufwendig überschreiben oder löschen kann, daher ist sie für unsere Anwendung nicht perfekt geeignet.
+\item \textbf{\inline{LoadFile}} \\
+	Die \inline{LoadFile}-Methode erfüllt nahezu den gleichen Zweck, wie die \inline{LoadFrom}-Methode, nur dass man hier einfach eine zweite Assembly in die Domäne laden kann und die erste wird überschrieben. Daher wird in der \gls{bts} diese Methode genutzt.
 \end{itemize}
 
 Der komplette Codeausschnitt zum Laden eines Algorithmus sieht nun wie folgt aus:
@@ -28,7 +28,7 @@ Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
 t.GetMethod("startCalculation").Invoke(null, oa);
 \end{lstlisting}
 
-Durch Aufruf der \textit{startCalculation}-Methode des Algorithmus werden die Signale in die übergebene Liste aus dem ViewModel gespeichert. Diese können von dort anschließend für die Berechnungen benutzt werden. Hierzu ist noch wichtig zu erwähnen, dass von der \gls{bts} an den letzten Bar noch ein Signal mit dem Wert 0 gesetzt wird, damit später in den Berechnungen alle noch offenen Positionen aufgelöst werden und man die fiktive letztendliche Performance betrachten kann, die in diesem Fall aufgetreten wäre.
+Durch Aufruf der \inline{startCalculation}-Methode des Algorithmus werden die Signale in die übergebene Liste aus dem ViewModel gespeichert. Diese können von dort anschließend für die Berechnungen benutzt werden. Hierzu ist noch wichtig zu erwähnen, dass von der \gls{bts} an den letzten Bar noch ein Signal mit dem Wert 0 gesetzt wird, damit später in den Berechnungen alle noch offenen Positionen aufgelöst werden und man die fiktive letztendliche Performance betrachten kann, die in diesem Fall aufgetreten wäre.
 
 \subsection{Auslesen der Aktien-Preisdaten}
 
@@ -44,7 +44,7 @@ Bar,Date,Time,Open,High,Low,Close
 
 Das Datum muss im Format MM/DD/YY und die Uhrzeit im Format hh:mm gespeichert werden. Die Dezimalstellen von Open, High, Low und Close müssen durch einen Punkt und ohne Tausendertrennzeichen angegeben werden. Es können natürlich nahezu unendlich viele Bars in der Datei gespeichert werden, die Berechnungen dauern dadurch einfach entsprechend länger. Weiters wird die erste Zeile nicht berücksichtigt, da hier meist Header-Informationen gespeichert sind. Befindet sich hier auch schon ein Bar, wird dieser ignoriert. Noch genauere Informationen hierzu können dem Benutzerhandbuch von Noctua entnommen werden\\
 \\
-Ist der Pfad in der \gls{bts} richtig gewählt und die Berechnung wird gestartet, wird das \gls{csv}-File in der \gls{bts} ausgelesen. Dies geschieht mit Hilfe der \gls{linq}-Technologie (Siehe \ref{linq} "`LINQ"') und sieht im Code wie folgt aus:
+Ist der Pfad in der \gls{bts} richtig gewählt und die Berechnung wird gestartet, wird das \gls{csv}-File in der \gls{bts} ausgelesen. Dies geschieht mit Hilfe der \gls{linq}-Technologie (siehe \ref{linq} "`LINQ"') und sieht im Code wie folgt aus:
 
 \begin{lstlisting}[label=LINQ zum Auslesen des CSV-Daten-Files,caption=LINQ zum Auslesen des CSV-Daten-Files]
 public static IEnumerable<
