@@ -20,7 +20,7 @@ einzugehen und Parameter bzw. Entscheidungsgrundlagen daraufhin zu verändern.
 Als grundlegend unterschiedlich wurden für diesen Algorithmus die beiden Phasen Trend- und
 Seitwärtsphase unterschieden, für die jeweils eine komplett unterschiedliche Entscheidungsgrundlage
 verwendet wird. Während Trendphasen primär ein \gls{ma}-System zugrunde liegt, wird in Seitwärtsphasen
-ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} Handelsstrategien mit MAs und \ref{subsection:fading} Fading-Strategie mit Bollinger Bändern)
+ein Fading-System mit Bollinger-Bändern verwendet. (siehe \ref{subsection:mastrategie} "`Handelsstrategien mit MAs"' und \ref{subsection:fading} "`Fading-Strategie mit Bollinger Bändern"')
 
 Die Entscheidung, welche Phase aktuell vorliegt, wird aufgrund des aktuellen \gls{adx}-Wertes getroffen.
 Es wird für diesen Zweck ein ADX über 14 Bars berechnet, wobei bei Werten unter 25 kein ausgeprägter Trend erkannt wird
@@ -217,7 +217,7 @@ else if (signals.[i] <> 0) then
 Hierbei handelt es sich um den Algorithmusbestandteil, der für Trendphasen konzipiert wurde.
 Dieser entscheidet in diesem Test auch in Phasen, die als Seitwärtsphasen erkannt werden würden.
 Bei den Daten handelt es sich um 995 daily Bars des Standard \& Poor 500, 965 daily Bars des Nasdaq Composite
-und 875 daily Bars von Apple Inc.\\
+und 875 daily Bars von Apple Inc. Das \$ kennzeichnet dabei einen Index.\\
 \begin{center}
 \begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
 Kenndaten & \$SPX & \$COMPQ &  AAPL \\ \hline 
@@ -305,7 +305,7 @@ Signalverstärkungen manchmal zu spät im Trend auf.
 
 Der Algorithmus entscheidet in Trendphasen aufgrund der Überkreuzung von drei
 \glspl{ama}, verstärkt durch den \gls{rsi}, und in Seitwärtsphasen durch eine Fading-Strategie
-mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo} Signalgeber mit Indikator-Kombination).
+mit Bollinger-Bändern und Pivot Points (siehe \ref{subsection:indalgo} "`Signalgeber mit Indikator-Kombination"').
 
 \begin{center}
 \begin{tabular}{ | p{5cm} | p{3cm} | p{3cm} | p{3cm} |} \hline
