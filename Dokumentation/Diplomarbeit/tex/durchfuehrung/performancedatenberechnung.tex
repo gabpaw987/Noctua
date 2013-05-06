@@ -105,11 +105,13 @@ Zusätzlich zu den spezifischen Performancedaten für jede Order auf dem Orders-Ta
 		\label{Sharpe Ratio}
 		SR = \frac{GPP - RF}{MDPP}
 	\end{equation}
+	\cite{sharpe_ratio}
 	Der Standardzinssatz (p) bei einer risikofreien Anlagen bewegt sich hierbei meist um 1.5\% pro Jahr. Daher muss hier, um an RF zu kommen, eine Zinseszins-Rechnung der gewählten Anzahl an Jahren (n), über die der Algorithmus rechnet, durchgeführt werden. Das Kapital, das man durch risikofreie Anlagen aus dem Startkapital erhalten hätte, lässt sich daher wie folgt berechnen:
 	\begin{equation}
 		\label{Zinseszins-Berechnung}
 		NWRF = K * (1 + \frac{p}{100})^n
 	\end{equation}
+	\cite{zinseszins}
 	Um nun herauszufinden, wie hoch dieser Prozentsatz gewesen wäre, muss nun folgende Berechnung durchgeführt werden:
 	\begin{equation}
 		\label{Risikofreie Portfolio Performance}
@@ -121,6 +123,7 @@ Zusätzlich zu den spezifischen Performancedaten für jede Order auf dem Orders-Ta
 		\label{Standardabweichung}
 		s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i-\overline{x})^2}
 	\end{equation}
+	\cite{standardabweichung}
 \item \textbf{Mean Deviation of Equity Price} \\
 	Die Mean Deviation of Equity Price ist die Standardabweichung aller Close-Werte der Aktien-Preisbars in der gewählten Periode. Diese soll dem Nutzer einen Überblick über die allgemeine Volatilität der übergebenen Daten verschaffen. Die Standardabweichung wird auch hier mit der allgemeinen Formel berechnet, die in der Gleichung \ref{Standardabweichung} aufgeführt ist.
 \item \textbf{Return on Investment [\%]} \\
