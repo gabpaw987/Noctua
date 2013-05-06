@@ -275,11 +275,14 @@ numberfirstline=true
 %%-----------------------------------------------------------------------
 
 
+%% include eid
+\include{tex/eid}%
 \include{tex/prefacea}%
+\selectlanguage{ngerman}%
+\include{tex/abstractd}%
 \selectlanguage{english}%
 \include{tex/abstracte}%
 \selectlanguage{ngerman}%
-\include{tex/abstractd}%
 
 
 
@@ -295,14 +298,12 @@ numberfirstline=true
 \def\tableofcontents{\chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}
   \@starttoc{toc}}
 \makeatother
-
-%\clearpage
 \tableofcontents
-%\clearpage
+
 \listoffigures
-%\clearpage
+
 \lstlistoflistings %\listoftables
-%\clearpage 
+
 \markboth{Contents}{Contents}
 
 
@@ -310,7 +311,7 @@ numberfirstline=true
 %\listoffigures
 %\listoftables%
 %\addcontentsline{toc}{chapter}{\numberline{}\listtablename}%
-\clearpage%
+
 
 
 
@@ -329,18 +330,6 @@ numberfirstline=true
 \include{tex/5-durchfuehrung}%
 \include{tex/6-ergebnis}
 \include{tex/7-erweiterung}%
-
-%% include appendix
-\begin{appendix}
-\include{tex/appendix}%
-
-\pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=5mm]
-\input{sections/Einleitung.tex}
-\input{sections/installation.tex}
-\input{sections/programm.tex}
-\input{sections/systemreq.tex}
-\printglossary[type=\acronymtype]
-\end{appendix}
 
 \include{tex/nomenclature}
 \markboth{\nomname}{\nomname}%
@@ -361,7 +350,7 @@ numberfirstline=true
 \phantomsection{}
 \addcontentsline{toc}{chapter}{\bibname}
 \pagestyle{myheadings}\markboth{\bibname}{\bibname}
-\bibliography{tex/bib_file}
+
 
 %%% generate index
 %\clearpage%
@@ -369,10 +358,32 @@ numberfirstline=true
 %\printindex%
 %\addcontentsline{toc}{chapter}{\numberline{}\indexname}%
 
-%% include affidavit
-\include{tex/eid}%
+%% include appendix
+%\pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=5mm]
+\begin{appendix}
+\input{tex/appendix}%
+\input{sections/Einleitung.tex}
+\input{sections/installation.tex}
+\input{sections/programm.tex}
+\input{sections/systemreq.tex}
+\end{appendix}
+\printglossary[type=\acronymtype]
+
+% IEEE Style
+\bibliographystyle{sty/IEEEtranS}
+\bibliography{tex/bib_file}
+% GATHER
+%\input "literatur/bib.bib"
+\phantomsection{}
+\addcontentsline{toc}{chapter}{\bibname}
+\pagestyle{myheadings}\markboth{\bibname}{\bibname}
 
 
+%%% generate index
+%\clearpage%
+%\markboth{\indexname}{\indexname}%
+%\printindex%
+%\addcontentsline{toc}{chapter}{\numberline{}\indexname}%
 
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
