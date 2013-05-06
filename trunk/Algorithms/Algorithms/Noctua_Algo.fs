@@ -1,6 +1,6 @@
 ﻿namespace Algorithm
-    module DecisionCalculator54323=(*44*)
-
+    module DecisionCalculator4321=(*44*)
+        //open System.Collections.Generic
         (*
          * Divides one value by another
          * Returns 0 if denominator is 0
@@ -326,10 +326,9 @@
                 bInd.[i] <- ((prices.[i] - (bollinger.[i] |> snd)) |> divideZero ((bollinger.[i] |> fst) - (bollinger.[i] |> snd))) * 200m - 100m
             bInd
 
-        let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+        let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>, map:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
             // skip already calculated signals
             let skip = if signals.Count-n+1 > 0 then signals.Count-n+1 else 0
-
             // list of closing prices (skipped)
             let cPrices = 
                 [ for i in prices -> i.Item5 ]
@@ -357,7 +356,8 @@
 
             // pivot points
             let pvpts = pivotpointcalcultor(14,prices)
-
+            // TODO: duno what to do with PivotPoints
+            // map.Add("PivotPoints",pvpts)
             // amas for triple crossing in trend phases
             let short = ama(erp, s1, s2, cPrices)
             printfn "Finished short AMA"
@@ -365,18 +365,22 @@
             printfn "Finished middle AMA"
             let long = ama(erp, l1, l2, cPrices)
             printfn "Finished long AMA"
-
+            let a = short.Length
+            for i in map.["shortAMA"].Count .. short.Length - 1 do map.["shortAMA"].Add(short.[i])
+            for i in map.["middleAMA"].Count .. middle.Length - 1 do map.["middleAMA"].Add(middle.[i])
+            for i in map.["longAMA"].Count .. long.Length - 1 do map.["longAMA"].Add(long.[i])
             // rsi
             let rsiN = 14
             let rsi = rsi(rsiN, ocPrices)
-
+            for i in map.["RSI"].Count .. rsi.Length - 1 do map.["RSI"].Add(rsi.[i])
             // TODO: short regression
             //let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
             
             // adx
             let adx = adx (14, prices)
+            for i in map.["ADX"].Count .. adx.Length - 1 do map.["ADX"].Add(adx.[i])
             printfn "Finished ADX"
-
+            
             // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
             
@@ -509,12 +513,18 @@
             printfn "Cut Losses: %d" cutlossCount
             signals
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
-            //       erp  s1  s2  m1  m2  l1  l2   bN  sig cutloss
-            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 5.0m, prices, signals)
+//        let startCalculation1 (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
+//            //       erp  s1  s2  m1  m2  l1  l2   bN  sig cutloss
+//            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 5.0m, prices, signals)
 
-//        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
-//            let pricess = [|for p in prices do yield p.Item5|]
-//            let test1 = bollinger(20,2m,prices)
-//            let test2 = bollinger2(20,2m,pricess)
-//            signals
+        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>, myMap:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)= 
+            //let myMap = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>()
+            if myMap.Count = 0 then 
+                myMap.Add("ADX",new System.Collections.Generic.List<decimal>())
+                myMap.Add("longAMA",new System.Collections.Generic.List<decimal>())
+                myMap.Add("middleAMA",new System.Collections.Generic.List<decimal>())
+                myMap.Add("shortAMA",new System.Collections.Generic.List<decimal>())
+                myMap.Add("RSI",new System.Collections.Generic.List<decimal>())
+            let res = strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 5.0m, prices, signals, myMap)
+            signals
+            

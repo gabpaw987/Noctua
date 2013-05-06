@@ -4,7 +4,7 @@ Der \gls{sma} ist der arithmetische Mittelwert über eine Menge an Preisdaten. Ma
 \begin{equation}
 \frac{(P_1+P_2+P_3+P_4+P_5)}{5}
 \end{equation}
-\begin{lstlisting}[label=SMA in F-Sharp,caption=SMA in F-Sharp]
+\begin{lstlisting}[label=SMA-Implementierung,caption=SMA-Implementierung]
 (* 
  * Diese Funktion soll einen SMA berechnen
  * Uebergabeparameter: 
@@ -34,7 +34,7 @@ Der \gls{wma} ist der gewichtete arithmetische Mittelwert über eine Menge an Pre
 \begin{equation} 
 \frac{(P_1*(5)+P_2*(5-1)+P_3*(5-2)+P_4*(5-3)+P_5*(5-4))}{(5+(5-1)+(5-2)+(5-3)+(5-4))}
 \end{equation}
-\begin{lstlisting}[label=WMA in F-Sharp,caption=WMA in F-Sharp]
+\begin{lstlisting}[label=WMA-Implementierung,caption=WMA-Implementierung]
 (* 
  * Diese Funktion soll einen WMA berechnen
  * Uebergabeparameter: 
@@ -71,7 +71,7 @@ Der \gls{tma} ist der doppelte arithmetische Mittelwert über eine Menge an Preis
 \frac{(\frac{P_1+P_2+P-3}{3}+\frac{P_2+P_3+P_4}{3}+\frac{P_3+P_4+P_5}{3}+\frac{P_4+P_5+P_6}{3}+\frac{P_5+P_6+P_7}{3}}{5}
 \end{equation} 
 \\Man erkennt bereits an der Formel, dass zur Berechnung eines \gls{tma} bedeutend mehr Preisdaten vorhanden sein müssen, als für einen \gls{sma}. 
-\begin{lstlisting}[label=TMA in F-Sharp,caption=TMA in F-Sharp]
+\begin{lstlisting}[label=TMA-Implementierung,caption=TMA-Implementierung]
 (* 
  * Diese Funktion soll einen TMA berechnen
  * Uebergabeparameter: 
@@ -86,7 +86,7 @@ let tma(n1:int, n2:int, prices:decimal array)=
 
 \subsection{Implementierung des Exponential Moving Averages}
 Die Berechnung eines \gls{ema}, also der exponentiellen Glättung einer Datenmenge funktioniert in F\# folgendermaßen:
-\begin{lstlisting}[label=EMA in F-Sharp,caption=EMA in F-Sharp]
+\begin{lstlisting}[label=EMA-Implementierung,caption=EMA-Implementierung]
 (* 
  * Diese Funktion soll einen EMA berechnen
  * Uebergabeparameter: 
@@ -129,7 +129,7 @@ let ema (n:int, prices:List<decimal>)=
 \subsection{Implementierung des Adaptive Moving Averages}
 Ein \gls{ama}, also ein \gls{ema} mit variabler Länge, wurde in F\# folgendermaßen implementiert (\inline{ama})
 und benötigt einen Aufruf der Methoden zur Berechnung des Efficiency Ratio (\inline{er}) und der Anpassung des ER an die gegebenen Periodenspanne (\inline{c})  je AMA-Wert.
-\begin{lstlisting}[label=AMA in F-Sharp,caption=AMA in F-Sharp]
+\begin{lstlisting}[label=AMA-Implementierung,caption=AMA-Implementierung]
 (* 
  * Berechnung eines Adaptive Moving Average (AMA)
  * Uebergabeparameter: 
@@ -239,7 +239,7 @@ mit folgender Formel beschrieben.
 x_{t*} = \frac{x_{t-1} * (n-1) + x_t}{n}
 \end{equation} 
 
-\begin{lstlisting}[label=RSI in F-Sharp,caption=RSI in F-Sharp]
+\begin{lstlisting}[label=RSI-Implementierung,caption=RSI-Implementierung]
 (*
  * Berechnet den Relative Strength Index (RSI) mit Welles Wilders
  * urspruenglich vorgesehenen Smoothing-Technik.
@@ -299,7 +299,7 @@ let rsi(n:int, prices:(decimal*decimal)[])=
 \subsection{Implementierung des Pivot Point Calculators}
 Durch Pivot Points wird versucht, einen Zusammenhang aus den letzten Bars für die Zukünftigen zu erzeugen. Ein Pivot Point besteht meist aus 5 bis 7 berechneten Punkten. Im folgenden Beispiel werden 5 Punkte berechnet. Davon sind 2 Support Level, 2 Resistance Level und 1 Typical Price. \\\\
 Um einen Pivot Point für mehr als nur einen Bar zu berechnen, muss man den höchsten High-Wert und den niedrigsten Low-Wert der Datenmenge berechnen.
-\begin{lstlisting}[label=Pivot Points in F-Sharp,caption=Pivot Points in F-Sharp]
+\begin{lstlisting}[label=Pivot Points-Implementierung,caption=Pivot Points-Implementierung]
 (* 
  * Diese Funktion soll einen Pivot Point berechnen
  * Uebergabeparameter: 
@@ -347,7 +347,7 @@ Die Variablen x, y, xy und xx werden benötigt, um die Steigung der Funktion bere
 \begin{equation}
 k = \frac{n * xy - (x*y)}{n*xx-x^2}
 \end{equation}
-\begin{lstlisting}[label=Regressionssteigung in F-Sharp,caption=Regressionssteigung in F-Sharp]
+\begin{lstlisting}[label=Regressionssteigung-Implementierung,caption=Regressionssteigung-Implementierung]
 (* 
  * Mit dieser Funktion wird die Steigung der 
  * Regressionsfunktion berechnet
@@ -384,7 +384,7 @@ let regression(prices:decimal array)=
 Der \gls{adx} ist eine Indikatoren-Gruppe aus den positiven Kursbewegungen, den negativen Kursbewegungen und der True Range. Dieser Indikator errechnet die momentane Stärke des Kurses, jedoch nicht die Kursrichtung. 
 \subsubsection{Positive Kursbewegungen}
 Es handelt sich um eine positive Kursbewegung, wenn die Differenz aus dem momentanen High und dem letzten High größer ist als die Differenz aus dem letzten Low und dem momentanen Low. Handelt es sich um eine positive Kursbewegung, ist diese also die Differenz aus dem momentanen High und dem letzten High, es sei denn, es ist eine negative Zahl, dann wird 0 verwendet.
-\begin{lstlisting}[label=Positive Kursbewegungen in F-Sharp,caption=Positive Kursbewegungen in F-Sharp]
+\begin{lstlisting}[label=Positive Kursbewegungen-Implementierung,caption=Positive Kursbewegungen-Implementierung]
 (* 
  * Diese Funktion soll eine positive Kursbewegung 
  * berechnen
@@ -405,7 +405,7 @@ let posDM
 \end{lstlisting}
 \subsubsection{Negative Kursbewegungen}
 Hierbei handelt es sich um das Gegenteil der positiven Kursbewegungen. Als negative Kursbewegung wird mit der Differenz aus dem letzten Low und dem heutigen Low gerechnet, außer diese ist negativ, dann wird 0 verwendet.
-\begin{lstlisting}[label=Negative Kursbewegungen in F-Sharp,caption=Negative Kursbewegungen in F-Sharp]
+\begin{lstlisting}[label=Negative Kursbewegungen-Implementierung,caption=Negative Kursbewegungen-Implementierung]
 (* 
  * Diese Funktion soll eine negative Kursbewegung 
  * berechnen
@@ -431,7 +431,7 @@ Die True Range ist im allgemeinen der höchste Wert aus folgenden Berechnungen:
 	\item momentaner High - letzer Close
 	\item letzter Close - momentaner Low
 \end{itemize}
-\begin{lstlisting}[label=True Range in F-Sharp,caption=True Range in F-Sharp]
+\begin{lstlisting}[label=True Range-Implementierung,caption=True Range-Implementierung]
 (* 
  * Diese Funktion soll die True Range berechnen
  * Uebergabeparameter: 
@@ -455,7 +455,7 @@ DI=100*\frac{EMA( Kursbewegungen)}{EMA(True Range)}
 \end{equation}
 \subsubsection{Directional Movement Index}
 Der Directional Movement Index (DX) ergibt sich aus der absoluten Differenz aus positiven und negativen DI dividiert durch die Summe der beiden:
-\begin{lstlisting}[label=Directional Movement Index in F-Sharp,caption=Directional Movement Index in F-Sharp]
+\begin{lstlisting}[label=Directional Movement Index-Implementierung,caption=Directional Movement Index-Implementierung]
 (* 
  * Diese Funktion soll die Directional Movement Index
  * berechnen
@@ -477,7 +477,7 @@ ADX=EMA(100*DX)
 \end{equation}
 \subsection{Implementierung der Bollinger Bänder}
 Die Berechnung der Bollinger Bänder bestehen aus 3 Teilschritten. Der erste Schritt ist die Berechnung eines Moving Average (meist ein \gls{sma} oder ein \gls{ema}); dieser Wert ergibt das mittlere Bollinger Band. Um den dritten Schritt zu berechnen muss man zuerst die Varianz der verwendeten Werte berechnen. Der dritte Schritt ist nun das Addieren und Subtrahieren der Varianz vom Moving Average, um das obere und untere Band zu berechnen.
-\begin{lstlisting}[label=Bollinger Baender in F-Sharp,caption=Bollinger Baender in F-Sharp]
+\begin{lstlisting}[label=Bollinger Baender-Implementierung,caption=Bollinger Baender-Implementierung]
 (* 
  * Diese Funktion soll die Bollinger Baender
  * berechnen

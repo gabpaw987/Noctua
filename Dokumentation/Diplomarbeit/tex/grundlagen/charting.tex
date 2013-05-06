@@ -7,7 +7,7 @@ Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die
 \item \textbf{Charttypen} \\
 	Es werden 35 verschiedene Charttypen unterstützt. Das Spektrum reicht von normalen Liniencharts bis zu Bar- und Candlestick-Charts zur Darstellung von Aktiendaten.
 \item \textbf{Skalierbarkeit} \\
-	Es können nahezu unendlich viele Daten, Chart-Areas (Bereiche innerhalb eines Charts), Bemerkungen (z.B. Pfeile), etc. innerhalb eines Charts angezeigt werden. Daher können bspw. Aktiendaten und deren \glspl{ma} in einer \textit{Chart\-Area} angezeigt werden. Zusätzlich könnte man eine weitere \textit{ChartArea} ergänzen, um bspw. einen \gls{macd}-Verlauf direkt unter den Aktiendaten zu zeichnen.
+	Es können nahezu unendlich viele Daten, Chart-Areas (Bereiche innerhalb eines Charts), Bemerkungen (z.B. Pfeile), etc. innerhalb eines Charts angezeigt werden. Daher können bspw. Aktiendaten und deren \glspl{ma} in einer \inline{Chart\-Area} angezeigt werden. Zusätzlich könnte man eine weitere \inline{ChartArea} ergänzen, um bspw. einen \gls{macd}-Verlauf direkt unter den Aktiendaten zu zeichnen.
 \item \textbf{Daten} \\
 	Es werden Unmengen an Möglichkeiten zur Verwaltung der Daten innerhalb eines Charts, wie z.B. Data Binding, zur Verfügung gestellt. Außerdem können die Daten des Charts exportiert oder zum Speichern serialisiert werden. 
 \item \textbf{Aussehen} \\
@@ -16,7 +16,7 @@ Die Microsoft Charts Controls Library ist eine sehr umfangreiche Bibliothek, die
 
 \subsubsection{Nutzung mit WPF} \label{winformshost}
 
-Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich. Man kann diese Einschränkung allerdings umgehen indem man einen sog. \textit{WinFormsHost} erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem \textit{MSChart} kann so erstellt werden:
+Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältlich. Man kann diese Einschränkung allerdings umgehen indem man einen sog. \inline{WinFormsHost} erstellt. Dies ist ein \gls{wpf}-\gls{gui}-Element, das WinForms-Elemente so kapselt, dass sie in \gls{wpf} genutzt werden können. Dieses Element mit einem \inline{MSChart} kann so erstellt werden:
 
 \begin{lstlisting}[label=MSChart in einer WinFormsHost-Umgebung,caption=MSChart in einer WinFormsHost-Umgebung]
 <WindowsFormsHost Name="WfHost" Grid.Row="0">
@@ -28,7 +28,7 @@ Leider ist momentan noch keine Version für die Verwendung mit \gls{wpf} erhältli
 </WindowsFormsHost>
 \end{lstlisting}
 
-Hier wurde außer dem primitiven \textit{MSChart} auch gleich eine \textit{ChartArea} hinzugefügt. Eine \textit{ChartArea} ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses \textit{WinFormsHost}-Element allerdings funktioniert, müssen für das gesamte \textit{Window} noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
+Hier wurde außer dem primitiven \inline{MSChart} auch gleich eine \inline{ChartArea} hinzugefügt. Eine \inline{ChartArea} ist ein Bereich innerhalb des Charts (hier der gesamte Bereich des Charts), in dem eine Funktion gezeichnet werden kann. Damit dieses \inline{WinFormsHost}-Element allerdings funktioniert, müssen für das gesamte \inline{Window} noch folgende Namespaces ergänzt werden (diese Assemblies müssen natürlich auch als Verweis zum Projekt hinzugefügt werden):
 
 \begin{lstlisting}[label=Namespaces für MSChart und WinFormsHost,caption=Namespaces für MSChart und WinFormsHost]
 xmlns:wf="clr-namespace:System.Windows.Forms;
@@ -42,7 +42,7 @@ xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;
 
 \subsubsection{Darstellung einfacher Graphen}
 
-Nachdem eine leere \textit{ChartArea}, in die ein Graph gezeichnet werden kann, bereits im \gls{xaml} erzeugt wurde, muss man im C\#-Code nur noch das \textit{Chart} suchen, in das gezeichnet werden soll und eine \textit{Series} erstellen. In diese Series werden dann die Daten eingespeist, die gezeichnet werden sollen. Wenn man nun auch noch einen Typ für den Graphen konfiguriert, wird dieser auch schon in der \textit{ChartArea} angezeigt. Um bspw. eine Sinusfunktion darzustellen, müsste man nun folgenden Code schreiben: \cite{msdn-charting}
+Nachdem eine leere \inline{ChartArea}, in die ein Graph gezeichnet werden kann, bereits im \gls{xaml} erzeugt wurde, muss man im C\#-Code nur noch das \inline{Chart} suchen, in das gezeichnet werden soll und eine \inline{Series} erstellen. In diese Series werden dann die Daten eingespeist, die gezeichnet werden sollen. Wenn man nun auch noch einen Typ für den Graphen konfiguriert, wird dieser auch schon in der \inline{ChartArea} angezeigt. Um bspw. eine Sinusfunktion darzustellen, müsste man nun folgenden Code schreiben: \cite{msdn-charting}
 
 \begin{lstlisting}[label=Erstellung einer Series,caption=Erstellung einer Series]
 //Lookup des bereits im XAMl-Code definierten Charts
@@ -63,13 +63,13 @@ sinus.ChartType = SeriesChartType.FastLine;
 chart.Series.Add(sinus);
 \end{lstlisting} \cite{mschart-grundlagen}
 
-In diesem Beispiel wurde jeder Punkt des Sinus einzeln berechnet und zur \textit{Series} hinzugefügt. Dies könnte man natürlich auch mit jeder anderen Datenquelle wie zum Beispiel einer Liste machen, in dem man jeden Wert einzeln hinzufügt. \cite{msdn-charting}
+In diesem Beispiel wurde jeder Punkt des Sinus einzeln berechnet und zur \inline{Series} hinzugefügt. Dies könnte man natürlich auch mit jeder anderen Datenquelle wie zum Beispiel einer Liste machen, in dem man jeden Wert einzeln hinzufügt. \cite{msdn-charting}
 
 \subsubsection{Finanzielle Berechnungen} \label{finfor}
 
 Die Microsoft Chart Controls Library bietet allerdings nicht nur Möglichkeiten zur einfachen Darstellung von Daten. Denn sie beinhaltet ein Framework aus über 50 verschiedenen statistischen und finanziellen Formeln zur automatischen Berechnung und Darstellung spezieller Werte. \cite{msdn-charting}\\
 \\
-Die wichtigsten Formeln in der \textit{FinancialFormula}-Sammlung der MS Chart Controls sind:
+Die wichtigsten Formeln in der \inline{FinancialFormula}-Sammlung der MS Chart Controls sind:
 
 \begin{itemize}
 \item Bollinger Bänder
@@ -78,11 +78,11 @@ Die wichtigsten Formeln in der \textit{FinancialFormula}-Sammlung der MS Chart C
 \item \gls{macd}
 \end{itemize} \cite{msdn-charting}
 
-Im Code würde der Einsatz von \textit{FinancialFormula} so aussehen:
+Im Code würde der Einsatz von \inline{FinancialFormula} so aussehen:
 
 \begin{lstlisting} [label=Berechnung eines MA mit FinancialFormula,caption=Berechnung eines MA mit FinancialFormula]
 chart.DataManipulator.FinancialFormula(
 	FinancialFormula.MovingAverage, 90, "Data", "FinFor");
 \end{lstlisting} \cite{msdn-charting}
 
-Dieser Aufruf erzeugt einen \gls{ma} der Länge 90. Dazu holt er sich die Daten aus der Series "`\textit{Data}"', berechnet den \gls{ma} und schreibt die errechneten Daten in die \textit{Series FinFor}. Damit diese Berechnung möglich ist, müss die \textit{Series} \textit{FinFor} und die \textit{Series} \textit{Data} bereits zuvor erzeugt und auch wirklich mit Daten gefüllt sein. \cite{msdn-charting}
+Dieser Aufruf erzeugt einen \gls{ma} der Länge 90. Dazu holt er sich die Daten aus der Series "`\inline{Data}"', berechnet den \gls{ma} und schreibt die errechneten Daten in die \inline{Series FinFor}. Damit diese Berechnung möglich ist, müss die \inline{Series} \inline{FinFor} und die \inline{Series} \inline{Data} bereits zuvor erzeugt und auch wirklich mit Daten gefüllt sein. \cite{msdn-charting}
