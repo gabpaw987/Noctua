@@ -43,7 +43,8 @@
 %%% PAGE DIMENSIONS
 \usepackage{geometry} % to change the page dimensions
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
-\usepackage[german]{babel}
+\usepackage[ngerman]{babel}
+\usepackage[latin1]{inputenc}%          %% input encoder für umlaute usw.
 % \geometry{margin=2in} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
@@ -72,6 +73,8 @@
 \allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
 % (This matches ConTeXt defaults)
 
+\def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]}
+
 %%% ToC (table of contents) APPEARANCE
 \usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
 \usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
@@ -95,10 +98,10 @@
 \begin{document}
 \maketitle
 \tableofcontents
-\input sections/Einleitung.tex
-\input sections/installation.tex
-\input sections/programm.tex
-\input sections/systemreq.tex
+\input{sections/Einleitung.tex}
+\input{sections/installation.tex}
+\input{sections/programm.tex}
+\input{sections/systemreq.tex}
 \printglossaries
 \listoffigures
 \lstlistoflistings
