@@ -2,7 +2,7 @@
 % Loading the packages and classes
 %%-----------------------------------------------------------------------
 
-\documentclass[12pt,twoside,a4paper,final]{book}%
+\documentclass[12pt,oneside,a4paper,final]{book}%
 \usepackage{a4}%                        %% Verwendet mehr Platz auf einer A4 Seite als Option a4paper in book
 \usepackage[english,ngerman]{babel}%    %% Babel Sprachen
 \usepackage[latin1]{inputenc}%          %% input encoder f�r umlaute usw.
@@ -36,7 +36,6 @@
 \usepackage[ampersand]{easylist}
 \usepackage{newverbs}
 \usepackage{listings}
-
 \input{tex/acronyms}
 %%-----------------------------------------------------------------------
 % Using the Hyperref-Package for PDF-Online Version
@@ -47,16 +46,16 @@
 \ifnum\usehyperref=1
 \usepackage[pdftex=true,
   pdftitle={Diplomarbeit},
-  pdfauthor={Gottfried Koppensteiner},
+  pdfauthor={Noctua},
   bookmarksopen,
-  colorlinks,
-  citecolor=blue,
-  linkcolor=blue,
   breaklinks%
 ]{hyperref}%
 \fi
 
-
+%
+%  colorlinks,
+%  citecolor=blue,
+%  linkcolor=blue,
 
 %%-----------------------------------------------------------------------
 % Rearranging Nomenclature
