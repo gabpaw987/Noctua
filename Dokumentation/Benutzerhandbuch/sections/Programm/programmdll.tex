@@ -1,24 +1,24 @@
 %!TEX root=../../Benutzerhandbuch.tex
 \section{Schreiben eines Algorithmus}
-Um die Software zu bedienen wird ein in \gls{F-Sharp} geschriebener Algorithmus benÃ¶tigt. Dieser muss als \gls{DLL}-Datei zur Laufzeit in die Software eingebunden werden. Eine solche Datei wird mittels Microsoft Visual Studio erzeugt werden, damit die Software funktionieren soll. \\
-Folgende Eigenschaften muss die Datei erfÃ¼llen:
+Um die Software zu bedienen wird ein in \gls{F-Sharp} geschriebener Algorithmus benötigt. Dieser muss als \gls{DLL}-Datei zur Laufzeit in die Software eingebunden werden. Eine solche Datei wird mittels Microsoft Visual Studio erzeugt werden, damit die Software funktionieren soll. \\
+Folgende Eigenschaften muss die Datei erfüllen:
 \begin{itemize}
 	\item Name der Methode: startCalculation
-	\item Ãœbergabeparameter 1: eine Liste aller historischen Daten 
-	\item Ãœbergabeparameter 2: eine Liste der Signale fÃ¼r die Entscheidungen (bei Ãœbergabe ist diese Liste leer)
+	\item Übergabeparameter 1: eine Liste aller historischen Daten 
+	\item Übergabeparameter 2: eine Liste der Signale für die Entscheidungen (bei Übergabe ist diese Liste leer)
 \end{itemize}
-Mit dem RÃ¼ckgabewert der Methode wird nicht gearbeitet, sondern mit der vom Algorithmus verarbeiteten Signalliste.
+Mit dem Rückgabewert der Methode wird nicht gearbeitet, sondern mit der vom Algorithmus verarbeiteten Signalliste.
 
-\begin{lstlisting}[caption=Dateityp des 1. Ãœbergabeparameters]{prices}
+\begin{lstlisting}[caption=Dateityp des 1. Übergabeparameters]{prices}
 System.Collections.Generic.List<System.Tuple
 <System.DateTime,decimal,decimal,decimal,decimal>>
 \end{lstlisting}
-\begin{lstlisting}[caption=Dateityp des 2. Ãœbergabeparameters]{signals}
+\begin{lstlisting}[caption=Dateityp des 2. Übergabeparameters]{signals}
 System.Collections.Generic.List<int>
 \end{lstlisting}
-AuÃŸerdem muss sich der Algorithmus im Namespace  "`Algorithm"' und im Modul "`DecisionCalculator"' befinden.
+Außerdem muss sich der Algorithmus im Namespace  "`Algorithm"' und im Modul "`DecisionCalculator"' befinden.
 \subsection{Erzeugen eines Algorithmus-Files}
-Ã–ffnen Sie Microsoft Visual Studio und erzeugen sie ein neues Projekt.\\
+Öffnen Sie Microsoft Visual Studio und erzeugen sie ein neues Projekt.\\
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{images/newProject.png}
@@ -39,14 +39,14 @@ Halten Sie sich an die, im Kapitel "`Schreiben eines Algorithmus"', genannten Ri
 \end{figure}
 \clearpage
 \subsection{Entscheidungen}
-Folgende Entscheidungen sind zulÃ¤ssig:
+Folgende Entscheidungen sind zulässig:
 \begin{center}
 \begin{tabular}{ |  p{1cm} | p{8cm} |}
 \hline 
 3 & starkes Kaufssignal \\ \hline
 2 &   mittleres Kaufssignal \\ \hline
 1 &  schwaches Kaufssignal\\ \hline
-0 &  Alle BestÃ¤nde werden gekauft oder verkauft\\ \hline
+0 &  Alle Bestände werden gekauft oder verkauft\\ \hline
 -1 &  schwaches Verkaufssignal\\ \hline
 -2 &  mittleres Verkaufssignal\\ \hline
 -3 &  starkes Verkaufssignal\\ \hline
