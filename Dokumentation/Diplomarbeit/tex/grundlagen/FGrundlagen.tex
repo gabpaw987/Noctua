@@ -9,7 +9,7 @@ Durch die Anbindung an das .NET-Framework wird F\# allerdings zu einer Multi-Par
 	\label{Logo}
 \end{figure}
 \subsection{Funktionen in F\#}\label{fsharpfunktionen}
-Die Programmiersprache F\# verwendet zur Methodendefinition den Befehl \textit{let}. Jede definierte Funktion ist im gleichen Namespace erreichbar. Prinzipiell ist eine einmal definierte Funktion nicht mehr änderbar, allerdings gibt es eine Ausnahme: es ist möglich durch die Zusatzdefinition \textit{mutable} eine Funktion bereits beim Erzeugen als änderbar zu kennzeichnen. \clearpage
+Die Programmiersprache F\# verwendet zur Methodendefinition den Befehl \inline{let}. Jede definierte Funktion ist im gleichen Namespace erreichbar. Prinzipiell ist eine einmal definierte Funktion nicht mehr änderbar, allerdings gibt es eine Ausnahme: es ist möglich durch die Zusatzdefinition \inline{mutable} eine Funktion bereits beim Erzeugen als änderbar zu kennzeichnen. \clearpage
 \begin{lstlisting}[label=Definition einer Funktionen,caption=Definition einer Funktionen]
 //hier sieht man eine Funktionsdefinition
 let funktion a b = a*b
@@ -30,14 +30,14 @@ let array = [| for i = 0 to 9 do yield (i ** 2) |]
 \end{lstlisting}
 Für mathematische Berechnungen besitzen die F\#-Arrays zusätzliche Funktionen.
 \begin{itemize}
-	\item \textit{Array.max} gibt den höchsten Wert des Arrays zurück
-	\item \textit{Array.min} gibt den niedrigsten Wert des Arrays zurück
-	\item \textit{Array.init} erzeugt ein neues Array mit einer übergebenen Funktion
-	\item \textit{Array.averaged} oder \textit{Array.averagedBy} berechnet einen Durchschnitt für alle Elemente im Array
-	\item \textit{Array.fold} erzeugt ein invertiertes Array aus dem Vorhandenen
-	\item \textit{Array.find} überprüft ob das gegebene Element in der Liste zu finden ist
-	\item \textit{Array.toSeq} wandelt das Array in eine Sequenz um 
-	\item \textit{Array.toList} wandelt das Array in eine Liste um
+	\item \inline{Array.max} gibt den höchsten Wert des Arrays zurück
+	\item \inline{Array.min} gibt den niedrigsten Wert des Arrays zurück
+	\item \inline{Array.init} erzeugt ein neues Array mit einer übergebenen Funktion
+	\item \inline{Array.averaged} oder \inline{Array.averagedBy} berechnet einen Durchschnitt für alle Elemente im Array
+	\item \inline{Array.fold} erzeugt ein invertiertes Array aus dem Vorhandenen
+	\item \inline{Array.find} überprüft ob das gegebene Element in der Liste zu finden ist
+	\item \inline{Array.toSeq} wandelt das Array in eine Sequenz um 
+	\item \inline{Array.toList} wandelt das Array in eine Liste um
 \end{itemize}
 Ein weiterer Vorteil von Arrays in F\# ist die Möglichkeit, spezifische Einträge einzeln anzusprechen, also einen einzelnen Wert ohne ein Durchsuchen des Arrays zu finden. \cite{arraysfs}
 \subsection{Sequenzen in F\#} \label{fsharpsequenzen}
@@ -58,12 +58,12 @@ printfn "%A" seqInfinite
 \end{lstlisting}
 Weitere interessante Funktionen von F\# Sequenzen sind:
 \begin{itemize}
-	\item \textit{Seq.sort} oder \textit{Seq.sortBy} sortiert die Sequenz 
-	\item \textit{Seq.windowed} oder \textit{Seq.pairwise} geben die Möglichkeit, die Sequenz in eine Menge Subsequenzen zu spalten, also einem Subsequence-Array
-	\item \textit{Seq.cache} sorgt dafür, dass schon einmal evaluierte Ergebnisse nicht noch einmal berechnet werden müssen
-	\item \textit{Seq.take} oder \textit{Seq.truncate} erzeugt aus einer vorhandenen Sequenz eine Subsequenz, also einen Teil der vorhandenen Sequenz
-	\item \textit{Seq.toArray} wandelt die Sequenz in ein Array um 
-	\item \textit{Seq.toList} wandelt die Sequenz in eine Liste um
+	\item \inline{Seq.sort} oder \inline{Seq.sortBy} sortiert die Sequenz 
+	\item \inline{Seq.windowed} oder \inline{Seq.pairwise} geben die Möglichkeit, die Sequenz in eine Menge Subsequenzen zu spalten, also einem Subsequence-Array
+	\item \inline{Seq.cache} sorgt dafür, dass schon einmal evaluierte Ergebnisse nicht noch einmal berechnet werden müssen
+	\item \inline{Seq.take} oder \inline{Seq.truncate} erzeugt aus einer vorhandenen Sequenz eine Subsequenz, also einen Teil der vorhandenen Sequenz
+	\item \inline{Seq.toArray} wandelt die Sequenz in ein Array um 
+	\item \inline{Seq.toList} wandelt die Sequenz in eine Liste um
 \end{itemize}
 \clearpage
 \subsection{Listen in F\#} \label{fsharplisten}
@@ -81,12 +81,12 @@ let newList = 100 :: oldList
 \end{lstlisting}
 F\# bietet folgende Eigenschaften, um mit Listen arbeiten zu können:
 \begin{itemize}
-	\item \textit{List.Head} übergibt das erste Dokument
-	\item \textit{List.Empty} ist eine statische Funktion, welche immer eine leere Liste mit n Einträgen zurückgibt
-	\item \textit{List.IsEmpty} überprüft die Liste, ob sie leer ist
-	\item \textit{List.Item} gibt das n-te Element der Liste zurück
-	\item \textit{List.Length} zeigt die Länge der Liste
-	\item \textit{List.Tail} gibt die Liste ohne de ersten Eintrag zurück
+	\item \inline{List.Head} übergibt das erste Dokument
+	\item \inline{List.Empty} ist eine statische Funktion, welche immer eine leere Liste mit n Einträgen zurückgibt
+	\item \inline{List.IsEmpty} überprüft die Liste, ob sie leer ist
+	\item \inline{List.Item} gibt das n-te Element der Liste zurück
+	\item \inline{List.Length} zeigt die Länge der Liste
+	\item \inline{List.Tail} gibt die Liste ohne de ersten Eintrag zurück
 \end{itemize}
 Listen eignen sich sehr gut für rekursive Funktionen, weil durch die Prozeduren List.Head und List.Tail das im ersten Absatz dieses Kapitels genannter Problem nicht auftreten kann. \cite{listfs}
 \clearpage
