@@ -18,18 +18,19 @@
 \restylefloat{figure}
 
 \usepackage{listings}
-\lstset{language=[Sharp]C,
-showspaces=false,
-showtabs=false,
-breaklines=true,
-showstringspaces=false,
-breakatwhitespace=true,
-escapeinside={(*@}{@*)},
-commentstyle=\color{greencomments},
-keywordstyle=\color{bluekeywords}\bfseries,
-stringstyle=\color{redstrings},
-basicstyle=\ttfamily
-}
+\lstdefinestyle{sharpc}{language=[Sharp]C,
+  basicstyle=\small,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)},
+  commentstyle=\color{greencomments},
+  keywordstyle=\color{bluekeywords},
+  stringstyle=\color{redstrings},
+  tabsize=3
+  }
 \usepackage{glossaries}	% Erstellen eines Glossars
 \input{glossar.tex}
 \makeglossaries
@@ -42,7 +43,7 @@ basicstyle=\ttfamily
 
 %%% PAGE DIMENSIONS
 \usepackage{geometry} % to change the page dimensions
-\geometry{a5paper} % or letterpaper (US) or a5paper or....
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
 \usepackage[german]{babel}
 % \geometry{margin=2in} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
@@ -79,6 +80,9 @@ basicstyle=\ttfamily
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
 
 \usepackage[Sonny]{fncychap}
+
+\usepackage{pgfpages} 
+\pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=5mm]
 
 %%% END Article customizations
 
