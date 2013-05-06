@@ -1,0 +1,14 @@
+%!TEX root=../../Benutzerhandbuch.tex
+\section{Historische Daten}
+
+Um einen Algorithmus mit der \gls{BTS} testen zu können, müssen auch noch historische Aktien-Preisdaten in die Software eingebunden werden, über die der Algorithmus getestet wird. Diese können in Form einer \gls{CSV}-Datei gespeichert und dessen Pfad in der \gls{BTS} angegeben werden. Dabei wurde ein sehr weit verbreitetes Format benutzt, dass bspw. auch jegliche Software des renomierten Aktiendatenbereitstellungs-Unternehmens eSignal exportieren kann. Außerdem werden in dieser Datei die histroischen Daten in Form von \glspl{Bar} über einen bestimmten Zeitraum (z.B. Daily-\gls{Bar} oder Minute-\gls{Bar}) erwartet und nicht als einzelne Preiswerte. Das Format sieht in etwa so aus:
+
+\begin{lstlisting}[caption=Aufbau der \gls{CSV}-Datei]{prices}
+Bar,Date,Time,Open,High,Low,Close
+1,01/02/90,00:00,8.8125,9.375, 8.75,9.3125
+2,01/03/90,00:00,9.375, 9.50,9.375,9.375
+3,01/04/90,00:00,9.375,9.6875,9.3125,9.40625
+...
+\end{lstlisting}
+
+Zuerst steht also die Nummer des Bars, die allerdings nicht berücksichtigt wird. Darauf folgt das Datum in der Form MM/DD/YY und die Uhreit in der Form hh:mm. Zu guter letzt kommen nun nur noch die Werte Open, High, Low und Close des \glspl{Bar}. Diese Datei kann unendlich lange gemacht werden, es können also unendlich viele Bars noch nach unten hin ergänzt werden. Die erste Zeile der Datei wird allgemein nicht berücksichtigt, da diese meist die Überschriften beinhaltet. Sollte sich in der ersten Zeile also ein Bar befinden wird dieser ebenfalls ignoriert.

@@ -227,6 +227,9 @@ numberfirstline=true
 \usepackage{booktabs}
 \usepackage{multirow}
 
+% for appendix
+\usepackage{pgfpages} 
+
 % INLINE LISTINGS
 \def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]}
 
@@ -330,6 +333,12 @@ numberfirstline=true
 %% include appendix
 \begin{appendix}
 \include{tex/appendix}%
+
+\pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=5mm]
+\input{sections/Einleitung.tex}
+\input{sections/installation.tex}
+\input{sections/programm.tex}
+\input{sections/systemreq.tex}
 \printglossary[type=\acronymtype]
 \end{appendix}
 
