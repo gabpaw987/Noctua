@@ -44,7 +44,7 @@ chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
 chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
 \end{lstlisting}
 
-Beim Zooming geschieht etwas sehr ähnliches, lediglich muss hier eine andere Variable der \inline{ChartArea} beeinflusst werden. Für den Zoom der X-Achse muss das Datum 100 Bars vor dem letzten und das des letzten Bars eingestellt werden. Dies wird allerdings aufgrund der Datentypenfreiheit dieser Angabe als double-Wert verlangt und muss deshalb mit Hilfe der Methode \inline{ToOADate()} in ein Datum im OLE Automation Format umgerechnet werden. Weiters müssen die Grenzen der y-Achse erneut mit einem Aufschlag von 5\% auf die zuvor gesuchten Werte definiert werden. Im Code sieht das wie folgt aus:
+Beim Zooming geschieht etwas sehr ähnliches, lediglich muss hier eine andere Variable der \inline{ChartArea} beeinflusst werden. Für den Zoom der X-Achse muss das Datum 100 Bars vor dem letzten und das des letzten Bars eingestellt werden. Dies wird allerdings aufgrund der Datentypenfreiheit dieser Angabe als \inline{double}-Wert verlangt und muss deshalb mit Hilfe der Methode \inline{ToOADate()} in ein Datum im OLE Automation Format umgerechnet werden. Weiters müssen die Grenzen der y-Achse erneut mit einem Aufschlag von 5\% auf die zuvor gesuchten Werte definiert werden. Im Code sieht das wie folgt aus:
 
 \begin{lstlisting}[label=Anfangszoom des Charts konfigurieren,caption=Anfangszoom des Charts konfigurieren]
 chart.ChartAreas[0].AxisX.ScaleView.Zoom(

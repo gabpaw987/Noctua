@@ -28,7 +28,7 @@ let sma(n:int, prices:decimal array)=
 	//Das Ende des Abschnitts gibt das neue Array
 	//zurueck
 \end{lstlisting}
-\clearpage
+
 \subsection{Implementierung des Weighted Moving Averages}
 Der \gls{wma} ist der gewichtete arithmetische Mittelwert über eine Menge an Preisdaten. Bei der Gewichtung wird darauf geachtet, dass jüngere Preisdaten  einen größeren Einfluss auf das Ergebnis des Mittelwertes haben. Man berechnet einen 5-Day-\gls{wma} folgendermaßen: \\\\
 \begin{equation} 
@@ -124,7 +124,6 @@ let ema (n:int, prices:List<decimal>)=
     // Rueckgabe des EMA-Arrays
     ema
 \end{lstlisting}
-\clearpage
 
 \subsection{Implementierung des Adaptive Moving Averages}
 Ein \gls{ama}, also ein \gls{ema} mit variabler Länge, wurde in F\# folgendermaßen implementiert (\inline{ama})
@@ -327,7 +326,7 @@ let pivotpointcalcultor
 	// Rueckgabe als Tupel
 	(sl2,sl1,pivot,sl1,rl2)
 \end{lstlisting}
-\clearpage
+
 \subsection{Implementierung der linearen Regression}
 Mit der linearen Regression kann man eine Funktion errechnen, welche allen gegebenen Punkten am Nächsten liegt. Das bedeutet, dass das Resultat der Regressionsrechnung eine lineare Funktion ist. Zur Berechnung benötigt man nur verschiedene Punkte. Die folgende Funktion berechnet nur die Steigung der Regressionsfunktion.
 \begin{equation}
@@ -347,6 +346,7 @@ Die Variablen x, y, xy und xx werden benötigt, um die Steigung der Funktion bere
 \begin{equation}
 k = \frac{n * xy - (x*y)}{n*xx-x^2}
 \end{equation}
+\clearpage
 \begin{lstlisting}[label=Regressionssteigung-Implementierung,caption=Regressionssteigung-Implementierung]
 (* 
  * Mit dieser Funktion wird die Steigung der 
