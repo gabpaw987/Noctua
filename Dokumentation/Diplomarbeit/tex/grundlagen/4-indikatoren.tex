@@ -43,7 +43,7 @@ $P^{*}_t$ ist hier wiederum der geglättete Preis zum Zeitpunkt $t$, $P_t$ der Pr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Exponential Moving Average}
 
-Der \gls{ema} versucht beide Hauptkritikpunkte am \gls{sma} zu lösen, indem er neuere Werte immer stärker gewichtet und alle zur Verfügung stehenden Daten in die Berechnung einbezieht. Man spricht auch vom exponentiell geglätteten gleitenden Durchschnitt. Dazu muss ein \emph{\gls{sf}}, auch Glättungsfaktor genannt und meist als $\alpha$ bezeichnet, zwischen 0 und 1 gewählt werden, mit dem ein neuer Wert multipliziert wird. Der vorherige Wert wird mit der Differenz des \gls{sf} zu 1 multipliziert. Der aktuelle Wert des \gls{ema} ergibt sich dann aus der Addition dieser beiden gewichteten Werte. Dadurch bleibt jeder Kurswert unendlich lange in der weiteren Berechnung bestehen, die Bedeutung älterer Kurswerte konvergiert jedoch gegen 0. Aus ebendiesem Grund handelt es sich, mathematisch rigoros betrachtet, beim \gls{ema} nicht wirklich um einen \emph{moving} average, da sich der Wertebereich nicht verschiebt, sondern immer alle Werte zur Berechnung verwendet werden. \cite{klinker-exponential}
+Der \gls{ema} versucht beide Hauptkritikpunkte am \gls{sma} zu lösen, indem er neuere Werte immer stärker gewichtet und alle zur Verfügung stehenden Daten in die Berechnung einbezieht. Man spricht auch vom exponentiell geglätteten gleitenden Durchschnitt. Dazu muss ein \emph{\gls{sf}}, auch Glättungsfaktor genannt und meist als $\alpha$ bezeichnet, zwischen 0 und 1 gewählt werden, mit dem ein neuer Wert multipliziert wird. Der vorherige Wert wird mit der Differenz des \gls{sf} zu 1 multipliziert. Der aktuelle Wert des \gls{ema} ergibt sich dann aus der Addition dieser beiden gewichteten Werte. Dadurch bleibt jeder Kurswert unendlich lange in der weiteren Berechnung bestehen, die Bedeutung älterer Kurswerte konvergiert jedoch gegen 0. Aus ebendiesem Grund handelt es sich, mathematisch rigoros betrachtet, beim \gls{ema} nicht wirklich um einen \emph{moving} average, da sich der Wertebereich nicht verschiebt, sondern immer alle Werte zur Berechnung verwendet werden. \cite{klinker-exponential}\\
 
 Um exponentielle Durchschnittswerte mit normalen \gls{ma}-Werten vergleichen zu können, wird $\alpha$ meist mit einer Formel berechnet, die näherungsweise die gleiche Periode für ein bestimmtes $n$ ergibt.
 
@@ -52,7 +52,7 @@ Um exponentielle Durchschnittswerte mit normalen \gls{ma}-Werten vergleichen zu 
 	\alpha = 2/(n+1)
 \end{equation}
 	
-Soll nur der aktuelle Wert berechnet werden, ist eine rekursive Berechnung naheliegend. Eine möglichst performante Berechnung einer exponentiell geglätteten Zeitreihe beginnt meistens mit einem arithmetischen Mittel über die ersten $n$ Werte, um einen Anfangswert zu erhalten, der einen \gls{ema}-Wert besser approximiert, als wenn der erste Preis als Anfangswert herangezogen würde.
+Soll nur der aktuelle Wert berechnet werden, ist eine rekursive Berechnung naheliegend. Eine möglichst performante Berechnung einer exponentiell geglätteten Zeitreihe beginnt meistens mit einem arithmetischen Mittel über die ersten $n$ Werte, um einen Anfangswert zu erhalten, der einen \gls{ema}-Wert besser approximiert, als wenn der erste Preis als Anfangswert herangezogen würde.\\
 
 Die folgende Formel soll die Berechnung des exponentiell geglätteten Preises $P^{*}_t$ zum Zeitpunkt $t$ verdeutlichen. Dabei ist $\alpha$ der \gls{sf} und $P^{*}_{t-1}$ der exponentiell geglättete Preis zum Zeitpunkt $t-1$.
 
@@ -119,7 +119,7 @@ Der \gls{macd} ist ein Indikator zur Darstellung der Differenz zwischen zwei \gl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{AMA}
 
-Ein Problem des \gls{ema} ist es, die bestmögliche Länge zu wählen, um einen möglichst aussagekräftigen Durchschnitt zu erhalten. Perry Kaufman schlägt eine variable Länge als Lösung des Problems vor. Dabei wird der Glättungsfaktor eines \gls{ema} anhand der Volatilität des Preises der letzten $n$ Perioden bestimmt. Der resultierende Indikator wird folglich \gls{ama} genannt. \cite{murphy-technische}
+Ein Problem des \gls{ema} ist es, die bestmögliche Länge zu wählen, um einen möglichst aussagekräftigen Durchschnitt zu erhalten. Perry Kaufman schlägt eine variable Länge als Lösung des Problems vor. Dabei wird der Glättungsfaktor eines \gls{ema} anhand der Volatilität des Preises der letzten $n$ Perioden bestimmt. Der resultierende Indikator wird folglich \gls{ama} genannt. \cite{murphy-technische}\\
 
 Kaufman bestimmt die Volatilität durch eine \gls{er}, die berechnet wird, indem die absolute Gesamtpreisbewegung, i.e. Preis am Ende der Periode abzüglich des Preises am Beginn, durch die Summe der absoluten Preisbewegungen in einer Periode dividiert wird. Aufgrund der \gls{er} und zwei gegebenen Längen ($\alpha$ zwischen 0 und 1) wird nun ein tatsächlicher \gls{sf} berechnet. Dieser sollte zwischen den beiden gegebenen Werten liegen, was jedoch nur dann immer der Fall ist, wenn in der Berechnung des \gls{sf} $1$, nicht $2$ als Exponent gewählt wird.
 
@@ -145,7 +145,7 @@ Der Exponent kann als Abwandlung des Indikators auch verändert werden, beispiels
 \subsubsection{Lineare Regression}
 
 Um aus Zeitreihen einen allgemeinen Trend erkennen zu können, wird häufig eine lineare Regression durchgeführt. Dabei wird eine Gerade so gelegt, dass alle Punkte so nahe wie möglich an
-der Geraden liegen, wobei alle Punkte gleich stark gewichtet werden und auch möglichst gleich weit entfernt liegen sollen. Zur Abstandsmessung werden die quadrierten y-Abstände zwischen Gerade und Preis herangezogen, damit größere Abstände stärker gewichtet werden als kleine. Die Gerade wird nun so gelegt, dass diese Summe der quadratischen Abstände möglichst klein ist.
+der Geraden liegen, wobei alle Punkte gleich stark gewichtet werden und auch möglichst gleich weit entfernt liegen sollen. Zur Abstandsmessung werden die quadrierten y-Abstände zwischen Gerade und Preis herangezogen, damit größere Abstände stärker gewichtet werden als kleine. Die Gerade wird nun so gelegt, dass diese Summe der quadratischen Abstände möglichst klein ist.\\
 
 Das Minimum der folgenden Funktion der quadratischen Abstände muss durch partielles Differenzieren gefunden werden.
 
