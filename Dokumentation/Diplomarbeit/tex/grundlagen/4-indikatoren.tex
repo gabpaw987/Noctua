@@ -5,10 +5,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Simple Moving Average}
 
-Die einfachste Möglichkeit, um Trends in Aktienkursen sichtbar zu machen, ist eine Glättung des Preisverlaufs, also eine Art Durchschnittsberechnung. \\
+Die einfachste Möglichkeit, um Trends in Aktienkursen sichtbar zu machen, ist eine Glättung des Preisverlaufs, also eine Art Durchschnittsberechnung.
 Dadurch erhält man einen stabileren Überblick über die Richtung, in die sich der Kurs bewegt, ohne dass einmaligen Ausbrüchen zu viel Gewicht geschenkt wird.
 
-Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten ein arithmetischer Mittelwert berechnet. Soll aus einer Reihe von Close-Kursen ein 10-Tages-\gls{sma} berechnet werden, werden dazu die letzten 10 Schlusskurse addiert und anschließend durch 10 dividiert, um einen Wert zu erhalten. Für den folgenden Mittelwert wird der älteste subtrahiert, ein weiterer neuer Wert addiert und die Summe anschließend wieder für einen Mittelwert durch 10 dividiert. Auf diese Weise entsteht ein geglätteter Kurs, der kurzzeitige Preisveränderungen abschwächt, wodurch Trends klarer erkennbar werden.
+Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten ein arithmetischer Mittelwert berechnet. Soll aus einer Reihe von Close-Kursen ein 10-Tages-\gls{sma} berechnet werden, werden dazu die letzten 10 Schlusskurse addiert und anschließend durch 10 dividiert, um einen Wert zu erhalten. Für den folgenden Mittelwert wird der älteste subtrahiert, ein weiterer neuer Wert addiert und die Summe anschließend wieder für einen Mittelwert durch 10 dividiert. Auf diese Weise entsteht ein geglätteter Kurs, der kurzzeitige Preisveränderungen abschwächt, wodurch Trends klarer erkennbar werden.\\
 
 Zwei häufig kritisierte Eigenschaften des \gls{sma} sind, dass erstens nicht alle vorhandenen Daten in die Berechnung einbezogen werden und zweitens alle verwendeten Kursdaten mit gleicher Gewichtung in das Resultat eingehen. Bei einem 10-Tage-\gls{sma} hat jeder Kurswert, unabhängig vom Alter, eine Gewichtung von 10\%, bei einem 20-Tage-\gls{sma} 5\%.\\
 
