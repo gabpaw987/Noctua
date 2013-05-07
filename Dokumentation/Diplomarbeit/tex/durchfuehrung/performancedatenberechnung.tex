@@ -48,14 +48,14 @@ Die Order-spezifischen Performancedaten kann man sich auf dem Orders-Tab der \gl
 	Mit diesem kann man durch Vergleich des Gewinns (aktueller Preis multipliziert mit der Anzahl an realisierten Positionen minus dem entsprechenden Anteil an der Gesamtausgabe relA) mit dem Anteil an der Ausgabe relA herausfinden, um wie viel Prozent sich das investierte Kapital durch die Realisierung der Positionen verändert hat. Weiters muss vom Preisanstieg bzw. -abstieg, der über die Periode angefallen ist, noch der zuvor berechnete entsprechende Anteil an Gebühren (GL0) abgezogen werden:
 	\begin{equation}
 		\label{Gain/Loss}
-		GL = (\frac{((|diffPos| * P) - relA)}{relA}) * 100) - GL0
+		GL = (\frac{(|diffPos| * P) - relA}{relA} * 100) - GL0
 	\end{equation}
 	Nach dieser Berechnung muss natürlich noch der realisierte Anteil an den Ausgaben relA von den Gesamtausgaben A abgezogen werden.\\
 	\\
 	Zum anderen kann es passieren, dass alle realisierten Positionen abgebaut, aber im selben Schritt möglicherweise auch gleich wieder neue Positionen aufgebaut werden. In diesem Fall muss der Gewinn (hier Multiplikation des aktuellen Preises P mit der absoluten alten Position oldPos minus der gesamten bisherigen Ausgabe A) mit der gesamten Ausgabe A verglichen werden. Danach müssen natürlich auch hier noch die angefallenen Gebühren abgezogen werden.
 	\begin{equation}
 		\label{Gain/Loss}
-		GL = (\frac{((|oldPos| * P) - A)}{A}) * 100) - GL0
+		GL = (\frac{(|oldPos| * P) - A}{A} * 100) - GL0
 	\end{equation}
 	Falls hier auch noch eine neue Position angelegt wurde, muss diese natürlich auch in den Ausgaben A vermerkt werden. Da hierdurch jedoch wieder kein realisierter Gewinn erzeugt wird, muss hier wirklich nur die Ausgabe auf 0 gesetzt (da vorher alle Positionen realisiert wurden) und die absolute neu angelegte Position vermerkt werden.
 	\begin{equation}

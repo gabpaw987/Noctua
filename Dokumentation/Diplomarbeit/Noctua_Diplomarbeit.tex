@@ -11,7 +11,7 @@
 \usepackage{amsmath}%                   %% AMS Math Funktionen
 \usepackage{amsfonts}%
 \usepackage[Sonny]{fncychap}%           %% Chapter Style
-\usepackage[english,noprefix]{nomencl}%  %% Nomenclature (Symbolverzeichnis)
+%\usepackage[english,noprefix]{nomencl}%  %% Nomenclature (Symbolverzeichnis)
 \usepackage{makeidx}%                   %% Index
 \usepackage{graphicx}%                  %% Graphiken
 %\usepackage[acronym]{glossaries}
@@ -32,7 +32,7 @@
 \usepackage{multirow}
 \usepackage{eurosym}
 \usepackage{capt-of}
-\usepackage{glossaries}
+\usepackage[chapter]{glossaries}
 \usepackage[ampersand]{easylist}
 \usepackage{newverbs}
 \usepackage{listings}
@@ -80,7 +80,7 @@
 %%-----------------------------------------------------------------------
 
 
-\renewcommand{\nomname}{List of symbols}
+%\renewcommand{\nomname}{List of symbols}
 %\renewcommand{\nompreamble}{The following list only contains symbols
 %  that are used continuously throughout the text. Local symbols are
 %  not listed.}
@@ -92,7 +92,7 @@
  \ifthenelse{\equal{#1}{E}}{\item[\bigskip\bigskip\textbf{Chapter 5}\bigskip]}{
  \ifthenelse{\equal{#1}{F}}{\item[\bigskip\bigskip\textbf{Appendix}\bigskip]}{
  }}}}}}}
-\makenomenclature
+%\makenomenclature
 
 
 
@@ -354,10 +354,10 @@ numberfirstline=true
 \include{tex/6-ergebnis}
 \include{tex/7-erweiterung}%
 
-\include{tex/nomenclature}
-\markboth{\nomname}{\nomname}%
-\addcontentsline{toc}{chapter}{\numberline{}\nomname}%
-\printnomenclature
+%\include{tex/nomenclature}
+%\markboth{\nomname}{\nomname}%
+%\addcontentsline{toc}{chapter}{\numberline{}\nomname}%
+%\printnomenclature
 
 % Use of the sorted IEEE style, with changes:
 % "dashification" was disabled
@@ -370,9 +370,9 @@ numberfirstline=true
 
 % GATHER
 %\input "literatur/bib.bib"
-\phantomsection{}
-\addcontentsline{toc}{chapter}{\bibname}
-\pagestyle{myheadings}\markboth{\bibname}{\bibname}
+%\phantomsection{}
+%\addcontentsline{toc}{chapter}{\bibname}
+%\pagestyle{myheadings}\markboth{\bibname}{\bibname}
 
 
 %%% generate index
@@ -386,7 +386,9 @@ numberfirstline=true
 \begin{appendix}
 \input{tex/appendix}%
 \end{appendix}
-\printglossary[type=\acronymtype]
+%\deftranslation[to=German]{Glossary}{Glossar}
+\printglossary[type=\acronymtype,title=Glossar]
+\addcontentsline{toc}{chapter}{Glossar}
 
 % IEEE Style
 %\bibliographystyle{sty/IEEEtranS}
