@@ -65,7 +65,6 @@ Weitere interessante Funktionen von F\# Sequenzen sind:
 	\item \inline{Seq.toArray} wandelt die Sequenz in ein Array um 
 	\item \inline{Seq.toList} wandelt die Sequenz in eine Liste um
 \end{itemize}
-\clearpage
 \subsection{Listen in F\#} \label{fsharplisten}
 F\# unterstützt allerdings auch dynamischere Datenmengen, Listen, welche nicht durch die Länge eingeschränkt wird. Im Vergleich zu Arrays sind die gespeicherten Werte in den Listen nicht mehr änderbar. Das Problem, welches durch die Verwendung von F\#-Listen aufkommt, ist, dass bei einem Zugriff auf einen Eintrag der Liste, jedes einzelne Mal die gesamte Liste durchgearbeitet werden muss, bis der gewünschte Eintrag gefunden wurde. \cite{listfs}
 \begin{lstlisting}[label=Erzeugen einer Liste,caption=Erzeugen einer Liste]
@@ -111,7 +110,6 @@ let seventhElement (_, _, _, _, _, _, g) = g
 Bei Algorithmen, die Werte wie Datum, Uhrzeit, Open (Dezimalzahl), High, Low und Close ist der grundlegende Vorteil eines Tupels klar deutlich.\\ In solchen Tupeln können die Datenstrukturen perfekt übernommen werden, und man kann sich auf eine Datenmenge konzentrieren, ohne andauernd mehrere Arrays oder Listen durchzurechnen, um die jeweils passenden Daten zu erhalten. \\
 Es gibt bereits definierte Funktionen, um Zugriffe auf das erste und zweite Element eines Tupels durchzuführen. Allerdings funktionieren diese vordefinierten Funktionen nur bei Tupel die 2 Einträge besitzen. \\ \\
 Tupeln bieten also die Funktionalität, zusammengehörende Daten vernünftig zu speichern. Dieser Effekt bietet einige Vorteile, jedoch gibt es nur wenige vordefinierte Funktionen, um auf die eingeschlossenen Daten zu wirken. \cite{tupelfs}
-\clearpage
 \subsection{Pattern Matching in F\#}
 In F\# gibt es eine Möglichkeit, Entscheidungen mittels Pattern Matching zu verwirklichen. Diese Funktionalität der Programmiersprache ist vergleichbar mit der Switch-Case-Anweisung aus bekannteren Sprachen wie JAVA oder C\#. Mit Pattern Matching können Datenmengen mittels einer Entscheidungslogik bearbeitet werden. \\ \\
 Eine Beispielanwendung wäre ein vereinfachter Signalgeber. Bei einer Signalspitze soll das Programm eine Ausgabe schreiben. \cite{pmfs}

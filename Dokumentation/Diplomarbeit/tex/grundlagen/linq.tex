@@ -43,7 +43,7 @@ public delegate TResult Func<T, TResult>(T arg)
 \end{lstlisting} \cite{visualcsharp}
 
 Dieser wurde bspw. im oberen Beispiel verwendet, um die Bedingungen der \inline{Where}- (\inline{p => p.Alter > 30}) und der \inline{Select}-Abfrage (\inline{p => new }\{\inline{p.Name, p.Alter }\}) an die \gls{linq}-Logik zu übergeben. Diese beiden Bedingungen werden hier als Methodenaufrufe bzw. Zeiger auf Methodenaufrufe als Rückgabewert an die innere Logik der \gls{linq} übergeben. Das \inline{T} in \inline{Func<T, TResult>} beschreibt einen generischen Datentyp mit dem innerhalb der Abfrage gearbeitet werden soll. Hier können alle existierenden primitiven Datentypen übergeben werden und die Logik der \gls{linq} kann problemlos damit arbeiten. \inline{TResult} beschreibt ebenfalls einen generischen Datentyp, nur wird dieser vom angezeigten Methodenaufruf zurückgegeben. Intern ist die Abfragelogik der \gls{linq} damit so organisiert \cite{visualcsharp}:
-
+\clearpage
 \begin{lstlisting}[label=Interne Logik einer LINQ-Abfrage,caption=Interne Logik einer LINQ-Abfrage]
 class Programm {
 	static void Main(string[] args) {
