@@ -3,8 +3,8 @@
 
 Mit der Version 3.0 des .NET-Frameworks wurd,e wie bereits erwähnt, zusätzlich zur altbewährten WinForms-Variante eine neue Variante integriert, um Benutzeroberflächen einfach zu implementieren. Diese heißt \gls{wpf}. \cite{visualcsharp}\\
 \\
-Das wichtigste Merkmal von \gls{wpf} gegenüber anderen Methoden zur \gls{gui}-Er\-stell\-ung ist, dass bei \gls{wpf} die Programmlogik nach strengsten Richtlinien von der Beschreibung der Oberfläche getrennt ist. Diese Beschreibung der Oberfläche erfolgt mittels einer speziellen Version der normalen \gls{xml}, der \gls{xaml}. Mit dieser Sprache werden alle \gls{gui}-Komponenten erzeugt und in die entsprechende Position gebracht. Bei \gls{wpf} wird allerdings trotzdem auch eine \gls{api} für den Zugriff auf \gls{xaml}-\gls{gui}-Komponenten innerhalb der Programmlogik bereitgestellt. Bei der Erstellung eines \gls{wpf}-Projektes bekommt man automatisch ein \inline{MainWindow.xaml}-File. Ein solches \gls{xaml}-File, das lediglich einen Button als \gls{gui} anzeigt, würde nun in etwa so aussehen: \cite{visualcsharp}\\
-\\
+Das wichtigste Merkmal von \gls{wpf} gegenüber anderen Methoden zur \gls{gui}-Er\-stell\-ung ist, dass bei \gls{wpf} die Programmlogik nach strengsten Richtlinien von der Beschreibung der Oberfläche getrennt ist. Diese Beschreibung der Oberfläche erfolgt mittels einer speziellen Version der normalen \gls{xml}, der \gls{xaml}. Mit dieser Sprache werden alle \gls{gui}-Komponenten erzeugt und in die entsprechende Position gebracht. Bei \gls{wpf} wird allerdings trotzdem auch eine \gls{api} für den Zugriff auf \gls{xaml}-\gls{gui}-Komponenten innerhalb der Programmlogik bereitgestellt. Bei der Erstellung eines \gls{wpf}-Projektes bekommt man automatisch ein \inline{MainWindow.xaml}-File. Ein solches \gls{xaml}-File, das lediglich einen Button als \gls{gui} anzeigt, würde nun in etwa so aussehen: \cite{visualcsharp}
+
 \begin{lstlisting}[label=XAML-Code einer einfachen GUI,caption=XAML-Code einer einfachen GUI]
 <Window x:Class="Wpf1Application1.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml
@@ -47,8 +47,9 @@ Das Data Binding (auch: Datenbindung) ermöglicht \gls{gui}-Komponenten den Zugri
 	\item \gls{xml}-Datei
 	\item Collections
 	\item Datenbanken
-	\item etc. \cite{visualcsharp}
+	\item etc.
 \end{itemize}
+\cite{visualcsharp}
 
 Zur Nutzung von Data Binding sind nun zwei Klassen wichtig: \inline{DataContext} und \inline{Binding}. Der \inline{DataContext} ist die Datenquelle, von der die Daten bezogen werden sollen. Dieser \inline{DataContext} ist außerdem ein Attribut jedes \gls{gui}-Elements und muss gesetzt werden, damit Bindungen funktionieren. Möchte man nun den \inline{DataContext} setzen, sollte man aber aufpassen und ihn im übergeordneten Container (z.B. dem \inline{MainWindow}) setzen, denn davon profitieren alle untergeordneten Komponenten dieses Containers und der \inline{DataContext} muss nicht überall gesetzt werden. Das \inline{Binding}-Objekt beschreibt nun die Bindung zwischen einer Datenquelle und einer bindenden Komponente. Das \inline{Binding} wird meist im \gls{xaml}-Code geschrieben, es besteht allerdings selbstverständlich auch die Möglichkeit, sie innerhalb des C\#-Codes zu erzeugen. \cite{visualcsharp}\\
 \\
