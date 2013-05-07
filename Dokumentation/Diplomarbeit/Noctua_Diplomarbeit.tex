@@ -19,12 +19,12 @@
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
 \usepackage{psfrag}%                    %% Tex-Schriftarten und Formeln in EPS-Grafiken
 \usepackage{color}
-\usepackage{nicefrac}
+\usepackage{nicefrac} 
 \usepackage{ifthen}
 \usepackage{fancyhdr}
 \usepackage{subfig}
 %\usepackage[xindy, acronym, toc]{glossaries}
-\usepackage{cite}
+%\usepackage{cite}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{xcolor}
@@ -36,7 +36,24 @@
 \usepackage[ampersand]{easylist}
 \usepackage{newverbs}
 \usepackage{listings}
+\usepackage{pdflscape}
 \input{tex/acronyms}
+
+%\usepackage[authordate,natbib,backend=biber,useprefix=true]{biblatex-chicago}
+%\usepackage[style=authoryear,bibstyle=authoryear,minnames=1,maxnames=3,urldate=comp]{biblatex}
+%\usepackage{natbib}
+
+% autocite geht nur bei numerischen zitierstilen (alphabetic wird nicht mit Fuﬂnote gemacht normalerweise)
+\usepackage[%autocite=footnote,
+	backend=bibtex,
+	style=alphabetic,
+	bibstyle=alphabetic,
+	natbib=true,
+	url=true]
+	{biblatex}
+%\let\cite\autocite
+\addbibresource{tex/bib_file.bib}
+
 %%-----------------------------------------------------------------------
 % Using the Hyperref-Package for PDF-Online Version
 %%-----------------------------------------------------------------------
@@ -344,7 +361,7 @@ numberfirstline=true
 \cleardoublepage
 
 % IEEE Style
-\bibliographystyle{sty/IEEEtranS}
+%\bibliographystyle{sty/IEEEtranS}
 
 % GATHER
 %\input "literatur/bib.bib"
@@ -363,18 +380,16 @@ numberfirstline=true
 %\pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=5mm]
 \begin{appendix}
 \input{tex/appendix}%
-\input{sections/Einleitung.tex}
-\input{sections/installation.tex}
-\input{sections/programm.tex}
-\input{sections/systemreq.tex}
 \end{appendix}
 \printglossary[type=\acronymtype]
 
 % IEEE Style
-\bibliographystyle{sty/IEEEtranS}
-\bibliography{tex/bib_file}
+%\bibliographystyle{sty/IEEEtranS}
+%\bibliographystyle{alpha}
+%\bibliography{tex/bib_file}
 % GATHER
 %\input "literatur/bib.bib"
+\printbibliography
 \phantomsection{}
 \addcontentsline{toc}{chapter}{\bibname}
 \pagestyle{myheadings}\markboth{\bibname}{\bibname}
