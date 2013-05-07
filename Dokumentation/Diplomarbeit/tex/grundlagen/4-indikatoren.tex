@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Simple Moving Average}
 
-Die einfachste Möglichkeit, um Trends in Aktienkursen sichtbar zu machen, ist eine Glättung des Preisverlaufs, also eine Art Durchschnittsberechnung.
+Die einfachste Möglichkeit, um Trends in Aktienkursen sichtbar zu machen, ist eine Glättung des Preisverlaufs, also eine Art Durchschnittsberechnung. \\
 Dadurch erhält man einen stabileren Überblick über die Richtung, in die sich der Kurs bewegt, ohne dass einmaligen Ausbrüchen zu viel Gewicht geschenkt wird.
 
 Bei einem \gls{sma} wird für jeden neuen Wert jeweils aus den letzten $n$ Werten ein arithmetischer Mittelwert berechnet. Soll aus einer Reihe von Close-Kursen ein 10-Tages-\gls{sma} berechnet werden, werden dazu die letzten 10 Schlusskurse addiert und anschließend durch 10 dividiert, um einen Wert zu erhalten. Für den folgenden Mittelwert wird der älteste subtrahiert, ein weiterer neuer Wert addiert und die Summe anschließend wieder für einen Mittelwert durch 10 dividiert. Auf diese Weise entsteht ein geglätteter Kurs, der kurzzeitige Preisveränderungen abschwächt, wodurch Trends klarer erkennbar werden.
@@ -247,7 +247,7 @@ Der \gls{rsi} wird aus dem Durchschnitt der Schlusskurse von $n$ Tagen mit steig
 	RS_{Down} = \frac{-\sum\limits_{i=0}^{n-1}{min(P_{t-i} - P_{t-i-1} ; 0)}}{n}
 \end{equation}
 
-Damit der \gls{rsi} immer zwischen 0 und 100 schwankt, kann nicht einfach $RS_{Up} / RS_{Down}$ berechnet werden, sondern es wird eine Normalisierung vorgenommen, die nichts an dem Aussehen
+Damit der \gls{rsi} immer zwischen 0 und 100 schwankt, kann nicht einfach \- $RS_{Up}$ $/$ $RS_{Down}$ berechnet werden, sondern es wird eine Normalisierung vorgenommen, die nichts an dem Aussehen
 der \gls{rsi}-Kurve verändert, sondern nur am Wertebereich.
 
 \begin{equation}
