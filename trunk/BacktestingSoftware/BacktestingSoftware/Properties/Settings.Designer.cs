@@ -223,5 +223,29 @@ namespace BacktestingSoftware.Properties {
                 this["IndicatorPanels"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsRealTimeEnabled {
+            get {
+                return ((bool)(this["IsRealTimeEnabled"]));
+            }
+            set {
+                this["IsRealTimeEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StockSymbolForRealTime {
+            get {
+                return ((string)(this["StockSymbolForRealTime"]));
+            }
+            set {
+                this["StockSymbolForRealTime"] = value;
+            }
+        }
     }
 }

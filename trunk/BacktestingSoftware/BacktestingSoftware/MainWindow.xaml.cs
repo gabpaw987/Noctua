@@ -6,11 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Markup;
+using Krs.Ats.IBNet;
+using Krs.Ats.IBNet.Contracts;
 using Xceed.Wpf.Toolkit;
 
 namespace BacktestingSoftware
@@ -24,6 +27,11 @@ namespace BacktestingSoftware
         string ErrorMessage;
 
         bool iscalculating = false;
+
+        public IBInput ibClient;
+        public Thread realTimeThread;
+        public bool isRealTimeThreadRunning;
+        public int curBarCount;
 
         public MainWindow()
         {
@@ -51,6 +59,9 @@ namespace BacktestingSoftware
                 this.mainViewModel.StartDate = new DateTime(1970, 1, 1);
                 this.mainViewModel.EndDate = DateTime.Now;
             }
+
+            this.mainViewModel.IsRealTimeEnabled = Properties.Settings.Default.IsRealTimeEnabled;
+            this.mainViewModel.StockSymbolForRealTime = Properties.Settings.Default.StockSymbolForRealTime;
 
             this.mainViewModel.ValueOfSliderOne = Properties.Settings.Default.ValueOfSliderOne;
             this.mainViewModel.ValueOfSliderTwo = Properties.Settings.Default.ValueOfSliderTwo;
@@ -94,6 +105,8 @@ namespace BacktestingSoftware
             this.orders.DataContext = this.mainViewModel.Orders;
 
             this.bw = new BackgroundWorker();
+            this.isRealTimeThreadRunning = false;
+            this.curBarCount = 0;
         }
 
         public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
@@ -249,6 +262,17 @@ namespace BacktestingSoftware
 
                 this.resetCalculation();
 
+                if (this.isRealTimeThreadRunning)
+                {
+                    ibClient.Disconnect();
+                    this.isRealTimeThreadRunning = false;
+                }
+                if (this.mainViewModel.IsRealTimeEnabled)
+                {
+                    this.ibClient = new IBInput(this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime));
+                    this.ErrorMessage = this.ibClient.Connect();
+                }
+
                 bw = new BackgroundWorker();
                 bw.WorkerSupportsCancellation = true;
 
@@ -267,17 +291,37 @@ namespace BacktestingSoftware
                     Calculator c = new Calculator(this.mainViewModel);
 
                     // report the progress
-                    b.ReportProgress(5, "Reading File...");
+                    if (this.mainViewModel.IsRealTimeEnabled)
+                        b.ReportProgress(5, "Reading From IB...");
+                    else
+                        b.ReportProgress(5, "Reading File...");
 
-                    try
+                    if (!this.isRealTimeThreadRunning)
                     {
-                        if (this.ErrorMessage.Length == 0)
-                            c.ReadFile();
-                    }
-                    catch (Exception)
-                    {
-                        if (this.ErrorMessage.Length == 0)
-                            this.ErrorMessage = "An error with the Data-File occured.";
+                        try
+                        {
+                            if (this.ErrorMessage.Length == 0)
+                            {
+                                if (this.mainViewModel.IsRealTimeEnabled)
+                                {
+                                    this.ibClient.GetHistoricalDataBars(BarSize.OneMinute);
+
+                                    while (this.mainViewModel.BarList.Count < this.ibClient.totalHistoricalBars || this.ibClient.totalHistoricalBars == 0)
+                                    {
+                                        System.Threading.Thread.Sleep(100);
+                                    }
+                                }
+                                else
+                                {
+                                    c.ReadFile();
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            if (this.ErrorMessage.Length == 0)
+                                this.ErrorMessage = "An error with the Data-File occured.";
+                        }
                     }
 
                     // report the progress
@@ -344,9 +388,29 @@ namespace BacktestingSoftware
                     this.ProgressBar.Visibility = Visibility.Hidden;
                     this.iscalculating = false;
                     this.orders.Items.Refresh();
+
+                    if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning)
+                    {
+                        ibClient.SubscribeForRealTimeBars();
+
+                        this.realTimeThread = new Thread(doRealTimeThreadWork);
+                        this.realTimeThread.Start();
+                    }
                 });
 
                 bw.RunWorkerAsync();
+            }
+        }
+
+        public void doRealTimeThreadWork()
+        {
+            this.isRealTimeThreadRunning = true;
+            while (isRealTimeThreadRunning)
+            {
+                while (this.mainViewModel.BarList.Count < this.ibClient.totalHistoricalBars || this.ibClient.totalHistoricalBars == 0)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
             }
         }
 
@@ -737,6 +801,8 @@ namespace BacktestingSoftware
             Properties.Settings.Default.DataFileName = this.mainViewModel.DataFileName;
             Properties.Settings.Default.StartDate = this.mainViewModel.StartDate;
             Properties.Settings.Default.EndDate = this.mainViewModel.EndDate;
+            Properties.Settings.Default.IsRealTimeEnabled = this.mainViewModel.IsRealTimeEnabled;
+            Properties.Settings.Default.StockSymbolForRealTime = this.mainViewModel.StockSymbolForRealTime;
 
             Properties.Settings.Default.ValueOfSliderOne = this.mainViewModel.ValueOfSliderOne;
             Properties.Settings.Default.ValueOfSliderTwo = this.mainViewModel.ValueOfSliderTwo;
@@ -852,12 +918,17 @@ namespace BacktestingSoftware
                                    this.mainViewModel.SharpeRatio});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
+                List<bool> tempBoolList = new List<bool>(new bool[] {
+                                   this.mainViewModel.IsRealTimeEnabled});
+                bFormatter.Serialize(stream, tempBoolList);
+
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
                                                                             this.mainViewModel.DataFileName,
                                                                             this.mainViewModel.Capital,
                                                                             this.mainViewModel.AbsTransactionFee,
                                                                             this.mainViewModel.RelTransactionFee,
-                                                                            this.mainViewModel.PricePremium});
+                                                                            this.mainViewModel.PricePremium,
+                                                                            this.mainViewModel.StockSymbolForRealTime});
                 bFormatter.Serialize(stream, tempStringList);
 
                 List<DateTime> tempDateList = new List<DateTime>(new DateTime[] {this.mainViewModel.StartDate,
@@ -938,6 +1009,9 @@ namespace BacktestingSoftware
                 this.mainViewModel.PortfolioPerformancePercent = tempPerfomanceList[9];
                 this.mainViewModel.SharpeRatio = tempPerfomanceList[10];
 
+                List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
+                this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
+
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
                 this.mainViewModel.DataFileName = tempStringList[1];
@@ -945,6 +1019,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.AbsTransactionFee = tempStringList[3];
                 this.mainViewModel.RelTransactionFee = tempStringList[4];
                 this.mainViewModel.PricePremium = tempStringList[5];
+                this.mainViewModel.StockSymbolForRealTime = tempStringList[6];
 
                 List<DateTime> tempDateList = (List<DateTime>)bFormatter.Deserialize(stream);
                 this.mainViewModel.StartDate = tempDateList[0];

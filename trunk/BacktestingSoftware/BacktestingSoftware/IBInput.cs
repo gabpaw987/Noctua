@@ -149,12 +149,12 @@ namespace BacktestingSoftware
             ListOfBars.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal>(e.Date, e.Open, e.High, e.Low, e.Close));
         }
 
-        public void disconnect()
+        public void Disconnect()
         {
             this.inputClient.Disconnect();
         }
 
-        public String connect()
+        public String Connect()
         {
             //establishing a connection
             try

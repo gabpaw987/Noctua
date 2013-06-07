@@ -104,6 +104,25 @@ namespace BacktestingSoftware
             }
         }
 
+        private string _stockSymbolForRealTime;
+
+        public string StockSymbolForRealTime
+        {
+            get
+            {
+                return _stockSymbolForRealTime;
+            }
+            set
+            {
+                if (value != _stockSymbolForRealTime)
+                {
+                    _stockSymbolForRealTime = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("StockSymbolForRealTime"));
+                }
+            }
+        }
+
         private DateTime _endDate;
 
         public DateTime EndDate
@@ -663,6 +682,25 @@ namespace BacktestingSoftware
                     _indicatorPanels = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IndicatorPanels"));
+                }
+            }
+        }
+
+        private bool _isRealTimeEnabled;
+
+        public bool IsRealTimeEnabled
+        {
+            get
+            {
+                return _isRealTimeEnabled;
+            }
+            set
+            {
+                if (!value.Equals(_isRealTimeEnabled))
+                {
+                    _isRealTimeEnabled = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsRealTimeEnabled"));
                 }
             }
         }

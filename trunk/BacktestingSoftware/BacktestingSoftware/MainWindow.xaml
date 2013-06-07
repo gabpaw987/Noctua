@@ -6,7 +6,10 @@
         xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
         Title="BTS" Height="500" Width="1000"
-        Closing="Window_Closing">
+        Closing="Window_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Window.Resources>
+        <xctk:InverseBoolConverter x:Key="InverseBoolConverter" />
+    </Window.Resources>
     <Window.DataContext>
         <local:MainViewModel x:Name="mainViewModel" />
     </Window.DataContext>
@@ -157,15 +160,19 @@
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition Width="150"></ColumnDefinition>
                                             <ColumnDefinition></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <!-- Text-Labels -->
                                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
-                                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
-                                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
+                                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Data-File:</Label>
+                                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Time Period:</Label>
+                                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Enable real-time testing?</Label>
+                                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" IsEnabled="{Binding Path=IsRealTimeEnabled}">Stock Symbol</Label>
                                         <!-- OpenFileDialog
                             http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
                                         <!-- Algorithm File -->
@@ -175,15 +182,21 @@
                                         </StackPanel>
                                         <!-- Data File -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
-                                            <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
-                                            <TextBox Width="300" Text="{Binding Path=DataFileName}" />
+                                            <Button IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
+                                            <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Width="300" Text="{Binding Path=DataFileName}" />
                                         </StackPanel>
                                         <!-- Time Period -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
-                                            <Label>From:</Label>
-                                            <DatePicker SelectedDate="{Binding Path=StartDate}" />
-                                            <Label>To:</Label>
-                                            <DatePicker SelectedDate="{Binding Path=EndDate}" />
+                                            <Label IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">From:</Label>
+                                            <DatePicker SelectedDate="{Binding Path=StartDate}" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" />
+                                            <Label IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">To:</Label>
+                                            <DatePicker SelectedDate="{Binding Path=EndDate}" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="3" Grid.Column="1">
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsRealTimeEnabled}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="4" Grid.Column="1">
+                                            <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled}" Width="300" Text="{Binding Path=StockSymbolForRealTime}" />
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
