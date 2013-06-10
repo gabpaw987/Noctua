@@ -59,5 +59,8 @@
     <Setting Name="StockSymbolForRealTime" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="Barsize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Minute</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

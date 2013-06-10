@@ -46,15 +46,19 @@ namespace BacktestingSoftware
         /// </summary>
         private List<Tuple<DateTime, decimal, decimal, decimal, decimal>> RealTimeBarList;
 
+        public BarSize Barsize { get; private set; }
+
         /// <summary>
         /// When this method is called, the HistrocialData bars are requested. After the request the client_HistoricalData event is called every time a bar<br/>
         /// arrives.
         /// </summary>
-        /// <param name="barsize">The barsize.</param>
         /// <remarks></remarks>
-        public void GetHistoricalDataBars(BarSize barsize)
+        public void GetHistoricalDataBars()
         {
-            inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(0, 23, 59, 59), barsize, HistoricalDataType.Trades, 1);
+            if (this.Barsize == BarSize.OneMinute)
+                inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, 1);
+            else if (this.Barsize == BarSize.OneDay)
+                inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, 1);
         }
 
         /// <summary>
@@ -97,9 +101,11 @@ namespace BacktestingSoftware
         /// can connect to it.</param>
         /// <param name="equity">The equity this class shall represent.</param>
         /// <remarks></remarks>
-        public IBInput(List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, Equity equity)
+        public IBInput(List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, Equity equity, BarSize barsize)
         {
             ListOfBars = LOB;
+
+            this.Barsize = barsize;
 
             //creating the IBClient
             inputClient = new IBClient();
@@ -121,10 +127,10 @@ namespace BacktestingSoftware
         private void client_RealTimeBar(object sender, RealTimeBarEventArgs e)
         {
             RealTimeBarList.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal>(DateTime.Now, e.Open, e.High, e.Low, e.Close));
-            Console.WriteLine("dfasdf");
             Tuple<DateTime, decimal, decimal, decimal, decimal> b = null;
             //When we got 12 bars in the RealTimeBarList create a minute bar
-            if (RealTimeBarList.ToArray().Length >= 12)
+            //TODO: the 4680 only make a day if started in the morning
+            if ((RealTimeBarList.ToArray().Length >= 12 && this.Barsize == BarSize.OneMinute) || RealTimeBarList.ToArray().Length >= 4680)
             {
                 b = CreateMinuteBar();
                 RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();

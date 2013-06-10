@@ -123,6 +123,25 @@ namespace BacktestingSoftware
             }
         }
 
+        private string _barsize;
+
+        public string Barsize
+        {
+            get
+            {
+                return _barsize;
+            }
+            set
+            {
+                if (value != _barsize)
+                {
+                    _barsize = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("Barsize"));
+                }
+            }
+        }
+
         private DateTime _endDate;
 
         public DateTime EndDate

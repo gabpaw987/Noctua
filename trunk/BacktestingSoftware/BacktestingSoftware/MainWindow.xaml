@@ -162,6 +162,7 @@
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150"></ColumnDefinition>
@@ -173,6 +174,7 @@
                                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Time Period:</Label>
                                         <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Enable real-time testing?</Label>
                                         <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" IsEnabled="{Binding Path=IsRealTimeEnabled}">Stock Symbol</Label>
+                                        <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Barsize</Label>
                                         <!-- OpenFileDialog
                             http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
                                         <!-- Algorithm File -->
@@ -197,6 +199,12 @@
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="4" Grid.Column="1">
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled}" Width="300" Text="{Binding Path=StockSymbolForRealTime}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="5" Grid.Column="1">
+                                            <ComboBox SelectedValuePath="Content" Width="150" SelectedValue="{Binding Path=Barsize}">
+                                                <ComboBoxItem IsSelected="True">Minute</ComboBoxItem>
+                                                <ComboBoxItem>Daily</ComboBoxItem>
+                                            </ComboBox>
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>

@@ -247,5 +247,17 @@ namespace BacktestingSoftware.Properties {
                 this["StockSymbolForRealTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Minute")]
+        public string Barsize {
+            get {
+                return ((string)(this["Barsize"]));
+            }
+            set {
+                this["Barsize"] = value;
+            }
+        }
     }
 }

@@ -25,10 +25,11 @@ namespace BacktestingSoftware
     {
         BackgroundWorker bw;
         string ErrorMessage;
+        Calculator c;
 
         bool iscalculating = false;
 
-        public IBInput ibClient;
+        private IBInput ibClient;
         public Thread realTimeThread;
         public bool isRealTimeThreadRunning;
         public int curBarCount;
@@ -62,6 +63,7 @@ namespace BacktestingSoftware
 
             this.mainViewModel.IsRealTimeEnabled = Properties.Settings.Default.IsRealTimeEnabled;
             this.mainViewModel.StockSymbolForRealTime = Properties.Settings.Default.StockSymbolForRealTime;
+            this.mainViewModel.Barsize = Properties.Settings.Default.Barsize;
 
             this.mainViewModel.ValueOfSliderOne = Properties.Settings.Default.ValueOfSliderOne;
             this.mainViewModel.ValueOfSliderTwo = Properties.Settings.Default.ValueOfSliderTwo;
@@ -269,7 +271,10 @@ namespace BacktestingSoftware
                 }
                 if (this.mainViewModel.IsRealTimeEnabled)
                 {
-                    this.ibClient = new IBInput(this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime));
+                    if (this.mainViewModel.Barsize.Equals("Minute"))
+                        this.ibClient = new IBInput(this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+                    else if (this.mainViewModel.Barsize.Equals("Daily"))
+                        this.ibClient = new IBInput(this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
                     this.ErrorMessage = this.ibClient.Connect();
                 }
 
@@ -288,7 +293,7 @@ namespace BacktestingSoftware
                     // report the progress
                     b.ReportProgress(0, "Starting Calculation...");
 
-                    Calculator c = new Calculator(this.mainViewModel);
+                    this.c = new Calculator(this.mainViewModel);
 
                     // report the progress
                     if (this.mainViewModel.IsRealTimeEnabled)
@@ -304,12 +309,14 @@ namespace BacktestingSoftware
                             {
                                 if (this.mainViewModel.IsRealTimeEnabled)
                                 {
-                                    this.ibClient.GetHistoricalDataBars(BarSize.OneMinute);
+                                    this.ibClient.GetHistoricalDataBars();
 
                                     while (this.mainViewModel.BarList.Count < this.ibClient.totalHistoricalBars || this.ibClient.totalHistoricalBars == 0)
                                     {
                                         System.Threading.Thread.Sleep(100);
                                     }
+
+                                    this.curBarCount = this.mainViewModel.BarList.Count;
                                 }
                                 else
                                 {
@@ -391,8 +398,6 @@ namespace BacktestingSoftware
 
                     if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning)
                     {
-                        ibClient.SubscribeForRealTimeBars();
-
                         this.realTimeThread = new Thread(doRealTimeThreadWork);
                         this.realTimeThread.Start();
                     }
@@ -405,11 +410,61 @@ namespace BacktestingSoftware
         public void doRealTimeThreadWork()
         {
             this.isRealTimeThreadRunning = true;
+
+            if (this.mainViewModel.Barsize.Equals("Minute"))
+            {
+                while (DateTime.Now.Second != 0)
+                {
+                    System.Threading.Thread.Sleep(10);
+                    if (!this.isRealTimeThreadRunning)
+                    {
+                        break;
+                    }
+                }
+            }
+            else if (this.mainViewModel.Barsize.Equals("Daily"))
+            {
+                while (DateTime.Now.Hour != 0)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    if (!this.isRealTimeThreadRunning)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            ibClient.SubscribeForRealTimeBars();
+
             while (isRealTimeThreadRunning)
             {
-                while (this.mainViewModel.BarList.Count < this.ibClient.totalHistoricalBars || this.ibClient.totalHistoricalBars == 0)
+                while (this.curBarCount == this.mainViewModel.BarList.Count)
                 {
                     System.Threading.Thread.Sleep(100);
+                    if (!this.isRealTimeThreadRunning)
+                    {
+                        break;
+                    }
+                }
+
+                this.curBarCount = this.mainViewModel.BarList.Count;
+
+                Console.WriteLine("new calc");
+                if (this.isRealTimeThreadRunning)
+                {
+                    this.iscalculating = true;
+
+                    if (this.ErrorMessage.Length == 0)
+                        c.CalculateSignals();
+
+                    if (this.ErrorMessage.Length == 0)
+                        this.ErrorMessage = c.CalculateNumbers();
+
+                    if (this.ErrorMessage.Length == 0)
+                        this.LoadLineChartData();
+
+                    this.iscalculating = false;
+                    //this.orders.Items.Refresh();
                 }
             }
         }
@@ -468,10 +523,22 @@ namespace BacktestingSoftware
             chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
             chart.ChartAreas[0].AxisY.ScrollBar.IsPositionedInside = false;
 
+            chart.ChartAreas[0].CursorY.Interval = 0.1;
+
             chart.ChartAreas[0].CursorX.IsUserEnabled = true;
             chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
             chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
             chart.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = false;
+
+            //for right zooming of minute bars
+            if (this.mainViewModel.Barsize.Equals("Minute"))
+            {
+                chart.ChartAreas[0].CursorX.Interval = 1 / 1440D;
+            }
+            else if (this.mainViewModel.Barsize.Equals("Daily"))
+            {
+                chart.ChartAreas[0].CursorX.Interval = 1D;
+            }
 
             chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
             chart.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
@@ -675,8 +742,6 @@ namespace BacktestingSoftware
 
             // draw!
             chart.Invalidate();
-
-            //chart.Series["FinFor"].IsXValueIndexed = true;
         }
 
         private void Chart_MouseClick(object sender, MouseEventArgs e)
@@ -782,6 +847,8 @@ namespace BacktestingSoftware
         {
             try
             {
+                this.isRealTimeThreadRunning = false;
+
                 if (this.bw.IsBusy)
                 {
                     this.bw.CancelAsync();
@@ -797,12 +864,15 @@ namespace BacktestingSoftware
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            this.StopButton_Click(null, null);
+
             Properties.Settings.Default.AlgorithmFileName = this.mainViewModel.AlgorithmFileName;
             Properties.Settings.Default.DataFileName = this.mainViewModel.DataFileName;
             Properties.Settings.Default.StartDate = this.mainViewModel.StartDate;
             Properties.Settings.Default.EndDate = this.mainViewModel.EndDate;
             Properties.Settings.Default.IsRealTimeEnabled = this.mainViewModel.IsRealTimeEnabled;
             Properties.Settings.Default.StockSymbolForRealTime = this.mainViewModel.StockSymbolForRealTime;
+            Properties.Settings.Default.Barsize = this.mainViewModel.Barsize;
 
             Properties.Settings.Default.ValueOfSliderOne = this.mainViewModel.ValueOfSliderOne;
             Properties.Settings.Default.ValueOfSliderTwo = this.mainViewModel.ValueOfSliderTwo;
@@ -928,7 +998,8 @@ namespace BacktestingSoftware
                                                                             this.mainViewModel.AbsTransactionFee,
                                                                             this.mainViewModel.RelTransactionFee,
                                                                             this.mainViewModel.PricePremium,
-                                                                            this.mainViewModel.StockSymbolForRealTime});
+                                                                            this.mainViewModel.StockSymbolForRealTime,
+                                                                            this.mainViewModel.Barsize});
                 bFormatter.Serialize(stream, tempStringList);
 
                 List<DateTime> tempDateList = new List<DateTime>(new DateTime[] {this.mainViewModel.StartDate,
@@ -1020,6 +1091,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.RelTransactionFee = tempStringList[4];
                 this.mainViewModel.PricePremium = tempStringList[5];
                 this.mainViewModel.StockSymbolForRealTime = tempStringList[6];
+                this.mainViewModel.Barsize = tempStringList[7];
 
                 List<DateTime> tempDateList = (List<DateTime>)bFormatter.Deserialize(stream);
                 this.mainViewModel.StartDate = tempDateList[0];
