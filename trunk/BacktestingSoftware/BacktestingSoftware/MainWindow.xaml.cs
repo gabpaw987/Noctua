@@ -449,11 +449,10 @@ namespace BacktestingSoftware
 
                 this.curBarCount = this.mainViewModel.BarList.Count;
 
-                Console.WriteLine("new calc");
                 if (this.isRealTimeThreadRunning)
                 {
                     this.iscalculating = true;
-
+                    Console.WriteLine(this.ErrorMessage);
                     if (this.ErrorMessage.Length == 0)
                         c.CalculateSignals();
 
@@ -466,6 +465,8 @@ namespace BacktestingSoftware
                     this.iscalculating = false;
                     //this.orders.Items.Refresh();
                 }
+
+                Console.WriteLine(this.ErrorMessage);
             }
         }
 
