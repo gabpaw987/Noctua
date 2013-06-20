@@ -293,21 +293,21 @@
 
         let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
             // skip already calculated signals
-            let skip = if signals.Count-n+1 > 0 then signals.Count-n+1 else 0
+            let skip = if signals.Count-erp+1 > 0 then signals.Count-erp+1 else 0
 
             // list of closing prices (skipped)
             let cPrices = 
                 [ for i in prices -> i.Item5 ]
-                |> Seq.skip skip
+                //|> Seq.skip skip
                 |> Seq.toArray
             // list of open/close price tuples
             let ocPrices = 
                 [ for i in prices -> (i.Item2, i.Item5) ]
-                |> Seq.skip skip
+                //|> Seq.skip skip
                 |> Seq.toArray
 
             // skiped list of prices
-            let prices = prices.GetRange(skip, prices.Count-skip)
+            //let prices = prices.GetRange(skip, prices.Count-skip)
             printfn "Skipped %d" skip
 
             // bollinger bands
@@ -357,6 +357,12 @@
             let mutable rsiSig = 0
             let mutable amaSig = 0
             let signalFilter = 0.0m
+            printfn "Signal count: %d" signals.Count;
+            printfn "Prices count: %d" prices.Count;
+
+            // TODO: remove!
+            // recalculate all signals:
+            signals.Clear();
             for i in signals.Count .. prices.Count-1 do
                 // Bollinger
                 // check if price has crossed Bollinger Bands
