@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator12345=
         let regression(prices:decimal array)=
             let mutable xy = 0m
             let mutable xx = 0m
