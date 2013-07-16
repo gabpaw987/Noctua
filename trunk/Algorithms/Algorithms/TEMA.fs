@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator1234567890=
         let divideZero denom nom =
             match denom with
             | 0m -> 0m
