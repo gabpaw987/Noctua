@@ -288,7 +288,7 @@
             let bInd = Array.zeroCreate prices.Length
             for i in 0 .. prices.Length-1 do
                 // ((price-lbb)/(breadth)) * 200 -100
-                bInd.[i] <- ((prices.[i] - (bollinger.[i] |> snd)) |> divideZero ((bollinger.[i] |> fst) - (bollinger.[i] |> snd))) * 200m - 100m
+                bInd.[i] <- (((prices.[i] - (bollinger.[i] |> snd)) |> divideZero ((bollinger.[i] |> fst) - (bollinger.[i] |> snd))) * 200m) - 100m
             bInd
 
         let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
@@ -338,8 +338,10 @@
             // TODO: short regression
             //let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
             
-            // adx
-            let adx = adx (14, prices)
+            // adx 14 (long)
+            let adxL = adx (14, prices)
+            // adx 7 (short)
+            let adxS = adx (7, prices)
             printfn "Finished ADX"
 
             // first index with all data
@@ -404,31 +406,41 @@
                 if i < firstI then
                     signals.Add(0)
                 else
-                    // if er indicates sideways markets
-                    if adx.[i] < 25m then
-                        sw <- sw+1
-                        // print price between support2 and resistance2
-                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
-                        // price between bbs
-                        if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
-                            // either with PVPTS:
-                            if lastCross = 1 && bInd.[i] < 0.8m && cPrices.[i] < pvpts.[i].[3] then
-                                signals.Add(1)
-                            else if lastCross = -1 && bInd.[i] > -0.8m && cPrices.[i] > pvpts.[i].[1] then
-                                signals.Add(-1)
-                            else
-                                signals.Add(0)
-                            // or without PVPTS:
-//                            if lastCross = 1 && bInd.[i] < 0.0m then
+                    // if ADX indicates sideways markets
+                    if adxS.[i] < 25m && adxL.[i] < 25m then
+
+                        // TODO: REMOVE!
+                        signals.Add(0)
+
+//                        sw <- sw+1
+//                        // print price between support2 and resistance2
+//                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
+//                        // price between bbs
+//                        if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
+//                            // either with PVPTS:
+//                            // price recently was below lbb and now below 80 bInd and pvpts rl1
+//                            if lastCross = 1 && bInd.[i] < 80m && cPrices.[i] < pvpts.[i].[3] then
 //                                signals.Add(1)
-//                            else if lastCross = -1 && bInd.[i] > 0.0m then
+//                            // price recently was above hbb and now above -80 bInd and pvpts sl1
+//                            else if lastCross = -1 && bInd.[i] > -80m && cPrices.[i] > pvpts.[i].[1] then
 //                                signals.Add(-1)
 //                            else
 //                                signals.Add(0)
-                        else
-                            signals.Add(0)
+//                            // or without PVPTS:
+////                            if lastCross = 1 && bInd.[i] < 0.0m then
+////                                signals.Add(1)
+////                            else if lastCross = -1 && bInd.[i] > 0.0m then
+////                                signals.Add(-1)
+////                            else
+////                                signals.Add(0)
+//                        else
+//                            signals.Add(0)
                     // trending market
                     else
+                        // TODO: REMOVE!
+                        // test: all one in sw markets
+                        // signals.Add(0)
+
                         trend <- trend+1
 
                         // rsi signal contradictory to ama
@@ -482,4 +494,4 @@
 
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
-            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 4.0m, prices, signals)
+            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
