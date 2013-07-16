@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator12345=
+    module DecisionCalculator978269234=
         let regression(prices:decimal array)=
             let mutable xy = 0m
             let mutable xx = 0m
@@ -45,6 +45,8 @@
                 [ for i in prices -> i.Item5 ]
                 |> Seq.skip skip
                 |> Seq.toArray
+            //root trend for realy long term trends
+            let regression300 = Array.append (Array.zeroCreate(300)) [|for i in 200 .. prices.Count - 1 do yield regression([|for j in i - 200 .. i do yield cPrices.[j]|])|]
             //for longterm trends
             let regression90 = Array.append (Array.zeroCreate(80)) [|for i in 80 .. prices.Count - 1 do yield regression([|for j in i - 80 .. i do yield cPrices.[j]|])|]
             //confirms the regression90
@@ -58,6 +60,8 @@
             let regression5 = Array.append (Array.zeroCreate(5)) [|for i in 5 .. prices.Count - 1 do yield regression([|for j in i - 5 .. i do yield cPrices.[j]|])|]
             let regression2 = Array.append (Array.zeroCreate(2)) [|for i in 2 .. prices.Count - 1 do yield regression([|for j in i - 2 .. i do yield cPrices.[j]|])|]
             let mutable strength = 1
+            let mutable highestk = 0m
+            let mutable highestp = 0.1m
             for i in 0 .. prices.Count - 1 do 
                 //if market breaks in
                 let mutable extremePriceFluctuation = false
@@ -90,22 +94,38 @@
                     if sign signals.[i] = sign signals.[i-1] then 
                         if sign signals.[i] = 1 then 
                             if signals.[i] < signals.[i - 1] then 
-                                signals.[i] <- signals.[i-1]
+                                signals.[i] <- signals.[i - 1]
                         if sign signals.[i] = -1 then 
                             if signals.[i] > signals.[i - 1] then 
                                 signals.[i] <- signals.[i-1]
                     if -0.5m < regression10.[i] && regression10.[i] < 0.5m && signals.[i - 1] = 0 then 
                         signals.[i] <- 0
-                        printf "Market isn't volatile enough \n"
+                        //printf "Market isn't volatile enough \n"
 //                    if -1m > regression5.[i] && sign signals.[i - 1] = sign 1 then 
 //                        signals.[i] <- 0
 //                        printf "Market will go down \n"
 
-                let mutable highestk = 0m
+                
                 if highestk < regression5.[i] && sign regression5.[i] = 1 then highestk <- regression5.[i]
-                if regression5.[5] > highestk * 0.95m  && sign regression5.[i] <> 1 then 
+                if regression300.[i] > decimal (0.3* float (sign regression300.[i])) then
+                    signals.[i] <- 2 * sign regression300.[i]    
+                if regression5.[i] > highestk * 0.95m  && sign regression5.[i] <> 1 then 
                     signals.[i] <- 0
-                    highestk <- 0m                        
+                    highestk <- 0m
+                // trend turn reset the highest price
+                if signals.Count > 1 then
+                    if sign signals.[i] <> sign signals.[i - 1] && signals.[i - 1] <> 0 then
+                        highestp <- 0.1m
+                if signals.[i] <> 0 then
+                    if sign signals.[i] = 1 then
+                        highestp <- if cPrices.[i] > highestp then cPrices.[i] else highestp
+                    else 
+                        highestp <- if cPrices.[i] < highestp then cPrices.[i] else highestp
+                // loss under 0.3 %
+                if cPrices.[i]/highestp < 0.99999m then
+                    signals.[i] <- 0
+                    if signals.[i - 1] <> 0 then
+                        printf "The current price is %f highest price since messurment %f" cPrices.[i] highestp
 //                let mutable lowestk = 0m
 //                if lowestk > regression5.[i] && sign regression5.[i] = -1 then lowestk <- regression5.[i]
 //                if regression5.[5] < lowestk * 0.95m  && sign regression5.[i] <> -1 then 
@@ -114,7 +134,16 @@
             signals
 
         let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
-            signalgeber (20, list2D, signals)
+            let a = signals.Clear
+            let sigs = signalgeber (20, list2D, signals)
+            for i in 0 .. signals.Count - 1 do 
+                if signals.[i] <> 0 || signals.[i] = 1 || signals.[i] = -1 then
+                    if sign (signals.[i]) = 1 then 
+                        signals.[i] <- sign (signals.[i] - 1)
+                    if sign (signals.[i]) = -1 then
+                        signals.[i] <- sign (signals.[i] + 1)
+            signals
+            //for i in 0 .. signals.
 //        let startCalculation (list2D:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)= 
 //            signals.AddRange(seq{for i in 0 .. list2D.Count - 1 do yield 0})
 //            signals
