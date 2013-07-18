@@ -30,6 +30,7 @@ namespace BacktestingSoftware
         bool iscalculating = false;
 
         private IBInput ibClient;
+        private IBInput historicalDataClient;
         public Thread realTimeThread;
         public bool isRealTimeThreadRunning;
         public int curBarCount;
@@ -262,7 +263,7 @@ namespace BacktestingSoftware
 
                 this.StopButton_Click(null, null);
 
-                this.resetCalculation();
+                this.resetCalculation(true);
 
                 if (this.isRealTimeThreadRunning)
                 {
@@ -272,9 +273,17 @@ namespace BacktestingSoftware
                 if (this.mainViewModel.IsRealTimeEnabled)
                 {
                     if (this.mainViewModel.Barsize.Equals("Minute"))
-                        this.ibClient = new IBInput(this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+                    {
+                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+                    }
                     else if (this.mainViewModel.Barsize.Equals("Daily"))
-                        this.ibClient = new IBInput(this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+                    {
+                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+                    }
+
+                    this.ibClient.hadFirst = false;
                     this.ErrorMessage = this.ibClient.Connect();
                 }
 
@@ -309,14 +318,76 @@ namespace BacktestingSoftware
                             {
                                 if (this.mainViewModel.IsRealTimeEnabled)
                                 {
-                                    this.ibClient.GetHistoricalDataBars();
+                                    ibClient.SubscribeForRealTimeBars();
 
-                                    while (this.mainViewModel.BarList.Count < this.ibClient.totalHistoricalBars || this.ibClient.totalHistoricalBars == 0)
+                                    //Wait for first 5sec bar
+                                    while (ibClient.RealTimeBarList.Count <= 1)
                                     {
                                         System.Threading.Thread.Sleep(100);
+                                        if (!this.iscalculating)
+                                        {
+                                            break;
+                                        }
                                     }
 
-                                    this.curBarCount = this.mainViewModel.BarList.Count;
+                                    //wait until minute is full
+                                    if (this.iscalculating)
+                                    {
+                                        if (this.mainViewModel.Barsize.Equals("Minute"))
+                                        {
+                                            while (ibClient.RealTimeBarList.Count != 0)
+                                            {
+                                                System.Threading.Thread.Sleep(100);
+                                                if (!this.iscalculating)
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        //wait until day is full
+                                        else if (this.mainViewModel.Barsize.Equals("Daily"))
+                                        {
+                                            while (ibClient.RealTimeBarList.Count != 0)
+                                            {
+                                                System.Threading.Thread.Sleep(1000);
+                                                if (!this.iscalculating)
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (this.iscalculating)
+                                    {
+                                        this.ErrorMessage = this.historicalDataClient.Connect();
+                                    }
+
+                                    if (this.iscalculating)
+                                    {
+                                        if (this.ErrorMessage.Length == 0)
+                                            this.historicalDataClient.GetHistoricalDataBars();
+                                    }
+
+                                    if (this.iscalculating)
+                                    {
+                                        while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
+                                               this.historicalDataClient.totalHistoricalBars == 0)
+                                        {
+                                            System.Threading.Thread.Sleep(100);
+                                            if (!this.iscalculating)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (this.iscalculating)
+                                    {
+                                        this.curBarCount = this.mainViewModel.BarList.Count;
+
+                                        this.historicalDataClient.Disconnect();
+                                    }
                                 }
                                 else
                                 {
@@ -326,7 +397,7 @@ namespace BacktestingSoftware
                         }
                         catch (Exception)
                         {
-                            if (this.ErrorMessage.Length == 0)
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
                                 this.ErrorMessage = "An error with the Data-File occured.";
                         }
                     }
@@ -336,7 +407,7 @@ namespace BacktestingSoftware
 
                     try
                     {
-                        if (this.ErrorMessage.Length == 0)
+                        if (this.ErrorMessage.Length == 0 && this.iscalculating)
                             c.CalculateSignals();
                     }
                     catch (Exception)
@@ -349,7 +420,7 @@ namespace BacktestingSoftware
 
                     try
                     {
-                        if (this.ErrorMessage.Length == 0)
+                        if (this.ErrorMessage.Length == 0 && this.iscalculating)
                             this.ErrorMessage = c.CalculateNumbers();
                     }
                     catch (Exception)
@@ -375,13 +446,25 @@ namespace BacktestingSoftware
                     this.StatusLabel.Text = "Drawing Chart...";
                     try
                     {
-                        this.LoadLineChartData();
+                        if (this.iscalculating)
+                        {
+                            this.LoadLineChartData();
+                        }
                     }
                     catch (Exception)
                     {
-                        if (this.ErrorMessage.Length == 0)
+                        if (this.ErrorMessage.Length == 0 && this.iscalculating)
                             this.ErrorMessage = "An error while drawing occured.";
                     }
+
+                    this.orders.Items.Refresh();
+
+                    if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating)
+                    {
+                        this.realTimeThread = new Thread(doRealTimeThreadWork);
+                        this.realTimeThread.Start();
+                    }
+
                     if (this.ErrorMessage.Length != 0)
                     {
                         this.StatusLabel.Text = this.ErrorMessage;
@@ -391,16 +474,10 @@ namespace BacktestingSoftware
                     {
                         this.StatusLabel.Text = "Finished!";
                     }
+
                     this.ProgressBar.Value = 100;
                     this.ProgressBar.Visibility = Visibility.Hidden;
                     this.iscalculating = false;
-                    this.orders.Items.Refresh();
-
-                    if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning)
-                    {
-                        this.realTimeThread = new Thread(doRealTimeThreadWork);
-                        this.realTimeThread.Start();
-                    }
                 });
 
                 bw.RunWorkerAsync();
@@ -410,31 +487,6 @@ namespace BacktestingSoftware
         public void doRealTimeThreadWork()
         {
             this.isRealTimeThreadRunning = true;
-
-            if (this.mainViewModel.Barsize.Equals("Minute"))
-            {
-                while (DateTime.Now.Second != 0)
-                {
-                    System.Threading.Thread.Sleep(10);
-                    if (!this.isRealTimeThreadRunning)
-                    {
-                        break;
-                    }
-                }
-            }
-            else if (this.mainViewModel.Barsize.Equals("Daily"))
-            {
-                while (DateTime.Now.Hour != 0)
-                {
-                    System.Threading.Thread.Sleep(1000);
-                    if (!this.isRealTimeThreadRunning)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            ibClient.SubscribeForRealTimeBars();
 
             while (isRealTimeThreadRunning)
             {
@@ -452,6 +504,12 @@ namespace BacktestingSoftware
                 if (this.isRealTimeThreadRunning)
                 {
                     this.iscalculating = true;
+
+                    this.Dispatcher.Invoke((Action)(() =>
+                    {
+                        this.resetCalculation(false);
+                    }));
+
                     Console.WriteLine(this.ErrorMessage);
                     if (this.ErrorMessage.Length == 0)
                         c.CalculateSignals();
@@ -460,10 +518,19 @@ namespace BacktestingSoftware
                         this.ErrorMessage = c.CalculateNumbers();
 
                     if (this.ErrorMessage.Length == 0)
-                        this.LoadLineChartData();
+                    {
+                        this.Dispatcher.Invoke((Action)(() =>
+                        {
+                            this.LoadLineChartData();
+                        }));
+                    }
+
+                    this.Dispatcher.Invoke((Action)(() =>
+                    {
+                        this.orders.Items.Refresh();
+                    }));
 
                     this.iscalculating = false;
-                    //this.orders.Items.Refresh();
                 }
 
                 Console.WriteLine(this.ErrorMessage);
@@ -726,7 +793,7 @@ namespace BacktestingSoftware
                 this.ErrorMessage = "An error occured while drawing indicators!";
 
                 //reset calculation
-                this.resetCalculation();
+                this.resetCalculation(true);
             }
 
             if (chart.ChartAreas.Count > 1)
@@ -814,13 +881,17 @@ namespace BacktestingSoftware
             chart.ChartAreas[1].Position.Y = 100;
         }
 
-        public void resetCalculation()
+        public void resetCalculation(bool resetBarList)
         {
             this.mainViewModel.Orders.Clear();
             this.orders.Items.Refresh();
 
+            if (resetBarList)
+            {
+                this.mainViewModel.BarList.Clear();
+            }
+
             this.mainViewModel.Signals.Clear();
-            this.mainViewModel.BarList.Clear();
             this.mainViewModel.GainLossPercent = 0;
             this.mainViewModel.GainPercent = 0;
             this.mainViewModel.GtBtRatio = 0;
@@ -834,7 +905,6 @@ namespace BacktestingSoftware
             this.mainViewModel.SharpeRatio = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
-
             chart.Series.Clear();
             chart.ChartAreas.Clear();
             chart.ChartAreas.Add(new ChartArea("MainArea"));
@@ -854,9 +924,25 @@ namespace BacktestingSoftware
                 {
                     this.bw.CancelAsync();
 
-                    this.resetCalculation();
+                    this.resetCalculation(true);
 
                     this.iscalculating = false;
+                }
+
+                //Disconnect the IBInput clients
+                if (this.ibClient != null)
+                {
+                    if (this.ibClient.IsConnected)
+                    {
+                        this.ibClient.Disconnect();
+                    }
+                }
+                if (this.historicalDataClient != null)
+                {
+                    if (this.historicalDataClient.IsConnected)
+                    {
+                        this.historicalDataClient.Disconnect();
+                    }
                 }
             }
             catch (Exception)
@@ -1059,7 +1145,7 @@ namespace BacktestingSoftware
                 Stream stream = File.Open(this.mainViewModel.LoadFileName, FileMode.Open);
                 BinaryFormatter bFormatter = new BinaryFormatter();
 
-                this.resetCalculation();
+                this.resetCalculation(true);
 
                 List<Order> tempOrderList = (List<Order>)bFormatter.Deserialize(stream);
                 foreach (Order order in tempOrderList)

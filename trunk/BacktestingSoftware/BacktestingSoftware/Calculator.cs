@@ -152,6 +152,7 @@ namespace BacktestingSoftware
                                     //if signs unequal
                                     else
                                     {
+                                        //TODO: DivideByZeroException at paidForGainLoss if weighting multipliers are at signal 3 are smaller than 2 and so on
                                         percentageOfThisTrade = ((((Math.Abs(oldWeightingMultiplier) * priceOfThisTrade) - paidForGainLoss) / paidForGainLoss) * 100) - (addableFee / (priceOfThisTrade * RoundLotSize * this.GetAbsWeightedSignalDifference(i)));
                                         paidForGainLoss = (priceOfThisTrade * Math.Abs(WeightingMultiplier));
                                     }
