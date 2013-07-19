@@ -407,34 +407,34 @@
                     signals.Add(0)
                 else
                     // if ADX indicates sideways markets
-                    if adxS.[i] < 25m && adxL.[i] < 25m then
+                    if adxS.[i] < 20m && adxL.[i] < 20m then
 
                         // TODO: REMOVE!
-                        signals.Add(0)
+                        //signals.Add(0)
 
-//                        sw <- sw+1
-//                        // print price between support2 and resistance2
-//                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
-//                        // price between bbs
-//                        if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
-//                            // either with PVPTS:
-//                            // price recently was below lbb and now below 80 bInd and pvpts rl1
-//                            if lastCross = 1 && bInd.[i] < 80m && cPrices.[i] < pvpts.[i].[3] then
+                        sw <- sw+1
+                        // print price between support2 and resistance2
+                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
+                        // price between bbs
+                        if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
+                            // either with PVPTS:
+                            // price recently was below lbb and now below 80 bInd and pvpts rl1
+                            if lastCross = 1 && bInd.[i] < 80m && cPrices.[i] < pvpts.[i].[3] then
+                                signals.Add(1)
+                            // price recently was above hbb and now above -80 bInd and pvpts sl1
+                            else if lastCross = -1 && bInd.[i] > -80m && cPrices.[i] > pvpts.[i].[1] then
+                                signals.Add(-1)
+                            else
+                                signals.Add(0)
+                            // or without PVPTS:
+//                            if lastCross = 1 && bInd.[i] < 0.0m then
 //                                signals.Add(1)
-//                            // price recently was above hbb and now above -80 bInd and pvpts sl1
-//                            else if lastCross = -1 && bInd.[i] > -80m && cPrices.[i] > pvpts.[i].[1] then
+//                            else if lastCross = -1 && bInd.[i] > 0.0m then
 //                                signals.Add(-1)
 //                            else
 //                                signals.Add(0)
-//                            // or without PVPTS:
-////                            if lastCross = 1 && bInd.[i] < 0.0m then
-////                                signals.Add(1)
-////                            else if lastCross = -1 && bInd.[i] > 0.0m then
-////                                signals.Add(-1)
-////                            else
-////                                signals.Add(0)
-//                        else
-//                            signals.Add(0)
+                        else
+                            signals.Add(0)
                     // trending market
                     else
                         // TODO: REMOVE!
@@ -443,7 +443,7 @@
 
                         trend <- trend+1
 
-                        // rsi signal contradictory to ama
+                        // weak ama signal and rsi contradictory
                         if (abs rsiSig = 1 && sign rsiSig <> sign amaSig) then
                             signals.Add(0)
                         else
@@ -494,4 +494,7 @@
 
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
-            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
+            //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
+            //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
+            //strategy (60, 10, 20, 15, 30, 30, 60, 20, 2m, 0.1m, prices, signals) // .. not good
+            strategy (50, 10, 15, 15, 20, 30, 40, 20, 2m, 0.1m, prices, signals)
