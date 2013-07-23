@@ -9,6 +9,7 @@
         Closing="Window_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <Window.Resources>
         <xctk:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <local:InvertableBooleanToVisibilityConverter x:Key="InvertableBooleanToVisibilityConverter" />
     </Window.Resources>
     <Window.DataContext>
         <local:MainViewModel x:Name="mainViewModel" />
@@ -42,9 +43,10 @@
             <Button ToolTip="Select Algorithm-File" Click="AlgorithmButton_Click" Height="25" Width="25">
                 <Image Source="images/algorithm.ico"></Image>
             </Button>
-            <Button ToolTip="Select Data-File" Click="DataButton_Click" Height="25" Width="25">
+            <Button ToolTip="Select Data-File" Click="DataButton_Click" Height="25" Width="25" Visibility="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
                 <Image Source="images/data.ico"></Image>
             </Button>
+            <TextBox Visibility="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Normal}" Width="50" Text="{Binding Path=StockSymbolForRealTime}" />
             <Separator />
             <Button ToolTip="Save the current state." Click="SaveButton_Click" Height="25" Width="25">
                 <Image Source="images/save.ico"></Image>

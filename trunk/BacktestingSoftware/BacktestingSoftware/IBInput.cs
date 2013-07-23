@@ -84,7 +84,7 @@ namespace BacktestingSoftware
         /// </summary>
         /// <returns>The created minute Bar.</returns>
         /// <remarks></remarks>
-        private Tuple<DateTime, decimal, decimal, decimal, decimal> CreateMinuteBar()
+        private Tuple<DateTime, decimal, decimal, decimal, decimal> AggregateBar()
         {
             //First open value in the list
             decimal open = RealTimeBarList[0].Item2;
@@ -150,9 +150,9 @@ namespace BacktestingSoftware
                 {
                     //When we got 12 bars in the RealTimeBarList create a minute bar
                     //TODO: the 4680 only make a day if started in the morning
-                    if ((RealTimeBarList.ToArray().Length >= 12 && this.Barsize == BarSize.OneMinute) || RealTimeBarList.ToArray().Length >= 4680)
+                    if ((RealTimeBarList.ToArray().Length >= 12 && this.Barsize == BarSize.OneMinute) || (RealTimeBarList.ToArray().Length >= 4680 && this.Barsize == BarSize.OneDay))
                     {
-                        b = CreateMinuteBar();
+                        b = AggregateBar();
                         RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
                         Console.WriteLine("Received Real Time Minute-Bar: " + b.Item1 + ", " + b.Item2 + ", " + b.Item3 + ", " + b.Item4 + ", " + b.Item5);
                         ListOfBars.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal>(b.Item1, b.Item2, b.Item3, b.Item4, b.Item5));
