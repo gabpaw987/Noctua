@@ -602,10 +602,12 @@ namespace BacktestingSoftware
             if (this.mainViewModel.Barsize.Equals("Minute"))
             {
                 chart.ChartAreas[0].CursorX.Interval = 1 / 1440D;
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy HH:mm:ss";
             }
             else if (this.mainViewModel.Barsize.Equals("Daily"))
             {
                 chart.ChartAreas[0].CursorX.Interval = 1D;
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy";
             }
 
             chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;

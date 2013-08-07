@@ -718,6 +718,7 @@ namespace BacktestingSoftware
                 if (!value.Equals(_isRealTimeEnabled))
                 {
                     _isRealTimeEnabled = value;
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsRealTimeEnabled"));
                 }
