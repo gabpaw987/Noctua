@@ -351,16 +351,21 @@
             let rsi = rsi(rsiN, ocPrices)
 
             // rsi regression
-            let rsiRegrN = 14
+            let rsiRegrN = 10
             let rsiRegr = 
                 [|for i in rsiRegrN+rsiN - 2..rsi.Length-1 -> regression(rsi.[i-rsiRegrN+1..i])|]
                 |> Array.append (Array.zeroCreate (rsiRegrN+rsiN-2))
 
-            // 10 bar short regression
-//            let regrSN = 10
-//            let regrS =
-//                [|for i in regrSN-1..cPrices.Length-1 -> regression(cPrices.[i-regrSN+1..i])|]
-//                |> Array.append (Array.zeroCreate (regrSN-1))
+            // 7 bar short regression of prices
+            let regrSN = 7
+            let regrS =
+                [|for i in regrSN-1..cPrices.Length-1 -> regression(cPrices.[i-regrSN+1..i])|]
+                |> Array.append (Array.zeroCreate (regrSN-1))
+            // 14 bar medium regression of prices
+            let regrMN = 14
+            let regrM =
+                [|for i in regrMN-1..cPrices.Length-1 -> regression(cPrices.[i-regrMN+1..i])|]
+                |> Array.append (Array.zeroCreate (regrMN-1))
             
             // adx 14 (long)
             let adxL = adx (14, prices)
@@ -414,7 +419,7 @@
                             -1
                     // short over middle and long
                     else if short.[i] - (cPrices.[i]*signalFilter) > middle.[i] && short.[i] - (cPrices.[i]*signalFilter) > long.[i] then
-                        // middle over long
+                        // & middle over long
                         if middle.[i] > long.[i] then
                             2
                         else
@@ -475,17 +480,34 @@
                             signals.Add(0)
                     // trending market
                     else
-                        // TODO: REMOVE!
-                        // test: all one in sw markets
-                        // signals.Add(0)
-
+                        
                         trend <- trend+1
 
                         // ama and rsi signal contradictory
                         if (abs rsiSig = 1 && sign rsiSig <> sign amaSig) then
-                            signals.Add(0)
+                            //signals.Add(0)
+                            //signals.Add(sign (amaSig * -1))
+
+                            // follow (strongest) price trend
+                            // ..either short or medium term
+                            signals.Add(
+                                // stronger short term trend
+                                if (abs regrS.[i] > abs regrM.[i]) then
+                                    if (regrS.[i] > 0m) then 1
+                                    else -1
+                                // stronger medium term trend
+                                else
+                                    if (regrM.[i] > 0m) then 1
+                                    else -1
+                            )
                         else
-                            signals.Add(sign amaSig)
+                            // don't revert last decision if short term price trend is still active
+                            // last signal fits short term price trend
+                            if (sign regrS.[i] = signals.[i-1]) then
+                                // keep last signal
+                                signals.Add(signals.[i-1])
+                            else
+                                signals.Add(sign amaSig)
 
                         // using rsi for ama prevalence
 //                        if (abs amaSig = 1 && amaSig = rsiSig) then
@@ -541,4 +563,9 @@
             //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
             //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
             //strategy (60, 10, 20, 15, 30, 30, 60, 20, 2m, 0.1m, prices, signals) // .. not good
-            strategy (50, 10, 15, 18, 25, 30, 40, 20, 2m, 0.1m, prices, signals)
+            strategy (50,
+                        10, 15, // s
+                        18, 25, // m
+                        30, 40, // l
+                        20, 2m, // bollinger
+                        0.3m, prices, signals)
