@@ -47,7 +47,10 @@
             for i = 1 to prices.Length-1 do
                 cumulativePriceChange <- cumulativePriceChange + abs (prices.[i] - oldPrice)
                 oldPrice <- prices.[i]
-            totalPriceChange / cumulativePriceChange
+            if cumulativePriceChange <> 0m then
+                totalPriceChange / cumulativePriceChange
+            else
+                0m
 
         // let mutable ers:System.Collections.Generic.List<decimal> = new System.Collections.Generic.List<decimal>()
 
@@ -306,7 +309,15 @@
             //decimal liste2D.Count*b + a
             b
 
-        let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
+        let strategy(erp:int,
+                     s1:int, s2:int,
+                     m1:int, m2:int,
+                     l1:int, l2:int,
+                     n:int, sigma:decimal,
+                     cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,
+                     signals:System.Collections.Generic.List<int>,
+                     chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
+                     chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
             // skip already calculated signals
             let skip = if signals.Count-erp+1 > 0 then signals.Count-erp+1 else 0
 
@@ -367,11 +378,26 @@
                 [|for i in regrMN-1..cPrices.Length-1 -> regression(cPrices.[i-regrMN+1..i])|]
                 |> Array.append (Array.zeroCreate (regrMN-1))
             
-            // adx 14 (long)
-            let adxL = adx (14, prices)
             // adx 7 (short)
             let adxS = adx (7, prices)
+            // adx 14 (medium)
+            let adxM = adx (14, prices)
             printfn "Finished ADX"
+
+            // erp 14 (medium)
+            let erMN = 14
+            let erM = 
+                [| for i in erMN-1..cPrices.Length-1 -> er (cPrices.[i-erMN+1..i]) |]
+                |> Array.append (Array.zeroCreate (erMN-1))
+
+            // test: add to chart
+            for i in 0..erM.Length-1 do chart2.["erp14;#FF0000"].Add(erM.[i])
+
+            // erp 14 (long)
+            let erLN = 30
+            let erL = 
+                [| for i in erLN-1..cPrices.Length-1 -> er (cPrices.[i-erLN+1..i]) |]
+                |> Array.append (Array.zeroCreate (erLN-1))
 
             // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
@@ -428,12 +454,6 @@
                         0
 
                 // RSI
-//                if (rsi.[i] < 40m) then
-//                    rsiSig <- 1 
-//                else if (rsi.[i] > 60m) then
-//                    rsiSig <- -1
-//                else
-//                    rsiSig <- 0
                 if (rsiRegr.[i] > 0m && rsi.[i] < 80m) then
                     rsiSig <- 1 
                 else if (rsiRegr.[i] < 0m && rsi.[i] > 20m) then
@@ -450,10 +470,7 @@
                     signals.Add(0)
                 else
                     // if ADX indicates sideways markets
-                    if adxS.[i] < 20m && adxL.[i] < 20m then
-
-                        // TODO: REMOVE!
-                        //signals.Add(0)
+                    if adxS.[i] < 20m && adxM.[i] < 20m then
 
                         sw <- sw+1
                         // print price between support2 and resistance2
@@ -478,7 +495,12 @@
 //                                signals.Add(0)
                         else
                             signals.Add(0)
+
+                        // TODO: REMOVE!
+                        signals.[i] <- 0
+
                     // trending market
+//                    else if false then
                     else
                         
                         trend <- trend+1
@@ -517,6 +539,10 @@
 //                        else
 //                            signals.Add(0)
 
+                    // TODO: REMOVE!
+//                    else
+//                        signals.Add(0)
+
                     // Signal Smoothing:    signals can only get bigger, neutral or in the other direction
                     // .. not needed for -1/0/1 signals
                     // Cutloss:             neutralise if loss is too big (% of price movement!)
@@ -552,13 +578,22 @@
                         // start trading on new day only with enough new-day data
                         missingData <- firstI + 1
 
+                    if (erM.[i] > 0.3m && erL.[i] > 0.3m) then
+                        signals.[i] <- 1
+                    else
+                        signals.[i] <- 0
+
                     //printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
             printfn "Trending decisions: %d" trend
             printfn "Sideways decisions: %d" sw
             printfn "Cut Losses: %d" cutlossCount
             signals
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
+        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
+                              signals:System.Collections.Generic.List<int>,
+                              chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
+            chart2.Add("erp14;#FF0000", new System.Collections.Generic.List<decimal>()) 
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
             //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
             //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
@@ -568,4 +603,5 @@
                         18, 25, // m
                         30, 40, // l
                         20, 2m, // bollinger
-                        0.3m, prices, signals)
+                        0.3m, prices, signals,
+                        chart1, chart2)
