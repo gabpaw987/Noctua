@@ -291,6 +291,21 @@
                 bInd.[i] <- (((prices.[i] - (bollinger.[i] |> snd)) |> divideZero ((bollinger.[i] |> fst) - (bollinger.[i] |> snd))) * 200m) - 100m
             bInd
 
+        let regression(prices:decimal array)=
+            let mutable xy = 0m
+            let mutable xx = 0m
+            let mutable x = 0m
+            let mutable y = 0m
+            for i = 0 to prices.Length - 1 do 
+                x <- x+decimal i
+                y <- y + prices.[i]
+                xy <- xy + prices.[i] * decimal i
+                xx <- xx + decimal i* decimal i
+            let b = (decimal prices.Length * xy - (x*y))/(decimal prices.Length * xx - x*x)
+            //let a = (y - b*x)/decimal prices.Length
+            //decimal liste2D.Count*b + a
+            b
+
         let strategy(erp:int, s1:int, s2:int, m1:int, m2:int, l1:int, l2:int, n:int, sigma:decimal, cutloss:decimal, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,signals:System.Collections.Generic.List<int>)=
             // skip already calculated signals
             let skip = if signals.Count-erp+1 > 0 then signals.Count-erp+1 else 0
@@ -335,8 +350,22 @@
             let rsiN = 14
             let rsi = rsi(rsiN, ocPrices)
 
-            // TODO: short regression
-            //let regrS = [|for i in 0..cPrices.Length-1 -> 0|]
+            // rsi regression
+            let rsiRegrN = 10
+            let rsiRegr = 
+                [|for i in rsiRegrN+rsiN - 2..rsi.Length-1 -> regression(rsi.[i-rsiRegrN+1..i])|]
+                |> Array.append (Array.zeroCreate (rsiRegrN+rsiN-2))
+
+            // 7 bar short regression of prices
+            let regrSN = 7
+            let regrS =
+                [|for i in regrSN-1..cPrices.Length-1 -> regression(cPrices.[i-regrSN+1..i])|]
+                |> Array.append (Array.zeroCreate (regrSN-1))
+            // 14 bar medium regression of prices
+            let regrMN = 14
+            let regrM =
+                [|for i in regrMN-1..cPrices.Length-1 -> regression(cPrices.[i-regrMN+1..i])|]
+                |> Array.append (Array.zeroCreate (regrMN-1))
             
             // adx 14 (long)
             let adxL = adx (14, prices)
@@ -346,6 +375,7 @@
 
             // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
+            let mutable missingData = firstI+1
             
             // price at trade entry (long or short)
             let mutable entryPrice = 0m
@@ -367,6 +397,9 @@
             // recalculate all signals:
             signals.Clear();
             for i in signals.Count .. prices.Count-1 do
+                
+                // SIGNAL CALCULATION
+                
                 // Bollinger
                 // check if price has crossed Bollinger Bands
                 if bollinger.[i] |> fst <> 0m then
@@ -386,7 +419,7 @@
                             -1
                     // short over middle and long
                     else if short.[i] - (cPrices.[i]*signalFilter) > middle.[i] && short.[i] - (cPrices.[i]*signalFilter) > long.[i] then
-                        // middle over long
+                        // & middle over long
                         if middle.[i] > long.[i] then
                             2
                         else
@@ -395,59 +428,86 @@
                         0
 
                 // RSI
-                if (rsi.[i] < 40m) then
+//                if (rsi.[i] < 40m) then
+//                    rsiSig <- 1 
+//                else if (rsi.[i] > 60m) then
+//                    rsiSig <- -1
+//                else
+//                    rsiSig <- 0
+                if (rsiRegr.[i] > 0m && rsi.[i] < 80m) then
                     rsiSig <- 1 
-                else if (rsi.[i] > 60m) then
+                else if (rsiRegr.[i] < 0m && rsi.[i] > 20m) then
                     rsiSig <- -1
                 else
                     rsiSig <- 0
 
+                // one bar more available
+                missingData <- missingData - 1
+
                 // Not all neccessary data available yet
-                if i < firstI then
+                // (.. or new day)
+                if i < firstI || missingData > 0 then
                     signals.Add(0)
                 else
                     // if ADX indicates sideways markets
-                    if adxS.[i] < 25m && adxL.[i] < 25m then
+                    if adxS.[i] < 20m && adxL.[i] < 20m then
 
                         // TODO: REMOVE!
-                        signals.Add(0)
+                        //signals.Add(0)
 
-//                        sw <- sw+1
-//                        // print price between support2 and resistance2
-//                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
-//                        // price between bbs
-//                        if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
-//                            // either with PVPTS:
-//                            // price recently was below lbb and now below 80 bInd and pvpts rl1
-//                            if lastCross = 1 && bInd.[i] < 80m && cPrices.[i] < pvpts.[i].[3] then
+                        sw <- sw+1
+                        // print price between support2 and resistance2
+                        //printfn "%f\t%f\t%f" pvpts.[i].[0] cPrices.[i] pvpts.[i].[4]
+                        // price between bbs
+                        if ((bollinger.[i] |> snd) < cPrices.[i] && cPrices.[i] < (bollinger.[i] |> fst)) then
+                            // either with PVPTS:
+                            // price recently was below lbb and now below 80 bInd and pvpts rl1
+                            if lastCross = 1 && bInd.[i] < 80m && cPrices.[i] < pvpts.[i].[3] then
+                                signals.Add(1)
+                            // price recently was above hbb and now above -80 bInd and pvpts sl1
+                            else if lastCross = -1 && bInd.[i] > -80m && cPrices.[i] > pvpts.[i].[1] then
+                                signals.Add(-1)
+                            else
+                                signals.Add(0)
+                            // or without PVPTS:
+//                            if lastCross = 1 && bInd.[i] < 0.0m then
 //                                signals.Add(1)
-//                            // price recently was above hbb and now above -80 bInd and pvpts sl1
-//                            else if lastCross = -1 && bInd.[i] > -80m && cPrices.[i] > pvpts.[i].[1] then
+//                            else if lastCross = -1 && bInd.[i] > 0.0m then
 //                                signals.Add(-1)
 //                            else
 //                                signals.Add(0)
-//                            // or without PVPTS:
-////                            if lastCross = 1 && bInd.[i] < 0.0m then
-////                                signals.Add(1)
-////                            else if lastCross = -1 && bInd.[i] > 0.0m then
-////                                signals.Add(-1)
-////                            else
-////                                signals.Add(0)
-//                        else
-//                            signals.Add(0)
+                        else
+                            signals.Add(0)
                     // trending market
                     else
-                        // TODO: REMOVE!
-                        // test: all one in sw markets
-                        // signals.Add(0)
-
+                        
                         trend <- trend+1
 
-                        // rsi signal contradictory to ama
+                        // ama and rsi signal contradictory
                         if (abs rsiSig = 1 && sign rsiSig <> sign amaSig) then
-                            signals.Add(0)
+                            //signals.Add(0)
+                            //signals.Add(sign (amaSig * -1))
+
+                            // follow (strongest) price trend
+                            // ..either short or medium term
+                            signals.Add(
+                                // stronger short term trend
+                                if (abs regrS.[i] > abs regrM.[i]) then
+                                    if (regrS.[i] > 0m) then 1
+                                    else -1
+                                // stronger medium term trend
+                                else
+                                    if (regrM.[i] > 0m) then 1
+                                    else -1
+                            )
                         else
-                            signals.Add(sign amaSig)
+                            // don't revert last decision if short term price trend is still active
+                            // last signal fits short term price trend
+                            if (sign regrS.[i] = signals.[i-1]) then
+                                // keep last signal
+                                signals.Add(signals.[i-1])
+                            else
+                                signals.Add(sign amaSig)
 
                         // using rsi for ama prevalence
 //                        if (abs amaSig = 1 && amaSig = rsiSig) then
@@ -486,6 +546,12 @@
                             cutlossCount <- cutlossCount + 1
                             printfn "Cut loss with loss of %f > cut loss of %f" (priceExtreme - cPrices.[i]) (cutloss*0.01m*entryPrice)
 
+                    // exit end of day (EOD0)
+                    if (prices.[i].Item1.Hour = 21 && prices.[i].Item1.Minute = 59) then
+                        signals.[signals.Count-1] <- 0
+                        // start trading on new day only with enough new-day data
+                        missingData <- firstI + 1
+
                     //printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
             printfn "Trending decisions: %d" trend
             printfn "Sideways decisions: %d" sw
@@ -494,4 +560,12 @@
 
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, signals:System.Collections.Generic.List<int>)= 
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
-            strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
+            //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
+            //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
+            //strategy (60, 10, 20, 15, 30, 30, 60, 20, 2m, 0.1m, prices, signals) // .. not good
+            strategy (50,
+                        10, 15, // s
+                        18, 25, // m
+                        30, 40, // l
+                        20, 2m, // bollinger
+                        0.3m, prices, signals)
