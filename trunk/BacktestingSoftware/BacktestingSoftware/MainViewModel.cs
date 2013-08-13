@@ -47,6 +47,44 @@ namespace BacktestingSoftware
             }
         }
 
+        private Dictionary<string, List<decimal>> _indicatorDictionary;
+
+        public Dictionary<string, List<decimal>> IndicatorDictionary
+        {
+            get
+            {
+                return _indicatorDictionary;
+            }
+            set
+            {
+                if (value != _indicatorDictionary)
+                {
+                    _indicatorDictionary = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IndicatorDictionary"));
+                }
+            }
+        }
+
+        private Dictionary<string, List<decimal>> _oscillatorDictionary;
+
+        public Dictionary<string, List<decimal>> OscillatorDictionary
+        {
+            get
+            {
+                return _oscillatorDictionary;
+            }
+            set
+            {
+                if (value != _oscillatorDictionary)
+                {
+                    _oscillatorDictionary = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("OscillatorDictionary"));
+                }
+            }
+        }
+
         private string _algorithmFileName;
 
         public string AlgorithmFileName

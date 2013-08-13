@@ -33,7 +33,7 @@ namespace BacktestingSoftware
             AppDomain.CurrentDomain.Load(assembly.GetName());
             Type t = assembly.GetType("Algorithm.DecisionCalculator");
 
-            Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
+            Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary };
             t.GetMethod("startCalculation").Invoke(null, oa);
         }
 
