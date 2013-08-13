@@ -338,6 +338,9 @@
 
             // bollinger bands
             let bollinger = bollinger(n, sigma, prices)
+            // add bollinger bands to chart1
+            for i in 0..bollinger.Length-1 do chart1.["BollingerTop;#4769FF"].Add(fst bollinger.[i])
+            for i in 0..bollinger.Length-1 do chart1.["BollingerBottom;#4769FF"].Add(snd bollinger.[i])
             // bollinger band breadth
             let breadth = [| for i in bollinger -> (i |> fst) - (i |> snd) |]
             // position of price between bollinger bands
@@ -356,15 +359,16 @@
             printfn "Finished middle AMA"
             let long = ama(erp, l1, l2, cPrices)
             printfn "Finished long AMA"
-
-            // test: add AMAs to chart1
+            // add AMAs to chart1
             for i in 0..short.Length-1 do chart1.["AMAShort;#FF0000"].Add(short.[i])
-            for i in 0..middle.Length-1 do chart1.["AMAMiddle;#00FF00"].Add(middle.[i])
-            for i in 0..long.Length-1 do chart1.["AMALong;#0000FF"].Add(long.[i])
+            for i in 0..middle.Length-1 do chart1.["AMAMiddle;#8A0000"].Add(middle.[i])
+            for i in 0..long.Length-1 do chart1.["AMALong;#737373"].Add(long.[i])
 
             // rsi
             let rsiN = 14
             let rsi = rsi(rsiN, ocPrices)
+            // add rsi to chart2
+            for i in 0..long.Length-1 do chart2.["RSI;#0095FF"].Add(rsi.[i])
 
             // rsi regression
             let rsiRegrN = 10
@@ -385,8 +389,12 @@
             
             // adx 7 (short)
             let adxS = adx (7, prices)
+            // add adx7 to chart2
+            for i in 0..long.Length-1 do chart2.["ADXShort;#FF006E"].Add(adxS.[i])
             // adx 14 (medium)
             let adxM = adx (14, prices)
+            // add adx14 to chart2
+            for i in 0..long.Length-1 do chart2.["ADXMiddle;#4C0021"].Add(adxM.[i])
             printfn "Finished ADX"
 
             // erp 14 (medium)
@@ -396,7 +404,7 @@
                 |> Array.append (Array.zeroCreate (erMN-1))
 
             // test: add to chart2
-            for i in 0..erM.Length-1 do chart2.["erp14;#FF0000"].Add(erM.[i])
+            for i in 0..erM.Length-1 do chart2.["ER14;#FF0000"].Add(erM.[i])
 
             // erp 14 (long)
             let erLN = 30
@@ -583,10 +591,11 @@
                         // start trading on new day only with enough new-day data
                         missingData <- firstI + 1
 
-                    if (erM.[i] > 0.3m && erL.[i] > 0.3m) then
-                        signals.[i] <- 1
-                    else
-                        signals.[i] <- 0
+                    // TODO: REMOVE!
+//                    if (erM.[i] > 0.3m && erL.[i] > 0.3m) then
+//                        signals.[i] <- 1
+//                    else
+//                        signals.[i] <- 0
 
                     //printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
             printfn "Trending decisions: %d" trend
@@ -600,10 +609,16 @@
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
             
             chart1.Add("AMAShort;#FF0000", new System.Collections.Generic.List<decimal>()) 
-            chart1.Add("AMAMiddle;#00FF00", new System.Collections.Generic.List<decimal>()) 
-            chart1.Add("AMALong;#0000FF", new System.Collections.Generic.List<decimal>()) 
-            chart2.Add("erp14;#FF0000", new System.Collections.Generic.List<decimal>()) 
-
+            chart1.Add("AMAMiddle;#8A0000", new System.Collections.Generic.List<decimal>()) 
+            chart1.Add("AMALong;#737373", new System.Collections.Generic.List<decimal>()) 
+            chart1.Add("BollingerTop;#4769FF", new System.Collections.Generic.List<decimal>())
+            chart1.Add("BollingerBottom;#4769FF", new System.Collections.Generic.List<decimal>())
+            
+            chart2.Add("RSI;#0095FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("ER14;#FF0000", new System.Collections.Generic.List<decimal>())
+            chart2.Add("ADXShort;#FF006E", new System.Collections.Generic.List<decimal>())
+            chart2.Add("ADXMiddle;#4C0021", new System.Collections.Generic.List<decimal>())
+            
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
             //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
             //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
