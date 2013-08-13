@@ -598,7 +598,12 @@
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
+            
+            chart1.Add("AMAShort;#FF0000", new System.Collections.Generic.List<decimal>()) 
+            chart1.Add("AMAMiddle;#00FF00", new System.Collections.Generic.List<decimal>()) 
+            chart1.Add("AMALong;#0000FF", new System.Collections.Generic.List<decimal>()) 
             chart2.Add("erp14;#FF0000", new System.Collections.Generic.List<decimal>()) 
+
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
             //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
             //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
