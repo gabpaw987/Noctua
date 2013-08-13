@@ -357,6 +357,11 @@
             let long = ama(erp, l1, l2, cPrices)
             printfn "Finished long AMA"
 
+            // test: add AMAs to chart1
+            for i in 0..short.Length-1 do chart1.["AMAShort;#FF0000"].Add(short.[i])
+            for i in 0..middle.Length-1 do chart1.["AMAMiddle;#00FF00"].Add(middle.[i])
+            for i in 0..long.Length-1 do chart1.["AMALong;#0000FF"].Add(long.[i])
+
             // rsi
             let rsiN = 14
             let rsi = rsi(rsiN, ocPrices)
@@ -390,7 +395,7 @@
                 [| for i in erMN-1..cPrices.Length-1 -> er (cPrices.[i-erMN+1..i]) |]
                 |> Array.append (Array.zeroCreate (erMN-1))
 
-            // test: add to chart
+            // test: add to chart2
             for i in 0..erM.Length-1 do chart2.["erp14;#FF0000"].Add(erM.[i])
 
             // erp 14 (long)
