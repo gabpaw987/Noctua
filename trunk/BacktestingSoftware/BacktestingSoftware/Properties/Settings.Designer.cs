@@ -259,5 +259,17 @@ namespace BacktestingSoftware.Properties {
                 this["Barsize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsAlgorithmUsingMaps {
+            get {
+                return ((bool)(this["IsAlgorithmUsingMaps"]));
+            }
+            set {
+                this["IsAlgorithmUsingMaps"] = value;
+            }
+        }
     }
 }

@@ -33,8 +33,16 @@ namespace BacktestingSoftware
             AppDomain.CurrentDomain.Load(assembly.GetName());
             Type t = assembly.GetType("Algorithm.DecisionCalculator");
 
-            Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary };
-            t.GetMethod("startCalculation").Invoke(null, oa);
+            if (this.mainViewModel.IsAlgorithmUsingMaps)
+            {
+                Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary };
+                t.GetMethod("startCalculation").Invoke(null, oa);
+            }
+            else
+            {
+                Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
+                t.GetMethod("startCalculation").Invoke(null, oa);
+            }
         }
 
         public String CalculateNumbers()

@@ -762,5 +762,25 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private bool _isAlgorithmUsingMaps;
+
+        public bool IsAlgorithmUsingMaps
+        {
+            get
+            {
+                return _isAlgorithmUsingMaps;
+            }
+            set
+            {
+                if (!value.Equals(_isAlgorithmUsingMaps))
+                {
+                    _isAlgorithmUsingMaps = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsAlgorithmUsingMaps"));
+                }
+            }
+        }
     }
 }

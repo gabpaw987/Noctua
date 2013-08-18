@@ -51,6 +51,7 @@ namespace BacktestingSoftware
             this.mainViewModel.LoadFileName = String.Empty;
 
             this.mainViewModel.AlgorithmFileName = Properties.Settings.Default.AlgorithmFileName;
+            this.mainViewModel.IsAlgorithmUsingMaps = Properties.Settings.Default.IsAlgorithmUsingMaps;
             this.mainViewModel.DataFileName = Properties.Settings.Default.DataFileName;
 
             if (Properties.Settings.Default.StartDate != new DateTime() && Properties.Settings.Default.EndDate != new DateTime())
@@ -806,26 +807,29 @@ namespace BacktestingSoftware
 
                 foreach (string key in this.mainViewModel.IndicatorDictionary.Keys)
                 {
-                    Series indicatorSeries = new Series("Indicator" + index);
-                    chart.Series.Add(indicatorSeries);
-
-                    for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                    if (this.mainViewModel.IndicatorDictionary[key].Count == this.mainViewModel.BarList.Count)
                     {
-                        chart.Series["Indicator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.IndicatorDictionary[key][i]);
+                        Series indicatorSeries = new Series("Indicator" + index);
+                        chart.Series.Add(indicatorSeries);
+
+                        for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                        {
+                            chart.Series["Indicator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.IndicatorDictionary[key][i]);
+                        }
+
+                        // Set series chart type
+                        chart.Series["Indicator" + index].ChartType = SeriesChartType.FastLine;
+
+                        //chart.DataSource = this.mainViewModel.BarList;
+                        chart.Series["Indicator" + index].XValueMember = "DateStamp";
+                        chart.Series["Indicator" + index].XValueType = ChartValueType.DateTime;
+                        chart.Series["Indicator" + index].YValueMembers = "Value";
+
+                        //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
+                        chart.Series["Indicator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
+
+                        index++;
                     }
-
-                    // Set series chart type
-                    chart.Series["Indicator" + index].ChartType = SeriesChartType.FastLine;
-
-                    //chart.DataSource = this.mainViewModel.BarList;
-                    chart.Series["Indicator" + index].XValueMember = "DateStamp";
-                    chart.Series["Indicator" + index].XValueType = ChartValueType.DateTime;
-                    chart.Series["Indicator" + index].YValueMembers = "Value";
-
-                    //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
-                    chart.Series["Indicator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
-
-                    index++;
                 }
 
                 if (this.mainViewModel.OscillatorDictionary.Count > 0)
@@ -836,35 +840,38 @@ namespace BacktestingSoftware
                     }
                     foreach (string key in this.mainViewModel.OscillatorDictionary.Keys)
                     {
-                        Series indicatorSeries = new Series("Oscillator" + index);
-                        indicatorSeries.ChartArea = "OscillatorArea";
-                        chart.Series.Add(indicatorSeries);
-
-                        for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                        if (this.mainViewModel.OscillatorDictionary[key].Count == this.mainViewModel.BarList.Count)
                         {
-                            chart.Series["Oscillator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.OscillatorDictionary[key][i]);
+                            Series indicatorSeries = new Series("Oscillator" + index);
+                            indicatorSeries.ChartArea = "OscillatorArea";
+                            chart.Series.Add(indicatorSeries);
+
+                            for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                            {
+                                chart.Series["Oscillator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.OscillatorDictionary[key][i]);
+                            }
+
+                            // Set series chart type
+                            chart.Series["Oscillator" + index].ChartType = SeriesChartType.FastLine;
+
+                            //chart.DataSource = this.mainViewModel.BarList;
+                            chart.Series["Oscillator" + index].XValueMember = "DateStamp";
+                            chart.Series["Oscillator" + index].XValueType = ChartValueType.DateTime;
+                            chart.Series["Oscillator" + index].YValueMembers = "Value";
+
+                            //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
+                            chart.Series["Oscillator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
+
+                            for (int j = 0; j < chart.Series["Oscillator" + index].Points.Count; j++)
+                            {
+                                if (chart.Series["Oscillator" + index].Points[j].YValues[0] < min2)
+                                    min2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
+                                else if (chart.Series["Oscillator" + index].Points[j].YValues[0] > max2)
+                                    max2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
+                            }
+
+                            index++;
                         }
-
-                        // Set series chart type
-                        chart.Series["Oscillator" + index].ChartType = SeriesChartType.FastLine;
-
-                        //chart.DataSource = this.mainViewModel.BarList;
-                        chart.Series["Oscillator" + index].XValueMember = "DateStamp";
-                        chart.Series["Oscillator" + index].XValueType = ChartValueType.DateTime;
-                        chart.Series["Oscillator" + index].YValueMembers = "Value";
-
-                        //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
-                        chart.Series["Oscillator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
-
-                        for (int j = 0; j < chart.Series["Oscillator" + index].Points.Count; j++)
-                        {
-                            if (chart.Series["Oscillator" + index].Points[j].YValues[0] < min2)
-                                min2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
-                            else if (chart.Series["Oscillator" + index].Points[j].YValues[0] > max2)
-                                max2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
-                        }
-
-                        index++;
                     }
                 }
             }
@@ -1037,6 +1044,7 @@ namespace BacktestingSoftware
             this.StopButton_Click(null, null);
 
             Properties.Settings.Default.AlgorithmFileName = this.mainViewModel.AlgorithmFileName;
+            Properties.Settings.Default.IsAlgorithmUsingMaps = this.mainViewModel.IsAlgorithmUsingMaps;
             Properties.Settings.Default.DataFileName = this.mainViewModel.DataFileName;
             Properties.Settings.Default.StartDate = this.mainViewModel.StartDate;
             Properties.Settings.Default.EndDate = this.mainViewModel.EndDate;
@@ -1159,7 +1167,8 @@ namespace BacktestingSoftware
                 bFormatter.Serialize(stream, tempPerformanceList);
 
                 List<bool> tempBoolList = new List<bool>(new bool[] {
-                                   this.mainViewModel.IsRealTimeEnabled});
+                                   this.mainViewModel.IsRealTimeEnabled,
+                                   this.mainViewModel.IsAlgorithmUsingMaps});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1252,6 +1261,7 @@ namespace BacktestingSoftware
 
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
+                this.mainViewModel.IsAlgorithmUsingMaps = tempBoolList[1];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
