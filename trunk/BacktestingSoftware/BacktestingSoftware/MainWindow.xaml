@@ -128,7 +128,8 @@
                     <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3"></GridSplitter>
                     <!-- ORDERS -->
                     <DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
-                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn"/>
+                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True"
+                              IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn" SelectionChanged="orderList_SelectionChanged"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">

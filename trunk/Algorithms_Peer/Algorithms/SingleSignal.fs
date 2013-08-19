@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=(*45*)
+    module DecisionCalculator=(*99*)
 
         (*
          * Divides one value by another
@@ -309,6 +309,20 @@
             //decimal liste2D.Count*b + a
             b
 
+        (*
+         * Calculated the mean deviation
+         *)
+        let std(data:decimal[])=
+            let avg = Array.average data
+            let var = (data |> Array.sumBy (fun x -> pown (x-avg) (2))) / (decimal)data.Length
+            decimal (sqrt (double var))
+
+        let movingStd(n:int, data:decimal[])=
+            let windows = Seq.windowed n data
+            Seq.map std windows
+            |> Seq.toArray
+            |> Array.append (Array.zeroCreate (n-1))
+
         let strategy(erp:int,
                      s1:int, s2:int,
                      m1:int, m2:int,
@@ -349,8 +363,19 @@
             let mutable lastCross = 0
             printfn "Finished Bollinger Bands"
 
+            // mean deviation
+            let std = movingStd (30, cPrices)
+            // change of mean deviation
+            let stdDiff = [ for i in 0..std.Length-1 -> (if (i=0 || std.[i-1] = 0m) then (0m) else (100m*(std.[i] - std.[i-1])/std.[i-1])) ]
+            // exponentially smoothed change of mean deviation
+            let phase = ema (30, stdDiff)
+            // add to chart2
+            //for i in 0..phase.Length-1 do chart2.["StdDiff;#FF0000"].Add(phase.[i])
+
             // pivot points
             let pvpts = pivotpointcalcultor(14,prices)
+            for i in 0..pvpts.Length-1 do chart1.["PvptsTop1;#FFA600"].Add(pvpts.[i].[1])
+            for i in 0..pvpts.Length-1 do chart1.["PvptsBottom1;#FFA600"].Add(pvpts.[i].[3])
 
             // amas for triple crossing in trend phases
             let short = ama(erp, s1, s2, cPrices)
@@ -368,13 +393,15 @@
             let rsiN = 14
             let rsi = rsi(rsiN, ocPrices)
             // add rsi to chart2
-            for i in 0..long.Length-1 do chart2.["RSI;#0095FF"].Add(rsi.[i])
+            //for i in 0..long.Length-1 do chart2.["RSI;#0095FF"].Add(rsi.[i])
 
             // rsi regression
             let rsiRegrN = 10
             let rsiRegr = 
                 [|for i in rsiRegrN+rsiN - 2..rsi.Length-1 -> regression(rsi.[i-rsiRegrN+1..i])|]
                 |> Array.append (Array.zeroCreate (rsiRegrN+rsiN-2))
+            // add rsiRegr to chart2
+            for i in 0..long.Length-1 do chart2.["RSI;#0095FF"].Add(rsiRegr.[i])
 
             // 7 bar short regression of prices
             let regrSN = 7
@@ -386,15 +413,20 @@
             let regrM =
                 [|for i in regrMN-1..cPrices.Length-1 -> regression(cPrices.[i-regrMN+1..i])|]
                 |> Array.append (Array.zeroCreate (regrMN-1))
+            // 60 bar long regression of prices
+            let regrLN = 60
+            let regrL =
+                [|for i in regrLN-1..cPrices.Length-1 -> regression(cPrices.[i-regrLN+1..i])|]
+                |> Array.append (Array.zeroCreate (regrLN-1))
             
             // adx 7 (short)
             let adxS = adx (7, prices)
             // add adx7 to chart2
-            for i in 0..long.Length-1 do chart2.["ADXShort;#FF006E"].Add(adxS.[i])
+            //for i in 0..long.Length-1 do chart2.["ADXShort;#FF006E"].Add(adxS.[i])
             // adx 14 (medium)
-            let adxM = adx (14, prices)
+            let adxM = adx (20, prices)
             // add adx14 to chart2
-            for i in 0..long.Length-1 do chart2.["ADXMiddle;#4C0021"].Add(adxM.[i])
+            //for i in 0..long.Length-1 do chart2.["ADXMiddle;#4C0021"].Add(adxM.[i])
             printfn "Finished ADX"
 
             // erp 14 (medium)
@@ -402,15 +434,16 @@
             let erM = 
                 [| for i in erMN-1..cPrices.Length-1 -> er (cPrices.[i-erMN+1..i]) |]
                 |> Array.append (Array.zeroCreate (erMN-1))
+            // add to chart2
+            //for i in 0..erM.Length-1 do chart2.["ERM;#FF0000"].Add(erM.[i])
 
-            // test: add to chart2
-            for i in 0..erM.Length-1 do chart2.["ER14;#FF0000"].Add(erM.[i])
-
-            // erp 14 (long)
+            // erp 30 (long)
             let erLN = 30
             let erL = 
                 [| for i in erLN-1..cPrices.Length-1 -> er (cPrices.[i-erLN+1..i]) |]
                 |> Array.append (Array.zeroCreate (erLN-1))
+            // add to chart2
+            //for i in 0..erL.Length-1 do chart2.["ERL;#00FF00"].Add(erL.[i])
 
             // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
@@ -428,9 +461,15 @@
             let mutable rsiSig = 0
             let mutable amaSig = 0
             // additional space between AMAs before signal
-            let signalFilter = 0.0m
+            let signalFilter = 0m
+            // maximum space between short and middle AMA
+            let mutable maxAMADiff = 0m
+
             printfn "Signal count: %d" signals.Count;
             printfn "Prices count: %d" prices.Count;
+
+            let mutable posDur = 0
+            let mutable savedSignal = 0
 
             // TODO: remove!
             // recalculate all signals:
@@ -466,10 +505,23 @@
                     else
                         0
 
+//                // AMA signal in the same direction as before (<> 0)
+//                if (amaSig <> 0 && (sign amaSig = sign maxAMADiff || maxAMADiff = 0m)) then
+//                    // difference between short and middle AMA grew bigger
+//                    if (abs (short.[i] - middle.[i]) > abs maxAMADiff) then
+//                        maxAMADiff <- short.[i] - middle.[i]
+//                // changed direction or 0
+//                else
+//                    maxAMADiff <- 0m
+//
+//                // AMA difference smaller than 50% of max
+//                if abs (short.[i] - middle.[i])*4m < abs maxAMADiff then
+//                    amaSig <- (sign amaSig) * -1
+
                 // RSI
-                if (rsiRegr.[i] > 0m && rsi.[i] < 80m) then
+                if (rsiRegr.[i] > 1m && rsi.[i] < 80m) then
                     rsiSig <- 1 
-                else if (rsiRegr.[i] < 0m && rsi.[i] > 20m) then
+                else if (rsiRegr.[i] < -1m && rsi.[i] > 20m) then
                     rsiSig <- -1
                 else
                     rsiSig <- 0
@@ -482,8 +534,9 @@
                 if i < firstI || missingData > 0 then
                     signals.Add(0)
                 else
+                    // TODO: sideways
                     // if ADX indicates sideways markets
-                    if adxS.[i] < 20m && adxM.[i] < 20m then
+                    if false || adxS.[i] < 20m && adxM.[i] < 20m then
 
                         sw <- sw+1
                         // print price between support2 and resistance2
@@ -499,13 +552,6 @@
                                 signals.Add(-1)
                             else
                                 signals.Add(0)
-                            // or without PVPTS:
-//                            if lastCross = 1 && bInd.[i] < 0.0m then
-//                                signals.Add(1)
-//                            else if lastCross = -1 && bInd.[i] > 0.0m then
-//                                signals.Add(-1)
-//                            else
-//                                signals.Add(0)
                         else
                             signals.Add(0)
 
@@ -523,18 +569,34 @@
                             //signals.Add(0)
                             //signals.Add(sign (amaSig * -1))
 
-                            // follow (strongest) price trend
-                            // ..either short or medium term
-                            signals.Add(
-                                // stronger short term trend
-                                if (abs regrS.[i] > abs regrM.[i]) then
-                                    if (regrS.[i] > 0m) then 1
-                                    else -1
-                                // stronger medium term trend
-                                else
-                                    if (regrM.[i] > 0m) then 1
-                                    else -1
-                            )
+                            // strong AMA signal and short and medium price regressions in same direction
+                            if (amaSig = 2 && regrS.[i] > 0m && regrM.[i] > 0m) || (amaSig = -2 && regrS.[i] < 0m && regrM.[i] < 0m)  then
+                                signals.Add(sign amaSig)
+                            else
+                                // follow (strongest) price trend
+                                // ..either short or medium term
+                                signals.Add(
+                                    // short and long term trend coincide
+                                    if (regrS.[i] > 0m && regrM.[i] > 0m) then
+                                        1
+                                    else if (regrS.[i] < 0m && regrM.[i] < 0m) then
+                                        -1
+                                    // stronger short term trend
+                                    else if (abs regrS.[i] > 1.5m*(abs regrM.[i])) then
+                                        if (regrS.[i] > 0m) then 
+                                            1
+                                        else
+                                            -1
+                                    // stronger medium term trend
+                                    else if (abs regrM.[i] > 1.5m*(abs regrS.[i])) then
+                                        if (regrM.[i] > 0m) then
+                                            1
+                                        else
+                                            -1
+                                    else
+                                        0
+                                )
+                        // AMA and RSI signal have same sign
                         else
                             // don't revert last decision if short term price trend is still active
                             // last signal fits short term price trend
@@ -544,6 +606,47 @@
                             else
                                 signals.Add(sign amaSig)
 
+                        // don't decide against long term trend! (60)
+                        // (better than only with changed signal)
+                        if (sign regrL.[i] <> sign signals.[i]) then
+                            // 0 (better than to keep the old signal)
+                            signals.[i] <- 0
+
+                        // changing signal (not 0)
+                        if (signals.[i-1] <> signals.[i] && signals.[i] <> 0) then
+
+                            // don't decide against short term trend! (7)
+                            // new signal contradicts short term price trend
+                            if (sign regrS.[i] <> sign signals.[i]) then
+                                signals.[i] <- 0
+
+                            // doesn't work!
+//                            else
+//                                if (signals.[i] = savedSignal) then
+//                                    // increment position duration
+//                                    posDur <- posDur+1
+//                                else
+//                                    // reset position duration
+//                                    posDur <- 0
+//                                savedSignal <- signals.[i]
+//                                signals.[i] <- 0
+                        
+                        
+//                        if posDur = 2 then
+//                            posDur <- 0
+//                            // would have been the right decision
+//                            if (cPrices.[i] - cPrices.[i-2] * decimal(sign savedSignal) > 0m) then
+//                                signals.[i] <- savedSignal
+//                                savedSignal <- 0
+//                            else
+//                                signals.[i] <- 0
+//                                posDur <- posDur - 1
+
+                        // doesn't work!
+                        // dont open new positions in sw phase
+//                        if (signals.[i-1] <> signals.[i] && phase.[i] < 1m) then
+//                            signals.[i] <- 0
+
                         // using rsi for ama prevalence
 //                        if (abs amaSig = 1 && amaSig = rsiSig) then
 //                            signals.Add(amaSig)
@@ -552,9 +655,18 @@
 //                        else
 //                            signals.Add(0)
 
-                    // TODO: REMOVE!
-//                    else
-//                        signals.Add(0)
+                    // try to get out of the position at a profit
+                    // signal change
+//                    if (signals.[i-1] <> signals.[i] && abs signals.[i] = 1) then
+//                        let tradeDiff = cPrices.[i] - entryPrice
+//                        // signal changing to sell
+//                        if (signals.[i] = -1 && tradeDiff < 0m && tradeDiff > -0.1m*cPrices.[i]) then
+//                            // stay on buy
+//                            signals.[i] <- 1
+//                        // signal changing to buy
+//                        else if (signals.[i] = 1 && tradeDiff > 0m && tradeDiff < 0.1m*cPrices.[i]) then
+//                            // stay on sell
+//                            signals.[i] <- -1
 
                     // Signal Smoothing:    signals can only get bigger, neutral or in the other direction
                     // .. not needed for -1/0/1 signals
@@ -566,6 +678,7 @@
                         if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
                             priceExtreme <- cPrices.[i]
 
+//                        // signal smoothing:
 //                        // weaker signal than before
 //                        if (abs signals.[i] < abs signals.[i-1]) then
 //                            // save stronger signal from before as present signal
@@ -587,15 +700,14 @@
 
                     // exit end of day (EOD0)
                     if (prices.[i].Item1.Hour = 21 && prices.[i].Item1.Minute = 59) then
-                        signals.[signals.Count-1] <- 0
+                        signals.[i] <- 0
                         // start trading on new day only with enough new-day data
                         missingData <- firstI + 1
-
-                    // TODO: REMOVE!
-//                    if (erM.[i] > 0.3m && erL.[i] > 0.3m) then
-//                        signals.[i] <- 1
-//                    else
-//                        signals.[i] <- 0
+                    // only trade between 15:30 and 22:00
+                    if (prices.[i].Item1.Hour < 15 || prices.[i].Item1.Hour > 21 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute < 30)) then
+                        signals.[i] <- 0
+                        // start trading on new day only with enough new-day data
+                        missingData <- firstI + 1
 
                     //printfn "Signal: %d\t AMA:%d\t RSI:%d\t ADX:%f" signals.[signals.Count-1] amaSig rsiSig adx.[i]
             printfn "Trending decisions: %d" trend
@@ -613,20 +725,33 @@
             chart1.Add("AMALong;#737373", new System.Collections.Generic.List<decimal>()) 
             chart1.Add("BollingerTop;#4769FF", new System.Collections.Generic.List<decimal>())
             chart1.Add("BollingerBottom;#4769FF", new System.Collections.Generic.List<decimal>())
+            chart1.Add("PvptsTop1;#FFA600", new System.Collections.Generic.List<decimal>())
+            chart1.Add("PvptsBottom1;#FFA600", new System.Collections.Generic.List<decimal>())
             
             chart2.Add("RSI;#0095FF", new System.Collections.Generic.List<decimal>())
-            chart2.Add("ER14;#FF0000", new System.Collections.Generic.List<decimal>())
-            chart2.Add("ADXShort;#FF006E", new System.Collections.Generic.List<decimal>())
-            chart2.Add("ADXMiddle;#4C0021", new System.Collections.Generic.List<decimal>())
+            //chart2.Add("StdDiff;#FF0000", new System.Collections.Generic.List<decimal>())
+            //chart2.Add("ERM;#FF0000", new System.Collections.Generic.List<decimal>())
+            //chart2.Add("ERL;#00FF00", new System.Collections.Generic.List<decimal>())
+            //chart2.Add("ADXShort;#FF006E", new System.Collections.Generic.List<decimal>())
+            //chart2.Add("ADXMiddle;#4C0021", new System.Collections.Generic.List<decimal>())
             
             //       erp  s1 s2  m1  m2  l1  l2  bN  sig cutloss
             //strategy (50, 5, 10, 10, 20, 20, 40, 20, 2m, 1m, prices, signals)
             //strategy (50, 10, 15, 20, 30, 30, 40, 20, 2m, 0.1m, prices, signals)
             //strategy (60, 10, 20, 15, 30, 30, 60, 20, 2m, 0.1m, prices, signals) // .. not good
-            strategy (50,
+            strategy (60,
+                        // standard
                         10, 15, // s
                         18, 25, // m
                         30, 40, // l
+                        // adapt to shorter
+//                        5, 15, // s
+//                        10, 25, // m
+//                        20, 40, // l
+                        // longer
+//                        15, 20, // s
+//                        25, 30, // m
+//                        35, 50, // l
                         20, 2m, // bollinger
                         0.3m, prices, signals,
                         chart1, chart2)
