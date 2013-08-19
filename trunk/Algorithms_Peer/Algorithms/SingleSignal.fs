@@ -569,8 +569,8 @@
                             //signals.Add(0)
                             //signals.Add(sign (amaSig * -1))
 
-                            // strong AMA only:
-                            if (abs amaSig = 2) then
+                            // strong AMA signal and short and medium price regressions in same direction
+                            if (amaSig = 2 && regrS.[i] > 0m && regrM.[i] > 0m) || (amaSig = -2 && regrS.[i] < 0m && regrM.[i] < 0m)  then
                                 signals.Add(sign amaSig)
                             else
                                 // follow (strongest) price trend
@@ -582,23 +582,19 @@
                                     else if (regrS.[i] < 0m && regrM.[i] < 0m) then
                                         -1
                                     // stronger short term trend
-                                    else if (abs regrS.[i] > abs regrM.[i]) then
-                                        if (regrS.[i] > 2m*regrM.[i]) then
-                                            if (regrS.[i] > 0m) then 
-                                                1
-                                            else
-                                                -1
+                                    else if (abs regrS.[i] > 1.5m*(abs regrM.[i])) then
+                                        if (regrS.[i] > 0m) then 
+                                            1
                                         else
-                                            0
+                                            -1
                                     // stronger medium term trend
-                                    else
-                                        if (regrM.[i] > 2m*regrS.[i]) then
-                                            if (regrM.[i] > 0m) then
-                                                1
-                                            else
-                                                -1
+                                    else if (abs regrM.[i] > 1.5m*(abs regrS.[i])) then
+                                        if (regrM.[i] > 0m) then
+                                            1
                                         else
-                                            0
+                                            -1
+                                    else
+                                        0
                                 )
                         // AMA and RSI signal have same sign
                         else
@@ -624,17 +620,18 @@
                             if (sign regrS.[i] <> sign signals.[i]) then
                                 signals.[i] <- 0
 
-                            else
-                                if (signals.[i] = savedSignal) then
-                                    // increment position duration
-                                    posDur <- posDur+1
-                                else
-                                    // reset position duration
-                                    posDur <- 0
-                                savedSignal <- signals.[i]
-                                signals.[i] <- 0
+                            // doesn't work!
+//                            else
+//                                if (signals.[i] = savedSignal) then
+//                                    // increment position duration
+//                                    posDur <- posDur+1
+//                                else
+//                                    // reset position duration
+//                                    posDur <- 0
+//                                savedSignal <- signals.[i]
+//                                signals.[i] <- 0
                         
-                        // doesn't work!
+                        
 //                        if posDur = 2 then
 //                            posDur <- 0
 //                            // would have been the right decision
