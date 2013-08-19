@@ -35,6 +35,8 @@ namespace BacktestingSoftware
         public bool isRealTimeThreadRunning;
         public int curBarCount;
 
+        private int selectedArrowIndex;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -113,6 +115,8 @@ namespace BacktestingSoftware
             this.bw = new BackgroundWorker();
             this.isRealTimeThreadRunning = false;
             this.curBarCount = 0;
+
+            this.selectedArrowIndex = -1;
         }
 
         public List<StackPanel> restoreIndicatorStackPanels(StringCollection strings)
@@ -627,6 +631,8 @@ namespace BacktestingSoftware
             chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
             chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
 
+            int k = 0;
+
             for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
             {
                 // adding date and high
@@ -643,7 +649,7 @@ namespace BacktestingSoftware
                     if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i])
                     {
                         ArrowAnnotation la = new ArrowAnnotation();
-                        la.Name = "Arrow-" + i;
+                        la.Name = "Arrow-" + k++;
 
                         //la.AnchorDataPoint = chart.Series["Data"].Points[i];
 
@@ -652,22 +658,12 @@ namespace BacktestingSoftware
                         la.ArrowSize = 3;
                         la.LineWidth = 2;
 
+                        setArrowColor(la, this.mainViewModel.Signals[i]);
+
                         if (this.mainViewModel.Signals[i] < 0)
                         {
                             la.Height = -5;
                             la.LineColor = System.Drawing.Color.Black;
-                            switch (this.mainViewModel.Signals[i])
-                            {
-                                case -1:
-                                    la.BackColor = System.Drawing.Color.FromArgb(255, 204, 204);
-                                    break;
-                                case -2:
-                                    la.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
-                                    break;
-                                case -3:
-                                    la.BackColor = System.Drawing.Color.FromArgb(102, 0, 0);
-                                    break;
-                            }
 
                             la.AnchorDataPoint = chart.Series["Data"].Points[i];
                             //indicates which one of the y values of the datapoint is used for the arrow
@@ -678,18 +674,6 @@ namespace BacktestingSoftware
                         {
                             la.Height = 5;
                             la.LineColor = System.Drawing.Color.Black;
-                            switch (this.mainViewModel.Signals[i])
-                            {
-                                case 1:
-                                    la.BackColor = System.Drawing.Color.FromArgb(0, 255, 51);
-                                    break;
-                                case 2:
-                                    la.BackColor = System.Drawing.Color.FromArgb(0, 153, 0);
-                                    break;
-                                case 3:
-                                    la.BackColor = System.Drawing.Color.FromArgb(0, 51, 0);
-                                    break;
-                            }
 
                             la.AnchorDataPoint = chart.Series["Data"].Points[i];
                             //indicates which one of the y values of the datapoint is used for the arrow
@@ -817,6 +801,26 @@ namespace BacktestingSoftware
                             chart.Series["Indicator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.IndicatorDictionary[key][i]);
                         }
 
+                        foreach (decimal value in this.mainViewModel.IndicatorDictionary[key])
+                        {
+                            if (value < min && value != 0)
+                            {
+                                min = value;
+                            }
+                        }
+
+                        max = this.mainViewModel.IndicatorDictionary[key].Max();
+
+                        margin = (max - min) * 5 / 100;
+                        if (Convert.ToDouble(min - margin) < chart.ChartAreas[0].AxisY.Minimum)
+                        {
+                            chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+                        }
+                        if (Convert.ToDouble(max + margin) > chart.ChartAreas[0].AxisY.Maximum)
+                        {
+                            chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
+                        }
+
                         // Set series chart type
                         chart.Series["Indicator" + index].ChartType = SeriesChartType.FastLine;
 
@@ -899,11 +903,57 @@ namespace BacktestingSoftware
             chart.Invalidate();
         }
 
+        private void setArrowColor(ArrowAnnotation la, int signal)
+        {
+            switch (signal)
+            {
+                case -3:
+                    la.BackColor = System.Drawing.Color.FromArgb(102, 0, 0);
+                    break;
+                case -2:
+                    la.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                    break;
+                case -1:
+                    la.BackColor = System.Drawing.Color.FromArgb(255, 204, 204);
+                    break;
+                case 0:
+                    la.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    break;
+                case 1:
+                    la.BackColor = System.Drawing.Color.FromArgb(0, 255, 51);
+                    break;
+                case 2:
+                    la.BackColor = System.Drawing.Color.FromArgb(0, 153, 0);
+                    break;
+                case 3:
+                    la.BackColor = System.Drawing.Color.FromArgb(0, 51, 0);
+                    break;
+            }
+        }
+
         private void Chart_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            Chart chart = sender as Chart;
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                Chart chart = sender as Chart;
+                var pos = e.Location;
+                var results = chart.HitTest(pos.X, pos.Y, false,
+                                             ChartElementType.Annotation);
+                foreach (var result in results)
+                {
+                    if (result.Object != null)
+                    {
+                        if (result.Object is ArrowAnnotation)
+                        {
+                            int selectedIndex = int.Parse(((ArrowAnnotation)result.Object).Name.Split('-')[1]);
+                            this.orders.SelectedIndex = selectedIndex;
+                            this.orders.ScrollIntoView(this.mainViewModel.Orders[selectedIndex]);
+                        }
+                    }
+                }
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
                 chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 chart.ChartAreas[0].AxisY.ScaleView.ZoomReset();
 
@@ -1409,6 +1459,26 @@ namespace BacktestingSoftware
             {
                 this.IndicatorStackPanel.Children.Add(panel);
             }
+        }
+
+        private void orderList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Chart chart = this.FindName("MyWinformChart") as Chart;
+
+            if (this.selectedArrowIndex > -1)
+            {
+                setArrowColor((ArrowAnnotation)chart.Annotations["Arrow-" + this.selectedArrowIndex],
+                               this.mainViewModel.Orders[this.selectedArrowIndex].Trendstrength);
+
+                ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).Height /= 2;
+                ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).ArrowSize -= 2;
+            }
+
+            this.selectedArrowIndex = ((System.Windows.Controls.DataGrid)sender).SelectedIndex;
+
+            chart.Annotations["Arrow-" + this.selectedArrowIndex].BackColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).Height *= 2;
+            ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).ArrowSize += 2;
         }
     }
 }
