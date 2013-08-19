@@ -801,6 +801,26 @@ namespace BacktestingSoftware
                             chart.Series["Indicator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.IndicatorDictionary[key][i]);
                         }
 
+                        foreach (decimal value in this.mainViewModel.IndicatorDictionary[key])
+                        {
+                            if (value < min && value != 0)
+                            {
+                                min = value;
+                            }
+                        }
+
+                        max = this.mainViewModel.IndicatorDictionary[key].Max();
+
+                        margin = (max - min) * 5 / 100;
+                        if (Convert.ToDouble(min - margin) < chart.ChartAreas[0].AxisY.Minimum)
+                        {
+                            chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+                        }
+                        if (Convert.ToDouble(max + margin) > chart.ChartAreas[0].AxisY.Maximum)
+                        {
+                            chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
+                        }
+
                         // Set series chart type
                         chart.Series["Indicator" + index].ChartType = SeriesChartType.FastLine;
 
