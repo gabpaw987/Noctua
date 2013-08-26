@@ -309,6 +309,25 @@
             //decimal liste2D.Count*b + a
             b
 
+        (* Linear Weighted Regression Method *)
+        let lwrm(n:int, prices:decimal array)=
+            let mutable xy = 0m
+            let mutable xx = 0m
+            let mutable x = 0m
+            let mutable y = 0m
+            let w = [|for i in 1 .. prices.Length do yield decimal i*(decimal n / decimal prices.Length)|]
+            let wsum = Array.sum w
+            for i = 0 to prices.Length - 1 do 
+                x <- x + (((decimal i)*w.[i])/wsum)
+                y <- y + (((prices.[i])*w.[i])/wsum)
+            for i = 0 to prices.Length - 1 do 
+            // (lr.X - xAvg) * (lr.Y - yAvg) * lr.Weight);
+                xy <- xy + ((decimal i - x) * (prices.[i] - y) * w.[i])
+            // System.Math.Pow(Convert.ToDouble(lr.X - xAvg), 2)) * lr.Weight)
+                xx <- xx + decimal ((float i - float x)**2.0 ) * w.[i]
+            
+            xy / xx
+
         (*
          * Calculated the mean deviation
          *)
@@ -320,6 +339,40 @@
         let movingStd(n:int, data:decimal[])=
             let windows = Seq.windowed n data
             Seq.map std windows
+            |> Seq.toArray
+            |> Array.append (Array.zeroCreate (n-1))
+
+        (*
+         * returns the absolute maximum (w.o. sign) for the last n bars
+         * for each element
+         *)
+        let mExtremum(n:int, data:decimal[])=
+            let windows = Seq.windowed n [| for i in data -> abs i |]
+            Seq.map Seq.max windows
+            |> Seq.toArray
+            |> Array.append (Array.zeroCreate (n-1))
+
+        (*
+         * returns the maximum and minimum for the last n bars
+         * for each element
+         *)
+        let mExtrema(n:int, data:decimal[])=
+            let windows = Seq.windowed n data |> Seq.toArray
+
+            let maxVals = 
+                Array.map Array.max windows
+            let minVals = 
+                Array.map Array.min windows
+
+            [| for i in 0..windows.Length-1 -> (minVals.[i], maxVals.[i]) |]
+            |> Array.append (Array.create (n-1) (0m, 0m))
+
+        (*
+         * calculates the average bar size from the last n bars
+         *)
+        let avgBarSize(n:int, prices:(decimal*decimal)[])=
+            let windows = Seq.windowed n [| for i in prices -> abs (snd i - fst i) |]
+            Seq.map Seq.average windows
             |> Seq.toArray
             |> Array.append (Array.zeroCreate (n-1))
 
@@ -345,6 +398,9 @@
                 [ for i in prices -> (i.Item2, i.Item5) ]
                 //|> Seq.skip skip
                 |> Seq.toArray
+            // list of high/low price tuples
+            let hlPrices =
+                [| for i in prices -> (i.Item3, i.Item4) |]
 
             // skiped list of prices
             //let prices = prices.GetRange(skip, prices.Count-skip)
@@ -390,7 +446,7 @@
             for i in 0..long.Length-1 do chart1.["AMALong;#737373"].Add(long.[i])
 
             // rsi
-            let rsiN = 14
+            let rsiN = 30
             let rsi = rsi(rsiN, ocPrices)
             // add rsi to chart2
             //for i in 0..long.Length-1 do chart2.["RSI;#0095FF"].Add(rsi.[i])
@@ -408,16 +464,27 @@
             let regrS =
                 [|for i in regrSN-1..cPrices.Length-1 -> regression(cPrices.[i-regrSN+1..i])|]
                 |> Array.append (Array.zeroCreate (regrSN-1))
+            
             // 14 bar medium regression of prices
             let regrMN = 14
             let regrM =
                 [|for i in regrMN-1..cPrices.Length-1 -> regression(cPrices.[i-regrMN+1..i])|]
                 |> Array.append (Array.zeroCreate (regrMN-1))
+            
             // 60 bar long regression of prices
             let regrLN = 60
             let regrL =
                 [|for i in regrLN-1..cPrices.Length-1 -> regression(cPrices.[i-regrLN+1..i])|]
                 |> Array.append (Array.zeroCreate (regrLN-1))
+            
+            // add regressions to chart
+//            for i in 0..regrS.Length-1 do chart2.["R1;#0095FF"].Add(regrS.[i]*100m)
+//            for i in 0..regrM.Length-1 do chart2.["R2;#FF0000"].Add(regrM.[i]*100m)
+//            for i in 0..regrL.Length-1 do chart2.["R3;#00FF00"].Add(regrL.[i]*100m)
+
+            // maximum slope of 14 day regression over 20 days
+            let slopeM = [| for i in mExtremum (20, regrM) -> i*100m |]
+            for i in 0..slopeM.Length-1 do chart2.["slopeM;#0095FF"].Add(slopeM.[i])
             
             // adx 7 (short)
             let adxS = adx (7, prices)
@@ -445,9 +512,21 @@
             // add to chart2
             //for i in 0..erL.Length-1 do chart2.["ERL;#00FF00"].Add(erL.[i])
 
+            // price extrema
+            let pExtrema = mExtrema (60, cPrices)
+            // ((price-minimum)/(breadth)) * 200 -100
+            let pPos = [| for i in 0..cPrices.Length-1 -> ((cPrices.[i]-fst pExtrema.[i]) |> divideZero (snd pExtrema.[i]-fst pExtrema.[i]))* 100m |]
+
+            // relative size of current bar compared to avg
+            let mutable relBarSize = 0m
+            // average bar size
+            let avgBars = avgBarSize (14, hlPrices)
+
             // first index with all data
             let firstI = [erp-1; l2-1; n-1] |> List.max
             let mutable missingData = firstI+1
+            // no signals in the list yet
+            let mutable allZero = true
             
             // price at trade entry (long or short)
             let mutable entryPrice = 0m
@@ -460,6 +539,7 @@
 
             let mutable rsiSig = 0
             let mutable amaSig = 0
+            let mutable exit = false
             // additional space between AMAs before signal
             let signalFilter = 0m
             // maximum space between short and middle AMA
@@ -526,6 +606,25 @@
                 else
                     rsiSig <- 0
 
+                // EXIT SIGNAL (take profit)
+
+                relBarSize <- if (avgBars.[i] = 0m) then 0m else (fst hlPrices.[i] - snd hlPrices.[i]) / avgBars.[i]
+
+                if i <> 0 then
+                    exit <- false
+                    if (signals.[i-1] <> 0) then
+                        // long
+                        if (sign signals.[i-1] = 1) then
+                            // rsi in overbought and currently positive profit and down movement of 0.8*averageBarSize
+                            // or more than 80 profit
+                            if (fst ocPrices.[i] > snd ocPrices.[i]) && (rsi.[i] > 70m && cPrices.[i] > entryPrice && relBarSize > 0.8m) || (cPrices.[i]-entryPrice > 0.8m) then
+                                exit <- true
+                        // short
+                        else if (sign signals.[i-1] = -1) then
+                            // rsi in oversold and currently positive profit and up movement of 0.8*averageBarSize
+                            if (fst ocPrices.[i] < snd ocPrices.[i]) && (rsi.[i] < 30m && cPrices.[i] < entryPrice && relBarSize > 0.8m) || (cPrices.[i]-entryPrice < -0.8m) then
+                                exit <- true
+
                 // one bar more available
                 missingData <- missingData - 1
 
@@ -536,7 +635,7 @@
                 else
                     // TODO: sideways
                     // if ADX indicates sideways markets
-                    if false || adxS.[i] < 20m && adxM.[i] < 20m then
+                    if adxS.[i] < 20m && adxM.[i] < 20m then
 
                         sw <- sw+1
                         // print price between support2 and resistance2
@@ -620,40 +719,18 @@
                             if (sign regrS.[i] <> sign signals.[i]) then
                                 signals.[i] <- 0
 
-                            // doesn't work!
-//                            else
-//                                if (signals.[i] = savedSignal) then
-//                                    // increment position duration
-//                                    posDur <- posDur+1
-//                                else
-//                                    // reset position duration
-//                                    posDur <- 0
-//                                savedSignal <- signals.[i]
-//                                signals.[i] <- 0
+                            // don't open new positions in price extremes
+                            if (signals.[i] = 1 && pPos.[i] > 90m) || (signals.[i] = -1 && pPos.[i] < 10m) then
+                                signals.[i] <- 0
+                            
+                        // don't decide against medium term trend for first signal
+                        // check if signal is first signal
+                        if allZero then
+                            for j in signals do
+                                if (j <> 0) then allZero <- false
                         
-                        
-//                        if posDur = 2 then
-//                            posDur <- 0
-//                            // would have been the right decision
-//                            if (cPrices.[i] - cPrices.[i-2] * decimal(sign savedSignal) > 0m) then
-//                                signals.[i] <- savedSignal
-//                                savedSignal <- 0
-//                            else
-//                                signals.[i] <- 0
-//                                posDur <- posDur - 1
-
-                        // doesn't work!
-                        // dont open new positions in sw phase
-//                        if (signals.[i-1] <> signals.[i] && phase.[i] < 1m) then
-//                            signals.[i] <- 0
-
-                        // using rsi for ama prevalence
-//                        if (abs amaSig = 1 && amaSig = rsiSig) then
-//                            signals.Add(amaSig)
-//                        else if (abs amaSig = 2) then
-//                            signals.Add(sign amaSig)
-//                        else
-//                            signals.Add(0)
+                        if (allZero && sign regrM.[i] <> sign signals.[i]) then
+                            signals.[i] <- 0
 
                     // try to get out of the position at a profit
                     // signal change
@@ -728,6 +805,10 @@
             chart1.Add("PvptsTop1;#FFA600", new System.Collections.Generic.List<decimal>())
             chart1.Add("PvptsBottom1;#FFA600", new System.Collections.Generic.List<decimal>())
             
+            chart2.Add("R1;#0095FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("R2;#FF0000", new System.Collections.Generic.List<decimal>())
+            chart2.Add("R3;#00FF00", new System.Collections.Generic.List<decimal>())
+            chart2.Add("slopeM;#0095FF", new System.Collections.Generic.List<decimal>())
             chart2.Add("RSI;#0095FF", new System.Collections.Generic.List<decimal>())
             //chart2.Add("StdDiff;#FF0000", new System.Collections.Generic.List<decimal>())
             //chart2.Add("ERM;#FF0000", new System.Collections.Generic.List<decimal>())
@@ -749,9 +830,9 @@
 //                        10, 25, // m
 //                        20, 40, // l
                         // longer
-//                        15, 20, // s
-//                        25, 30, // m
-//                        35, 50, // l
+//                        25, 40, // s
+//                        30, 60, // m
+//                        60, 90, // l
                         20, 2m, // bollinger
                         0.3m, prices, signals,
                         chart1, chart2)
