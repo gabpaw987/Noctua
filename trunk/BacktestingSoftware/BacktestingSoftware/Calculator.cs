@@ -58,6 +58,11 @@ namespace BacktestingSoftware
                     this.mainViewModel.LossPercent = 0;
                     decimal priceOfLastTrade = 0m;
                     decimal absCumGainLoss = 0m;
+                    List<decimal> dailyPortfolioPerformances = new List<decimal>();
+                    //For calculation of daily Portfolio Performances
+                    DateTime currentDay = new DateTime();
+                    decimal currentDayPortfolioPerformance = 0m;
+
                     this.mainViewModel.NetWorth = decimal.Parse(this.mainViewModel.Capital);
 
                     if (this.mainViewModel.NetWorth == 0)
@@ -186,6 +191,18 @@ namespace BacktestingSoftware
                             this.mainViewModel.GainLossPercent += percentageOfThisTrade;
                             profitsForStdDev.Add((double)portfolioPerformance);
 
+                            if ((currentDay != this.mainViewModel.BarList[i].Item1.Date) || (i == this.mainViewModel.BarList.Count))
+                            {
+                                currentDay = this.mainViewModel.BarList[i].Item1.Date;
+
+                                dailyPortfolioPerformances.Add(currentDayPortfolioPerformance);
+                                currentDayPortfolioPerformance = portfolioPerformance;
+                            }
+                            else
+                            {
+                                currentDayPortfolioPerformance += portfolioPerformance;
+                            }
+
                             absCumGainLoss += currentGainLoss;
                             this.mainViewModel.NetWorth += currentGainLoss;
 
@@ -257,6 +274,10 @@ namespace BacktestingSoftware
                     decimal portfolioPerformanceWithRiskFreeRate = (netWorthWithRiskFreeRate - Convert.ToDecimal(this.mainViewModel.Capital)) / Convert.ToDecimal(this.mainViewModel.Capital) * 100;
 
                     this.mainViewModel.SharpeRatio = (this.mainViewModel.PortfolioPerformancePercent - portfolioPerformanceWithRiskFreeRate) / this.mainViewModel.StdDevOfProfit;
+
+                    this.mainViewModel.HighestDailyProfit = dailyPortfolioPerformances.Max();
+                    this.mainViewModel.HighestDailyLoss = dailyPortfolioPerformances.Min();
+                    this.mainViewModel.LastDayProfitLoss = dailyPortfolioPerformances.Last();
 
                     return string.Empty;
                 }

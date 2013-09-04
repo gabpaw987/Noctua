@@ -5,7 +5,7 @@
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
-        Title="BTS" Height="500" Width="1000"
+        Title="BTS" Height="600" Width="1000"
         Closing="Window_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <Window.Resources>
         <xctk:InverseBoolConverter x:Key="InverseBoolConverter" />
@@ -76,6 +76,9 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="250"></ColumnDefinition>
@@ -104,6 +107,12 @@
                         <Label Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
                         <Label Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio of the number of good trades compared to the number of bad trades.">Ratio of Good Trades - Bad Trades:</Label>
                         <Label Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
+                        <Label Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the most profitable day.">Highest daily portfolio performance:</Label>
+                        <Label Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=HighestDailyProfit}"></Label>
+                        <Label Grid.Row="12" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the least profitable day.">Lowest daily portfolio performance:</Label>
+                        <Label Grid.Row="12" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=HighestDailyLoss}"></Label>
+                        <Label Grid.Row="13" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the current/last day.">Portfolio performance of the current day:</Label>
+                        <Label Grid.Row="14" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LastDayProfitLoss}"></Label>
                     </Grid>
                 </StackPanel>
             </TabItem>
@@ -166,6 +175,7 @@
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="150"></ColumnDefinition>
@@ -178,6 +188,7 @@
                                         <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Enable real-time testing?</Label>
                                         <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" IsEnabled="{Binding Path=IsRealTimeEnabled}">Stock Symbol</Label>
                                         <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Barsize</Label>
+                                        <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Additional Parameters</Label>
                                         <!-- OpenFileDialog
                             http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
                                         <!-- Algorithm File -->
@@ -210,6 +221,9 @@
                                                 <ComboBoxItem IsSelected="True">Minute</ComboBoxItem>
                                                 <ComboBoxItem>Daily</ComboBoxItem>
                                             </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="6" Grid.Column="1">
+                                            <TextBox Width="300" Text="{Binding Path=AdditionalParameters}" />
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
