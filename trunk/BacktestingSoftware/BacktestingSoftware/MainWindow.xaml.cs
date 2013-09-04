@@ -1463,22 +1463,29 @@ namespace BacktestingSoftware
 
         private void orderList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Chart chart = this.FindName("MyWinformChart") as Chart;
-
-            if (this.selectedArrowIndex > -1)
+            if (!this.iscalculating)
             {
-                setArrowColor((ArrowAnnotation)chart.Annotations["Arrow-" + this.selectedArrowIndex],
-                               this.mainViewModel.Orders[this.selectedArrowIndex].Trendstrength);
+                Chart chart = this.FindName("MyWinformChart") as Chart;
 
-                ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).Height /= 2;
-                ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).ArrowSize -= 2;
+                if (this.selectedArrowIndex > -1)
+                {
+                    setArrowColor((ArrowAnnotation)chart.Annotations["Arrow-" + this.selectedArrowIndex],
+                                   this.mainViewModel.Orders[this.selectedArrowIndex].Trendstrength);
+
+                    ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).Height /= 2;
+                    ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).ArrowSize -= 2;
+                }
+
+                this.selectedArrowIndex = ((System.Windows.Controls.DataGrid)sender).SelectedIndex;
+
+                chart.Annotations["Arrow-" + this.selectedArrowIndex].BackColor = System.Drawing.Color.FromArgb(0, 0, 0);
+                ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).Height *= 2;
+                ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).ArrowSize += 2;
             }
-
-            this.selectedArrowIndex = ((System.Windows.Controls.DataGrid)sender).SelectedIndex;
-
-            chart.Annotations["Arrow-" + this.selectedArrowIndex].BackColor = System.Drawing.Color.FromArgb(0, 0, 0);
-            ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).Height *= 2;
-            ((ArrowAnnotation)(chart.Annotations["Arrow-" + this.selectedArrowIndex])).ArrowSize += 2;
+            else
+            {
+                this.selectedArrowIndex = -1;
+            }
         }
     }
 }

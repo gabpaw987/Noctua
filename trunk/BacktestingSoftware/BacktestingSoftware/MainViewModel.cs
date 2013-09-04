@@ -763,6 +763,26 @@ namespace BacktestingSoftware
             }
         }
 
+        private string _additionalParameters;
+
+        public string AdditionalParameters
+        {
+            get
+            {
+                return _additionalParameters;
+            }
+            set
+            {
+                if (!value.Equals(_additionalParameters))
+                {
+                    _additionalParameters = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("AdditionalParameters"));
+                }
+            }
+        }
+
         private bool _isAlgorithmUsingMaps;
 
         public bool IsAlgorithmUsingMaps
@@ -779,6 +799,63 @@ namespace BacktestingSoftware
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsAlgorithmUsingMaps"));
+                }
+            }
+        }
+
+        private decimal _highestDailyProfit;
+
+        public decimal HighestDailyProfit
+        {
+            get
+            {
+                return Math.Round(_highestDailyProfit, 3);
+            }
+            set
+            {
+                if (!value.Equals(_highestDailyProfit))
+                {
+                    _highestDailyProfit = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("HighestDailyProfit"));
+                }
+            }
+        }
+
+        private decimal _highestDailyLoss;
+
+        public decimal HighestDailyLoss
+        {
+            get
+            {
+                return Math.Round(_highestDailyLoss, 3);
+            }
+            set
+            {
+                if (!value.Equals(_highestDailyLoss))
+                {
+                    _highestDailyLoss = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("HighestDailyLoss"));
+                }
+            }
+        }
+
+        private decimal _lastDayProfitLoss;
+
+        public decimal LastDayProfitLoss
+        {
+            get
+            {
+                return Math.Round(_lastDayProfitLoss, 3);
+            }
+            set
+            {
+                if (!value.Equals(_lastDayProfitLoss))
+                {
+                    _lastDayProfitLoss = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("LastDayProfitLoss"));
                 }
             }
         }
