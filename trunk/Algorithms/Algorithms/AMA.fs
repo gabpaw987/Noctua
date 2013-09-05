@@ -1,7 +1,7 @@
 ﻿// http://www.investopedia.com/articles/trading/08/adaptive-moving-averages.asp#axzz2JT9BYz6o
 
 namespace Algorithm
-    module DecisionCalculator99=
+    module DecisionCalculator9999999=
         let ema(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
             let s1 = new System.Windows.Forms.DataVisualization.Charting.Series("historicalData")
             s1.ChartType <- System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Candlestick

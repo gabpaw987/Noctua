@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator99=
 
         let alphaToN (a) : int=
             int ((2.0m/a)-1.0m)
