@@ -20,7 +20,8 @@
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               parameter:System.Collections.Generic.Dictionary<string, decimal>)=
-            
+            chart1.Clear();
+            chart2.Clear();
             let shortLength = int parameter.["SR"]
             let longLength  = int parameter.["LR"]
 
