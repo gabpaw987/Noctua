@@ -283,5 +283,29 @@ namespace BacktestingSoftware.Properties {
                 this["AdditionalParameters"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsDataFutures {
+            get {
+                return ((bool)(this["IsDataFutures"]));
+            }
+            set {
+                this["IsDataFutures"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int InnerValue {
+            get {
+                return ((int)(this["InnerValue"]));
+            }
+            set {
+                this["InnerValue"] = value;
+            }
+        }
     }
 }

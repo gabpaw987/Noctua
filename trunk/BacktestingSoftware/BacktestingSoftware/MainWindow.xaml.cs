@@ -93,6 +93,9 @@ namespace BacktestingSoftware
 
             this.mainViewModel.AdditionalParameters = Properties.Settings.Default.AdditionalParameters;
 
+            this.mainViewModel.IsDataFutures = Properties.Settings.Default.IsDataFutures;
+            this.mainViewModel.InnerValue = Properties.Settings.Default.InnerValue;
+
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
             {
@@ -443,6 +446,12 @@ namespace BacktestingSoftware
                         {
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
                                 this.ErrorMessage = c.CalculateNumbers(string.Empty);
+
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                this.Dispatcher.Invoke((Action)(() =>
+                                {
+                                    this.ResultSelectionComboBox.SelectedIndex = 0;
+                                }));
                         }
                         catch (Exception)
                         {
@@ -535,35 +544,38 @@ namespace BacktestingSoftware
                                 progress += (60m / (valueSets[0].Count));
                             }
 
-                            CalculationResultSet highestPPResultSet = new CalculationResultSet();
-                            CalculationResultSet lowestPPResultSet = new CalculationResultSet();
-                            foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
                             {
-                                if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
+                                CalculationResultSet highestPPResultSet = new CalculationResultSet();
+                                CalculationResultSet lowestPPResultSet = new CalculationResultSet();
+                                foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
                                 {
-                                    highestPPResultSet = resultSet;
+                                    if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
+                                    {
+                                        highestPPResultSet = resultSet;
+                                    }
+
+                                    if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
+                                    {
+                                        lowestPPResultSet = resultSet;
+                                    }
                                 }
 
-                                if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
+                                string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
+                                this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
+                                highestPPResultSetKey += " [Best]";
+                                this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
+
+                                string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
+                                this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
+                                lowestPPResultSetKey += " [Worst]";
+                                this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
+
+                                this.Dispatcher.Invoke((Action)(() =>
                                 {
-                                    lowestPPResultSet = resultSet;
-                                }
+                                    this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
+                                }));
                             }
-
-                            string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
-                            this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
-                            highestPPResultSetKey += " [Best]";
-                            this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
-
-                            string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
-                            this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
-                            lowestPPResultSetKey += " [Worst]";
-                            this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
-
-                            this.Dispatcher.Invoke((Action)(() =>
-                            {
-                                this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
-                            }));
                         }
                         catch (Exception)
                         {
@@ -1264,6 +1276,9 @@ namespace BacktestingSoftware
 
             Properties.Settings.Default.SaveFileName = this.mainViewModel.SaveFileName;
 
+            Properties.Settings.Default.IsDataFutures = this.mainViewModel.IsDataFutures;
+            Properties.Settings.Default.InnerValue = this.mainViewModel.InnerValue;
+
             Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
 
             Properties.Settings.Default.Save();
@@ -1364,7 +1379,8 @@ namespace BacktestingSoftware
 
                 List<bool> tempBoolList = new List<bool>(new bool[] {
                                    this.mainViewModel.IsRealTimeEnabled,
-                                   this.mainViewModel.IsAlgorithmUsingMaps});
+                                   this.mainViewModel.IsAlgorithmUsingMaps,
+                                   this.mainViewModel.IsDataFutures});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1388,7 +1404,8 @@ namespace BacktestingSoftware
                                                                  this.mainViewModel.ValueOfSliderFour,
                                                                  this.mainViewModel.ValueOfSliderFive,
                                                                  this.mainViewModel.ValueOfSliderSix,
-                                                                 this.mainViewModel.RoundLotSize});
+                                                                 this.mainViewModel.RoundLotSize,
+                                                                 this.mainViewModel.InnerValue});
                 bFormatter.Serialize(stream, tempIntList);
 
                 StringCollection serializableStackPanels = new StringCollection();
@@ -1461,6 +1478,7 @@ namespace BacktestingSoftware
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
                 this.mainViewModel.IsAlgorithmUsingMaps = tempBoolList[1];
+                this.mainViewModel.IsDataFutures = tempBoolList[2];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
@@ -1485,6 +1503,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.ValueOfSliderFive = tempIntList[4];
                 this.mainViewModel.ValueOfSliderSix = tempIntList[5];
                 this.mainViewModel.RoundLotSize = tempIntList[6];
+                this.mainViewModel.InnerValue = tempIntList[7];
 
                 StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);

@@ -879,5 +879,56 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private bool _isDataFutures;
+
+        public bool IsDataFutures
+        {
+            get
+            {
+                return _isDataFutures;
+            }
+            set
+            {
+                if (!value.Equals(_isDataFutures))
+                {
+                    if (value)
+                    {
+                        this.InnerValue = this.RoundLotSize;
+                        this.RoundLotSize = -1;
+                    }
+                    else
+                    {
+                        this.RoundLotSize = this.InnerValue;
+                        this.InnerValue = -1;
+                    }
+
+                    _isDataFutures = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsDataFutures"));
+                }
+            }
+        }
+
+        private int _innerValue;
+
+        public int InnerValue
+        {
+            get
+            {
+                return _innerValue;
+            }
+            set
+            {
+                if (!value.Equals(_innerValue))
+                {
+                    _innerValue = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("InnerValue"));
+                }
+            }
+        }
     }
 }

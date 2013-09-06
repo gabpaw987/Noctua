@@ -183,6 +183,9 @@ namespace BacktestingSoftware
                     int RoundLotSize = 0;
                     switch (this.mainViewModel.RoundLotSize)
                     {
+                        case -1:
+                            RoundLotSize = 1;
+                            break;
                         case 0:
                             RoundLotSize = 10;
                             break;
