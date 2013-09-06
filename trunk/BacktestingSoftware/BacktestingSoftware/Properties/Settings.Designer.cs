@@ -271,5 +271,17 @@ namespace BacktestingSoftware.Properties {
                 this["IsAlgorithmUsingMaps"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AdditionalParameters {
+            get {
+                return ((string)(this["AdditionalParameters"]));
+            }
+            set {
+                this["AdditionalParameters"] = value;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BacktestingSoftware;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,7 +35,8 @@ namespace BTS_Test
         public void CalculateSignalsTest()
         {
             target.ReadFile();
-            target.CalculateSignals();
+            Type t = target.LoadAlgorithmFile();
+            target.CalculateSignals(t, null);
         }
 
         /// <summary>
@@ -44,10 +46,11 @@ namespace BTS_Test
         public void CalculateNumbersTest()
         {
             target.ReadFile();
-            target.CalculateSignals();
+            Type t = target.LoadAlgorithmFile();
+            target.CalculateSignals(t, null);
             string expected = string.Empty;
             string actual;
-            actual = target.CalculateNumbers();
+            actual = target.CalculateNumbers(string.Empty);
             Assert.AreEqual(expected, actual);
         }
 

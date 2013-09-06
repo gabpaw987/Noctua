@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -48,9 +49,12 @@ namespace BacktestingSoftware
             this.mainViewModel.BarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
             this.mainViewModel.IndicatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.OscillatorDictionary = new Dictionary<string, List<decimal>>();
+            this.mainViewModel.CalculationResultSets = new Dictionary<string, CalculationResultSet>();
 
-            this.mainViewModel.SaveFileName = String.Empty;
-            this.mainViewModel.LoadFileName = String.Empty;
+            this.mainViewModel.SaveFileName = string.Empty;
+            this.mainViewModel.LoadFileName = string.Empty;
+
+            this.mainViewModel.AdditionalParameters = string.Empty;
 
             this.mainViewModel.AlgorithmFileName = Properties.Settings.Default.AlgorithmFileName;
             this.mainViewModel.IsAlgorithmUsingMaps = Properties.Settings.Default.IsAlgorithmUsingMaps;
@@ -86,6 +90,8 @@ namespace BacktestingSoftware
             this.mainViewModel.PricePremium = Properties.Settings.Default.PricePremium;
 
             this.mainViewModel.SaveFileName = Properties.Settings.Default.SaveFileName;
+
+            this.mainViewModel.AdditionalParameters = Properties.Settings.Default.AdditionalParameters;
 
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
@@ -216,7 +222,10 @@ namespace BacktestingSoftware
                     "Gain From Good Trades [%]:                    " + (this.mainViewModel.GainPercent < 0 ? "" : " ")                  + this.mainViewModel.GainPercent,
                     "Number of Bad Trades:                         " + (this.mainViewModel.NoOfBadTrades < 0 ? "" : " ")                + this.mainViewModel.NoOfBadTrades,
                     "Loss From Bad Trades [%]:                     " + (this.mainViewModel.LossPercent < 0 ? "" : " ")                  + this.mainViewModel.LossPercent,
-                    "Ratio of Good Trades - Bad Trades:            " + (this.mainViewModel.GtBtRatio < 0 ? "" : " ")                    + this.mainViewModel.GtBtRatio
+                    "Ratio of Good Trades - Bad Trades:            " + (this.mainViewModel.GtBtRatio < 0 ? "" : " ")                    + this.mainViewModel.GtBtRatio,
+                    "Highest Daily Portfolio Performance:          " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit,
+                    "Lowest Daily Portfolio Performance:           " + (this.mainViewModel.HighestDailyLoss < 0 ? "" : " ")             + this.mainViewModel.HighestDailyLoss,
+                    "Portfolio Performance of the Current Day:     " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit,
                 };
 
                 // Open document
@@ -412,27 +421,154 @@ namespace BacktestingSoftware
                     // report the progress
                     b.ReportProgress(40, "Calculating Signals...");
 
-                    try
+                    if (this.mainViewModel.AdditionalParameters.Length == 0)
                     {
-                        if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                            c.CalculateSignals();
-                    }
-                    catch (Exception)
-                    {
-                        this.ErrorMessage = "An error with the Algorithm-File occured.";
-                    }
+                        try
+                        {
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                            {
+                                Type t = c.LoadAlgorithmFile();
+                                c.CalculateSignals(t, null);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            this.ErrorMessage = "An error with the Algorithm-File occured.";
+                        }
 
-                    // report the progress
-                    b.ReportProgress(70, "Calculating Performance...");
+                        // report the progress
+                        b.ReportProgress(70, "Calculating Performance...");
 
-                    try
-                    {
-                        if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                            this.ErrorMessage = c.CalculateNumbers();
+                        try
+                        {
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                this.ErrorMessage = c.CalculateNumbers(string.Empty);
+                        }
+                        catch (Exception)
+                        {
+                            this.ErrorMessage = "An error while calculating performance data occured.";
+                        }
                     }
-                    catch (Exception)
+                    else
                     {
-                        this.ErrorMessage = "An error while calculating performance data occured.";
+                        try
+                        {
+                            Dictionary<string, List<decimal>> parameters = new Dictionary<string, List<decimal>>();
+                            //split AdditionalParameters string
+                            string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split(';');
+                            foreach (string parameter in separatedAdditionalParameters)
+                            {
+                                string[] separatedParameter = parameter.Split(',');
+                                List<decimal> decimalParameter = new List<decimal>();
+                                for (int i = 1; i < separatedParameter.Length; i++)
+                                {
+                                    decimalParameter.Add(decimal.Parse(separatedParameter[i], CultureInfo.InvariantCulture));
+                                }
+                                parameters.Add(separatedParameter[0], decimalParameter);
+                            }
+
+                            List<List<decimal>> valueSets = new List<List<decimal>>();
+                            List<List<decimal>> parameterRanges = new List<List<decimal>>();
+
+                            //fill parameterRanges list
+                            foreach (List<decimal> informations in parameters.Values)
+                            {
+                                List<decimal> col = new List<decimal>();
+                                for (decimal i = informations[0]; i <= informations[1]; i += informations[2])
+                                {
+                                    col.Add(i);
+                                }
+                                parameterRanges.Add(col);
+                                valueSets.Add(new List<decimal>());
+                            }
+                            Calculator.mesh(0, parameterRanges, valueSets);
+
+                            decimal progress = 40m;
+                            Type t = c.LoadAlgorithmFile();
+
+                            for (int i = 0; i < valueSets[0].Count; i++)
+                            {
+                                string description = string.Empty;
+
+                                this.mainViewModel.OscillatorDictionary.Clear();
+                                this.mainViewModel.IndicatorDictionary.Clear();
+                                this.mainViewModel.Signals.Clear();
+                                this.mainViewModel.Orders.Clear();
+
+                                Dictionary<string, decimal> valueSet = new Dictionary<string, decimal>();
+                                for (int j = 0; j < valueSets.Count; j++)
+                                {
+                                    valueSet.Add(parameters.Keys.ToList()[j], valueSets[j][i]);
+
+                                    if (description.Length != 0)
+                                    {
+                                        description += ",";
+                                    }
+                                    description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
+                                }
+
+                                try
+                                {
+                                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                    {
+                                        c.CalculateSignals(t, valueSet);
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    this.ErrorMessage = "An error with the Algorithm-File occured.";
+                                }
+
+                                // report the progress
+                                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance...");
+
+                                try
+                                {
+                                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                        this.ErrorMessage = c.CalculateNumbers(description);
+                                }
+                                catch (Exception)
+                                {
+                                    this.ErrorMessage = "An error while calculating performance data occured.";
+                                }
+
+                                progress += (60m / (valueSets[0].Count));
+                            }
+
+                            CalculationResultSet highestPPResultSet = new CalculationResultSet();
+                            CalculationResultSet lowestPPResultSet = new CalculationResultSet();
+                            foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
+                            {
+                                if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
+                                {
+                                    highestPPResultSet = resultSet;
+                                }
+
+                                if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
+                                {
+                                    lowestPPResultSet = resultSet;
+                                }
+                            }
+
+                            string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
+                            this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
+                            highestPPResultSetKey += " [Best]";
+                            this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
+
+                            string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
+                            this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
+                            lowestPPResultSetKey += " [Worst]";
+                            this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
+
+                            this.Dispatcher.Invoke((Action)(() =>
+                            {
+                                this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
+                            }));
+                        }
+                        catch (Exception)
+                        {
+                            this.ErrorMessage = "An error while evaluating the additional parameters occured";
+                        }
                     }
                 });
 
@@ -466,7 +602,8 @@ namespace BacktestingSoftware
 
                     this.orders.Items.Refresh();
 
-                    if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating)
+                    if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
+                        this.mainViewModel.AdditionalParameters.Length == 0)
                     {
                         this.realTimeThread = new Thread(doRealTimeThreadWork);
                         this.realTimeThread.Start();
@@ -519,10 +656,13 @@ namespace BacktestingSoftware
 
                     Console.WriteLine(this.ErrorMessage);
                     if (this.ErrorMessage.Length == 0)
-                        c.CalculateSignals();
+                    {
+                        Type t = c.LoadAlgorithmFile();
+                        c.CalculateSignals(t, null);
+                    }
 
                     if (this.ErrorMessage.Length == 0)
-                        this.ErrorMessage = c.CalculateNumbers();
+                        this.ErrorMessage = c.CalculateNumbers(string.Empty);
 
                     if (this.ErrorMessage.Length == 0)
                     {
@@ -1031,6 +1171,8 @@ namespace BacktestingSoftware
             this.mainViewModel.IndicatorDictionary.Clear();
             this.mainViewModel.OscillatorDictionary.Clear();
 
+            this.mainViewModel.CalculationResultSets.Clear();
+
             this.mainViewModel.Signals.Clear();
             this.mainViewModel.GainLossPercent = 0;
             this.mainViewModel.GainPercent = 0;
@@ -1043,6 +1185,9 @@ namespace BacktestingSoftware
             this.mainViewModel.NetWorth = 0;
             this.mainViewModel.PortfolioPerformancePercent = 0;
             this.mainViewModel.SharpeRatio = 0;
+            this.mainViewModel.HighestDailyProfit = 0;
+            this.mainViewModel.HighestDailyLoss = 0;
+            this.mainViewModel.LastDayProfitLoss = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
             chart.Series.Clear();
@@ -1101,6 +1246,7 @@ namespace BacktestingSoftware
             Properties.Settings.Default.IsRealTimeEnabled = this.mainViewModel.IsRealTimeEnabled;
             Properties.Settings.Default.StockSymbolForRealTime = this.mainViewModel.StockSymbolForRealTime;
             Properties.Settings.Default.Barsize = this.mainViewModel.Barsize;
+            Properties.Settings.Default.AdditionalParameters = this.mainViewModel.AdditionalParameters;
 
             Properties.Settings.Default.ValueOfSliderOne = this.mainViewModel.ValueOfSliderOne;
             Properties.Settings.Default.ValueOfSliderTwo = this.mainViewModel.ValueOfSliderTwo;
@@ -1228,7 +1374,8 @@ namespace BacktestingSoftware
                                                                             this.mainViewModel.RelTransactionFee,
                                                                             this.mainViewModel.PricePremium,
                                                                             this.mainViewModel.StockSymbolForRealTime,
-                                                                            this.mainViewModel.Barsize});
+                                                                            this.mainViewModel.Barsize,
+                                                                            this.mainViewModel.AdditionalParameters});
                 bFormatter.Serialize(stream, tempStringList);
 
                 List<DateTime> tempDateList = new List<DateTime>(new DateTime[] {this.mainViewModel.StartDate,
@@ -1247,6 +1394,8 @@ namespace BacktestingSoftware
                 StringCollection serializableStackPanels = new StringCollection();
                 serializableStackPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
                 bFormatter.Serialize(stream, serializableStackPanels);
+
+                bFormatter.Serialize(stream, this.mainViewModel.CalculationResultSets);
 
                 stream.Close();
             }
@@ -1322,6 +1471,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.PricePremium = tempStringList[5];
                 this.mainViewModel.StockSymbolForRealTime = tempStringList[6];
                 this.mainViewModel.Barsize = tempStringList[7];
+                this.mainViewModel.AdditionalParameters = tempStringList[8];
 
                 List<DateTime> tempDateList = (List<DateTime>)bFormatter.Deserialize(stream);
                 this.mainViewModel.StartDate = tempDateList[0];
@@ -1339,6 +1489,8 @@ namespace BacktestingSoftware
                 StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
                 this.refreshIndicatorList();
+
+                this.mainViewModel.CalculationResultSets = (Dictionary<string, CalculationResultSet>)bFormatter.Deserialize(stream);
 
                 this.mainViewModel.SaveFileName = this.mainViewModel.LoadFileName;
 
@@ -1485,6 +1637,32 @@ namespace BacktestingSoftware
             else
             {
                 this.selectedArrowIndex = -1;
+            }
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.ResultSelectionComboBox.SelectedItem != null)
+            {
+                if (((string)(this.ResultSelectionComboBox.SelectedItem)).Length != 0)
+                {
+                    CalculationResultSet resultSet = this.mainViewModel.CalculationResultSets[(string)this.ResultSelectionComboBox.SelectedItem];
+
+                    this.mainViewModel.NetWorth = resultSet.NetWorth;
+                    this.mainViewModel.PortfolioPerformancePercent = resultSet.PortfolioPerformancePercent;
+                    this.mainViewModel.SharpeRatio = resultSet.SharpeRatio;
+                    this.mainViewModel.StdDevOfProfit = resultSet.StdDevOfProfit;
+                    this.mainViewModel.StdDevOfPEquityPrice = resultSet.StdDevOfPEquityPrice;
+                    this.mainViewModel.GainLossPercent = resultSet.GainLossPercent;
+                    this.mainViewModel.NoOfGoodTrades = resultSet.NoOfGoodTrades;
+                    this.mainViewModel.GainPercent = resultSet.GainPercent;
+                    this.mainViewModel.NoOfBadTrades = resultSet.NoOfBadTrades;
+                    this.mainViewModel.LossPercent = resultSet.LossPercent;
+                    this.mainViewModel.GtBtRatio = resultSet.GtBtRatio;
+                    this.mainViewModel.HighestDailyProfit = resultSet.HighestDailyProfit;
+                    this.mainViewModel.HighestDailyLoss = resultSet.HighestDailyLoss;
+                    this.mainViewModel.LastDayProfitLoss = resultSet.LastDayProfitLoss;
+                }
             }
         }
     }

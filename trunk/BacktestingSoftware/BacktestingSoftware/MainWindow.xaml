@@ -63,6 +63,13 @@
         <TabControl DockPanel.Dock="Top">
             <TabItem Header="Performance">
                 <StackPanel Grid.Row="0" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <Label Width="250">Choose Parameter-Set:</Label>
+                        <ComboBox Width="150"
+                                  ItemsSource="{Binding Path=CalculationResultSets.Keys}"
+                                  SelectionChanged ="ComboBox_SelectionChanged" Name="ResultSelectionComboBox"
+                                  SelectedIndex="1"/>
+                    </StackPanel>
                     <Grid Margin="5" >
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
@@ -107,12 +114,12 @@
                         <Label Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
                         <Label Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio of the number of good trades compared to the number of bad trades.">Ratio of Good Trades - Bad Trades:</Label>
                         <Label Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
-                        <Label Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the most profitable day.">Highest daily portfolio performance:</Label>
+                        <Label Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the most profitable day.">Highest Daily Portfolio Performance:</Label>
                         <Label Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=HighestDailyProfit}"></Label>
-                        <Label Grid.Row="12" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the least profitable day.">Lowest daily portfolio performance:</Label>
+                        <Label Grid.Row="12" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the least profitable day.">Lowest Daily Portfolio Performance:</Label>
                         <Label Grid.Row="12" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=HighestDailyLoss}"></Label>
-                        <Label Grid.Row="13" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the current/last day.">Portfolio performance of the current day:</Label>
-                        <Label Grid.Row="14" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LastDayProfitLoss}"></Label>
+                        <Label Grid.Row="13" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the current/last day.">Portfolio Performance of the Current Day:</Label>
+                        <Label Grid.Row="13" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LastDayProfitLoss}"></Label>
                     </Grid>
                 </StackPanel>
             </TabItem>

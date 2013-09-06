@@ -763,26 +763,6 @@ namespace BacktestingSoftware
             }
         }
 
-        private string _additionalParameters;
-
-        public string AdditionalParameters
-        {
-            get
-            {
-                return _additionalParameters;
-            }
-            set
-            {
-                if (!value.Equals(_additionalParameters))
-                {
-                    _additionalParameters = value;
-
-                    if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("AdditionalParameters"));
-                }
-            }
-        }
-
         private bool _isAlgorithmUsingMaps;
 
         public bool IsAlgorithmUsingMaps
@@ -856,6 +836,46 @@ namespace BacktestingSoftware
                     _lastDayProfitLoss = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("LastDayProfitLoss"));
+                }
+            }
+        }
+
+        private string _additionalParameters;
+
+        public string AdditionalParameters
+        {
+            get
+            {
+                return _additionalParameters;
+            }
+            set
+            {
+                if (!value.Equals(_additionalParameters))
+                {
+                    _additionalParameters = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("AdditionalParameters"));
+                }
+            }
+        }
+
+        private Dictionary<string, CalculationResultSet> _calculationResultSets;
+
+        public Dictionary<string, CalculationResultSet> CalculationResultSets
+        {
+            get
+            {
+                return _calculationResultSets;
+            }
+            set
+            {
+                if (!value.Equals(_calculationResultSets))
+                {
+                    _calculationResultSets = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("CalculationResultSets"));
                 }
             }
         }
