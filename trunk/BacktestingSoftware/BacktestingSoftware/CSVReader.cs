@@ -18,13 +18,13 @@ namespace BacktestingSoftware
         /// <param name="filePath">The excel file path.</param>
         /// <returns>An enumeration of bars.</returns>
         /// <remarks></remarks>
-        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile1(string filePath, DateTime startDate, DateTime endDate)
+        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
         {
             // Enumerate all lines, but skip the header
             return from line in File.ReadLines(filePath).Skip(1)
                    select line.Split(',')
                        into fields
-                       let timeStamp = DateTime.ParseExact(fields[1] + " " + fields[2], "MM/dd/yy HH:mm", new CultureInfo("en-US"))
+                       let timeStamp = parseBarDateTime(fields[1], fields[2])
                        let open = decimal.Parse(fields[3], CultureInfo.InvariantCulture)
                        let high = decimal.Parse(fields[4], CultureInfo.InvariantCulture)
                        let low = decimal.Parse(fields[5], CultureInfo.InvariantCulture)
@@ -33,7 +33,25 @@ namespace BacktestingSoftware
                        select new Tuple<DateTime, decimal, decimal, decimal, decimal>(timeStamp, open, high, low, close);
         }
 
-        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
+        public static DateTime parseBarDateTime(string date, string time)
+        {
+            string[] dateValues = date.Split('/');
+            string[] timeValues = time.Split(':');
+
+            DateTime timeOfBar = DateTime.MinValue;
+
+            timeOfBar = timeOfBar.AddYears(int.Parse(dateValues[2]) - 1 + 2000);
+            timeOfBar = timeOfBar.AddMonths(int.Parse(dateValues[0]) - 1);
+            timeOfBar = timeOfBar.AddDays(int.Parse(dateValues[1]) - 1);
+
+            timeOfBar = timeOfBar.AddHours(int.Parse(timeValues[0]));
+            timeOfBar = timeOfBar.AddMinutes(int.Parse(timeValues[1]));
+
+            return timeOfBar;
+        }
+
+        //Currently not in use
+        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile1(string filePath, DateTime startDate, DateTime endDate)
         {
             List<Tuple<DateTime, decimal, decimal, decimal, decimal>> resultList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
 

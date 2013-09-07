@@ -516,6 +516,11 @@ namespace BacktestingSoftware
                                     description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
                                 }
 
+                                progress += (60m / (2 * valueSets[0].Count));
+
+                                // report the progress
+                                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals...");
+
                                 try
                                 {
                                     if (this.ErrorMessage.Length == 0 && this.iscalculating)
@@ -527,6 +532,8 @@ namespace BacktestingSoftware
                                 {
                                     this.ErrorMessage = "An error with the Algorithm-File occured.";
                                 }
+
+                                progress += (60m / (2 * valueSets[0].Count));
 
                                 // report the progress
                                 b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance...");
@@ -540,8 +547,6 @@ namespace BacktestingSoftware
                                 {
                                     this.ErrorMessage = "An error while calculating performance data occured.";
                                 }
-
-                                progress += (60m / (valueSets[0].Count));
                             }
 
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
@@ -573,6 +578,8 @@ namespace BacktestingSoftware
 
                                 this.Dispatcher.Invoke((Action)(() =>
                                 {
+                                    this.ResultSelectionComboBox.Items.Refresh();
+
                                     this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
                                 }));
                             }
@@ -1184,6 +1191,7 @@ namespace BacktestingSoftware
             this.mainViewModel.OscillatorDictionary.Clear();
 
             this.mainViewModel.CalculationResultSets.Clear();
+            this.ResultSelectionComboBox.Items.Refresh();
 
             this.mainViewModel.Signals.Clear();
             this.mainViewModel.GainLossPercent = 0;
@@ -1663,7 +1671,8 @@ namespace BacktestingSoftware
         {
             if (this.ResultSelectionComboBox.SelectedItem != null)
             {
-                if (((string)(this.ResultSelectionComboBox.SelectedItem)).Length != 0)
+                if (((string)(this.ResultSelectionComboBox.SelectedItem)).Length != 0 &&
+                    this.mainViewModel.CalculationResultSets.ContainsKey((string)this.ResultSelectionComboBox.SelectedItem))
                 {
                     CalculationResultSet resultSet = this.mainViewModel.CalculationResultSets[(string)this.ResultSelectionComboBox.SelectedItem];
 
