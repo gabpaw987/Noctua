@@ -232,7 +232,7 @@
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="6" Grid.Column="1">
-                                            <TextBox Width="300" Text="{Binding Path=AdditionalParameters}" />
+                                            <TextBox TextWrapping="NoWrap" AcceptsReturn="True" Width="300" Text="{Binding Path=AdditionalParameters}" />
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>

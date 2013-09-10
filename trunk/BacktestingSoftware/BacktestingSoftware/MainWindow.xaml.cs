@@ -464,7 +464,7 @@ namespace BacktestingSoftware
                         {
                             Dictionary<string, List<decimal>> parameters = new Dictionary<string, List<decimal>>();
                             //split AdditionalParameters string
-                            string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split(';');
+                            string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split('\n');
                             foreach (string parameter in separatedAdditionalParameters)
                             {
                                 string[] separatedParameter = parameter.Split(',');
