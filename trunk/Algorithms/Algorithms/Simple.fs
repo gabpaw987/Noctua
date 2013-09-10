@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=(*46*)
+    module DecisionCalculator01=(*46*)
 
         let sma(n:int, prices:decimal[])=
             let sma = Array.zeroCreate prices.Length
