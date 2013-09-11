@@ -211,6 +211,8 @@
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Width="300" Text="{Binding Path=DataFileName}" />
                                             <Label VerticalAlignment="Center" Margin="25,0,0,0">Future Data?</Label>
                                             <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsDataFutures}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Mini Contract?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsMiniContract}" VerticalAlignment="Center" IsEnabled="{Binding Path=IsDataFutures}"/>
                                         </StackPanel>
                                         <!-- Time Period -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">

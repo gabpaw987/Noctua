@@ -60,12 +60,19 @@ namespace BacktestingSoftware
         /// arrives.
         /// </summary>
         /// <remarks></remarks>
-        public void GetHistoricalDataBars()
+        public void GetHistoricalDataBars(TimeSpan timeSpan)
         {
-            if (this.Barsize == BarSize.OneMinute)
-                inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, 1);
-            else if (this.Barsize == BarSize.OneDay)
-                inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, 1);
+            if (timeSpan.Equals(new TimeSpan()))
+            {
+                if (this.Barsize == BarSize.OneMinute)
+                    inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, 1);
+                else if (this.Barsize == BarSize.OneDay)
+                    inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, 1);
+            }
+            else
+            {
+                inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, timeSpan, Barsize, HistoricalDataType.Trades, 1);
+            }
         }
 
         /// <summary>
@@ -193,9 +200,12 @@ namespace BacktestingSoftware
             {
                 //Saves how many bars were requested in total to the attribute
                 totalHistoricalBars = e.RecordTotal;
-                Console.WriteLine("Historical-Bar: " + e.Date + ", " + e.Open + ", " + e.High + ", " + e.Low + ", " + e.Close);
-                //parses the received bar to one of my bars
-                ListOfBars.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal>(e.Date, e.Open, e.High, e.Low, e.Close));
+                Tuple<DateTime, decimal, decimal, decimal, decimal> t = new Tuple<DateTime, decimal, decimal, decimal, decimal>(e.Date, e.Open, e.High, e.Low, e.Close);
+                if (!ListOfBars.Contains(t))
+                {
+                    //parses the received bar to one of my bars
+                    ListOfBars.Add(t);
+                }
             }
         }
 

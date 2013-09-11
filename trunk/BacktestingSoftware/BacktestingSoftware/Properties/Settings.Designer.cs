@@ -307,5 +307,29 @@ namespace BacktestingSoftware.Properties {
                 this["InnerValue"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsMiniContract {
+            get {
+                return ((bool)(this["IsMiniContract"]));
+            }
+            set {
+                this["IsMiniContract"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int MiniContractDenominator {
+            get {
+                return ((int)(this["MiniContractDenominator"]));
+            }
+            set {
+                this["MiniContractDenominator"] = value;
+            }
+        }
     }
 }

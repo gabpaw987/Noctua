@@ -18,17 +18,17 @@ namespace BacktestingSoftware
         /// <param name="filePath">The excel file path.</param>
         /// <returns>An enumeration of bars.</returns>
         /// <remarks></remarks>
-        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate)
+        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate, bool isDataFutures, int innerValue)
         {
             // Enumerate all lines, but skip the header
             return from line in File.ReadLines(filePath).Skip(1)
                    select line.Split(',')
                        into fields
                        let timeStamp = parseBarDateTime(fields[1], fields[2])
-                       let open = decimal.Parse(fields[3], CultureInfo.InvariantCulture)
-                       let high = decimal.Parse(fields[4], CultureInfo.InvariantCulture)
-                       let low = decimal.Parse(fields[5], CultureInfo.InvariantCulture)
-                       let close = decimal.Parse(fields[6], CultureInfo.InvariantCulture)
+                       let open = decimal.Parse(fields[3], CultureInfo.InvariantCulture) / (isDataFutures ? innerValue : 1)
+                       let high = decimal.Parse(fields[4], CultureInfo.InvariantCulture) / (isDataFutures ? innerValue : 1)
+                       let low = decimal.Parse(fields[5], CultureInfo.InvariantCulture) / (isDataFutures ? innerValue : 1)
+                       let close = decimal.Parse(fields[6], CultureInfo.InvariantCulture) / (isDataFutures ? innerValue : 1)
                        where timeStamp.Date >= startDate.Date && timeStamp.Date <= endDate.Date
                        select new Tuple<DateTime, decimal, decimal, decimal, decimal>(timeStamp, open, high, low, close);
         }

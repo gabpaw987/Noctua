@@ -95,6 +95,8 @@ namespace BacktestingSoftware
 
             this.mainViewModel.IsDataFutures = Properties.Settings.Default.IsDataFutures;
             this.mainViewModel.InnerValue = Properties.Settings.Default.InnerValue;
+            this.mainViewModel.IsMiniContract = Properties.Settings.Default.IsMiniContract;
+            this.mainViewModel.MiniContractDenominator = Properties.Settings.Default.MiniContractDenominator;
 
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
@@ -337,46 +339,6 @@ namespace BacktestingSoftware
                             {
                                 if (this.mainViewModel.IsRealTimeEnabled)
                                 {
-                                    ibClient.SubscribeForRealTimeBars();
-
-                                    //Wait for first 5sec bar
-                                    while (ibClient.RealTimeBarList.Count <= 1)
-                                    {
-                                        System.Threading.Thread.Sleep(100);
-                                        if (!this.iscalculating)
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    //wait until minute is full
-                                    if (this.iscalculating)
-                                    {
-                                        if (this.mainViewModel.Barsize.Equals("Minute"))
-                                        {
-                                            while (ibClient.RealTimeBarList.Count != 0)
-                                            {
-                                                System.Threading.Thread.Sleep(100);
-                                                if (!this.iscalculating)
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        //wait until day is full
-                                        else if (this.mainViewModel.Barsize.Equals("Daily"))
-                                        {
-                                            while (ibClient.RealTimeBarList.Count != 0)
-                                            {
-                                                System.Threading.Thread.Sleep(1000);
-                                                if (!this.iscalculating)
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-
                                     if (this.iscalculating)
                                     {
                                         this.ErrorMessage = this.historicalDataClient.Connect();
@@ -385,7 +347,7 @@ namespace BacktestingSoftware
                                     if (this.iscalculating)
                                     {
                                         if (this.ErrorMessage.Length == 0)
-                                            this.historicalDataClient.GetHistoricalDataBars();
+                                            this.historicalDataClient.GetHistoricalDataBars(new TimeSpan());
                                     }
 
                                     if (this.iscalculating)
@@ -393,6 +355,12 @@ namespace BacktestingSoftware
                                         while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
                                                this.historicalDataClient.totalHistoricalBars == 0)
                                         {
+                                            if (this.historicalDataClient.totalHistoricalBars != 0 && this.mainViewModel.BarList.Count != 0)
+                                            {
+                                                b.ReportProgress(5 + (int)(35m * ((decimal)this.mainViewModel.BarList.Count / (decimal)this.historicalDataClient.totalHistoricalBars)),
+                                                    "Reading From IB... (" + this.mainViewModel.BarList.Count + "/"
+                                                    + this.historicalDataClient.totalHistoricalBars + ")");
+                                            }
                                             System.Threading.Thread.Sleep(100);
                                             if (!this.iscalculating)
                                             {
@@ -400,6 +368,8 @@ namespace BacktestingSoftware
                                             }
                                         }
                                     }
+
+                                    this.mainViewModel.BarList.Remove(this.mainViewModel.BarList.Last());
 
                                     if (this.iscalculating)
                                     {
@@ -650,6 +620,86 @@ namespace BacktestingSoftware
         public void doRealTimeThreadWork()
         {
             this.isRealTimeThreadRunning = true;
+
+            ibClient.SubscribeForRealTimeBars();
+
+            //Wait for first 5sec bar
+            while (ibClient.RealTimeBarList.Count <= 1)
+            {
+                System.Threading.Thread.Sleep(100);
+                if (!this.isRealTimeThreadRunning)
+                {
+                    break;
+                }
+            }
+
+            if (this.mainViewModel.Barsize.Equals("Minute"))
+            {
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+            }
+            else if (this.mainViewModel.Barsize.Equals("Daily"))
+            {
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                this.ErrorMessage = this.historicalDataClient.Connect();
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                if (this.ErrorMessage.Length == 0)
+                    this.historicalDataClient.GetHistoricalDataBars(new TimeSpan(0, 1, 0));
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
+                       this.historicalDataClient.totalHistoricalBars == 0)
+                {
+                    System.Threading.Thread.Sleep(100);
+                    if (!this.isRealTimeThreadRunning)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                this.curBarCount = this.mainViewModel.BarList.Count;
+
+                this.historicalDataClient.Disconnect();
+            }
+
+            //wait until minute is full
+            if (this.isRealTimeThreadRunning)
+            {
+                if (this.mainViewModel.Barsize.Equals("Minute"))
+                {
+                    while (ibClient.RealTimeBarList.Count != 0)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                        if (!this.isRealTimeThreadRunning)
+                        {
+                            break;
+                        }
+                    }
+                }
+                //wait until day is full
+                else if (this.mainViewModel.Barsize.Equals("Daily"))
+                {
+                    while (ibClient.RealTimeBarList.Count != 0)
+                    {
+                        System.Threading.Thread.Sleep(1000);
+                        if (!this.isRealTimeThreadRunning)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
 
             while (isRealTimeThreadRunning)
             {
@@ -1286,6 +1336,8 @@ namespace BacktestingSoftware
 
             Properties.Settings.Default.IsDataFutures = this.mainViewModel.IsDataFutures;
             Properties.Settings.Default.InnerValue = this.mainViewModel.InnerValue;
+            Properties.Settings.Default.IsMiniContract = this.mainViewModel.IsMiniContract;
+            Properties.Settings.Default.MiniContractDenominator = this.mainViewModel.MiniContractDenominator;
 
             Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
 
@@ -1388,7 +1440,8 @@ namespace BacktestingSoftware
                 List<bool> tempBoolList = new List<bool>(new bool[] {
                                    this.mainViewModel.IsRealTimeEnabled,
                                    this.mainViewModel.IsAlgorithmUsingMaps,
-                                   this.mainViewModel.IsDataFutures});
+                                   this.mainViewModel.IsDataFutures,
+                                   this.mainViewModel.IsMiniContract});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1413,7 +1466,8 @@ namespace BacktestingSoftware
                                                                  this.mainViewModel.ValueOfSliderFive,
                                                                  this.mainViewModel.ValueOfSliderSix,
                                                                  this.mainViewModel.RoundLotSize,
-                                                                 this.mainViewModel.InnerValue});
+                                                                 this.mainViewModel.InnerValue,
+                                                                 this.mainViewModel.MiniContractDenominator});
                 bFormatter.Serialize(stream, tempIntList);
 
                 StringCollection serializableStackPanels = new StringCollection();
@@ -1487,6 +1541,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
                 this.mainViewModel.IsAlgorithmUsingMaps = tempBoolList[1];
                 this.mainViewModel.IsDataFutures = tempBoolList[2];
+                this.mainViewModel.IsMiniContract = tempBoolList[3];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
@@ -1512,6 +1567,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.ValueOfSliderSix = tempIntList[5];
                 this.mainViewModel.RoundLotSize = tempIntList[6];
                 this.mainViewModel.InnerValue = tempIntList[7];
+                this.mainViewModel.MiniContractDenominator = tempIntList[8];
 
                 StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);

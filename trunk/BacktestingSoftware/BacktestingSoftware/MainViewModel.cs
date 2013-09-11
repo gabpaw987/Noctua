@@ -930,5 +930,54 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private bool _isMiniContract;
+
+        public bool IsMiniContract
+        {
+            get
+            {
+                return _isMiniContract;
+            }
+            set
+            {
+                if (!value.Equals(_isMiniContract))
+                {
+                    if (value)
+                    {
+                        MiniContractDenominator = 5;
+                    }
+                    else
+                    {
+                        MiniContractDenominator = 1;
+                    }
+
+                    _isMiniContract = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsMiniContract"));
+                }
+            }
+        }
+
+        private int _miniContractDenominator;
+
+        public int MiniContractDenominator
+        {
+            get
+            {
+                return _miniContractDenominator;
+            }
+            set
+            {
+                if (!value.Equals(_miniContractDenominator))
+                {
+                    _miniContractDenominator = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("MiniContractDenominator"));
+                }
+            }
+        }
     }
 }
