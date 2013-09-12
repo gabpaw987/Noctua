@@ -519,7 +519,7 @@ namespace BacktestingSoftware
                                 }
                             }
 
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating && this.mainViewModel.CalculationResultSets.Count > 1)
                             {
                                 CalculationResultSet highestPPResultSet = new CalculationResultSet();
                                 CalculationResultSet lowestPPResultSet = new CalculationResultSet();
