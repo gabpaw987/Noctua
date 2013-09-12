@@ -357,7 +357,7 @@ namespace BacktestingSoftware
                                         {
                                             if (this.historicalDataClient.totalHistoricalBars != 0 && this.mainViewModel.BarList.Count != 0)
                                             {
-                                                b.ReportProgress(5 + (int)(35m * ((decimal)this.mainViewModel.BarList.Count / (decimal)this.historicalDataClient.totalHistoricalBars)),
+                                                b.ReportProgress(5 + (int)(15m * ((decimal)this.mainViewModel.BarList.Count / (decimal)this.historicalDataClient.totalHistoricalBars)),
                                                     "Reading From IB... (" + this.mainViewModel.BarList.Count + "/"
                                                     + this.historicalDataClient.totalHistoricalBars + ")");
                                             }
@@ -392,7 +392,7 @@ namespace BacktestingSoftware
                     }
 
                     // report the progress
-                    b.ReportProgress(40, "Calculating Signals...");
+                    b.ReportProgress(20, "Calculating Signals...");
 
                     if (this.mainViewModel.AdditionalParameters.Length == 0)
                     {
@@ -462,7 +462,7 @@ namespace BacktestingSoftware
                             }
                             Calculator.mesh(0, parameterRanges, valueSets);
 
-                            decimal progress = 40m;
+                            decimal progress = 20m;
                             Type t = c.LoadAlgorithmFile();
 
                             for (int i = 0; i < valueSets[0].Count; i++)
@@ -486,7 +486,7 @@ namespace BacktestingSoftware
                                     description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
                                 }
 
-                                progress += (60m / (2 * valueSets[0].Count));
+                                progress += (80m / (2 * valueSets[0].Count));
 
                                 // report the progress
                                 b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals...");
@@ -503,7 +503,7 @@ namespace BacktestingSoftware
                                     this.ErrorMessage = "An error with the Algorithm-File occured.";
                                 }
 
-                                progress += (60m / (2 * valueSets[0].Count));
+                                progress += (80m / (2 * valueSets[0].Count));
 
                                 // report the progress
                                 b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance...");
@@ -555,6 +555,14 @@ namespace BacktestingSoftware
 
                                     this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
                                 }));
+                            }
+                            else
+                            {
+                                if (this.ErrorMessage.Length == 0)
+                                    this.Dispatcher.Invoke((Action)(() =>
+                                    {
+                                        this.ResultSelectionComboBox.SelectedIndex = 0;
+                                    }));
                             }
                         }
                         catch (Exception)
