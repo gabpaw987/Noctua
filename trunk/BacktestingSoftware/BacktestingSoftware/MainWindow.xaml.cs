@@ -323,6 +323,11 @@ namespace BacktestingSoftware
                     // report the progress
                     b.ReportProgress(0, "Starting Calculation...");
 
+                    this.Dispatcher.Invoke((Action)(() =>
+                    {
+                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
+                    }));
+
                     this.c = new Calculator(this.mainViewModel);
 
                     // report the progress
@@ -519,50 +524,53 @@ namespace BacktestingSoftware
                                 }
                             }
 
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating && this.mainViewModel.CalculationResultSets.Count > 1)
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
                             {
-                                CalculationResultSet highestPPResultSet = new CalculationResultSet();
-                                highestPPResultSet.PortfolioPerformancePercent = decimal.MinValue;
-                                CalculationResultSet lowestPPResultSet = new CalculationResultSet();
-                                lowestPPResultSet.PortfolioPerformancePercent = decimal.MaxValue;
-
-                                foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
+                                if (this.mainViewModel.CalculationResultSets.Count > 1)
                                 {
-                                    if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
+                                    CalculationResultSet highestPPResultSet = new CalculationResultSet();
+                                    highestPPResultSet.PortfolioPerformancePercent = decimal.MinValue;
+                                    CalculationResultSet lowestPPResultSet = new CalculationResultSet();
+                                    lowestPPResultSet.PortfolioPerformancePercent = decimal.MaxValue;
+
+                                    foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
                                     {
-                                        highestPPResultSet = resultSet;
+                                        if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
+                                        {
+                                            highestPPResultSet = resultSet;
+                                        }
+
+                                        if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
+                                        {
+                                            lowestPPResultSet = resultSet;
+                                        }
                                     }
 
-                                    if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
-                                    {
-                                        lowestPPResultSet = resultSet;
-                                    }
-                                }
+                                    string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
+                                    this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
+                                    highestPPResultSetKey += " [Best]";
+                                    this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
 
-                                string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
-                                this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
-                                highestPPResultSetKey += " [Best]";
-                                this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
+                                    string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
+                                    this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
+                                    lowestPPResultSetKey += " [Worst]";
+                                    this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
 
-                                string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
-                                this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
-                                lowestPPResultSetKey += " [Worst]";
-                                this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
-
-                                this.Dispatcher.Invoke((Action)(() =>
-                                {
-                                    this.ResultSelectionComboBox.Items.Refresh();
-
-                                    this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
-                                }));
-                            }
-                            else
-                            {
-                                if (this.ErrorMessage.Length == 0)
                                     this.Dispatcher.Invoke((Action)(() =>
                                     {
-                                        this.ResultSelectionComboBox.SelectedIndex = 0;
+                                        this.ResultSelectionComboBox.Items.Refresh();
+
+                                        this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
                                     }));
+                                }
+                                else
+                                {
+                                    if (this.ErrorMessage.Length == 0)
+                                        this.Dispatcher.Invoke((Action)(() =>
+                                        {
+                                            this.ResultSelectionComboBox.SelectedIndex = 0;
+                                        }));
+                                }
                             }
                         }
                         catch (Exception)
@@ -578,8 +586,17 @@ namespace BacktestingSoftware
                 {
                     this.StatusLabel.Text = String.Empty + args.UserState.ToString();
                     this.ProgressBar.Value = args.ProgressPercentage;
+                    this.TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100.0;
                     if (args.ProgressPercentage == 0)
+                    {
                         this.ProgressBar.Visibility = Visibility.Visible;
+                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+                    }
+                    if (args.ProgressPercentage == 100)
+                    {
+                        this.TaskbarItemInfo.ProgressValue = 0;
+                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+                    }
                 });
 
                 // what to do when worker completes its task (notify the user)
@@ -618,6 +635,8 @@ namespace BacktestingSoftware
                     {
                         this.StatusLabel.Text = "Finished!";
                     }
+
+                    this.FlashWindow(5);
 
                     this.ProgressBar.Value = 100;
                     this.ProgressBar.Visibility = Visibility.Hidden;

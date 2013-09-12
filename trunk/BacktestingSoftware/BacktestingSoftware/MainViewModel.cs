@@ -896,11 +896,21 @@ namespace BacktestingSoftware
                     {
                         this.InnerValue = this.RoundLotSize;
                         this.RoundLotSize = -1;
+
+                        if (this.IsMiniContract)
+                        {
+                            this.MiniContractDenominator = 5;
+                        }
+                        else
+                        {
+                            this.MiniContractDenominator = 1;
+                        }
                     }
                     else
                     {
                         this.RoundLotSize = this.InnerValue;
                         this.InnerValue = -1;
+                        this.MiniContractDenominator = 1;
                     }
 
                     _isDataFutures = value;

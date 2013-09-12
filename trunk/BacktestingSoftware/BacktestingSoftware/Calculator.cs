@@ -174,7 +174,7 @@ namespace BacktestingSoftware
                     decimal absCumGainLoss = 0m;
                     List<decimal> dailyPortfolioPerformances = new List<decimal>();
                     //For calculation of daily Portfolio Performances
-                    DateTime currentDay = new DateTime();
+                    DateTime currentDay = currentDay = this.mainViewModel.BarList[0].Item1.Date;
                     decimal currentDayPortfolioPerformance = 0m;
 
                     resultSet.NetWorth = decimal.Parse(this.mainViewModel.Capital);
@@ -300,7 +300,7 @@ namespace BacktestingSoftware
                             resultSet.GainLossPercent += percentageOfThisTrade;
                             profitsForStdDev.Add((double)portfolioPerformance);
 
-                            if ((currentDay != this.mainViewModel.BarList[i].Item1.Date) || (i == this.mainViewModel.BarList.Count))
+                            if ((currentDay != this.mainViewModel.BarList[i].Item1.Date))
                             {
                                 currentDay = this.mainViewModel.BarList[i].Item1.Date;
 
@@ -383,6 +383,9 @@ namespace BacktestingSoftware
                     decimal portfolioPerformanceWithRiskFreeRate = (netWorthWithRiskFreeRate - Convert.ToDecimal(this.mainViewModel.Capital)) / Convert.ToDecimal(this.mainViewModel.Capital) * 100;
 
                     resultSet.SharpeRatio = (resultSet.PortfolioPerformancePercent - portfolioPerformanceWithRiskFreeRate) / resultSet.StdDevOfProfit;
+
+                    //add performance of the last day
+                    dailyPortfolioPerformances.Add(currentDayPortfolioPerformance);
 
                     resultSet.HighestDailyProfit = dailyPortfolioPerformances.Max();
                     resultSet.HighestDailyLoss = dailyPortfolioPerformances.Min();
