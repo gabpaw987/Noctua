@@ -33,9 +33,9 @@
         /////////   TREND FOLLOWER (e.g. averages)
         //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let mutable dimension = new System.Collections.Generic.List<decimal>()
-        let mutable alphas = new System.Collections.Generic.List<decimal>()
-        let mutable ns = new System.Collections.Generic.List<decimal>()
+//        let mutable dimension = new System.Collections.Generic.List<decimal>()
+//        let mutable alphas = new System.Collections.Generic.List<decimal>()
+//        let mutable ns = new System.Collections.Generic.List<decimal>()
 
         // α = EXP(W*(D – 1))
         // D = (Log(HL1 + HL2) – Log(HL)) / Log(2)
@@ -76,9 +76,11 @@
                 d <- 1.0
             else if (d > 2.0) then
                 d <- 2.0
-            dimension.Add(decimal(d))
+            // TODO:remove
+//            dimension.Add(decimal(d))
             let alpha = decimal (exp ((double w)*(d - 1.0)))
-            alphas.Add(alpha)
+            // TODO:remove
+//            alphas.Add(alpha)
             alpha
 
         // W = LN(2 / (SC + 1))
@@ -116,7 +118,7 @@
                     // shift to modified N
                     let n = decimal(sc - fc) * ((origN - 1m) / decimal(sc - 1)) + decimal fc
                     // TODO:remove
-                    ns.Add(n)
+//                    ns.Add(n)
                     // revert new N to new alpha
                     a <- nToAlphaDec n
 
@@ -225,27 +227,27 @@
              * Read Parameters
              *)
             // FRAMA
-//            let s1 = even parameters.["s1"]
-//            let s2 = even parameters.["s2"]
-//            let m1 = even parameters.["m1"]
-//            let m2 = even parameters.["m2"]
-//            let l1 = even parameters.["l1"]
-//            let l2 = even parameters.["l2"]
-//            let wn = int parameters.["wn"]
-//            let extrN = int parameters.["extrN"]
-//            let extrP = parameters.["extrP"]
-//            let cutloss = abs parameters.["cutloss"]
+            let s1 = even parameters.["s1"]
+            let s2 = even parameters.["s2"]
+            let m1 = even parameters.["m1"]
+            let m2 = even parameters.["m2"]
+            let l1 = even parameters.["l1"]
+            let l2 = even parameters.["l2"]
+            let wn = int parameters.["wn"]
+            let extrN = int parameters.["extrN"]
+            let extrP = parameters.["extrP"]
+            let cutloss = abs parameters.["cutloss"]
 
-            let s1 = even 10m
-            let s2 = even 20m
-            let m1 = even 10m
-            let m2 = even 200m
-            let l1 = even 200m
-            let l2 = even 300m
-            let wn = 20
-            let extrN = 500
-            let extrP = 10m
-            let cutloss = 1m
+//            let s1 = even 10m
+//            let s2 = even 20m
+//            let m1 = even 10m
+//            let m2 = even 200m
+//            let l1 = even 200m
+//            let l2 = even 300m
+//            let wn = 20
+//            let extrN = 500
+//            let extrP = 10m
+//            let cutloss = 1m
 
             // Chart Lines
             chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
@@ -328,15 +330,17 @@
                      *)
                     let mutable framaSig = 0
                     // short over middle and long (and has just crossed one of them)
-                    if (framaS.[i] > framaM.[i] && framaS.[i] > framaL.[i]) && (framaS.[i-1] < framaM.[i-1] || framaS.[i-1] < framaL.[i-1]) then
-                        // middle has to be over long
-                        if (framaM.[i] > framaL.[i]) then
-                            framaSig <- 1
+                    if (framaS.[i] > framaM.[i]     && framaS.[i] > framaL.[i]     && framaM.[i] > framaL.[i]) && 
+                       (framaS.[i-1] < framaM.[i-1] || framaS.[i-1] < framaL.[i-1] || framaM.[i-1] < framaL.[i-1]) then
+                        // middle has to be over long   
+                        //if (framaM.[i] > framaL.[i]) then
+                        framaSig <- 1
                     // short under middle and long (and has just crossed one of them)
-                    else if (framaS.[i] < framaM.[i] && framaS.[i] < framaL.[i]) && (framaS.[i-1] > framaM.[i-1] || framaS.[i-1] > framaL.[i-1]) then
+                    else if (framaS.[i] < framaM.[i]     && framaS.[i] < framaL.[i]     && framaM.[i] < framaL.[i]) && 
+                            (framaS.[i-1] > framaM.[i-1] || framaS.[i-1] > framaL.[i-1] || framaM.[i-1] > framaL.[i-1]) then
                         // middle has to be under long
-                        if (framaM.[i] < framaL.[i]) then
-                            framaSig <- -1
+                        //if (framaM.[i] < framaL.[i]) then
+                        framaSig <- -1
 
                     (*
                      * // Williams%R entry
@@ -402,6 +406,15 @@
                     //////   EXIT SIGNAL
                     /////////////////////////////////////
                     let mutable exit = 4
+
+                    // FRAMA exit
+                    // exit if S is between M and L
+                    if (signals.[i] > 0) then
+                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] > wOB) then
+                            exit <- 0
+                    else if (signals.[i] < 0) then
+                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] < wOS) then
+                            exit <- 0
 
                     (*
                      * // Cutloss: neutralise if loss is too big (% of price movement!)
