@@ -519,10 +519,13 @@ namespace BacktestingSoftware
                                 }
                             }
 
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating && this.mainViewModel.CalculationResultSets.Count > 1)
                             {
                                 CalculationResultSet highestPPResultSet = new CalculationResultSet();
+                                highestPPResultSet.PortfolioPerformancePercent = decimal.MinValue;
                                 CalculationResultSet lowestPPResultSet = new CalculationResultSet();
+                                lowestPPResultSet.PortfolioPerformancePercent = decimal.MaxValue;
+
                                 foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
                                 {
                                     if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
