@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator007=(*007*)
+    module DecisionCalculator=(*008*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -286,8 +286,12 @@
             let firstI = ([ m1; m2; s1; s2; l1; l2; wn ] |> List.max) - 1
             let mutable missingData = firstI+1
 
+            let oldSignals = signals
             signals.Clear();
-            for i in signals.Count .. prices.Count-1 do
+//            for i in signals.Count .. prices.Count-1 do
+            let mutable start = signals.Count - 2000
+            if (start < 0) then start <- 0
+            for i in start .. prices.Count-1 do
                 // one bar more available
                 missingData <- missingData - 1
 
@@ -410,4 +414,7 @@
                     if (exit <> 4) then
                         signals.[i] <- exit
 
-            signals
+            // concat old and new signals
+            let realNew = prices.Count - oldSignals.Count
+            oldSignals.AddRange(signals.GetRange(signals.Count-realNew, realNew))
+            oldSignals
