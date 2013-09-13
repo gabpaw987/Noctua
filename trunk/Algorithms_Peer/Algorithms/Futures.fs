@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator007=(*007*)
+    module DecisionCalculator=(*007*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -33,9 +33,9 @@
         /////////   TREND FOLLOWER (e.g. averages)
         //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let mutable dimension = new System.Collections.Generic.List<decimal>()
-        let mutable alphas = new System.Collections.Generic.List<decimal>()
-        
+//        let mutable dimension = new System.Collections.Generic.List<decimal>()
+//        let mutable alphas = new System.Collections.Generic.List<decimal>()
+//        let mutable ns = new System.Collections.Generic.List<decimal>()
 
         // α = EXP(W*(D – 1))
         // D = (Log(HL1 + HL2) – Log(HL)) / Log(2)
@@ -52,7 +52,7 @@
                 |> List.max
             let min1 =
                 [ for i in 0..(n/2)-1 -> prices.[i].Item4 ]
-                |> List.max
+                |> List.min
             let hl1 = double(max1 - min1) / double(n/2)
 
             let max2 =
@@ -76,9 +76,11 @@
                 d <- 1.0
             else if (d > 2.0) then
                 d <- 2.0
-            dimension.Add(decimal(d))
+            // TODO:remove
+//            dimension.Add(decimal(d))
             let alpha = decimal (exp ((double w)*(d - 1.0)))
-            alphas.Add(alpha)
+            // TODO:remove
+//            alphas.Add(alpha)
             alpha
 
         // W = LN(2 / (SC + 1))
@@ -115,6 +117,8 @@
                     let origN = alphaToNDec a
                     // shift to modified N
                     let n = decimal(sc - fc) * ((origN - 1m) / decimal(sc - 1)) + decimal fc
+                    // TODO:remove
+//                    ns.Add(n)
                     // revert new N to new alpha
                     a <- nToAlphaDec n
 
@@ -205,11 +209,19 @@
         // 20-100
         // 50-200
 
+        let sw1 = new System.Diagnostics.Stopwatch()
+        let sw2 = new System.Diagnostics.Stopwatch()
+        let sw3 = new System.Diagnostics.Stopwatch()
+        let sw4 = new System.Diagnostics.Stopwatch()
+        let sw5 = new System.Diagnostics.Stopwatch()
+
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+
+            sw1.Start()
 
             (*
              * Read Parameters
@@ -250,16 +262,21 @@
             let cPrices = 
                 [| for i in prices -> i.Item5 |]
 
+            sw2.Start()
             // calculate FRAMAs
-            let framaS = frama(s2, s1, even (decimal((s2-s1))/2m), prices)
+            let framaS = frama(even (decimal((s2-s1))/2m), s1, s2, prices)
             for i in 0..framaS.Length-1 do chart1.["FRAMAs;#FF0000"].Add(framaS.[i])
-            let framaM = frama(m2, m1, even (decimal((m2-m1))/2m), prices)
+            let framaM = frama(even (decimal((m2-m1))/2m), m1, m2,  prices)
             for i in 0..framaM.Length-1 do chart1.["FRAMAm;#0000FF"].Add(framaM.[i])
-            let framaL = frama(l2, l1, even (decimal((l2-l1))/2m), prices)
+            let framaL = frama(even (decimal((l2-l1))/2m), l2, l2, prices)
             for i in 0..framaL.Length-1 do chart1.["FRAMAl;#999999"].Add(framaL.[i])
+            sw2.Stop()
             
+            sw3.Start()
             // calculate Williams%R
             let w = williamsR(wn, prices)
+            sw3.Stop()
+
             for i in 0..w.Length-1 do chart2.["W%R;#FF0000"].Add(w.[i])
             let mutable wLastCross = 0
             let mutable wSinceCross = 0
@@ -272,8 +289,10 @@
             for i in 0..w.Length-1 do chart2.["W%R_os;#0000FF"].Add(wOS)
             for i in 0..w.Length-1 do chart2.["W%R_ob;#0000FF"].Add(wOB)
 
+            sw4.Start()
             // try to find 20 bar price extrema
             let localExtrema = findExtremes (20, cPrices)
+            sw4.Stop()
             // add to chart2
             for i in 0..localExtrema.Length-1 do chart2.["LocalExtremes;#00FFFF"].Add(localExtrema.[i])
 
@@ -311,15 +330,17 @@
                      *)
                     let mutable framaSig = 0
                     // short over middle and long (and has just crossed one of them)
-                    if (framaS.[i] > framaM.[i] && framaS.[i] > framaL.[i]) && (framaS.[i-1] < framaM.[i-1] || framaS.[i-1] < framaL.[i-1]) then
-                        // middle has to be over long
-                        if (framaM.[i] > framaL.[i]) then
-                            framaSig <- 1
+                    if (framaS.[i] > framaM.[i]     && framaS.[i] > framaL.[i]     && framaM.[i] > framaL.[i]) && 
+                       (framaS.[i-1] < framaM.[i-1] || framaS.[i-1] < framaL.[i-1] || framaM.[i-1] < framaL.[i-1]) then
+                        // middle has to be over long   
+                        //if (framaM.[i] > framaL.[i]) then
+                        framaSig <- 1
                     // short under middle and long (and has just crossed one of them)
-                    else if (framaS.[i] < framaM.[i] && framaS.[i] < framaL.[i]) && (framaS.[i-1] > framaM.[i-1] || framaS.[i-1] > framaL.[i-1]) then
+                    else if (framaS.[i] < framaM.[i]     && framaS.[i] < framaL.[i]     && framaM.[i] < framaL.[i]) && 
+                            (framaS.[i-1] > framaM.[i-1] || framaS.[i-1] > framaL.[i-1] || framaM.[i-1] > framaL.[i-1]) then
                         // middle has to be under long
-                        if (framaM.[i] < framaL.[i]) then
-                            framaSig <- -1
+                        //if (framaM.[i] < framaL.[i]) then
+                        framaSig <- -1
 
                     (*
                      * // Williams%R entry
@@ -359,6 +380,8 @@
                      * // don't enter in extreme price situations
                      *)
                     if (i >= extrN-1) then
+                        sw5.Start()
+                        
                         // maximum minus minimum price in range
                         let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min) 
                         let mins, maxs = getExtremeValues(extrN, cPrices, localExtrema)
@@ -373,6 +396,8 @@
                                 if (cPrices.[i] > min-(min*extrP*priceBreadth/2m) && cPrices.[i] < min+(min*extrP*priceBreadth/2m)) then
                                     entry <- 0
 
+                        sw5.Stop()
+
                     // open position / add to position
                     if (entry <> 0) then
                         signals.[i] <- entry
@@ -381,6 +406,15 @@
                     //////   EXIT SIGNAL
                     /////////////////////////////////////
                     let mutable exit = 4
+
+                    // FRAMA exit
+                    // exit if S is between M and L
+                    if (signals.[i] > 0) then
+                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] > wOB) then
+                            exit <- 0
+                    else if (signals.[i] < 0) then
+                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] < wOS) then
+                            exit <- 0
 
                     (*
                      * // Cutloss: neutralise if loss is too big (% of price movement!)
@@ -410,4 +444,10 @@
                     if (exit <> 4) then
                         signals.[i] <- exit
 
+            sw1.Stop()
+            printfn "Total: %f" (sw1.Elapsed.TotalMilliseconds / 1000.0)
+            printfn "FRAMAs: %f" (sw2.Elapsed.TotalMilliseconds / 1000.0)
+            printfn "WilliamsR: %f" (sw3.Elapsed.TotalMilliseconds / 1000.0)
+            printfn "Extrema: %f" (sw4.Elapsed.TotalMilliseconds / 1000.0)
+            printfn "Extrema check: %f" (sw4.Elapsed.TotalMilliseconds / 1000.0)
             signals
