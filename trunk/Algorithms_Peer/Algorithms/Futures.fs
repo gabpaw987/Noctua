@@ -134,6 +134,33 @@
             frama.[n-2] <- 0m
             frama
 
+        (*
+         * Calculates the slope of a regression over the given data.
+         * The data points are therefore assumed to be of successive nature, i.e. x = 1,2,3,..
+         *)
+        let regressionSlope(prices:decimal array)=
+            let mutable xy = 0m
+            let mutable xx = 0m
+            let mutable x = 0m
+            let mutable y = 0m
+            for i = 0 to prices.Length - 1 do 
+                x <- x+decimal i
+                y <- y + prices.[i]
+                xy <- xy + prices.[i] * decimal i
+                xx <- xx + decimal i* decimal i
+            let b = (decimal prices.Length * xy - (x*y))/(decimal prices.Length * xx - x*x)
+            //let a = (y - b*x)/decimal prices.Length
+            //decimal liste2D.Count*b + a
+            b
+
+        (*
+         * Calculates a "moving" regression over the given data,
+         * resulting in a slope of the regression over the last n values for each data point
+         *)
+        let regression(n:int, prices:decimal[])=
+            [|for i in n-1..prices.Length-1 -> regressionSlope(prices.[i-n+1..i])|]
+            |> Array.append (Array.zeroCreate (n-1))
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   OSCILLATORS
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,9 +260,15 @@
             let m2 = even parameters.["m2"]
             let l1 = even parameters.["l1"]
             let l2 = even parameters.["l2"]
+            // Regressions
+            let regrXSN = int parameters.["regrXSN"]
+            let regrSN = int parameters.["regrSN"]
+            // Williams%R
             let wn = int parameters.["wn"]
+            // Price Extremes
             let extrN = int parameters.["extrN"]
             let extrP = parameters.["extrP"]
+            // Cutloss
             let cutloss = abs parameters.["cutloss"]
 
 //            let s1 = even 10m
@@ -271,12 +304,15 @@
             let framaL = frama(even (decimal((l2-l1))/2m), l2, l2, prices)
             for i in 0..framaL.Length-1 do chart1.["FRAMAl;#999999"].Add(framaL.[i])
             sw2.Stop()
+
+            // calculate regressions
+            let regrXS = regression(regrXSN, cPrices)
+            let regrS = regression(regrSN, cPrices)
             
             sw3.Start()
             // calculate Williams%R
             let w = williamsR(wn, prices)
             sw3.Stop()
-
             for i in 0..w.Length-1 do chart2.["W%R;#FF0000"].Add(w.[i])
             let mutable wLastCross = 0
             let mutable wSinceCross = 0
@@ -329,17 +365,17 @@
                      * // FRAMA entry
                      *)
                     let mutable framaSig = 0
-                    // short over middle and long (and has just crossed one of them)
-                    if (framaS.[i] > framaM.[i]     && framaS.[i] > framaL.[i]     && framaM.[i] > framaL.[i]) && 
-                       (framaS.[i-1] < framaM.[i-1] || framaS.[i-1] < framaL.[i-1] || framaM.[i-1] < framaL.[i-1]) then
-                        // middle has to be over long   
-                        //if (framaM.[i] > framaL.[i]) then
+//                    // short over middle and long (and has just crossed one of them)
+//                    if (framaS.[i] > framaM.[i]         && framaM.[i] > framaL.[i]) &&
+//                       not (framaS.[i-1] > framaM.[i-1] && framaM.[i-1] > framaL.[i-1]) then
+//                        framaSig <- 1
+//                    // short under middle and long (and has just crossed one of them)
+//                    else if (framaS.[i] < framaM.[i]         && framaM.[i] < framaL.[i]) &&
+//                        not (framaS.[i-1] < framaM.[i-1] && framaM.[i-1] < framaL.[i-1]) then
+//                        framaSig <- -1
+                    if (framaM.[i] > framaL.[i] && framaM.[i-1] < framaL.[i-1]) then
                         framaSig <- 1
-                    // short under middle and long (and has just crossed one of them)
-                    else if (framaS.[i] < framaM.[i]     && framaS.[i] < framaL.[i]     && framaM.[i] < framaL.[i]) && 
-                            (framaS.[i-1] > framaM.[i-1] || framaS.[i-1] > framaL.[i-1] || framaM.[i-1] > framaL.[i-1]) then
-                        // middle has to be under long
-                        //if (framaM.[i] < framaL.[i]) then
+                    else if (framaM.[i] < framaL.[i] && framaM.[i-1] > framaL.[i-1]) then
                         framaSig <- -1
 
                     (*
@@ -377,6 +413,15 @@
                             entry <- framaSig
 
                     (*
+                     * // Check regressions
+                     *)
+                    // don't decide against short term trend! (7)
+                    // or very short term trend (3)
+                    // new signal contradicts short term price trend
+                    if (sign regrS.[i] <> sign entry || sign regrXS.[i] <> sign entry) then
+                        entry <- 0
+
+                    (*
                      * // don't enter in extreme price situations
                      *)
                     if (i >= extrN-1) then
@@ -408,12 +453,29 @@
                     let mutable exit = 4
 
                     // FRAMA exit
-                    // exit if S is between M and L
+//                    // long
+//                    if (signals.[i] > 0) then
+//                        // exit if S is between M and L and Williams is overbought
+//                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] > wOB) then
+//                            exit <- 0
+//                        // FRAMAs point to falling prices
+//                        if (framaS.[i] < framaM.[i] && framaS.[i] < framaL.[i] && framaM.[i] < framaL.[i]) then
+//                            exit <- 0
+//                    // short
+//                    else if (signals.[i] < 0) then
+//                        // exit if S is between M and L and Williams is oversold
+//                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] < wOS) then
+//                            exit <- 0
+//                        // FRAMAs point to rising prices
+//                        if (framaS.[i] > framaM.[i] && framaS.[i] > framaL.[i] && framaM.[i] > framaL.[i]) then
+//                            exit <- 0
+                    // long
                     if (signals.[i] > 0) then
-                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] > wOB) then
+                        if (framaS.[i] < framaM.[i] && framaS.[i-1] > framaM.[i-1]) then
                             exit <- 0
+                    // short
                     else if (signals.[i] < 0) then
-                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] < wOS) then
+                        if (framaS.[i] > framaM.[i] && framaS.[i-1] < framaM.[i-1]) then
                             exit <- 0
 
                     (*
