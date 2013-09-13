@@ -663,46 +663,6 @@ namespace BacktestingSoftware
                 }
             }
 
-            if (this.mainViewModel.Barsize.Equals("Minute"))
-            {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
-            }
-            else if (this.mainViewModel.Barsize.Equals("Daily"))
-            {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
-            }
-
-            if (this.isRealTimeThreadRunning)
-            {
-                this.ErrorMessage = this.historicalDataClient.Connect();
-            }
-
-            if (this.isRealTimeThreadRunning)
-            {
-                if (this.ErrorMessage.Length == 0)
-                    this.historicalDataClient.GetHistoricalDataBars(new TimeSpan(0, 1, 0));
-            }
-
-            if (this.isRealTimeThreadRunning)
-            {
-                while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
-                       this.historicalDataClient.totalHistoricalBars == 0)
-                {
-                    System.Threading.Thread.Sleep(100);
-                    if (!this.isRealTimeThreadRunning)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (this.isRealTimeThreadRunning)
-            {
-                this.curBarCount = this.mainViewModel.BarList.Count;
-
-                this.historicalDataClient.Disconnect();
-            }
-
             //wait until minute is full
             if (this.isRealTimeThreadRunning)
             {
@@ -729,6 +689,46 @@ namespace BacktestingSoftware
                         }
                     }
                 }
+            }
+
+            if (this.mainViewModel.Barsize.Equals("Minute"))
+            {
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+            }
+            else if (this.mainViewModel.Barsize.Equals("Daily"))
+            {
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                this.ErrorMessage = this.historicalDataClient.Connect();
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                if (this.ErrorMessage.Length == 0)
+                    this.historicalDataClient.GetHistoricalDataBars(new TimeSpan(0, 10, 0));
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
+                       this.historicalDataClient.totalHistoricalBars == 0)
+                {
+                    System.Threading.Thread.Sleep(100);
+                    if (!this.isRealTimeThreadRunning)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (this.isRealTimeThreadRunning)
+            {
+                this.curBarCount = this.mainViewModel.BarList.Count;
+
+                this.historicalDataClient.Disconnect();
             }
 
             while (isRealTimeThreadRunning)
