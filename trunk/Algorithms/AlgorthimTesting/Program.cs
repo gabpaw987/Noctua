@@ -26,7 +26,7 @@ namespace AlgorthimTesting
             // = new List<decimal>();
             //
             List<int> test = new List<int>();
-            test = Algorithm.DecisionCalculator.startCalculation(asd, test, new Dictionary<String, List<decimal>>(), new Dictionary<String, List<decimal>>());
+            test = Algorithm.DecisionCalculator.startCalculation(asd, test, new Dictionary<String, List<decimal>>(), new Dictionary<String, List<decimal>>(), new Dictionary<string, decimal>());
 
             for (int i = 0; i < test.Count; i++)
             {
