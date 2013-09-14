@@ -10,6 +10,8 @@ namespace BacktestingSoftware
     {
         private MainViewModel mainViewModel { get; set; }
 
+        private static object lockObj = new object();
+
         public Calculator(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
@@ -22,8 +24,9 @@ namespace BacktestingSoftware
             if (this.mainViewModel.AdditionalParameters.Length == 0)
             {
                 Type t = this.LoadAlgorithmFile();
-                this.CalculateSignals(t, null);
-                this.CalculateNumbers(string.Empty);
+                List<int> signals = this.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
+                this.CalculateNumbers(string.Empty, signals, this.mainViewModel.Orders);
+                this.mainViewModel.Signals = signals;
             }
             else
             {
@@ -63,6 +66,8 @@ namespace BacktestingSoftware
 
                     for (int i = 0; i < valueSets[0].Count; i++)
                     {
+                        this.mainViewModel.Orders.Clear();
+
                         string description = string.Empty;
 
                         Dictionary<string, decimal> valueSet = new Dictionary<string, decimal>();
@@ -77,8 +82,10 @@ namespace BacktestingSoftware
                             description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
                         }
 
-                        this.CalculateSignals(t, valueSet);
-                        this.CalculateNumbers(description);
+                        List<int> signals = this.CalculateSignals(t, valueSet, new Dictionary<string, List<decimal>>(), new Dictionary<string, List<decimal>>());
+                        this.CalculateNumbers(description, signals, this.mainViewModel.Orders);
+
+                        this.mainViewModel.Signals = signals;
                     }
                 }
                 catch (Exception)
@@ -133,35 +140,39 @@ namespace BacktestingSoftware
             return assembly.GetType("Algorithm.DecisionCalculator");
         }
 
-        public void CalculateSignals(Type t, Dictionary<string, decimal> parametersValueSet)
+        public List<int> CalculateSignals(Type t, Dictionary<string, decimal> parametersValueSet, Dictionary<string, List<decimal>> indicatorDictionary, Dictionary<string, List<decimal>> oscillatorDictionary)
         {
+            List<int> signalsList = new List<int>();
+
             if (this.mainViewModel.IsAlgorithmUsingMaps && parametersValueSet != null)
             {
-                Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary, parametersValueSet };
+                Object[] oa = { this.mainViewModel.BarList, signalsList, indicatorDictionary, oscillatorDictionary, parametersValueSet };
                 t.GetMethod("startCalculation").Invoke(null, oa);
             }
             else if (parametersValueSet != null && !this.mainViewModel.IsAlgorithmUsingMaps)
             {
-                Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals, parametersValueSet };
+                Object[] oa = { this.mainViewModel.BarList, signalsList, parametersValueSet };
                 t.GetMethod("startCalculation").Invoke(null, oa);
             }
             else if (this.mainViewModel.IsAlgorithmUsingMaps && parametersValueSet == null)
             {
-                Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary };
+                Object[] oa = { this.mainViewModel.BarList, signalsList, indicatorDictionary, oscillatorDictionary };
                 t.GetMethod("startCalculation").Invoke(null, oa);
             }
             else
             {
-                Object[] oa = { this.mainViewModel.BarList, this.mainViewModel.Signals };
+                Object[] oa = { this.mainViewModel.BarList, signalsList };
                 t.GetMethod("startCalculation").Invoke(null, oa);
             }
+
+            return signalsList;
         }
 
-        public String CalculateNumbers(string parametersUsed)
+        public String CalculateNumbers(string parametersUsed, List<int> signals, List<Order> orders)
         {
-            if (this.mainViewModel.BarList.Count == this.mainViewModel.Signals.Count)
+            if (this.mainViewModel.BarList.Count == signals.Count)
             {
-                if (this.mainViewModel.Signals.Count<int>(n => n == 0) != this.mainViewModel.Signals.Count)
+                if (signals.Count<int>(n => n == 0) != signals.Count)
                 {
                     CalculationResultSet resultSet = new CalculationResultSet();
 
@@ -188,23 +199,23 @@ namespace BacktestingSoftware
                     int InnerValue = this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue);
 
                     //To remove all the remaining positions in the end
-                    this.mainViewModel.Signals[this.mainViewModel.Signals.Count - 1] = 0;
+                    signals[signals.Count - 1] = 0;
 
                     decimal paidForGainLoss = 0m;
 
                     for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                     {
-                        if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i] && this.mainViewModel.BarList[i].Item2 != 0
+                        if (signals[i - 1] != signals[i] && this.mainViewModel.BarList[i].Item2 != 0
                             && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0)
                         {
                             decimal addableFee = 0;
-                            if (this.mainViewModel.Signals[i] != 0 || (this.mainViewModel.Signals[i - 1] != 0 && this.mainViewModel.Signals[i] == 0))
+                            if (signals[i] != 0 || (signals[i - 1] != 0 && signals[i] == 0))
                                 addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 *
-                                    (this.mainViewModel.BarList[i].Item5 * InnerValue / this.mainViewModel.MiniContractDenominator * RoundLotSize * this.GetAbsWeightedSignalDifference(i, true))) +
+                                    (this.mainViewModel.BarList[i].Item5 * InnerValue / this.mainViewModel.MiniContractDenominator * RoundLotSize * this.GetAbsWeightedSignalDifference(i, true, signals))) +
                                     decimal.Parse(this.mainViewModel.AbsTransactionFee);
 
-                            int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1);
-                            int WeightingMultiplier = this.GetWeightingMultiplier(i);
+                            int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1, signals);
+                            int WeightingMultiplier = this.GetWeightingMultiplier(i, signals);
 
                             decimal priceOfThisTrade = this.mainViewModel.BarList[i].Item5;
 
@@ -247,8 +258,8 @@ namespace BacktestingSoftware
                                 (Math.Abs(WeightingMultiplier) - Math.Abs(oldWeightingMultiplier)) > 0))
                             {
                                 percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator *
-                                                                        this.GetAbsWeightedSignalDifference(i, true))) * 100;
-                                paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i, true));
+                                                                        this.GetAbsWeightedSignalDifference(i, true, signals))) * 100;
+                                paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i, true, signals));
                             }
                             // if not strengthening the signal
                             else if (oldWeightingMultiplier != 0)
@@ -257,22 +268,22 @@ namespace BacktestingSoftware
                                 if (priceOfLastTrade == 0)
                                 {
                                     percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator *
-                                                                            this.GetAbsWeightedSignalDifference(i, true))) * 100;
-                                    paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i, true));
+                                                                            this.GetAbsWeightedSignalDifference(i, true, signals))) * 100;
+                                    paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i, true, signals));
                                 }
                                 else
                                 {
                                     //This is needed to show only realised profit
                                     if (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier))
                                     {
-                                        decimal partOfPaidForGainLoss = (paidForGainLoss / Math.Abs(oldWeightingMultiplier)) * this.GetAbsWeightedSignalDifference(i, true);
-                                        percentageOfThisTrade = ((((this.GetAbsWeightedSignalDifference(i, true) * priceOfThisTrade) - partOfPaidForGainLoss) / partOfPaidForGainLoss) * 100) -
-                                                                (addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifference(i, true)));
+                                        decimal partOfPaidForGainLoss = (paidForGainLoss / Math.Abs(oldWeightingMultiplier)) * this.GetAbsWeightedSignalDifference(i, true, signals);
+                                        percentageOfThisTrade = ((((this.GetAbsWeightedSignalDifference(i, true, signals) * priceOfThisTrade) - partOfPaidForGainLoss) / partOfPaidForGainLoss) * 100) -
+                                                                (addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifference(i, true, signals)));
 
                                         //The calculation process works without signs, therefore checking if the percentage of this trade
                                         //is positive or negative (because you could have bought or sold stocks) is very important
                                         //If within the current trade stocks are bought, changes the sign of the percentage
-                                        if (Math.Sign(this.GetAbsWeightedSignalDifference(i, false)) == 1)
+                                        if (Math.Sign(this.GetAbsWeightedSignalDifference(i, false, signals)) == 1)
                                         {
                                             percentageOfThisTrade = percentageOfThisTrade * (-1);
                                         }
@@ -284,10 +295,10 @@ namespace BacktestingSoftware
                                     {
                                         //TODO: DivideByZeroException at paidForGainLoss if weighting multipliers at signal 3 are smaller than at 2 and so on
                                         percentageOfThisTrade = ((((Math.Abs(oldWeightingMultiplier) * priceOfThisTrade) - paidForGainLoss) / paidForGainLoss) * 100) -
-                                                                (addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifference(i, true)));
+                                                                (addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifference(i, true, signals)));
 
                                         //If within the current trade stocks are bought, changes the sign of the percentage
-                                        if (Math.Sign(this.GetAbsWeightedSignalDifference(i, false)) == 1)
+                                        if (Math.Sign(this.GetAbsWeightedSignalDifference(i, false, signals)) == 1)
                                         {
                                             percentageOfThisTrade = percentageOfThisTrade * (-1);
                                         }
@@ -315,8 +326,8 @@ namespace BacktestingSoftware
                             absCumGainLoss += currentGainLoss;
                             resultSet.NetWorth += currentGainLoss;
 
-                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * (this.GetAbsWeightedSignalDifference(i, true) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
-                            this.mainViewModel.Orders.Add(new Order(this.mainViewModel.BarList[i].Item1, this.mainViewModel.Signals[i], this.GetWeightingMultiplier(i), priceOfThisTrade, transactionPriceToDisplay, addableFee, percentageOfThisTrade, resultSet.GainLossPercent, portfolioPerformance, resultSet.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, resultSet.NetWorth));
+                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * (this.GetAbsWeightedSignalDifference(i, true, signals) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
+                            orders.Add(new Order(this.mainViewModel.BarList[i].Item1, signals[i], this.GetWeightingMultiplier(i, signals), priceOfThisTrade, transactionPriceToDisplay, addableFee, percentageOfThisTrade, resultSet.GainLossPercent, portfolioPerformance, resultSet.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, resultSet.NetWorth));
 
                             priceOfLastTrade = priceOfThisTrade;
                         }
@@ -326,29 +337,29 @@ namespace BacktestingSoftware
                     //Calculation of GainPrecent and LossPercent, without losing unrealised profit.
                     //This has to be done after the rest of the calculation in order to be able to catch the
                     //unrealised profit too.
-                    for (int i = 1; i < this.mainViewModel.Orders.Count; i++)
+                    for (int i = 1; i < orders.Count; i++)
                     {
-                        Order order = this.mainViewModel.Orders[i];
+                        Order order = orders[i];
 
-                        decimal ZeroWithFeePaid = Math.Round((-order.PaidFee / (order.Price * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifferenceForOrders(i))) * 100, 3);
+                        decimal ZeroWithFeePaid = Math.Round((-order.PaidFee / (order.Price * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifferenceForOrders(i, signals, orders))) * 100, 3);
 
                         //Get all the normal profit and dont take fee into account for good trades or bad trades
                         if (order.GainLossPercent > ZeroWithFeePaid)
                         {
                             resultSet.NoOfGoodTrades++;
                             resultSet.GainPercent += (order.CumulativePortfolioPerformance -
-                                                      this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
+                                                      orders[i - 1].CumulativePortfolioPerformance);
                         }
                         else if (order.GainLossPercent < ZeroWithFeePaid)
                         {
                             resultSet.NoOfBadTrades++;
                             resultSet.LossPercent += (order.CumulativePortfolioPerformance -
-                                                      this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
+                                                      orders[i - 1].CumulativePortfolioPerformance);
                         }
                         else if (order.GainLossPercent == ZeroWithFeePaid)
                         {
                             decimal portfolioPerformanceRelativeToCapital = (order.CumulativePortfolioPerformance -
-                                                                             this.mainViewModel.Orders[i - 1].CumulativePortfolioPerformance);
+                                                                             orders[i - 1].CumulativePortfolioPerformance);
                             //Get all the unrealised profit
                             if (portfolioPerformanceRelativeToCapital > ZeroWithFeePaid)
                             {
@@ -391,13 +402,16 @@ namespace BacktestingSoftware
                     resultSet.HighestDailyLoss = dailyPortfolioPerformances.Min();
                     resultSet.LastDayProfitLoss = dailyPortfolioPerformances.Last();
 
-                    if (parametersUsed.Length == 0)
+                    lock (lockObj)
                     {
-                        this.mainViewModel.CalculationResultSets.Add("-", resultSet);
-                    }
-                    else
-                    {
-                        this.mainViewModel.CalculationResultSets.Add(parametersUsed, resultSet);
+                        if (parametersUsed.Length == 0)
+                        {
+                            this.mainViewModel.CalculationResultSets.Add("-", resultSet);
+                        }
+                        else
+                        {
+                            this.mainViewModel.CalculationResultSets.Add(parametersUsed, resultSet);
+                        }
                     }
 
                     return string.Empty;
@@ -413,22 +427,22 @@ namespace BacktestingSoftware
             }
         }
 
-        private int GetAbsWeightedSignalDifferenceForOrders(int index)
+        private int GetAbsWeightedSignalDifferenceForOrders(int index, List<int> signals, List<Order> orders)
         {
             for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
             {
-                if (this.mainViewModel.Orders[index].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
+                if (orders[index].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
                 {
-                    return this.GetAbsWeightedSignalDifference(i, true);
+                    return this.GetAbsWeightedSignalDifference(i, true, signals);
                 }
             }
             return 0;
         }
 
-        private int GetAbsWeightedSignalDifference(int index, bool returnAbs)
+        private int GetAbsWeightedSignalDifference(int index, bool returnAbs, List<int> signals)
         {
-            int oldSignal = this.mainViewModel.Signals[index - 1];
-            int newSignal = this.mainViewModel.Signals[index];
+            int oldSignal = signals[index - 1];
+            int newSignal = signals[index];
 
             int toZero = 0;
             int fromZero = 0;
@@ -471,9 +485,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private int GetWeightingMultiplier(int index)
+        private int GetWeightingMultiplier(int index, List<int> signals)
         {
-            switch (this.mainViewModel.Signals[index])
+            switch (signals[index])
             {
                 case -3:
                     return this.mainViewModel.ValueOfSliderOne * -1;

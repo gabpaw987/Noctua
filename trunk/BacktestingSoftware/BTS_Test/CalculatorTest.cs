@@ -36,7 +36,7 @@ namespace BTS_Test
         {
             target.ReadFile();
             Type t = target.LoadAlgorithmFile();
-            target.CalculateSignals(t, null);
+            target.CalculateSignals(t, null, new Dictionary<string, List<decimal>>(), new Dictionary<string, List<decimal>>());
         }
 
         /// <summary>
@@ -47,10 +47,10 @@ namespace BTS_Test
         {
             target.ReadFile();
             Type t = target.LoadAlgorithmFile();
-            target.CalculateSignals(t, null);
+            List<int> signals = target.CalculateSignals(t, null, new Dictionary<string, List<decimal>>(), new Dictionary<string, List<decimal>>());
             string expected = string.Empty;
             string actual;
-            actual = target.CalculateNumbers(string.Empty);
+            actual = target.CalculateNumbers(string.Empty, signals, new List<Order>());
             Assert.AreEqual(expected, actual);
         }
 
