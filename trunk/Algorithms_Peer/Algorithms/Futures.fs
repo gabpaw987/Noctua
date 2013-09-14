@@ -134,6 +134,33 @@
             frama.[n-2] <- 0m
             frama
 
+        (*
+         * Calculates the slope of a regression over the given data.
+         * The data points are therefore assumed to be of successive nature, i.e. x = 1,2,3,..
+         *)
+        let regressionSlope(prices:decimal array)=
+            let mutable xy = 0m
+            let mutable xx = 0m
+            let mutable x = 0m
+            let mutable y = 0m
+            for i = 0 to prices.Length - 1 do 
+                x <- x+decimal i
+                y <- y + prices.[i]
+                xy <- xy + prices.[i] * decimal i
+                xx <- xx + decimal i* decimal i
+            let b = (decimal prices.Length * xy - (x*y))/(decimal prices.Length * xx - x*x)
+            //let a = (y - b*x)/decimal prices.Length
+            //decimal liste2D.Count*b + a
+            b
+
+        (*
+         * Calculates a "moving" regression over the given data,
+         * resulting in a slope of the regression over the last n values for each data point
+         *)
+        let regression(n:int, prices:decimal[])=
+            [|for i in n-1..prices.Length-1 -> regressionSlope(prices.[i-n+1..i])|]
+            |> Array.append (Array.zeroCreate (n-1))
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   OSCILLATORS
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,17 +216,17 @@
                         isMin <- false
                     if (data.[i+j] > data.[i]) then
                         isMax <- false
-                if (isMin) then extremes.[i] <- -100m
-                if (isMax) then extremes.[i] <- 100m
+                if (isMin) then extremes.[i] <- decimal (-1*n)
+                if (isMax) then extremes.[i] <- decimal n
             extremes
 
         let getExtremeValues(n:int, data:decimal[], extremes:decimal[])=
             let mutable mins = new ResizeArray<decimal>()
             let mutable maxs = new ResizeArray<decimal>()
             for i in extremes.Length-1..extremes.Length-1-n do
-                if (extremes.[i] = 100m) then
+                if (extremes.[i] > 0m) then
                     maxs.Add(data.[i])
-                else if (extremes.[i] = -100m) then
+                else if (extremes.[i] < 0m) then
                     mins.Add(data.[i])
             mins, maxs
 
@@ -233,10 +260,21 @@
             let m2 = even parameters.["m2"]
             let l1 = even parameters.["l1"]
             let l2 = even parameters.["l2"]
+            // Regressions
+            let regrXSN = int parameters.["regrXSN"]
+            let regrSN = int parameters.["regrSN"]
+            let regrLN = int parameters.["regrLN"]
+            // Williams%R
             let wn = int parameters.["wn"]
+            // Price Extremes
+            let barExtrN = int parameters.["barExtrN"]
             let extrN = int parameters.["extrN"]
             let extrP = parameters.["extrP"]
-            let cutloss = abs parameters.["cutloss"]
+            // Cutloss
+            let cutlossMax = abs parameters.["cutlossMax"]
+            let mutable cutloss = cutlossMax
+            let cutlossMin = abs parameters.["cutlossMin"]
+            let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
 
 //            let s1 = even 10m
 //            let s2 = even 20m
@@ -257,6 +295,7 @@
             chart2.Add("W%R_os;#0000FF", new System.Collections.Generic.List<decimal>())
             chart2.Add("W%R_ob;#0000FF", new System.Collections.Generic.List<decimal>())
             chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("regrLSlope;#00FF00", new System.Collections.Generic.List<decimal>())
             
             // list of closing prices
             let cPrices = 
@@ -271,12 +310,21 @@
             let framaL = frama(even (decimal((l2-l1))/2m), l2, l2, prices)
             for i in 0..framaL.Length-1 do chart1.["FRAMAl;#999999"].Add(framaL.[i])
             sw2.Stop()
+            // how long ago frama has given a signal
+            let mutable framaSinceSig = 0
+            // indicates that the long averages have given a signal (waiting for short)
+            let mutable framaPreSig = 0
+
+            // calculate regressions
+            let regrXS = regression(regrXSN, cPrices)
+            let regrS = regression(regrSN, cPrices)
+            let regrL = regression(regrLN, cPrices)
+            for i in 0..regrL.Length-1 do chart2.["regrLSlope;#00FF00"].Add(regrL.[i]*100m)
             
             sw3.Start()
             // calculate Williams%R
             let w = williamsR(wn, prices)
             sw3.Stop()
-
             for i in 0..w.Length-1 do chart2.["W%R;#FF0000"].Add(w.[i])
             let mutable wLastCross = 0
             let mutable wSinceCross = 0
@@ -290,8 +338,8 @@
             for i in 0..w.Length-1 do chart2.["W%R_ob;#0000FF"].Add(wOB)
 
             sw4.Start()
-            // try to find 20 bar price extrema
-            let localExtrema = findExtremes (20, cPrices)
+            // try to find n bar price extrema
+            let localExtrema = findExtremes (barExtrN, cPrices)
             sw4.Stop()
             // add to chart2
             for i in 0..localExtrema.Length-1 do chart2.["LocalExtremes;#00FFFF"].Add(localExtrema.[i])
@@ -329,18 +377,35 @@
                      * // FRAMA entry
                      *)
                     let mutable framaSig = 0
-                    // short over middle and long (and has just crossed one of them)
-                    if (framaS.[i] > framaM.[i]     && framaS.[i] > framaL.[i]     && framaM.[i] > framaL.[i]) && 
-                       (framaS.[i-1] < framaM.[i-1] || framaS.[i-1] < framaL.[i-1] || framaM.[i-1] < framaL.[i-1]) then
-                        // middle has to be over long   
-                        //if (framaM.[i] > framaL.[i]) then
-                        framaSig <- 1
-                    // short under middle and long (and has just crossed one of them)
-                    else if (framaS.[i] < framaM.[i]     && framaS.[i] < framaL.[i]     && framaM.[i] < framaL.[i]) && 
-                            (framaS.[i-1] > framaM.[i-1] || framaS.[i-1] > framaL.[i-1] || framaM.[i-1] > framaL.[i-1]) then
-                        // middle has to be under long
-                        //if (framaM.[i] < framaL.[i]) then
-                        framaSig <- -1
+
+                    if (framaM.[i] > framaL.[i] && framaM.[i-1] < framaL.[i-1]) then
+                        framaPreSig <- 1
+                        // save how long ago the frama gave an entry signal
+                        framaSinceSig <- 0
+                    else if (framaM.[i] < framaL.[i] && framaM.[i-1] > framaL.[i-1]) then
+                        framaPreSig <- -1
+                        // save how long ago the frama gave an entry signal
+                        framaSinceSig <- 0
+
+                    if (framaPreSig <> 0) then
+                        if (framaPreSig = sign (framaS.[i] - framaM.[i])) then
+                            framaSig <- framaPreSig
+                            framaPreSig <- 0
+
+                    // still give a frama signal n bars after actual crossing
+                    if (framaSinceSig <= 3 && signals.[i] = 0 && framaSig = 0) then
+                        framaSig <- sign (framaM.[i] - framaL.[i])
+                    framaSinceSig <- framaSinceSig + 1
+
+                    // negative performance!
+//                    (*
+//                     * // Trend reentry signal
+//                     *)
+//                    let mutable trendReentry = 0
+//
+//                    // long regression points in direction of M/L system and M/L difference is growing
+//                    if (sign regrL.[i] = sign (framaM.[i]-framaL.[i]) && abs (framaM.[i]-framaL.[i]) > abs (framaM.[i-1]-framaL.[i-1])) then
+//                        trendReentry <- sign regrL.[i]
 
                     (*
                      * // Williams%R entry
@@ -375,6 +440,21 @@
                             entry <- framaSig * 2
                         else
                             entry <- framaSig
+                    // negative performance
+//                    else if (trendReentry <> 0) then
+//                        if (sign wSig = sign trendReentry) then
+//                            entry <- trendReentry * 2
+//                        else
+//                            entry <- trendReentry
+
+                    (*
+                     * // Check regressions
+                     *)
+                    // don't decide against short term trend! (7)
+                    // or very short term trend (3)
+                    // new signal contradicts short term price trend
+                    if (sign regrS.[i] <> sign entry || sign regrXS.[i] <> sign entry) then
+                        entry <- 0
 
                     (*
                      * // don't enter in extreme price situations
@@ -408,12 +488,29 @@
                     let mutable exit = 4
 
                     // FRAMA exit
-                    // exit if S is between M and L
+//                    // long
+//                    if (signals.[i] > 0) then
+//                        // exit if S is between M and L and Williams is overbought
+//                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] > wOB) then
+//                            exit <- 0
+//                        // FRAMAs point to falling prices
+//                        if (framaS.[i] < framaM.[i] && framaS.[i] < framaL.[i] && framaM.[i] < framaL.[i]) then
+//                            exit <- 0
+//                    // short
+//                    else if (signals.[i] < 0) then
+//                        // exit if S is between M and L and Williams is oversold
+//                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] < wOS) then
+//                            exit <- 0
+//                        // FRAMAs point to rising prices
+//                        if (framaS.[i] > framaM.[i] && framaS.[i] > framaL.[i] && framaM.[i] > framaL.[i]) then
+//                            exit <- 0
+                    // long
                     if (signals.[i] > 0) then
-                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] > wOB) then
+                        if (framaS.[i] < framaM.[i] && framaS.[i-1] > framaM.[i-1]) then
                             exit <- 0
+                    // short
                     else if (signals.[i] < 0) then
-                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] < wOS) then
+                        if (framaS.[i] > framaM.[i] && framaS.[i-1] < framaM.[i-1]) then
                             exit <- 0
 
                     (*
@@ -422,21 +519,33 @@
 
                     // same sign: signal now and last bar
                     if (sign signals.[i] = sign signals.[i-1]) then
+                        // decrease cutloss over time until it reaches the given minimum
+                        // e.g. <- 2 - (2-1)/100
+                        cutloss <- cutloss - (cutloss-cutlossMin)/(decimal cutlossDecrN)
+                        if (cutloss < cutlossMin) then
+                            cutloss <- cutlossMin
                         // cut loss: price extreme
                         if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
                             priceExtreme <- cPrices.[i]
 
-                    // new buy or sell signal (different direction)
-                    if (signals.[i] <> 0 && sign signals.[i] <> sign signals.[i-1]) then
-                        entryPrice <- cPrices.[i]
-                        // reset priceExtreme for new trade
-                        priceExtreme <- cPrices.[i]
-                    // same trading direction (-/+)
-                    else if (signals.[i] <> 0) then
                         // check cut loss:
                         if (abs (priceExtreme - cPrices.[i]) > cutloss*0.01m*entryPrice) then
                             // neutralise -> liquidate
                             exit <- 0
+
+                    // new buy or sell signal (different direction)
+                    if (signals.[i] <> 0 && sign signals.[i] <> sign signals.[i-1]) then
+                        // reset cutloss to maximum for new trade
+                        cutloss <- cutlossMax
+                        entryPrice <- cPrices.[i]
+                        // reset priceExtreme for new trade
+                        priceExtreme <- cPrices.[i]
+//                    // same trading direction (-/+)
+//                    else if (signals.[i] <> 0) then
+//                        // check cut loss:
+//                        if (abs (priceExtreme - cPrices.[i]) > cutloss*0.01m*entryPrice) then
+//                            // neutralise -> liquidate
+//                            exit <- 0
 
                     (*
                      * // close position / liquidate part
