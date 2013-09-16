@@ -40,6 +40,8 @@ namespace BacktestingSoftware
 
         private static decimal progress;
 
+        List<Thread> calculationThreads;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -52,6 +54,7 @@ namespace BacktestingSoftware
             this.mainViewModel.IndicatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.OscillatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.CalculationResultSets = new SortedDictionary<string, CalculationResultSet>();
+            this.calculationThreads = new List<Thread>();
 
             this.mainViewModel.SaveFileName = string.Empty;
             this.mainViewModel.LoadFileName = string.Empty;
@@ -282,11 +285,11 @@ namespace BacktestingSoftware
         {
             if (!this.iscalculating)
             {
-                this.iscalculating = true;
-
                 this.StopButton_Click(null, null);
 
                 this.resetCalculation(true);
+
+                this.iscalculating = true;
 
                 if (this.isRealTimeThreadRunning)
                 {
@@ -422,7 +425,7 @@ namespace BacktestingSoftware
                         try
                         {
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                                this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders);
+                                this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders, this.iscalculating);
 
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
                                 this.Dispatcher.Invoke((Action)(() =>
@@ -472,35 +475,42 @@ namespace BacktestingSoftware
                             progress = 20m;
                             Type t = c.LoadAlgorithmFile();
 
-                            List<Thread> threads = new List<Thread>();
-
                             for (int i = 0; i < valueSets[0].Count; i++)
                             {
                                 bool isThreadReady = false;
 
-                                if (threads.Count <= Environment.ProcessorCount)
+                                if (!this.iscalculating)
+                                {
+                                    break;
+                                }
+
+                                if (calculationThreads.Count <= Environment.ProcessorCount)
                                 {
                                     int i2 = i;
-                                    threads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
-                                    threads[threads.Count - 1].Start();
+                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                    calculationThreads[calculationThreads.Count - 1].Start();
                                     isThreadReady = true;
                                 }
 
                                 while (!isThreadReady)
                                 {
-                                    for (int j = 0; j < threads.Count; j++)
+                                    for (int j = 0; j < calculationThreads.Count; j++)
                                     {
-                                        if (!threads[j].IsAlive)
+                                        if (!calculationThreads[j].IsAlive)
                                         {
                                             isThreadReady = true;
                                             int i2 = i;
-                                            threads[j] = new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b));
-                                            threads[j].Start();
+                                            calculationThreads[j] = new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b));
+                                            calculationThreads[j].Start();
                                         }
                                         if (isThreadReady)
                                         {
                                             break;
                                         }
+                                    }
+                                    if (!this.iscalculating)
+                                    {
+                                        break;
                                     }
                                     Thread.Sleep(50);
                                 }
@@ -509,7 +519,7 @@ namespace BacktestingSoftware
                             while (true)
                             {
                                 bool isThreadStillAlive = false;
-                                foreach (Thread thread in threads)
+                                foreach (Thread thread in calculationThreads)
                                 {
                                     if (thread.IsAlive)
                                     {
@@ -611,6 +621,7 @@ namespace BacktestingSoftware
                             this.ErrorMessage = "An error while drawing occured.";
                     }
 
+                    this.orders.DataContext = this.mainViewModel.Orders;
                     this.orders.Items.Refresh();
 
                     if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
@@ -664,7 +675,7 @@ namespace BacktestingSoftware
             progress += (80m / (2 * valueSets[0].Count));
 
             // report the progress
-            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals...");
+            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals... (" + (i + 1) + "/" + valueSets[0].Count + ")");
 
             List<int> signals = new List<int>();
             Dictionary<string, List<decimal>> indicatorDictionary = new Dictionary<string, List<decimal>>();
@@ -685,13 +696,13 @@ namespace BacktestingSoftware
             progress += (80m / (2 * valueSets[0].Count));
 
             // report the progress
-            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance...");
+            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance... (" + (i + 1) + "/" + valueSets[0].Count + ")");
 
             try
             {
                 List<Order> orders = new List<Order>();
                 if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                    this.ErrorMessage = c.CalculateNumbers(description, signals, orders);
+                    this.ErrorMessage = c.CalculateNumbers(description, signals, orders, this.iscalculating);
 
                 if (this.ErrorMessage.Length == 0 && this.iscalculating)
                 {
@@ -828,7 +839,7 @@ namespace BacktestingSoftware
                     }
 
                     if (this.ErrorMessage.Length == 0)
-                        this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders);
+                        this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders, this.isRealTimeThreadRunning);
 
                     if (this.ErrorMessage.Length == 0)
                     {
@@ -1326,6 +1337,16 @@ namespace BacktestingSoftware
 
         public void resetCalculation(bool resetBarList)
         {
+            this.iscalculating = false;
+
+            foreach (Thread thread in this.calculationThreads)
+            {
+                while (thread.IsAlive)
+                {
+                    Thread.Sleep(50);
+                }
+            }
+
             this.mainViewModel.Orders.Clear();
             this.orders.Items.Refresh();
 

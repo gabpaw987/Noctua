@@ -50,7 +50,7 @@ namespace BTS_Test
             List<int> signals = target.CalculateSignals(t, null, new Dictionary<string, List<decimal>>(), new Dictionary<string, List<decimal>>());
             string expected = string.Empty;
             string actual;
-            actual = target.CalculateNumbers(string.Empty, signals, new List<Order>());
+            actual = target.CalculateNumbers(string.Empty, signals, new List<Order>(), true);
             Assert.AreEqual(expected, actual);
         }
 

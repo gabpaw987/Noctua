@@ -25,7 +25,7 @@ namespace BacktestingSoftware
             {
                 Type t = this.LoadAlgorithmFile();
                 List<int> signals = this.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
-                this.CalculateNumbers(string.Empty, signals, this.mainViewModel.Orders);
+                this.CalculateNumbers(string.Empty, signals, this.mainViewModel.Orders, true);
                 this.mainViewModel.Signals = signals;
             }
             else
@@ -83,7 +83,7 @@ namespace BacktestingSoftware
                         }
 
                         List<int> signals = this.CalculateSignals(t, valueSet, new Dictionary<string, List<decimal>>(), new Dictionary<string, List<decimal>>());
-                        this.CalculateNumbers(description, signals, this.mainViewModel.Orders);
+                        this.CalculateNumbers(description, signals, this.mainViewModel.Orders, true);
 
                         this.mainViewModel.Signals = signals;
                     }
@@ -168,9 +168,9 @@ namespace BacktestingSoftware
             return signalsList;
         }
 
-        public String CalculateNumbers(string parametersUsed, List<int> signals, List<Order> orders)
+        public String CalculateNumbers(string parametersUsed, List<int> signals, List<Order> orders, bool isCalculating)
         {
-            if (this.mainViewModel.BarList.Count == signals.Count)
+            if (this.mainViewModel.BarList.Count == signals.Count && isCalculating)
             {
                 if (signals.Count<int>(n => n == 0) != signals.Count)
                 {
@@ -206,7 +206,8 @@ namespace BacktestingSoftware
                     for (int i = 1; i < this.mainViewModel.BarList.Count; i++)
                     {
                         if (signals[i - 1] != signals[i] && this.mainViewModel.BarList[i].Item2 != 0
-                            && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0)
+                            && this.mainViewModel.BarList[i].Item3 != 0 && this.mainViewModel.BarList[i].Item4 != 0 && this.mainViewModel.BarList[i].Item5 != 0 &&
+                            isCalculating)
                         {
                             decimal addableFee = 0;
                             if (signals[i] != 0 || (signals[i - 1] != 0 && signals[i] == 0))
