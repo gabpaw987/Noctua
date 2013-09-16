@@ -38,6 +38,10 @@ namespace BacktestingSoftware
 
         private int selectedArrowIndex;
 
+        private static decimal progress;
+
+        List<Thread> calculationThreads;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -49,7 +53,8 @@ namespace BacktestingSoftware
             this.mainViewModel.BarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
             this.mainViewModel.IndicatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.OscillatorDictionary = new Dictionary<string, List<decimal>>();
-            this.mainViewModel.CalculationResultSets = new Dictionary<string, CalculationResultSet>();
+            this.mainViewModel.CalculationResultSets = new SortedDictionary<string, CalculationResultSet>();
+            this.calculationThreads = new List<Thread>();
 
             this.mainViewModel.SaveFileName = string.Empty;
             this.mainViewModel.LoadFileName = string.Empty;
@@ -280,11 +285,11 @@ namespace BacktestingSoftware
         {
             if (!this.iscalculating)
             {
-                this.iscalculating = true;
-
                 this.StopButton_Click(null, null);
 
                 this.resetCalculation(true);
+
+                this.iscalculating = true;
 
                 if (this.isRealTimeThreadRunning)
                 {
@@ -406,7 +411,7 @@ namespace BacktestingSoftware
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
                             {
                                 Type t = c.LoadAlgorithmFile();
-                                c.CalculateSignals(t, null);
+                                this.mainViewModel.Signals = c.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
                             }
                         }
                         catch (Exception)
@@ -420,7 +425,7 @@ namespace BacktestingSoftware
                         try
                         {
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                                this.ErrorMessage = c.CalculateNumbers(string.Empty);
+                                this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders, this.iscalculating);
 
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
                                 this.Dispatcher.Invoke((Action)(() =>
@@ -467,61 +472,65 @@ namespace BacktestingSoftware
                             }
                             Calculator.mesh(0, parameterRanges, valueSets);
 
-                            decimal progress = 20m;
+                            progress = 20m;
                             Type t = c.LoadAlgorithmFile();
 
                             for (int i = 0; i < valueSets[0].Count; i++)
                             {
-                                string description = string.Empty;
+                                bool isThreadReady = false;
 
-                                this.mainViewModel.OscillatorDictionary.Clear();
-                                this.mainViewModel.IndicatorDictionary.Clear();
-                                this.mainViewModel.Signals.Clear();
-                                this.mainViewModel.Orders.Clear();
-
-                                Dictionary<string, decimal> valueSet = new Dictionary<string, decimal>();
-                                for (int j = 0; j < valueSets.Count; j++)
+                                if (!this.iscalculating)
                                 {
-                                    valueSet.Add(parameters.Keys.ToList()[j], valueSets[j][i]);
+                                    break;
+                                }
 
-                                    if (description.Length != 0)
+                                if (calculationThreads.Count <= Environment.ProcessorCount)
+                                {
+                                    int i2 = i;
+                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                    calculationThreads[calculationThreads.Count - 1].Start();
+                                    isThreadReady = true;
+                                }
+
+                                while (!isThreadReady)
+                                {
+                                    for (int j = 0; j < calculationThreads.Count; j++)
                                     {
-                                        description += ",";
+                                        if (!calculationThreads[j].IsAlive)
+                                        {
+                                            isThreadReady = true;
+                                            int i2 = i;
+                                            calculationThreads[j] = new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b));
+                                            calculationThreads[j].Start();
+                                        }
+                                        if (isThreadReady)
+                                        {
+                                            break;
+                                        }
                                     }
-                                    description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
-                                }
-
-                                progress += (80m / (2 * valueSets[0].Count));
-
-                                // report the progress
-                                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals...");
-
-                                try
-                                {
-                                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                    if (!this.iscalculating)
                                     {
-                                        c.CalculateSignals(t, valueSet);
+                                        break;
+                                    }
+                                    Thread.Sleep(50);
+                                }
+                            }
+
+                            while (true)
+                            {
+                                bool isThreadStillAlive = false;
+                                foreach (Thread thread in calculationThreads)
+                                {
+                                    if (thread.IsAlive)
+                                    {
+                                        isThreadStillAlive = true;
                                     }
                                 }
-                                catch (Exception)
+                                if (!isThreadStillAlive)
                                 {
-                                    this.ErrorMessage = "An error with the Algorithm-File occured.";
+                                    break;
                                 }
-
-                                progress += (80m / (2 * valueSets[0].Count));
-
-                                // report the progress
-                                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance...");
-
-                                try
-                                {
-                                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                                        this.ErrorMessage = c.CalculateNumbers(description);
-                                }
-                                catch (Exception)
-                                {
-                                    this.ErrorMessage = "An error while calculating performance data occured.";
-                                }
+                                Thread.Sleep(100);
                             }
 
                             if (this.ErrorMessage.Length == 0 && this.iscalculating)
@@ -592,11 +601,6 @@ namespace BacktestingSoftware
                         this.ProgressBar.Visibility = Visibility.Visible;
                         this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
                     }
-                    if (args.ProgressPercentage == 100)
-                    {
-                        this.TaskbarItemInfo.ProgressValue = 0;
-                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
-                    }
                 });
 
                 // what to do when worker completes its task (notify the user)
@@ -617,6 +621,7 @@ namespace BacktestingSoftware
                             this.ErrorMessage = "An error while drawing occured.";
                     }
 
+                    this.orders.DataContext = this.mainViewModel.Orders;
                     this.orders.Items.Refresh();
 
                     if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
@@ -640,10 +645,83 @@ namespace BacktestingSoftware
 
                     this.ProgressBar.Value = 100;
                     this.ProgressBar.Visibility = Visibility.Hidden;
+
+                    this.TaskbarItemInfo.ProgressValue = 100;
+                    this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+
                     this.iscalculating = false;
                 });
 
                 bw.RunWorkerAsync();
+            }
+        }
+
+        public void doCalculationThreadWork(Dictionary<string, List<decimal>> parameters, List<List<decimal>> valueSets, int i, Type t, BackgroundWorker b)
+        {
+            string description = string.Empty;
+
+            Dictionary<string, decimal> valueSet = new Dictionary<string, decimal>();
+            for (int j = 0; j < valueSets.Count; j++)
+            {
+                valueSet.Add(parameters.Keys.ToList()[j], valueSets[j][i]);
+
+                if (description.Length != 0)
+                {
+                    description += ",";
+                }
+                description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
+            }
+
+            progress += (80m / (2 * valueSets[0].Count));
+
+            // report the progress
+            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals... (" + (i + 1) + "/" + valueSets[0].Count + ")");
+
+            List<int> signals = new List<int>();
+            Dictionary<string, List<decimal>> indicatorDictionary = new Dictionary<string, List<decimal>>();
+            Dictionary<string, List<decimal>> oscillatorDictionary = new Dictionary<string, List<decimal>>();
+
+            try
+            {
+                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                {
+                    signals = c.CalculateSignals(t, valueSet, indicatorDictionary, oscillatorDictionary);
+                }
+            }
+            catch (Exception)
+            {
+                this.ErrorMessage = "An error with the Algorithm-File occured.";
+            }
+
+            progress += (80m / (2 * valueSets[0].Count));
+
+            // report the progress
+            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance... (" + (i + 1) + "/" + valueSets[0].Count + ")");
+
+            try
+            {
+                List<Order> orders = new List<Order>();
+                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                    this.ErrorMessage = c.CalculateNumbers(description, signals, orders, this.iscalculating);
+
+                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                {
+                    decimal newPortfolioPerformancePercent = this.mainViewModel.CalculationResultSets[description].PortfolioPerformancePercent;
+                    if (newPortfolioPerformancePercent > this.mainViewModel.PortfolioPerformancePercent ||
+                        this.mainViewModel.PortfolioPerformancePercent == 0)
+                    {
+                        this.mainViewModel.Orders = orders;
+                        this.mainViewModel.Signals = signals;
+                        this.mainViewModel.IndicatorDictionary = indicatorDictionary;
+                        this.mainViewModel.OscillatorDictionary = oscillatorDictionary;
+
+                        this.mainViewModel._portfolioPerformancePercent = newPortfolioPerformancePercent;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                this.ErrorMessage = "An error while calculating performance data occured.";
             }
         }
 
@@ -757,11 +835,11 @@ namespace BacktestingSoftware
                     if (this.ErrorMessage.Length == 0)
                     {
                         Type t = c.LoadAlgorithmFile();
-                        c.CalculateSignals(t, null);
+                        this.mainViewModel.Signals = c.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
                     }
 
                     if (this.ErrorMessage.Length == 0)
-                        this.ErrorMessage = c.CalculateNumbers(string.Empty);
+                        this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders, this.isRealTimeThreadRunning);
 
                     if (this.ErrorMessage.Length == 0)
                     {
@@ -1259,6 +1337,16 @@ namespace BacktestingSoftware
 
         public void resetCalculation(bool resetBarList)
         {
+            this.iscalculating = false;
+
+            foreach (Thread thread in this.calculationThreads)
+            {
+                while (thread.IsAlive)
+                {
+                    Thread.Sleep(50);
+                }
+            }
+
             this.mainViewModel.Orders.Clear();
             this.orders.Items.Refresh();
 
@@ -1603,7 +1691,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
                 this.refreshIndicatorList();
 
-                this.mainViewModel.CalculationResultSets = (Dictionary<string, CalculationResultSet>)bFormatter.Deserialize(stream);
+                this.mainViewModel.CalculationResultSets = (SortedDictionary<string, CalculationResultSet>)bFormatter.Deserialize(stream);
 
                 this.mainViewModel.SaveFileName = this.mainViewModel.LoadFileName;
 

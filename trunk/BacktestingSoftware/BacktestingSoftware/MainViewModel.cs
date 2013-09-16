@@ -686,7 +686,7 @@ namespace BacktestingSoftware
             }
         }
 
-        private decimal _portfolioPerformancePercent;
+        public decimal _portfolioPerformancePercent;
 
         public decimal PortfolioPerformancePercent
         {
@@ -860,9 +860,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private Dictionary<string, CalculationResultSet> _calculationResultSets;
+        private SortedDictionary<string, CalculationResultSet> _calculationResultSets;
 
-        public Dictionary<string, CalculationResultSet> CalculationResultSets
+        public SortedDictionary<string, CalculationResultSet> CalculationResultSets
         {
             get
             {
