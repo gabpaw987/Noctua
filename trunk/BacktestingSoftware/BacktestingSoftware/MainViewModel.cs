@@ -696,12 +696,9 @@ namespace BacktestingSoftware
             }
             set
             {
-                if (!value.Equals(_portfolioPerformancePercent))
-                {
-                    _portfolioPerformancePercent = value;
-                    if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("PortfolioPerformancePercent"));
-                }
+                _portfolioPerformancePercent = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("PortfolioPerformancePercent"));
             }
         }
 
@@ -986,6 +983,46 @@ namespace BacktestingSoftware
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("MiniContractDenominator"));
+                }
+            }
+        }
+
+        private decimal _timeInMarket;
+
+        public decimal TimeInMarket
+        {
+            get
+            {
+                return Math.Round(_timeInMarket, 3);
+            }
+            set
+            {
+                if (!value.Equals(_timeInMarket))
+                {
+                    _timeInMarket = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("TimeInMarket"));
+                }
+            }
+        }
+
+        private int _calculationThreadCount;
+
+        public int CalculationThreadCount
+        {
+            get
+            {
+                return _calculationThreadCount;
+            }
+            set
+            {
+                if (!value.Equals(_calculationThreadCount))
+                {
+                    _calculationThreadCount = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("CalculationThreadCount"));
                 }
             }
         }

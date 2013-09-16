@@ -87,6 +87,9 @@ namespace BacktestingSoftware
             this.mainViewModel.ValueOfSliderFive = Properties.Settings.Default.ValueOfSliderFive;
             this.mainViewModel.ValueOfSliderSix = Properties.Settings.Default.ValueOfSliderSix;
 
+            this.mainViewModel.CalculationThreadCount = Properties.Settings.Default.CalculationThreadCount;
+            this.CalculationThreadCountSlider.Maximum = Environment.ProcessorCount;
+
             this.mainViewModel.RoundLotSize = Properties.Settings.Default.RoundLotSize;
             this.mainViewModel.Capital = Properties.Settings.Default.Capital;
 
@@ -224,6 +227,7 @@ namespace BacktestingSoftware
                     "",
                     "Net Worth:                                    " + (this.mainViewModel.NetWorth < 0 ? "" : " ")                     + this.mainViewModel.NetWorthToDisplay,
                     "Portfolio Performance [%]:                    " + (this.mainViewModel.PortfolioPerformancePercent < 0 ? "" : " ")  + this.mainViewModel.PortfolioPerformancePercent,
+                    "Time in Market:                               " + (this.mainViewModel.TimeInMarket < 0 ? "" : " ")                 + this.mainViewModel.TimeInMarket,
                     "Sharpe Ratio:                                 " + (this.mainViewModel.SharpeRatio < 0 ? "" : " ")                  + this.mainViewModel.SharpeRatio,
                     "Mean Deviation of Portfolio Performance [%]:  " + (this.mainViewModel.StdDevOfProfit < 0 ? "" : " ")               + this.mainViewModel.StdDevOfProfit,
                     "Mean Deviation of Equity Price:               " + (this.mainViewModel.StdDevOfPEquityPrice < 0 ? "" : " ")         + this.mainViewModel.StdDevOfPEquityPrice,
@@ -235,8 +239,8 @@ namespace BacktestingSoftware
                     "Ratio of Good Trades - Bad Trades:            " + (this.mainViewModel.GtBtRatio < 0 ? "" : " ")                    + this.mainViewModel.GtBtRatio,
                     "Highest Daily Portfolio Performance:          " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit,
                     "Lowest Daily Portfolio Performance:           " + (this.mainViewModel.HighestDailyLoss < 0 ? "" : " ")             + this.mainViewModel.HighestDailyLoss,
-                    "Portfolio Performance of the Current Day:     " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit,
-                };
+                    "Portfolio Performance of the Current Day:     " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit
+               };
 
                 // Open document
                 System.IO.File.WriteAllLines(dlg.FileName, lines);
@@ -484,7 +488,7 @@ namespace BacktestingSoftware
                                     break;
                                 }
 
-                                if (calculationThreads.Count <= Environment.ProcessorCount)
+                                if (calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
                                 {
                                     int i2 = i;
                                     calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
@@ -492,16 +496,21 @@ namespace BacktestingSoftware
                                     isThreadReady = true;
                                 }
 
-                                while (!isThreadReady)
+                                while (!isThreadReady && this.mainViewModel.CalculationThreadCount != 0)
                                 {
                                     for (int j = 0; j < calculationThreads.Count; j++)
                                     {
                                         if (!calculationThreads[j].IsAlive)
                                         {
                                             isThreadReady = true;
-                                            int i2 = i;
-                                            calculationThreads[j] = new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b));
-                                            calculationThreads[j].Start();
+                                            calculationThreads.Remove(calculationThreads[j]);
+
+                                            if (this.calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
+                                            {
+                                                int i2 = i;
+                                                calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                                calculationThreads[calculationThreads.Count - 1].Start();
+                                            }
                                         }
                                         if (isThreadReady)
                                         {
@@ -512,6 +521,10 @@ namespace BacktestingSoftware
                                     {
                                         break;
                                     }
+                                    Thread.Sleep(50);
+                                }
+                                while (this.mainViewModel.CalculationThreadCount == 0)
+                                {
                                     Thread.Sleep(50);
                                 }
                             }
@@ -688,6 +701,7 @@ namespace BacktestingSoftware
                     signals = c.CalculateSignals(t, valueSet, indicatorDictionary, oscillatorDictionary);
                 }
             }
+            catch (ThreadAbortException) { }
             catch (Exception)
             {
                 this.ErrorMessage = "An error with the Algorithm-File occured.";
@@ -1339,13 +1353,17 @@ namespace BacktestingSoftware
         {
             this.iscalculating = false;
 
+            Thread.Sleep(100);
+
             foreach (Thread thread in this.calculationThreads)
             {
                 while (thread.IsAlive)
                 {
-                    Thread.Sleep(50);
+                    thread.Abort();
                 }
             }
+
+            this.calculationThreads.Clear();
 
             this.mainViewModel.Orders.Clear();
             this.orders.Items.Refresh();
@@ -1376,6 +1394,7 @@ namespace BacktestingSoftware
             this.mainViewModel.HighestDailyProfit = 0;
             this.mainViewModel.HighestDailyLoss = 0;
             this.mainViewModel.LastDayProfitLoss = 0;
+            this.mainViewModel.TimeInMarket = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
             chart.Series.Clear();
@@ -1456,6 +1475,8 @@ namespace BacktestingSoftware
             Properties.Settings.Default.InnerValue = this.mainViewModel.InnerValue;
             Properties.Settings.Default.IsMiniContract = this.mainViewModel.IsMiniContract;
             Properties.Settings.Default.MiniContractDenominator = this.mainViewModel.MiniContractDenominator;
+
+            Properties.Settings.Default.CalculationThreadCount = this.mainViewModel.CalculationThreadCount;
 
             Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
 
@@ -1552,7 +1573,8 @@ namespace BacktestingSoftware
                                    this.mainViewModel.GtBtRatio,
                                    this.mainViewModel.NetWorth,
                                    this.mainViewModel.PortfolioPerformancePercent,
-                                   this.mainViewModel.SharpeRatio});
+                                   this.mainViewModel.SharpeRatio,
+                                   this.mainViewModel.TimeInMarket});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
                 List<bool> tempBoolList = new List<bool>(new bool[] {
@@ -1585,7 +1607,8 @@ namespace BacktestingSoftware
                                                                  this.mainViewModel.ValueOfSliderSix,
                                                                  this.mainViewModel.RoundLotSize,
                                                                  this.mainViewModel.InnerValue,
-                                                                 this.mainViewModel.MiniContractDenominator});
+                                                                 this.mainViewModel.MiniContractDenominator,
+                                                                 this.mainViewModel.CalculationThreadCount});
                 bFormatter.Serialize(stream, tempIntList);
 
                 StringCollection serializableStackPanels = new StringCollection();
@@ -1654,6 +1677,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.NetWorth = tempPerfomanceList[8];
                 this.mainViewModel.PortfolioPerformancePercent = tempPerfomanceList[9];
                 this.mainViewModel.SharpeRatio = tempPerfomanceList[10];
+                this.mainViewModel.TimeInMarket = tempPerfomanceList[11];
 
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
@@ -1686,6 +1710,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.RoundLotSize = tempIntList[6];
                 this.mainViewModel.InnerValue = tempIntList[7];
                 this.mainViewModel.MiniContractDenominator = tempIntList[8];
+                this.mainViewModel.CalculationThreadCount = tempIntList[9];
 
                 StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
@@ -1852,6 +1877,7 @@ namespace BacktestingSoftware
 
                     this.mainViewModel.NetWorth = resultSet.NetWorth;
                     this.mainViewModel.PortfolioPerformancePercent = resultSet.PortfolioPerformancePercent;
+                    this.mainViewModel.TimeInMarket = resultSet.TimeInMarket;
                     this.mainViewModel.SharpeRatio = resultSet.SharpeRatio;
                     this.mainViewModel.StdDevOfProfit = resultSet.StdDevOfProfit;
                     this.mainViewModel.StdDevOfPEquityPrice = resultSet.StdDevOfPEquityPrice;

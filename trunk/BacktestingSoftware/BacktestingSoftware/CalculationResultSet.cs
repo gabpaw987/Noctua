@@ -7,6 +7,7 @@ namespace BacktestingSoftware
     {
         private decimal _netWorth;
         private decimal _portfolioPerformancePercent;
+        private decimal _timeInMarket;
         private decimal _sharpeRatio;
         private decimal _stdDevOfProfit;
         private decimal _stdDevOfPEquityPrice;
@@ -30,6 +31,12 @@ namespace BacktestingSoftware
         {
             get { return _portfolioPerformancePercent; }
             set { _portfolioPerformancePercent = value; }
+        }
+
+        public decimal TimeInMarket
+        {
+            get { return _timeInMarket; }
+            set { _timeInMarket = value; }
         }
 
         public decimal SharpeRatio
