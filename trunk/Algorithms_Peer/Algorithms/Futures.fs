@@ -597,8 +597,8 @@ namespace Algorithm
                                 framaSig <- 0
 
                     // exit if RSI and FRAMA are contradictory
-                    if (abs framaSig = 1 && rsiSig + framaSig = 0) then
-                        exit <- 0
+//                    if (abs framaSig = 1 && rsiSig + framaSig = 0) then
+//                        exit <- 0
 
                     (*
                      * // Cutloss: neutralise if loss is too big (% of price movement!)
