@@ -403,6 +403,8 @@ namespace BacktestingSoftware
                     resultSet.HighestDailyLoss = dailyPortfolioPerformances.Min();
                     resultSet.LastDayProfitLoss = dailyPortfolioPerformances.Last();
 
+                    resultSet.TimeInMarket = (decimal)signals.Count<int>(n => n != 0) / (decimal)signals.Count * 100m;
+
                     lock (lockObj)
                     {
                         if (parametersUsed.Length == 0)
