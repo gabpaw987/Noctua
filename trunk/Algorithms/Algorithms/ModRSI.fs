@@ -1,6 +1,15 @@
 ﻿namespace Algorithm
     module DecisionCalculator=(*007*)
         
+        let sma (n: int, prices:decimal[])  =
+            let intervals = 
+                prices
+                |> Array.toSeq
+                |> Seq.windowed n
+            [|for i in intervals -> Array.average i|]
+            |> Array.append (Array.zeroCreate (n - 1)) 
+            
+
         (*
          * Williams%R:
          * %R = (Highest High - Close)/(Highest High - Lowest Low) * -100
@@ -79,7 +88,10 @@ rsiu,20,40,5
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>
                               ,parameter:System.Collections.Generic.Dictionary<string, decimal>)=
 //                              )=
+            chart1.Clear();
             chart2.Clear();
+//            parameter.Add("ema", 3m)
+//            parameter.Add("rsi", 18m)
             // RSI Lines
             let rsi40 = new System.Collections.Generic.List<decimal>();
             for i in 0 .. prices.Count - 1 do rsi40.Add(40m)
@@ -87,7 +99,7 @@ rsiu,20,40,5
             for i in 0 .. prices.Count - 1 do rsi60.Add(60m)
             chart2.Add("RSI40;#0000FF", rsi40) 
             chart2.Add("RSI60;#0000FF", rsi60)
-            
+
             let rsi = ema ((int) parameter.["ema"], Array.toList ( rsi((int parameter.["rsi"]), [| for i in 0 .. prices.Count - 1 do yield ((prices.[i].Item3) + (prices.[i].Item4) + (prices.[i].Item5))/3m|])))
             
             let rsiC = new System.Collections.Generic.List<decimal>();
@@ -97,9 +109,9 @@ rsiu,20,40,5
             signals.Add (0)
             for i in 1 .. prices.Count - 1 do 
                 signals.Add (0)
-                if rsi.[i] > parameter.["rsio"] then
+                if rsi.[i] > 60m then
                     signals.[i] <- 1
-                else if rsi.[i] < parameter.["rsiu"] then
+                else if rsi.[i] < 20m then
                     signals.[i] <- -1
                 else 
                     signals.[i] <- signals.[i - 1]
