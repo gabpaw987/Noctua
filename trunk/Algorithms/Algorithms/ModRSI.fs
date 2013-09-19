@@ -109,9 +109,9 @@ rsiu,20,40,5
             signals.Add (0)
             for i in 1 .. prices.Count - 1 do 
                 signals.Add (0)
-                if rsi.[i] > 60m then
+                if rsi.[i] > parameter.["rsio"] then
                     signals.[i] <- 1
-                else if rsi.[i] < 20m then
+                else if rsi.[i] < parameter.["rsiu"] then
                     signals.[i] <- -1
                 else 
                     signals.[i] <- signals.[i - 1]
