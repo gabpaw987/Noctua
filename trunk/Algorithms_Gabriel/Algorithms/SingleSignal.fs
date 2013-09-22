@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=(*99*)
+    module DecisionCalculator1=(*99*)
 
         (*
          * Divides one value by another

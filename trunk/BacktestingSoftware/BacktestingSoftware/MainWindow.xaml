@@ -85,10 +85,6 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="250"></ColumnDefinition>
@@ -153,6 +149,26 @@
                     <DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
                               HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True"
                               IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn" SelectionChanged="orderList_SelectionChanged"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Net Worth">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Switch Abs/rel" Click="NetWorthChartButton_Click"/>
+                    <!-- CHART -->
+                    <WindowsFormsHost Name="NetWorthHost" Grid.Row="1">
+                        <MSChart:Chart x:Name="NetWorthChart">
+                            <MSChart:Chart.ChartAreas>
+                                <MSChart:ChartArea Name="MainArea"/>
+                            </MSChart:Chart.ChartAreas>
+                        </MSChart:Chart>
+                    </WindowsFormsHost>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">

@@ -210,6 +210,7 @@ namespace BacktestingSoftware
                             isCalculating)
                         {
                             decimal addableFee = 0;
+                            //TODO:  / this.mainViewModel.MiniContractDenominator
                             if (signals[i] != 0 || (signals[i - 1] != 0 && signals[i] == 0))
                                 addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 *
                                     (this.mainViewModel.BarList[i].Item5 * InnerValue / this.mainViewModel.MiniContractDenominator * RoundLotSize * this.GetAbsWeightedSignalDifference(i, true, signals))) +
@@ -327,7 +328,7 @@ namespace BacktestingSoftware
                             absCumGainLoss += currentGainLoss;
                             resultSet.NetWorth += currentGainLoss;
 
-                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * (this.GetAbsWeightedSignalDifference(i, true, signals) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
+                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * (Math.Abs(WeightingMultiplier) + Math.Abs(oldWeightingMultiplier)) * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * (this.GetAbsWeightedSignalDifference(i, true, signals) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
                             orders.Add(new Order(this.mainViewModel.BarList[i].Item1, signals[i], this.GetWeightingMultiplier(i, signals), priceOfThisTrade, transactionPriceToDisplay, addableFee, percentageOfThisTrade, resultSet.GainLossPercent, portfolioPerformance, resultSet.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, resultSet.NetWorth));
 
                             priceOfLastTrade = priceOfThisTrade;

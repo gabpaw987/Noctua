@@ -42,7 +42,7 @@ namespace BacktestingSoftware
         /// Gets the equity. This is the Equity the whole IBInput class is getting the data for.
         /// </summary>
         /// <remarks></remarks>
-        public Equity Equity { get; private set; }
+        public Contract Contract { get; private set; }
 
         /// <summary>
         /// In this list the received realtime bars are saved. Whenever a new one is received, it a method checks if there are already 12 bars in the list.<br/>
@@ -55,6 +55,8 @@ namespace BacktestingSoftware
 
         public bool hadFirst { get; set; }
 
+        private bool IsFuture;
+
         /// <summary>
         /// When this method is called, the HistrocialData bars are requested. After the request the client_HistoricalData event is called every time a bar<br/>
         /// arrives.
@@ -65,13 +67,13 @@ namespace BacktestingSoftware
             if (timeSpan.Equals(new TimeSpan()))
             {
                 if (this.Barsize == BarSize.OneMinute)
-                    inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, 1);
+                    inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, 1);
                 else if (this.Barsize == BarSize.OneDay)
-                    inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, 1);
+                    inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, 1);
             }
             else
             {
-                inputClient.RequestHistoricalData(17, this.Equity, DateTime.Now, timeSpan, Barsize, HistoricalDataType.Trades, 1);
+                inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, timeSpan, Barsize, HistoricalDataType.Trades, 1);
             }
         }
 
@@ -82,7 +84,7 @@ namespace BacktestingSoftware
         /// <remarks></remarks>
         public void SubscribeForRealTimeBars()
         {
-            inputClient.RequestRealTimeBars(16, this.Equity, 5, RealTimeBarType.Trades, true);
+            inputClient.RequestRealTimeBars(16, this.Contract, 5, RealTimeBarType.Trades, (this.IsFuture) ? false : true);
         }
 
         /// <summary>
@@ -115,7 +117,7 @@ namespace BacktestingSoftware
         /// can connect to it.</param>
         /// <param name="equity">The equity this class shall represent.</param>
         /// <remarks></remarks>
-        public IBInput(int id, List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, Equity equity, BarSize barsize)
+        public IBInput(int id, List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, string contractSymbol, BarSize barsize, bool isFuture)
         {
             this.Id = id;
 
@@ -129,10 +131,58 @@ namespace BacktestingSoftware
 
             RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
 
-            this.Equity = equity;
+            this.IsFuture = isFuture;
+
+            if (this.IsFuture)
+            {
+                this.Contract = this.ConvertToFutures(contractSymbol);
+            }
+            else
+            {
+                this.Contract = new Equity(contractSymbol);
+            }
 
             this.hadFirst = false;
             this.IsConnected = false;
+        }
+
+        public Future ConvertToFutures(string input)
+        {
+            string expiry = "201" + input.ElementAt(3);
+            switch ((input.ElementAt(2) + "").ToUpper())
+            {
+                case ("Z"):
+                    expiry += "12";
+                    break;
+
+                case ("Q"):
+                    expiry += "09";
+                    break;
+
+                case ("H"):
+                    expiry += "03";
+                    break;
+
+                case ("M"):
+                    expiry += "06";
+                    break;
+
+                default:
+                    break;
+            }
+
+            string exchange = string.Empty;
+
+            if (input.Contains('@'))
+            {
+                exchange = input.Split('@')[1];
+            }
+            else
+            {
+                exchange = "GLOBEX";
+            }
+
+            return new Future(input.ElementAt(0) + "" + input.ElementAt(1), exchange, expiry);
         }
 
         /// <summary>

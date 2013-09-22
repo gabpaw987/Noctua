@@ -1026,5 +1026,45 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private bool _isNetWorthChartInPercentage;
+
+        public bool IsNetWorthChartInPercentage
+        {
+            get
+            {
+                return _isNetWorthChartInPercentage;
+            }
+            set
+            {
+                if (!value.Equals(_isNetWorthChartInPercentage))
+                {
+                    _isNetWorthChartInPercentage = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsNetWorthChartInPercentage"));
+                }
+            }
+        }
+
+        private List<decimal> _performanceFromPrice;
+
+        public List<decimal> PerformanceFromPrice
+        {
+            get
+            {
+                return _performanceFromPrice;
+            }
+            set
+            {
+                if (!value.Equals(_performanceFromPrice))
+                {
+                    _performanceFromPrice = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("PerformanceFromPrice"));
+                }
+            }
+        }
     }
 }

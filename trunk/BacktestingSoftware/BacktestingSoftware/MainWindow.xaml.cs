@@ -14,7 +14,6 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Markup;
 using Krs.Ats.IBNet;
-using Krs.Ats.IBNet.Contracts;
 using Xceed.Wpf.Toolkit;
 
 namespace BacktestingSoftware
@@ -54,6 +53,7 @@ namespace BacktestingSoftware
             this.mainViewModel.IndicatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.OscillatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.CalculationResultSets = new SortedDictionary<string, CalculationResultSet>();
+            this.mainViewModel.PerformanceFromPrice = new List<decimal>();
             this.calculationThreads = new List<Thread>();
 
             this.mainViewModel.SaveFileName = string.Empty;
@@ -105,6 +105,8 @@ namespace BacktestingSoftware
             this.mainViewModel.InnerValue = Properties.Settings.Default.InnerValue;
             this.mainViewModel.IsMiniContract = Properties.Settings.Default.IsMiniContract;
             this.mainViewModel.MiniContractDenominator = Properties.Settings.Default.MiniContractDenominator;
+
+            this.mainViewModel.IsNetWorthChartInPercentage = Properties.Settings.Default.IsNetWorthChartInPercentage;
 
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
@@ -304,13 +306,13 @@ namespace BacktestingSoftware
                 {
                     if (this.mainViewModel.Barsize.Equals("Minute"))
                     {
-                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
-                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
                     }
                     else if (this.mainViewModel.Barsize.Equals("Daily"))
                     {
-                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
-                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
                     }
 
                     this.ibClient.hadFirst = false;
@@ -626,6 +628,7 @@ namespace BacktestingSoftware
                         if (this.iscalculating)
                         {
                             this.LoadLineChartData();
+                            this.LoadNetWorthChartData();
                         }
                     }
                     catch (Exception)
@@ -785,11 +788,11 @@ namespace BacktestingSoftware
 
             if (this.mainViewModel.Barsize.Equals("Minute"))
             {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneMinute);
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
             }
             else if (this.mainViewModel.Barsize.Equals("Daily"))
             {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, new Equity(this.mainViewModel.StockSymbolForRealTime), BarSize.OneDay);
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
             }
 
             if (this.isRealTimeThreadRunning)
@@ -860,6 +863,7 @@ namespace BacktestingSoftware
                         this.Dispatcher.Invoke((Action)(() =>
                         {
                             this.LoadLineChartData();
+                            this.LoadNetWorthChartData();
                         }));
                     }
 
@@ -872,6 +876,114 @@ namespace BacktestingSoftware
                 }
 
                 Console.WriteLine(this.ErrorMessage);
+            }
+        }
+
+        private void LoadNetWorthChartData()
+        {
+            Chart chart = this.FindName("NetWorthChart") as Chart;
+
+            this.CalculatePerformanceFromPrize();
+
+            Series series = new Series("Data");
+            chart.Series.Add(series);
+            Series performanceFromPriceSeries = new Series("PerformanceFromPrice");
+            chart.Series.Add(performanceFromPriceSeries);
+
+            for (int i = 0; i < chart.Series.Count; i++)
+            {
+                // Set series chart type
+                chart.Series[i].ChartType = SeriesChartType.Line;
+
+                chart.Series[i].XValueMember = "DateStamp";
+                chart.Series[i].XValueType = ChartValueType.DateTime;
+                chart.Series[i].YValueMembers = this.mainViewModel.IsNetWorthChartInPercentage ? "Portfolio Performance" : "Net Worth";
+
+                // Set point width
+                chart.Series[i]["PointWidth"] = "0.5";
+
+                chart.Series[i].Color = System.Drawing.Color.Black;
+            }
+
+            this.FormatChart(chart);
+
+            //Calculate Minimum and Maximum values for PerformanceFromPrice
+            decimal min = this.mainViewModel.PerformanceFromPrice.Min();
+            decimal max = this.mainViewModel.PerformanceFromPrice.Max();
+
+            //Calculating Minimum and Maximum values for scaling of y axis
+            decimal min1 = 0m;
+            decimal max1 = 0m;
+
+            if (this.mainViewModel.IsNetWorthChartInPercentage)
+            {
+                min1 = this.mainViewModel.Orders.Min(p => p.CumulativePortfolioPerformance);
+                max1 = this.mainViewModel.Orders.Max(p => p.CumulativePortfolioPerformance);
+            }
+            else
+            {
+                min1 = this.mainViewModel.Orders.Min(p => p.CurrentCapital);
+                max1 = this.mainViewModel.Orders.Max(p => p.CurrentCapital);
+            }
+
+            //decide which one is higher/lower
+            min = min < min1 ? min : min1;
+            max = max > max1 ? max : max1;
+
+            chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
+
+            decimal margin = (max - min) * 5 / 100;
+            chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+            chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
+
+            int current = 0;
+
+            for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+            {
+                if (this.mainViewModel.Orders[current + 1].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
+                {
+                    ++current;
+                }
+
+                if (this.mainViewModel.IsNetWorthChartInPercentage)
+                {
+                    // adding date and net worth
+                    chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CumulativePortfolioPerformance));
+                    chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                }
+                else
+                {
+                    // adding date and portfolio performance
+                    chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CurrentCapital));
+                    chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                }
+            }
+
+            chart.DataBind();
+
+            // draw!
+            chart.Invalidate();
+        }
+
+        private void CalculatePerformanceFromPrize()
+        {
+            decimal roundLotPrice = this.mainViewModel.BarList[0].Item5 * this.mainViewModel.RoundLotSize * this.mainViewModel.InnerValue / this.mainViewModel.MiniContractDenominator;
+            decimal roundLotCount = ((decimal)((int)(Decimal.Parse(this.mainViewModel.Capital) / roundLotPrice)));
+            decimal valueInMarket = roundLotCount * roundLotPrice;
+
+            for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+            {
+                decimal currentRoundLotsPrice = (this.mainViewModel.BarList[i].Item5 * this.mainViewModel.RoundLotSize *
+                                                this.mainViewModel.InnerValue / this.mainViewModel.MiniContractDenominator) * roundLotCount;
+
+                if (this.mainViewModel.IsNetWorthChartInPercentage)
+                {
+                    this.mainViewModel.PerformanceFromPrice.Add(((currentRoundLotsPrice - valueInMarket) / valueInMarket) * 100);
+                }
+                else
+                {
+                    this.mainViewModel.PerformanceFromPrice.Add((currentRoundLotsPrice - valueInMarket) + Decimal.Parse(this.mainViewModel.Capital));
+                }
             }
         }
 
@@ -905,6 +1017,8 @@ namespace BacktestingSoftware
             //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
             chart.Series["Data"].Color = System.Drawing.Color.Black;
 
+            this.FormatChart(chart);
+
             //Calculating Minimum and Maximum values for scaling of y axis
             decimal min = this.mainViewModel.BarList[0].Item4;
             decimal max = 0m;
@@ -912,55 +1026,30 @@ namespace BacktestingSoftware
             min = this.mainViewModel.BarList.Min(p => p.Item4);
             max = this.mainViewModel.BarList.Max(p => p.Item3);
 
-            //Calculating Minimum and Maximum values for zooming to the last 100 values
-            decimal min100 = this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item4;
-            decimal max100 = 0m;
-            for (int i = this.mainViewModel.BarList.Count - 100; i < this.mainViewModel.BarList.Count; i++)
-            {
-                if (this.mainViewModel.BarList[i].Item4 < min100)
-                    min100 = this.mainViewModel.BarList[i].Item4;
-                if (this.mainViewModel.BarList[i].Item3 > max100)
-                    max100 = this.mainViewModel.BarList[i].Item3;
-            }
-
-            //chart.ChartAreas[0].AxisY.IsStartedFromZero = false;
-            chart.ChartAreas[0].CursorY.IsUserEnabled = true;
-            chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-            chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
-            chart.ChartAreas[0].AxisY.ScrollBar.IsPositionedInside = false;
-
-            chart.ChartAreas[0].CursorY.Interval = 0.1;
-
-            chart.ChartAreas[0].CursorX.IsUserEnabled = true;
-            chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-            chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-            chart.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = false;
-
-            //for right zooming of minute bars
-            if (this.mainViewModel.Barsize.Equals("Minute"))
-            {
-                chart.ChartAreas[0].CursorX.Interval = 1 / 1440D;
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy HH:mm:ss";
-            }
-            else if (this.mainViewModel.Barsize.Equals("Daily"))
-            {
-                chart.ChartAreas[0].CursorX.Interval = 1D;
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy";
-            }
-
-            chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chart.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-
-            chart.ChartAreas[0].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
-                                         this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
-            decimal margin100 = (max100 - min100) * 5 / 100;
-            chart.ChartAreas[0].AxisY.ScaleView.Zoom(Math.Round(Convert.ToDouble(min100 - margin100)), Math.Round(Convert.ToDouble(max100 + margin100)));
-
-            chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
-
             decimal margin = (max - min) * 5 / 100;
             chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
             chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
+
+            if (this.mainViewModel.BarList.Count > 100)
+            {
+                //Calculating Minimum and Maximum values for zooming to the last 100 values
+                decimal min100 = this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item4;
+                decimal max100 = 0m;
+                for (int i = this.mainViewModel.BarList.Count - 100; i < this.mainViewModel.BarList.Count; i++)
+                {
+                    if (this.mainViewModel.BarList[i].Item4 < min100)
+                        min100 = this.mainViewModel.BarList[i].Item4;
+                    if (this.mainViewModel.BarList[i].Item3 > max100)
+                        max100 = this.mainViewModel.BarList[i].Item3;
+                }
+
+                chart.ChartAreas[0].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
+                                         this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
+                decimal margin100 = (max100 - min100) * 5 / 100;
+                chart.ChartAreas[0].AxisY.ScaleView.Zoom(Math.Round(Convert.ToDouble(min100 - margin100)), Math.Round(Convert.ToDouble(max100 + margin100)));
+
+                chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
+            }
 
             int k = 0;
 
@@ -1234,6 +1323,37 @@ namespace BacktestingSoftware
             chart.Invalidate();
         }
 
+        public void FormatChart(Chart chart)
+        {
+            //chart.ChartAreas[0].AxisY.IsStartedFromZero = false;
+            chart.ChartAreas[0].CursorY.IsUserEnabled = true;
+            chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+            chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
+            chart.ChartAreas[0].AxisY.ScrollBar.IsPositionedInside = false;
+
+            chart.ChartAreas[0].CursorY.Interval = 0.1;
+
+            chart.ChartAreas[0].CursorX.IsUserEnabled = true;
+            chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+            chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+            chart.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = false;
+
+            //for right zooming of minute bars
+            if (this.mainViewModel.Barsize.Equals("Minute"))
+            {
+                chart.ChartAreas[0].CursorX.Interval = 1 / 1440D;
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy HH:mm:ss";
+            }
+            else if (this.mainViewModel.Barsize.Equals("Daily"))
+            {
+                chart.ChartAreas[0].CursorX.Interval = 1D;
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy";
+            }
+
+            chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chart.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+        }
+
         private void setArrowColor(ArrowAnnotation la, int signal)
         {
             switch (signal)
@@ -1373,6 +1493,8 @@ namespace BacktestingSoftware
                 this.mainViewModel.BarList.Clear();
             }
 
+            this.mainViewModel.PerformanceFromPrice.Clear();
+
             this.mainViewModel.IndicatorDictionary.Clear();
             this.mainViewModel.OscillatorDictionary.Clear();
 
@@ -1401,6 +1523,11 @@ namespace BacktestingSoftware
             chart.ChartAreas.Clear();
             chart.ChartAreas.Add(new ChartArea("MainArea"));
             chart.Annotations.Clear();
+
+            Chart netWorthchart = this.FindName("NetWorthChart") as Chart;
+            netWorthchart.Series.Clear();
+            netWorthchart.ChartAreas.Clear();
+            netWorthchart.ChartAreas.Add(new ChartArea("MainArea"));
 
             this.StatusLabel.Text = "Ready";
             this.ProgressBar.Value = 0;
@@ -1477,6 +1604,8 @@ namespace BacktestingSoftware
             Properties.Settings.Default.MiniContractDenominator = this.mainViewModel.MiniContractDenominator;
 
             Properties.Settings.Default.CalculationThreadCount = this.mainViewModel.CalculationThreadCount;
+
+            Properties.Settings.Default.IsNetWorthChartInPercentage = this.mainViewModel.IsNetWorthChartInPercentage;
 
             Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
 
@@ -1581,7 +1710,8 @@ namespace BacktestingSoftware
                                    this.mainViewModel.IsRealTimeEnabled,
                                    this.mainViewModel.IsAlgorithmUsingMaps,
                                    this.mainViewModel.IsDataFutures,
-                                   this.mainViewModel.IsMiniContract});
+                                   this.mainViewModel.IsMiniContract,
+                                   this.mainViewModel.IsNetWorthChartInPercentage});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1684,6 +1814,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.IsAlgorithmUsingMaps = tempBoolList[1];
                 this.mainViewModel.IsDataFutures = tempBoolList[2];
                 this.mainViewModel.IsMiniContract = tempBoolList[3];
+                this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[4];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
@@ -1892,6 +2023,20 @@ namespace BacktestingSoftware
                     this.mainViewModel.LastDayProfitLoss = resultSet.LastDayProfitLoss;
                 }
             }
+        }
+
+        private void NetWorthChartButton_Click(object sender, RoutedEventArgs e)
+        {
+            Chart netWorthchart = this.FindName("NetWorthChart") as Chart;
+            netWorthchart.Series.Clear();
+            netWorthchart.ChartAreas.Clear();
+            netWorthchart.ChartAreas.Add(new ChartArea("MainArea"));
+
+            this.mainViewModel.PerformanceFromPrice.Clear();
+
+            this.mainViewModel.IsNetWorthChartInPercentage = !this.mainViewModel.IsNetWorthChartInPercentage;
+
+            this.LoadNetWorthChartData();
         }
     }
 }

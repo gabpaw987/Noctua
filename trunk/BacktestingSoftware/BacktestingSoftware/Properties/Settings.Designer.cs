@@ -343,5 +343,17 @@ namespace BacktestingSoftware.Properties {
                 this["CalculationThreadCount"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsNetWorthChartInPercentage {
+            get {
+                return ((bool)(this["IsNetWorthChartInPercentage"]));
+            }
+            set {
+                this["IsNetWorthChartInPercentage"] = value;
+            }
+        }
     }
 }
