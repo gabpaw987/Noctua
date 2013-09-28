@@ -76,6 +76,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AutoGreyableImage.cs" />
     <Compile Include="CalculationResultSet.cs" />
     <Compile Include="IBInput.cs" />
     <Compile Include="InvertableBooleanToVisibilityConverter.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace BacktestingSoftware
@@ -42,7 +43,11 @@ namespace BacktestingSoftware
                 {
                     _barList = value;
                     if (PropertyChanged != null)
+                    {
                         PropertyChanged(this, new PropertyChangedEventArgs("BarList"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("TimeSpanToDisplay"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("DatesToDisplay"));
+                    }
                 }
             }
         }
@@ -233,6 +238,25 @@ namespace BacktestingSoftware
                     _gainLossPercent = value;
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("GainLossPercent"));
+                }
+            }
+        }
+
+        private decimal _annualizedGainLossPercent;
+
+        public decimal AnnualizedGainLossPercent
+        {
+            get
+            {
+                return Math.Round(_annualizedGainLossPercent, 3);
+            }
+            set
+            {
+                if (!value.Equals(_annualizedGainLossPercent))
+                {
+                    _annualizedGainLossPercent = value;
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("AnnualizedGainLossPercent"));
                 }
             }
         }
@@ -702,6 +726,22 @@ namespace BacktestingSoftware
             }
         }
 
+        private decimal _annualizedPortfolioPerformancePercent;
+
+        public decimal AnnualizedPortfolioPerformancePercent
+        {
+            get
+            {
+                return Math.Round(_annualizedPortfolioPerformancePercent, 3);
+            }
+            set
+            {
+                _annualizedPortfolioPerformancePercent = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("AnnualizedPortfolioPerformancePercent"));
+            }
+        }
+
         private decimal _sharpeRatio;
 
         public decimal SharpeRatio
@@ -780,13 +820,13 @@ namespace BacktestingSoftware
             }
         }
 
-        private decimal _highestDailyProfit;
+        private string _highestDailyProfit;
 
-        public decimal HighestDailyProfit
+        public string HighestDailyProfit
         {
             get
             {
-                return Math.Round(_highestDailyProfit, 3);
+                return _highestDailyProfit;
             }
             set
             {
@@ -799,13 +839,13 @@ namespace BacktestingSoftware
             }
         }
 
-        private decimal _highestDailyLoss;
+        private string _highestDailyLoss;
 
-        public decimal HighestDailyLoss
+        public string HighestDailyLoss
         {
             get
             {
-                return Math.Round(_highestDailyLoss, 3);
+                return _highestDailyLoss;
             }
             set
             {
@@ -818,13 +858,13 @@ namespace BacktestingSoftware
             }
         }
 
-        private decimal _lastDayProfitLoss;
+        private string _lastDayProfitLoss;
 
-        public decimal LastDayProfitLoss
+        public string LastDayProfitLoss
         {
             get
             {
-                return Math.Round(_lastDayProfitLoss, 3);
+                return _lastDayProfitLoss;
             }
             set
             {
@@ -1019,7 +1059,14 @@ namespace BacktestingSoftware
             {
                 if (!value.Equals(_calculationThreadCount))
                 {
-                    _calculationThreadCount = value;
+                    if (value < 0)
+                    {
+                        _calculationThreadCount = 1;
+                    }
+                    else
+                    {
+                        _calculationThreadCount = value;
+                    }
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("CalculationThreadCount"));
@@ -1063,6 +1110,50 @@ namespace BacktestingSoftware
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("PerformanceFromPrice"));
+                }
+            }
+        }
+
+        public string TimeSpanToDisplay
+        {
+            get
+            {
+                if (this.BarList != null)
+                {
+                    if (this.BarList.Count > 1)
+                    {
+                        return (this.BarList.Last().Item1 - this.BarList[0].Item1).ToString(@"%d\.hh\:mm\:ss").Replace(".", " days ") + " hours";
+                    }
+                    else
+                    {
+                        return "0";
+                    }
+                }
+                else
+                {
+                    return "0";
+                }
+            }
+        }
+
+        public string DatesToDisplay
+        {
+            get
+            {
+                if (this.BarList != null)
+                {
+                    if (this.BarList.Count > 1)
+                    {
+                        return this.BarList[0].Item1 + " - " + this.BarList.Last().Item1;
+                    }
+                    else
+                    {
+                        return "-";
+                    }
+                }
+                else
+                {
+                    return "-";
                 }
             }
         }

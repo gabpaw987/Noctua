@@ -183,7 +183,7 @@ namespace BacktestingSoftware
                     resultSet.LossPercent = 0;
                     decimal priceOfLastTrade = 0m;
                     decimal absCumGainLoss = 0m;
-                    List<decimal> dailyPortfolioPerformances = new List<decimal>();
+                    Dictionary<string, decimal> dailyPortfolioPerformances = new Dictionary<string, decimal>();
                     //For calculation of daily Portfolio Performances
                     DateTime currentDay = currentDay = this.mainViewModel.BarList[0].Item1.Date;
                     decimal currentDayPortfolioPerformance = 0m;
@@ -315,9 +315,10 @@ namespace BacktestingSoftware
 
                             if ((currentDay != this.mainViewModel.BarList[i].Item1.Date))
                             {
+                                dailyPortfolioPerformances.Add(currentDay.Date.ToString("dd.MM.yyyy"), currentDayPortfolioPerformance);
+
                                 currentDay = this.mainViewModel.BarList[i].Item1.Date;
 
-                                dailyPortfolioPerformances.Add(currentDayPortfolioPerformance);
                                 currentDayPortfolioPerformance = portfolioPerformance;
                             }
                             else
@@ -397,12 +398,22 @@ namespace BacktestingSoftware
 
                     resultSet.SharpeRatio = (resultSet.PortfolioPerformancePercent - portfolioPerformanceWithRiskFreeRate) / resultSet.StdDevOfProfit;
 
-                    //add performance of the last day
-                    dailyPortfolioPerformances.Add(currentDayPortfolioPerformance);
+                    TimeSpan timeSpanOfData = this.mainViewModel.BarList.Last().Item1 - this.mainViewModel.BarList[0].Item1;
+                    decimal timeSpanToAnnualizedMultiplier = Convert.ToDecimal((new TimeSpan(365, 6, 0, 0, 0)).TotalMinutes /
+                                                                                 timeSpanOfData.TotalMinutes);
 
-                    resultSet.HighestDailyProfit = dailyPortfolioPerformances.Max();
-                    resultSet.HighestDailyLoss = dailyPortfolioPerformances.Min();
-                    resultSet.LastDayProfitLoss = dailyPortfolioPerformances.Last();
+                    resultSet.AnnualizedPortfolioPerformancePercent = resultSet.PortfolioPerformancePercent * timeSpanToAnnualizedMultiplier;
+                    resultSet.AnnualizedGainLossPercent = resultSet.GainLossPercent * timeSpanToAnnualizedMultiplier;
+
+                    //add performance of the last day
+                    dailyPortfolioPerformances.Add(currentDay.Date.ToString("dd.MM.yyyy"), currentDayPortfolioPerformance);
+
+                    decimal max = dailyPortfolioPerformances.Values.Max();
+                    decimal min = dailyPortfolioPerformances.Values.Min();
+
+                    resultSet.HighestDailyProfit = Math.Round(max, 3, MidpointRounding.AwayFromZero) + " @ " + dailyPortfolioPerformances.FirstOrDefault(x => x.Value.Equals(max)).Key;
+                    resultSet.HighestDailyLoss = Math.Round(min, 3, MidpointRounding.AwayFromZero) + " @ " + dailyPortfolioPerformances.FirstOrDefault(x => x.Value.Equals(min)).Key;
+                    resultSet.LastDayProfitLoss = Math.Round(dailyPortfolioPerformances.Last().Value, 3, MidpointRounding.AwayFromZero) + " @ " + dailyPortfolioPerformances.Last().Key;
 
                     resultSet.TimeInMarket = (decimal)signals.Count<int>(n => n != 0) / (decimal)signals.Count * 100m;
 

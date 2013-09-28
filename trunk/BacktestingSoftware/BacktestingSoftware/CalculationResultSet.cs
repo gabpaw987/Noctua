@@ -7,19 +7,21 @@ namespace BacktestingSoftware
     {
         private decimal _netWorth;
         private decimal _portfolioPerformancePercent;
+        private decimal _annualizedPortfolioPerformancePercent;
         private decimal _timeInMarket;
         private decimal _sharpeRatio;
         private decimal _stdDevOfProfit;
         private decimal _stdDevOfPEquityPrice;
         private decimal _gainLossPercent;
+        private decimal _annualizedGainLossPercent;
         private decimal _noOfGoodTrades;
         private decimal _gainPercent;
         private decimal _noOfBadTrades;
         private decimal _lossPercent;
         private decimal _gtBtRatio;
-        private decimal _highestDailyProfit;
-        private decimal _highestDailyLoss;
-        private decimal _lastDayProfitLoss;
+        private string _highestDailyProfit;
+        private string _highestDailyLoss;
+        private string _lastDayProfitLoss;
 
         public decimal NetWorth
         {
@@ -31,6 +33,12 @@ namespace BacktestingSoftware
         {
             get { return _portfolioPerformancePercent; }
             set { _portfolioPerformancePercent = value; }
+        }
+
+        public decimal AnnualizedPortfolioPerformancePercent
+        {
+            get { return _annualizedPortfolioPerformancePercent; }
+            set { _annualizedPortfolioPerformancePercent = value; }
         }
 
         public decimal TimeInMarket
@@ -63,6 +71,12 @@ namespace BacktestingSoftware
             set { _gainLossPercent = value; }
         }
 
+        public decimal AnnualizedGainLossPercent
+        {
+            get { return _annualizedGainLossPercent; }
+            set { _annualizedGainLossPercent = value; }
+        }
+
         public decimal NoOfGoodTrades
         {
             get { return _noOfGoodTrades; }
@@ -93,19 +107,19 @@ namespace BacktestingSoftware
             set { _gtBtRatio = value; }
         }
 
-        public decimal HighestDailyProfit
+        public string HighestDailyProfit
         {
             get { return _highestDailyProfit; }
             set { _highestDailyProfit = value; }
         }
 
-        public decimal HighestDailyLoss
+        public string HighestDailyLoss
         {
             get { return _highestDailyLoss; }
             set { _highestDailyLoss = value; }
         }
 
-        public decimal LastDayProfitLoss
+        public string LastDayProfitLoss
         {
             get { return _lastDayProfitLoss; }
             set { _lastDayProfitLoss = value; }

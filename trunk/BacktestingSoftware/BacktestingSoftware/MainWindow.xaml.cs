@@ -35,6 +35,8 @@ namespace BacktestingSoftware
         public bool isRealTimeThreadRunning;
         public int curBarCount;
 
+        private int oldThreadCount = 0;
+
         private int selectedArrowIndex;
 
         private static decimal progress;
@@ -55,6 +57,10 @@ namespace BacktestingSoftware
             this.mainViewModel.CalculationResultSets = new SortedDictionary<string, CalculationResultSet>();
             this.mainViewModel.PerformanceFromPrice = new List<decimal>();
             this.calculationThreads = new List<Thread>();
+
+            this.mainViewModel.HighestDailyProfit = "0";
+            this.mainViewModel.HighestDailyLoss = "0";
+            this.mainViewModel.LastDayProfitLoss = "0";
 
             this.mainViewModel.SaveFileName = string.Empty;
             this.mainViewModel.LoadFileName = string.Empty;
@@ -239,9 +245,9 @@ namespace BacktestingSoftware
                     "Number of Bad Trades:                         " + (this.mainViewModel.NoOfBadTrades < 0 ? "" : " ")                + this.mainViewModel.NoOfBadTrades,
                     "Loss From Bad Trades [%]:                     " + (this.mainViewModel.LossPercent < 0 ? "" : " ")                  + this.mainViewModel.LossPercent,
                     "Ratio of Good Trades - Bad Trades:            " + (this.mainViewModel.GtBtRatio < 0 ? "" : " ")                    + this.mainViewModel.GtBtRatio,
-                    "Highest Daily Portfolio Performance:          " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit,
-                    "Lowest Daily Portfolio Performance:           " + (this.mainViewModel.HighestDailyLoss < 0 ? "" : " ")             + this.mainViewModel.HighestDailyLoss,
-                    "Portfolio Performance of the Current Day:     " + (this.mainViewModel.HighestDailyProfit < 0 ? "" : " ")           + this.mainViewModel.HighestDailyProfit
+                    "Highest Daily Portfolio Performance:          " + this.mainViewModel.HighestDailyProfit,
+                    "Lowest Daily Portfolio Performance:           " + this.mainViewModel.HighestDailyLoss,
+                    "Portfolio Performance of the Current Day:     " + this.mainViewModel.HighestDailyProfit
                };
 
                 // Open document
@@ -289,386 +295,452 @@ namespace BacktestingSoftware
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!this.iscalculating)
+            if (this.oldThreadCount != 0)
             {
-                this.StopButton_Click(null, null);
+                this.mainViewModel.CalculationThreadCount = this.oldThreadCount;
+                this.oldThreadCount = 0;
 
-                this.resetCalculation(true);
+                this.CalculationThreadCountSlider.IsEnabled = true;
+                this.CalculationThreadCountTextBox.IsEnabled = true;
 
-                this.iscalculating = true;
-
-                if (this.isRealTimeThreadRunning)
+                this.PauseButton.IsEnabled = true;
+            }
+            else
+            {
+                if (!this.iscalculating)
                 {
-                    ibClient.Disconnect();
-                    this.isRealTimeThreadRunning = false;
-                }
-                if (this.mainViewModel.IsRealTimeEnabled)
-                {
-                    if (this.mainViewModel.Barsize.Equals("Minute"))
+                    this.StopButton_Click(null, null);
+
+                    this.resetCalculation(true);
+
+                    this.iscalculating = true;
+
+                    if (this.isRealTimeThreadRunning)
                     {
-                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
-                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                        ibClient.Disconnect();
+                        this.isRealTimeThreadRunning = false;
                     }
-                    else if (this.mainViewModel.Barsize.Equals("Daily"))
-                    {
-                        this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
-                        this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
-                    }
-
-                    this.ibClient.hadFirst = false;
-                    this.ErrorMessage = this.ibClient.Connect();
-                }
-
-                bw = new BackgroundWorker();
-                bw.WorkerSupportsCancellation = true;
-
-                // this allows our worker to report progress during work
-                bw.WorkerReportsProgress = true;
-
-                // what to do in the background thread
-                bw.DoWork += new DoWorkEventHandler(
-                delegate(object o, DoWorkEventArgs args)
-                {
-                    BackgroundWorker b = o as BackgroundWorker;
-
-                    // report the progress
-                    b.ReportProgress(0, "Starting Calculation...");
-
-                    this.Dispatcher.Invoke((Action)(() =>
-                    {
-                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
-                    }));
-
-                    this.c = new Calculator(this.mainViewModel);
-
-                    // report the progress
                     if (this.mainViewModel.IsRealTimeEnabled)
-                        b.ReportProgress(5, "Reading From IB...");
-                    else
-                        b.ReportProgress(5, "Reading File...");
-
-                    if (!this.isRealTimeThreadRunning)
                     {
-                        try
+                        if (this.mainViewModel.Barsize.Equals("Minute"))
                         {
-                            if (this.ErrorMessage.Length == 0)
+                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                        }
+                        else if (this.mainViewModel.Barsize.Equals("Daily"))
+                        {
+                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                        }
+
+                        this.ibClient.hadFirst = false;
+                        this.ErrorMessage = this.ibClient.Connect();
+                    }
+
+                    bw = new BackgroundWorker();
+                    bw.WorkerSupportsCancellation = true;
+
+                    // this allows our worker to report progress during work
+                    bw.WorkerReportsProgress = true;
+
+                    // what to do in the background thread
+                    bw.DoWork += new DoWorkEventHandler(
+                    delegate(object o, DoWorkEventArgs args)
+                    {
+                        BackgroundWorker b = o as BackgroundWorker;
+
+                        // report the progress
+                        b.ReportProgress(0, "Starting Calculation...");
+
+                        this.Dispatcher.Invoke((Action)(() =>
+                        {
+                            this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
+                        }));
+
+                        this.c = new Calculator(this.mainViewModel);
+
+                        // report the progress
+                        if (this.mainViewModel.IsRealTimeEnabled)
+                            b.ReportProgress(5, "Reading From IB...");
+                        else
+                            b.ReportProgress(5, "Reading File...");
+
+                        if (!this.isRealTimeThreadRunning)
+                        {
+                            try
                             {
-                                if (this.mainViewModel.IsRealTimeEnabled)
+                                if (this.ErrorMessage.Length == 0)
                                 {
-                                    if (this.iscalculating)
+                                    if (this.mainViewModel.IsRealTimeEnabled)
                                     {
-                                        this.ErrorMessage = this.historicalDataClient.Connect();
-                                    }
-
-                                    if (this.iscalculating)
-                                    {
-                                        if (this.ErrorMessage.Length == 0)
-                                            this.historicalDataClient.GetHistoricalDataBars(new TimeSpan());
-                                    }
-
-                                    if (this.iscalculating)
-                                    {
-                                        while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
-                                               this.historicalDataClient.totalHistoricalBars == 0)
+                                        if (this.iscalculating)
                                         {
-                                            if (this.historicalDataClient.totalHistoricalBars != 0 && this.mainViewModel.BarList.Count != 0)
+                                            this.ErrorMessage = this.historicalDataClient.Connect();
+                                        }
+
+                                        if (this.iscalculating)
+                                        {
+                                            if (this.ErrorMessage.Length == 0)
+                                                this.historicalDataClient.GetHistoricalDataBars(new TimeSpan());
+                                        }
+
+                                        if (this.iscalculating)
+                                        {
+                                            while (this.mainViewModel.BarList.Count < this.historicalDataClient.totalHistoricalBars ||
+                                                   this.historicalDataClient.totalHistoricalBars == 0)
                                             {
-                                                b.ReportProgress(5 + (int)(15m * ((decimal)this.mainViewModel.BarList.Count / (decimal)this.historicalDataClient.totalHistoricalBars)),
-                                                    "Reading From IB... (" + this.mainViewModel.BarList.Count + "/"
-                                                    + this.historicalDataClient.totalHistoricalBars + ")");
-                                            }
-                                            System.Threading.Thread.Sleep(100);
-                                            if (!this.iscalculating)
-                                            {
-                                                break;
+                                                if (this.historicalDataClient.totalHistoricalBars != 0 && this.mainViewModel.BarList.Count != 0)
+                                                {
+                                                    b.ReportProgress(5 + (int)(15m * ((decimal)this.mainViewModel.BarList.Count / (decimal)this.historicalDataClient.totalHistoricalBars)),
+                                                        "Reading From IB... (" + this.mainViewModel.BarList.Count + "/"
+                                                        + this.historicalDataClient.totalHistoricalBars + ")");
+                                                }
+                                                System.Threading.Thread.Sleep(100);
+                                                if (!this.iscalculating)
+                                                {
+                                                    break;
+                                                }
                                             }
                                         }
+
+                                        this.mainViewModel.BarList.Remove(this.mainViewModel.BarList.Last());
+
+                                        if (this.iscalculating)
+                                        {
+                                            this.curBarCount = this.mainViewModel.BarList.Count;
+
+                                            this.historicalDataClient.Disconnect();
+                                        }
                                     }
-
-                                    this.mainViewModel.BarList.Remove(this.mainViewModel.BarList.Last());
-
-                                    if (this.iscalculating)
+                                    else
                                     {
-                                        this.curBarCount = this.mainViewModel.BarList.Count;
-
-                                        this.historicalDataClient.Disconnect();
+                                        c.ReadFile();
                                     }
                                 }
-                                else
-                                {
-                                    c.ReadFile();
-                                }
                             }
-                        }
-                        catch (Exception)
-                        {
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                                this.ErrorMessage = "An error with the Data-File occured.";
-                        }
-                    }
-
-                    // report the progress
-                    b.ReportProgress(20, "Calculating Signals...");
-
-                    if (this.mainViewModel.AdditionalParameters.Length == 0)
-                    {
-                        try
-                        {
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                            catch (Exception)
                             {
-                                Type t = c.LoadAlgorithmFile();
-                                this.mainViewModel.Signals = c.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
+                                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                    this.ErrorMessage = "An error with the Data-File occured.";
                             }
-                        }
-                        catch (Exception)
-                        {
-                            this.ErrorMessage = "An error with the Algorithm-File occured.";
                         }
 
                         // report the progress
-                        b.ReportProgress(70, "Calculating Performance...");
+                        b.ReportProgress(20, "Calculating Signals...");
 
-                        try
+                        if (this.mainViewModel.AdditionalParameters.Length == 0)
                         {
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                                this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders, this.iscalculating);
+                            try
+                            {
+                                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                {
+                                    Type t = c.LoadAlgorithmFile();
+                                    this.mainViewModel.Signals = c.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                this.ErrorMessage = "An error with the Algorithm-File occured.";
+                            }
 
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                            // report the progress
+                            b.ReportProgress(70, "Calculating Performance...");
+
+                            try
+                            {
+                                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                    this.ErrorMessage = c.CalculateNumbers(string.Empty, this.mainViewModel.Signals, this.mainViewModel.Orders, this.iscalculating);
+
+                                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                    this.Dispatcher.Invoke((Action)(() =>
+                                    {
+                                        this.ResultSelectionComboBox.SelectedIndex = 0;
+                                    }));
+                            }
+                            catch (Exception)
+                            {
+                                this.ErrorMessage = "An error while calculating performance data occured.";
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
                                 this.Dispatcher.Invoke((Action)(() =>
                                 {
-                                    this.ResultSelectionComboBox.SelectedIndex = 0;
+                                    this.PauseButton.IsEnabled = true;
                                 }));
-                        }
-                        catch (Exception)
-                        {
-                            this.ErrorMessage = "An error while calculating performance data occured.";
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            Dictionary<string, List<decimal>> parameters = new Dictionary<string, List<decimal>>();
-                            //split AdditionalParameters string
-                            string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split('\n');
-                            foreach (string parameter in separatedAdditionalParameters)
-                            {
-                                string[] separatedParameter = parameter.Split(',');
-                                List<decimal> decimalParameter = new List<decimal>();
-                                for (int i = 1; i < separatedParameter.Length; i++)
+
+                                Dictionary<string, List<decimal>> parameters = new Dictionary<string, List<decimal>>();
+                                //split AdditionalParameters string
+                                string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split('\n');
+                                foreach (string parameter in separatedAdditionalParameters)
                                 {
-                                    decimalParameter.Add(decimal.Parse(separatedParameter[i], CultureInfo.InvariantCulture));
-                                }
-                                parameters.Add(separatedParameter[0], decimalParameter);
-                            }
-
-                            List<List<decimal>> valueSets = new List<List<decimal>>();
-                            List<List<decimal>> parameterRanges = new List<List<decimal>>();
-
-                            //fill parameterRanges list
-                            foreach (List<decimal> informations in parameters.Values)
-                            {
-                                List<decimal> col = new List<decimal>();
-                                for (decimal i = informations[0]; i <= informations[1]; i += informations[2])
-                                {
-                                    col.Add(i);
-                                }
-                                parameterRanges.Add(col);
-                                valueSets.Add(new List<decimal>());
-                            }
-                            Calculator.mesh(0, parameterRanges, valueSets);
-
-                            progress = 20m;
-                            Type t = c.LoadAlgorithmFile();
-
-                            for (int i = 0; i < valueSets[0].Count; i++)
-                            {
-                                bool isThreadReady = false;
-
-                                if (!this.iscalculating)
-                                {
-                                    break;
-                                }
-
-                                if (calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
-                                {
-                                    int i2 = i;
-                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
-                                    calculationThreads[calculationThreads.Count - 1].Start();
-                                    isThreadReady = true;
-                                }
-
-                                while (!isThreadReady && this.mainViewModel.CalculationThreadCount != 0)
-                                {
-                                    for (int j = 0; j < calculationThreads.Count; j++)
+                                    string[] separatedParameter = parameter.Split(',');
+                                    List<decimal> decimalParameter = new List<decimal>();
+                                    for (int i = 1; i < separatedParameter.Length; i++)
                                     {
-                                        if (!calculationThreads[j].IsAlive)
-                                        {
-                                            isThreadReady = true;
-                                            calculationThreads.Remove(calculationThreads[j]);
-
-                                            if (this.calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
-                                            {
-                                                int i2 = i;
-                                                calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
-                                                calculationThreads[calculationThreads.Count - 1].Start();
-                                            }
-                                        }
-                                        if (isThreadReady)
-                                        {
-                                            break;
-                                        }
+                                        decimalParameter.Add(decimal.Parse(separatedParameter[i], CultureInfo.InvariantCulture));
                                     }
+                                    parameters.Add(separatedParameter[0], decimalParameter);
+                                }
+
+                                List<List<decimal>> valueSets = new List<List<decimal>>();
+                                List<List<decimal>> parameterRanges = new List<List<decimal>>();
+
+                                //fill parameterRanges list
+                                foreach (List<decimal> informations in parameters.Values)
+                                {
+                                    List<decimal> col = new List<decimal>();
+                                    for (decimal i = informations[0]; i <= informations[1]; i += informations[2])
+                                    {
+                                        col.Add(i);
+                                    }
+                                    parameterRanges.Add(col);
+                                    valueSets.Add(new List<decimal>());
+                                }
+                                Calculator.mesh(0, parameterRanges, valueSets);
+
+                                progress = 20m;
+                                Type t = c.LoadAlgorithmFile();
+
+                                //Calculate all value sets
+                                for (int i = 0; i < valueSets[0].Count; i++)
+                                {
+                                    bool isThreadReady = false;
+
                                     if (!this.iscalculating)
                                     {
                                         break;
                                     }
-                                    Thread.Sleep(50);
-                                }
-                                while (this.mainViewModel.CalculationThreadCount == 0)
-                                {
-                                    Thread.Sleep(50);
-                                }
-                            }
 
-                            while (true)
-                            {
-                                bool isThreadStillAlive = false;
-                                foreach (Thread thread in calculationThreads)
-                                {
-                                    if (thread.IsAlive)
+                                    //create new threads if there are less that CalculationThreadCount
+                                    if (calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
                                     {
-                                        isThreadStillAlive = true;
-                                    }
-                                }
-                                if (!isThreadStillAlive)
-                                {
-                                    break;
-                                }
-                                Thread.Sleep(100);
-                            }
-
-                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                            {
-                                if (this.mainViewModel.CalculationResultSets.Count > 1)
-                                {
-                                    CalculationResultSet highestPPResultSet = new CalculationResultSet();
-                                    highestPPResultSet.PortfolioPerformancePercent = decimal.MinValue;
-                                    CalculationResultSet lowestPPResultSet = new CalculationResultSet();
-                                    lowestPPResultSet.PortfolioPerformancePercent = decimal.MaxValue;
-
-                                    foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
-                                    {
-                                        if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
-                                        {
-                                            highestPPResultSet = resultSet;
-                                        }
-
-                                        if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
-                                        {
-                                            lowestPPResultSet = resultSet;
-                                        }
+                                        int i2 = i;
+                                        calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                        calculationThreads[calculationThreads.Count - 1].Start();
+                                        isThreadReady = true;
                                     }
 
-                                    string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
-                                    this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
-                                    highestPPResultSetKey += " [Best]";
-                                    this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
-
-                                    string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
-                                    this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
-                                    lowestPPResultSetKey += " [Worst]";
-                                    this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
-
-                                    this.Dispatcher.Invoke((Action)(() =>
+                                    //reuse running threads
+                                    while (!isThreadReady && this.mainViewModel.CalculationThreadCount != 0)
                                     {
-                                        this.ResultSelectionComboBox.Items.Refresh();
+                                        for (int j = 0; j < calculationThreads.Count; j++)
+                                        {
+                                            if (!calculationThreads[j].IsAlive)
+                                            {
+                                                isThreadReady = true;
+                                                calculationThreads.Remove(calculationThreads[j]);
 
-                                        this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
-                                    }));
+                                                if (this.calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
+                                                {
+                                                    int i2 = i;
+                                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                                    calculationThreads[calculationThreads.Count - 1].Start();
+                                                }
+                                            }
+                                            if (isThreadReady)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        if (!this.iscalculating)
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(50);
+                                    }
+
+                                    //handle pausing
+                                    if (this.mainViewModel.CalculationThreadCount == 0)
+                                    {
+                                        //if this valueSet hasnt been calculated yet, calculate it next run
+                                        if (!isThreadReady)
+                                        {
+                                            i--;
+                                        }
+
+                                        //Wait until all threads are run out
+                                        bool isAThreadStillRunning = true;
+                                        while (isAThreadStillRunning)
+                                        {
+                                            isAThreadStillRunning = false;
+                                            for (int j = 0; j < calculationThreads.Count; j++)
+                                            {
+                                                if (calculationThreads[j].IsAlive)
+                                                {
+                                                    isAThreadStillRunning = true;
+                                                }
+                                            }
+                                            if (this.mainViewModel.CalculationThreadCount != 0)
+                                            {
+                                                break;
+                                            }
+                                            Thread.Sleep(50);
+                                        }
+
+                                        //Show that its now paused
+                                        b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Paused");
+                                    }
+
+                                    while (this.mainViewModel.CalculationThreadCount == 0)
+                                    {
+                                        Thread.Sleep(50);
+                                    }
                                 }
-                                else
+
+                                while (true)
                                 {
-                                    if (this.ErrorMessage.Length == 0)
+                                    bool isThreadStillAlive = false;
+                                    foreach (Thread thread in calculationThreads)
+                                    {
+                                        if (thread.IsAlive)
+                                        {
+                                            isThreadStillAlive = true;
+                                        }
+                                    }
+                                    if (!isThreadStillAlive)
+                                    {
+                                        break;
+                                    }
+                                    Thread.Sleep(100);
+                                }
+
+                                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                {
+                                    if (this.mainViewModel.CalculationResultSets.Count > 1)
+                                    {
+                                        CalculationResultSet highestPPResultSet = new CalculationResultSet();
+                                        highestPPResultSet.PortfolioPerformancePercent = decimal.MinValue;
+                                        CalculationResultSet lowestPPResultSet = new CalculationResultSet();
+                                        lowestPPResultSet.PortfolioPerformancePercent = decimal.MaxValue;
+
+                                        foreach (CalculationResultSet resultSet in this.mainViewModel.CalculationResultSets.Values)
+                                        {
+                                            if (highestPPResultSet.PortfolioPerformancePercent < resultSet.PortfolioPerformancePercent)
+                                            {
+                                                highestPPResultSet = resultSet;
+                                            }
+
+                                            if (lowestPPResultSet.PortfolioPerformancePercent > resultSet.PortfolioPerformancePercent)
+                                            {
+                                                lowestPPResultSet = resultSet;
+                                            }
+                                        }
+
+                                        string highestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(highestPPResultSet)).Key;
+                                        this.mainViewModel.CalculationResultSets.Remove(highestPPResultSetKey);
+                                        highestPPResultSetKey += " [Best]";
+                                        this.mainViewModel.CalculationResultSets.Add(highestPPResultSetKey, highestPPResultSet);
+
+                                        string lowestPPResultSetKey = this.mainViewModel.CalculationResultSets.FirstOrDefault(x => x.Value.Equals(lowestPPResultSet)).Key;
+                                        this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
+                                        lowestPPResultSetKey += " [Worst]";
+                                        this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
+
                                         this.Dispatcher.Invoke((Action)(() =>
                                         {
-                                            this.ResultSelectionComboBox.SelectedIndex = 0;
+                                            this.ResultSelectionComboBox.Items.Refresh();
+
+                                            this.ResultSelectionComboBox.SelectedItem = highestPPResultSetKey;
                                         }));
+                                    }
+                                    else
+                                    {
+                                        if (this.ErrorMessage.Length == 0)
+                                            this.Dispatcher.Invoke((Action)(() =>
+                                            {
+                                                this.ResultSelectionComboBox.SelectedIndex = 0;
+                                            }));
+                                    }
                                 }
+                            }
+                            catch (Exception)
+                            {
+                                this.ErrorMessage = "An error while evaluating the additional parameters occured";
+                            }
+                        }
+                    });
+
+                    // what to do when progress changed (update the progress bar for example)
+                    bw.ProgressChanged += new ProgressChangedEventHandler(
+                    delegate(object o, ProgressChangedEventArgs args)
+                    {
+                        this.StatusLabel.Text = String.Empty + args.UserState.ToString();
+                        this.ProgressBar.Value = args.ProgressPercentage;
+                        this.TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100.0;
+                        if (args.ProgressPercentage == 0)
+                        {
+                            this.ProgressBar.Visibility = Visibility.Visible;
+                            this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+                        }
+                    });
+
+                    // what to do when worker completes its task (notify the user)
+                    bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
+                    delegate(object o, RunWorkerCompletedEventArgs args)
+                    {
+                        this.StatusLabel.Text = "Drawing Chart...";
+                        try
+                        {
+                            if (this.iscalculating)
+                            {
+                                this.LoadLineChartData();
+                                this.LoadNetWorthChartData();
                             }
                         }
                         catch (Exception)
                         {
-                            this.ErrorMessage = "An error while evaluating the additional parameters occured";
+                            if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                                this.ErrorMessage = "An error while drawing occured.";
                         }
-                    }
-                });
 
-                // what to do when progress changed (update the progress bar for example)
-                bw.ProgressChanged += new ProgressChangedEventHandler(
-                delegate(object o, ProgressChangedEventArgs args)
-                {
-                    this.StatusLabel.Text = String.Empty + args.UserState.ToString();
-                    this.ProgressBar.Value = args.ProgressPercentage;
-                    this.TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100.0;
-                    if (args.ProgressPercentage == 0)
-                    {
-                        this.ProgressBar.Visibility = Visibility.Visible;
-                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
-                    }
-                });
+                        this.orders.DataContext = this.mainViewModel.Orders;
+                        this.orders.Items.Refresh();
 
-                // what to do when worker completes its task (notify the user)
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-                delegate(object o, RunWorkerCompletedEventArgs args)
-                {
-                    this.StatusLabel.Text = "Drawing Chart...";
-                    try
-                    {
-                        if (this.iscalculating)
+                        if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
+                            this.mainViewModel.AdditionalParameters.Length == 0)
                         {
-                            this.LoadLineChartData();
-                            this.LoadNetWorthChartData();
+                            this.realTimeThread = new Thread(doRealTimeThreadWork);
+                            this.realTimeThread.Start();
                         }
-                    }
-                    catch (Exception)
-                    {
-                        if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                            this.ErrorMessage = "An error while drawing occured.";
-                    }
 
-                    this.orders.DataContext = this.mainViewModel.Orders;
-                    this.orders.Items.Refresh();
+                        if (this.ErrorMessage.Length != 0)
+                        {
+                            this.StatusLabel.Text = this.ErrorMessage;
+                            this.ErrorMessage = "";
+                        }
+                        else
+                        {
+                            this.StatusLabel.Text = "Finished!";
+                        }
 
-                    if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
-                        this.mainViewModel.AdditionalParameters.Length == 0)
-                    {
-                        this.realTimeThread = new Thread(doRealTimeThreadWork);
-                        this.realTimeThread.Start();
-                    }
+                        this.FlashWindow(5);
 
-                    if (this.ErrorMessage.Length != 0)
-                    {
-                        this.StatusLabel.Text = this.ErrorMessage;
-                        this.ErrorMessage = "";
-                    }
-                    else
-                    {
-                        this.StatusLabel.Text = "Finished!";
-                    }
+                        this.ProgressBar.Value = 100;
+                        this.ProgressBar.Visibility = Visibility.Hidden;
 
-                    this.FlashWindow(5);
+                        this.TaskbarItemInfo.ProgressValue = 100;
+                        this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
 
-                    this.ProgressBar.Value = 100;
-                    this.ProgressBar.Visibility = Visibility.Hidden;
+                        //reset pause if no threads were used or pause failed
+                        if (this.oldThreadCount != 0)
+                        {
+                            this.mainViewModel.CalculationThreadCount = this.oldThreadCount;
+                            this.oldThreadCount = 0;
 
-                    this.TaskbarItemInfo.ProgressValue = 100;
-                    this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+                            this.CalculationThreadCountSlider.IsEnabled = true;
+                            this.CalculationThreadCountTextBox.IsEnabled = true;
+                        }
 
-                    this.iscalculating = false;
-                });
+                        this.PauseButton.IsEnabled = false;
 
-                bw.RunWorkerAsync();
+                        this.iscalculating = false;
+                    });
+
+                    bw.RunWorkerAsync();
+                }
             }
         }
 
@@ -881,88 +953,92 @@ namespace BacktestingSoftware
 
         private void LoadNetWorthChartData()
         {
-            Chart chart = this.FindName("NetWorthChart") as Chart;
+            this.Dispatcher.Invoke((Action)(() =>
+             {
+                 Chart chart = this.FindName("NetWorthChart") as Chart;
 
-            this.CalculatePerformanceFromPrize();
+                 this.CalculatePerformanceFromPrize();
 
-            Series series = new Series("Data");
-            chart.Series.Add(series);
-            Series performanceFromPriceSeries = new Series("PerformanceFromPrice");
-            chart.Series.Add(performanceFromPriceSeries);
+                 Series series = new Series("Data");
+                 chart.Series.Add(series);
+                 Series performanceFromPriceSeries = new Series("PerformanceFromPrice");
+                 chart.Series.Add(performanceFromPriceSeries);
 
-            for (int i = 0; i < chart.Series.Count; i++)
-            {
-                // Set series chart type
-                chart.Series[i].ChartType = SeriesChartType.Line;
+                 chart.Series["Data"].Color = System.Drawing.Color.DarkGreen;
+                 chart.Series["PerformanceFromPrice"].Color = System.Drawing.Color.DarkBlue;
 
-                chart.Series[i].XValueMember = "DateStamp";
-                chart.Series[i].XValueType = ChartValueType.DateTime;
-                chart.Series[i].YValueMembers = this.mainViewModel.IsNetWorthChartInPercentage ? "Portfolio Performance" : "Net Worth";
+                 for (int i = 0; i < chart.Series.Count; i++)
+                 {
+                     // Set series chart type
+                     chart.Series[i].ChartType = SeriesChartType.Line;
 
-                // Set point width
-                chart.Series[i]["PointWidth"] = "0.5";
+                     chart.Series[i].XValueMember = "DateStamp";
+                     chart.Series[i].XValueType = ChartValueType.DateTime;
+                     chart.Series[i].YValueMembers = this.mainViewModel.IsNetWorthChartInPercentage ? "Portfolio Performance" : "Net Worth";
 
-                chart.Series[i].Color = System.Drawing.Color.Black;
-            }
+                     // Set point width
+                     chart.Series[i]["PointWidth"] = "0.5";
+                 }
 
-            this.FormatChart(chart);
+                 this.FormatChart(chart);
 
-            //Calculate Minimum and Maximum values for PerformanceFromPrice
-            decimal min = this.mainViewModel.PerformanceFromPrice.Min();
-            decimal max = this.mainViewModel.PerformanceFromPrice.Max();
+                 //Calculate Minimum and Maximum values for PerformanceFromPrice
+                 decimal min = this.mainViewModel.PerformanceFromPrice.Min();
+                 decimal max = this.mainViewModel.PerformanceFromPrice.Max();
 
-            //Calculating Minimum and Maximum values for scaling of y axis
-            decimal min1 = 0m;
-            decimal max1 = 0m;
+                 //Calculating Minimum and Maximum values for scaling of y axis
+                 decimal min1 = 0m;
+                 decimal max1 = 0m;
 
-            if (this.mainViewModel.IsNetWorthChartInPercentage)
-            {
-                min1 = this.mainViewModel.Orders.Min(p => p.CumulativePortfolioPerformance);
-                max1 = this.mainViewModel.Orders.Max(p => p.CumulativePortfolioPerformance);
-            }
-            else
-            {
-                min1 = this.mainViewModel.Orders.Min(p => p.CurrentCapital);
-                max1 = this.mainViewModel.Orders.Max(p => p.CurrentCapital);
-            }
+                 if (this.mainViewModel.IsNetWorthChartInPercentage)
+                 {
+                     min1 = this.mainViewModel.Orders.Min(p => p.CumulativePortfolioPerformance);
+                     max1 = this.mainViewModel.Orders.Max(p => p.CumulativePortfolioPerformance);
+                 }
+                 else
+                 {
+                     min1 = this.mainViewModel.Orders.Min(p => p.CurrentCapital);
+                     max1 = this.mainViewModel.Orders.Max(p => p.CurrentCapital);
+                 }
 
-            //decide which one is higher/lower
-            min = min < min1 ? min : min1;
-            max = max > max1 ? max : max1;
+                 //decide which one is higher/lower
+                 min = min < min1 ? min : min1;
+                 max = max > max1 ? max : max1;
 
-            chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
+                 chart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseClick);
 
-            decimal margin = (max - min) * 5 / 100;
-            chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
-            chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
+                 decimal margin = (max - min) * 5 / 100;
+                 chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+                 chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
 
-            int current = 0;
+                 int current = 0;
 
-            for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
-            {
-                if (this.mainViewModel.Orders[current + 1].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
-                {
-                    ++current;
-                }
+                 for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                 {
+                     if (this.mainViewModel.Orders[current + 1].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
+                     {
+                         ++current;
+                     }
 
-                if (this.mainViewModel.IsNetWorthChartInPercentage)
-                {
-                    // adding date and net worth
-                    chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CumulativePortfolioPerformance));
-                    chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
-                }
-                else
-                {
-                    // adding date and portfolio performance
-                    chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CurrentCapital));
-                    chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
-                }
-            }
+                     if (this.mainViewModel.IsNetWorthChartInPercentage)
+                     {
+                         // adding date and net worth
+                         chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CumulativePortfolioPerformance));
+                         chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                     }
+                     else
+                     {
+                         // adding date and portfolio performance
+                         chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CurrentCapital));
+                         chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                     }
+                 }
 
-            chart.DataBind();
+                 chart.DataBind();
 
-            // draw!
-            chart.Invalidate();
+                 // draw!
+                 chart.Invalidate();
+             }));
         }
 
         private void CalculatePerformanceFromPrize()
@@ -1513,10 +1589,12 @@ namespace BacktestingSoftware
             this.mainViewModel.NetWorth = 0;
             this.mainViewModel.PortfolioPerformancePercent = 0;
             this.mainViewModel.SharpeRatio = 0;
-            this.mainViewModel.HighestDailyProfit = 0;
-            this.mainViewModel.HighestDailyLoss = 0;
-            this.mainViewModel.LastDayProfitLoss = 0;
+            this.mainViewModel.HighestDailyProfit = "0";
+            this.mainViewModel.HighestDailyLoss = "0";
+            this.mainViewModel.LastDayProfitLoss = "0";
             this.mainViewModel.TimeInMarket = 0;
+            this.mainViewModel.AnnualizedGainLossPercent = 0;
+            this.mainViewModel.AnnualizedPortfolioPerformancePercent = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
             chart.Series.Clear();
@@ -1531,6 +1609,22 @@ namespace BacktestingSoftware
 
             this.StatusLabel.Text = "Ready";
             this.ProgressBar.Value = 0;
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: only stoppable when threads ar used
+            if (this.oldThreadCount == 0 && this.iscalculating)
+            {
+                this.oldThreadCount = this.mainViewModel.CalculationThreadCount;
+                this.mainViewModel.CalculationThreadCount = 0;
+
+                this.CalculationThreadCountSlider.IsEnabled = false;
+                this.CalculationThreadCountTextBox.IsEnabled = false;
+                this.CalculationThreadCountTextBox.Text = string.Empty + this.oldThreadCount;
+
+                this.PauseButton.IsEnabled = false;
+            }
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -1603,7 +1697,14 @@ namespace BacktestingSoftware
             Properties.Settings.Default.IsMiniContract = this.mainViewModel.IsMiniContract;
             Properties.Settings.Default.MiniContractDenominator = this.mainViewModel.MiniContractDenominator;
 
-            Properties.Settings.Default.CalculationThreadCount = this.mainViewModel.CalculationThreadCount;
+            if (this.mainViewModel.CalculationThreadCount == 0)
+            {
+                Properties.Settings.Default.CalculationThreadCount = this.oldThreadCount;
+            }
+            else
+            {
+                Properties.Settings.Default.CalculationThreadCount = this.mainViewModel.CalculationThreadCount;
+            }
 
             Properties.Settings.Default.IsNetWorthChartInPercentage = this.mainViewModel.IsNetWorthChartInPercentage;
 
@@ -1703,7 +1804,9 @@ namespace BacktestingSoftware
                                    this.mainViewModel.NetWorth,
                                    this.mainViewModel.PortfolioPerformancePercent,
                                    this.mainViewModel.SharpeRatio,
-                                   this.mainViewModel.TimeInMarket});
+                                   this.mainViewModel.TimeInMarket,
+                                   this.mainViewModel.AnnualizedPortfolioPerformancePercent,
+                                   this.mainViewModel.AnnualizedGainLossPercent});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
                 List<bool> tempBoolList = new List<bool>(new bool[] {
@@ -1808,6 +1911,8 @@ namespace BacktestingSoftware
                 this.mainViewModel.PortfolioPerformancePercent = tempPerfomanceList[9];
                 this.mainViewModel.SharpeRatio = tempPerfomanceList[10];
                 this.mainViewModel.TimeInMarket = tempPerfomanceList[11];
+                this.mainViewModel.AnnualizedPortfolioPerformancePercent = tempPerfomanceList[12];
+                this.mainViewModel.AnnualizedGainLossPercent = tempPerfomanceList[13];
 
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
@@ -2008,11 +2113,13 @@ namespace BacktestingSoftware
 
                     this.mainViewModel.NetWorth = resultSet.NetWorth;
                     this.mainViewModel.PortfolioPerformancePercent = resultSet.PortfolioPerformancePercent;
+                    this.mainViewModel.AnnualizedPortfolioPerformancePercent = resultSet.AnnualizedPortfolioPerformancePercent;
                     this.mainViewModel.TimeInMarket = resultSet.TimeInMarket;
                     this.mainViewModel.SharpeRatio = resultSet.SharpeRatio;
                     this.mainViewModel.StdDevOfProfit = resultSet.StdDevOfProfit;
                     this.mainViewModel.StdDevOfPEquityPrice = resultSet.StdDevOfPEquityPrice;
                     this.mainViewModel.GainLossPercent = resultSet.GainLossPercent;
+                    this.mainViewModel.AnnualizedGainLossPercent = resultSet.AnnualizedGainLossPercent;
                     this.mainViewModel.NoOfGoodTrades = resultSet.NoOfGoodTrades;
                     this.mainViewModel.GainPercent = resultSet.GainPercent;
                     this.mainViewModel.NoOfBadTrades = resultSet.NoOfBadTrades;
@@ -2036,7 +2143,7 @@ namespace BacktestingSoftware
 
             this.mainViewModel.IsNetWorthChartInPercentage = !this.mainViewModel.IsNetWorthChartInPercentage;
 
-            this.LoadNetWorthChartData();
+            new Thread(this.LoadNetWorthChartData).Start();
         }
     }
 }
