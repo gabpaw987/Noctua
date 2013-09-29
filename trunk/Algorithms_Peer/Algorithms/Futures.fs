@@ -1,26 +1,28 @@
 ﻿// Parameters: 26.09.2013
-//s1,5,5,1
-//s2,100,100,1
-//m1,90,90,1
-//m2,140,140,10
-//l1,200,200,20
-//l2,220,220,1
-//framaNFactor,1,1,1
-//regrXSN,0,0,1
-//regrSN,0,0,1
-//regrLN,0,0,1
-//rsiN,30,30,1
-//rsiEmaN,20,20,1
-//rsiLong,60,60,1
-//rsiShort,40,40,1
-//wn,200,200,1
-//barExtrN,150,150,1
-//extrN,1000,1000,500
-//extrPIn,27,27,2
-//extrPOut,34,34,2
-//cutlossMax,0,0,10
-//cutlossMin,0,0,10
-//cutlossDecrN,0,0,250
+(*
+s1,5,5,1
+s2,100,100,1
+m1,90,90,1
+m2,140,140,1
+l1,200,200,1
+l2,220,220,1
+framaNFactor,1,1,1
+regrXSN,0,0,1
+regrSN,0,0,1
+regrLN,0,0,1
+rsiN,30,30,1
+rsiEmaN,20,20,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+wn,200,200,1
+barExtrN,150,150,1
+extrN,1000,1000,500
+extrPIn,27,27,2
+extrPOut,34,34,2
+cutlossMax,0,0,10
+cutlossMin,0,0,10
+cutlossDecrN,0,0,250
+*)
 
 namespace Algorithm
     module DecisionCalculator=(*007*)
@@ -337,7 +339,7 @@ namespace Algorithm
             let cutlossMin = abs parameters.["cutlossMin"]
             let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
 
-//            let s1 = even 15m
+//            let s1 = even 0m //15m
 //            let s2 = even 80m
 //            let m1 = even 120m
 //            let m2 = even 160m
@@ -388,13 +390,15 @@ namespace Algorithm
                 [| for i in prices -> (i.Item3 + i.Item4 + i.Item5)/3m |]
 
 //            sw2.Start()
+            let useFramas = if (s1 <> 0 && s2 <> 0 && m1 <> 0 && m2 <> 0 && l1 <> 0 && l2 <> 0) then true else false
             // calculate FRAMAs
-            let framaS = frama(even ((decimal(s2+s1)*framaNFactor)/2m), s1, s2, prices)
+            let framaS = if (useFramas) then frama(even ((decimal(s2+s1)*framaNFactor)/2m), s1, s2, prices) else Array.empty
             for i in 0..framaS.Length-1 do chart1.["FRAMAs;#FF0000"].Add(framaS.[i])
-            let framaM = frama(even ((decimal(m2+m1)*framaNFactor)/2m), m1, m2,  prices)
+            let framaM = if (useFramas) then frama(even ((decimal(m2+m1)*framaNFactor)/2m), m1, m2,  prices) else Array.empty
             for i in 0..framaM.Length-1 do chart1.["FRAMAm;#0000FF"].Add(framaM.[i])
-            let framaL = frama(even ((decimal(l2+l1)*framaNFactor)/2m), l1, l2, prices)
+            let framaL = if (useFramas) then frama(even ((decimal(l2+l1)*framaNFactor)/2m), l1, l2, prices) else Array.empty
             for i in 0..framaL.Length-1 do chart1.["FRAMAl;#999999"].Add(framaL.[i])
+
 //            sw2.Stop()
             // how long ago frama has given a signal
             let mutable framaSinceSig = 0
@@ -407,10 +411,11 @@ namespace Algorithm
             let regrS = if (regrSN <> 0) then regression(regrSN, cPrices)  else Array.empty
             let regrL = if (regrLN <> 0) then regression(regrLN, cPrices)  else Array.empty
 
+            let useRsi = if (rsiN <> 0 && rsiEmaN <> 0) then true else false
             // calculate RSI
-            let rsi = rsi (rsiN, tPrices)
+            let rsi = if (useRsi) then rsi (rsiN, tPrices) else Array.empty
             // smooth RSI
-            let rsiEma = ema (rsiEmaN, Array.toList rsi)
+            let rsiEma = if (useRsi) then ema (rsiEmaN, Array.toList rsi) else Array.empty
             for i in 0..rsiEma.Length-1 do chart2.["RSI;#FF0000"].Add(rsiEma.[i])
             for i in 0..rsiEma.Length-1 do chart2.["RSI_long;#0000FF"].Add(rsiLong)
             for i in 0..rsiEma.Length-1 do chart2.["RSI_short;#0000FF"].Add(rsiShort)
@@ -473,19 +478,20 @@ namespace Algorithm
                      *)
 //                    let mutable framaSig = 0
 
-                    if (framaM.[i] > framaL.[i] && framaM.[i-1] < framaL.[i-1]) then
-                        framaPreSig <- 1
-                        // save how long ago the frama gave an entry signal
-//                        framaSinceSig <- 0
-                    else if (framaM.[i] < framaL.[i] && framaM.[i-1] > framaL.[i-1]) then
-                        framaPreSig <- -1
-                        // save how long ago the frama gave an entry signal
-//                        framaSinceSig <- 0
+                    if (useFramas) then
+                        if (framaM.[i] > framaL.[i] && framaM.[i-1] < framaL.[i-1]) then
+                            framaPreSig <- 1
+                            // save how long ago the frama gave an entry signal
+    //                        framaSinceSig <- 0
+                        else if (framaM.[i] < framaL.[i] && framaM.[i-1] > framaL.[i-1]) then
+                            framaPreSig <- -1
+                            // save how long ago the frama gave an entry signal
+    //                        framaSinceSig <- 0
 
-                    if (framaPreSig <> 0) then
-                        if (framaPreSig = sign (framaS.[i] - framaM.[i])) then
-                            framaSig <- framaPreSig
-                            framaPreSig <- 0
+                        if (framaPreSig <> 0) then
+                            if (framaPreSig = sign (framaS.[i] - framaM.[i])) then
+                                framaSig <- framaPreSig
+                                framaPreSig <- 0
 
                     // still give a frama signal n bars after actual crossing
 //                    if (framaSinceSig <= 3 && signals.[i] = 0 && framaSig = 0) then
@@ -499,10 +505,11 @@ namespace Algorithm
                      *)
                     let mutable rsiSig = 0
 
-                    if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
-                        rsiSig <- 1
-                    else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
-                        rsiSig <- -1
+                    if (useRsi) then
+                        if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
+                            rsiSig <- 1
+                        else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
+                            rsiSig <- -1
 
 //                    (*
 //                     * // Williams%R entry
@@ -532,14 +539,18 @@ namespace Algorithm
                     (*
                      * // entry decision
                      *)
-                    if (sign rsiSig <> sign signals.[i]) then
-                        if (sign rsiSig = sign framaSig) then
-                            entry <- rsiSig * 2
-                        else
-                            entry <- rsiSig
-                    // entry level 2 decision
-                    if (abs signals.[i] = 1 && sign framaSig = signals.[i]) then
-                        entry <- 2*framaSig
+                    if (useRsi) then
+                        if (sign rsiSig <> sign signals.[i]) then
+                            if (sign rsiSig = sign framaSig) then
+                                entry <- rsiSig * 2
+                            else
+                                entry <- rsiSig
+                        // entry level 2 decision
+                        if (abs signals.[i] = 1 && sign framaSig = signals.[i]) then
+                            entry <- 2*framaSig
+                    else if (useFramas) then
+                        if (framaSig <> signals.[i-1]) then
+                            entry <- framaSig
                     
                     (*
                      * // Check regressions
@@ -605,22 +616,23 @@ namespace Algorithm
 //                        if (framaS.[i] > framaM.[i] && framaS.[i] > framaL.[i] && framaM.[i] > framaL.[i]) then
 //                            exit <- 0
                     
-                    // long
-                    if (signals.[i] > 0) then
-                        if (framaS.[i] < framaM.[i] && framaS.[i-1] > framaM.[i-1]) then
-                            if (signals.[i] = 2) then
-                                exit <- 1
-                                framaSig <- 0
-                    // short
-                    else if (signals.[i] < 0) then
-                        if (framaS.[i] > framaM.[i] && framaS.[i-1] < framaM.[i-1]) then
-                            if (signals.[i] = -2) then
-                                exit <- -1
-                                framaSig <- 0
+                    if (useFramas) then
+                        // long
+                        if (signals.[i] > 0) then
+                            if (framaS.[i] < framaM.[i] && framaS.[i-1] > framaM.[i-1]) then
+                                if (signals.[i] = 2) then
+                                    exit <- 1
+                                    framaSig <- 0
+                        // short
+                        else if (signals.[i] < 0) then
+                            if (framaS.[i] > framaM.[i] && framaS.[i-1] < framaM.[i-1]) then
+                                if (signals.[i] = -2) then
+                                    exit <- -1
+                                    framaSig <- 0
 
-                    // exit if RSI and FRAMA are contradictory
-//                    if (abs framaSig = 1 && rsiSig + framaSig = 0) then
-//                        exit <- 0
+                        // exit if RSI and FRAMA are contradictory
+    //                    if (abs framaSig = 1 && rsiSig + framaSig = 0) then
+    //                        exit <- 0
 
                     (*
                      * // Cutloss: neutralise if loss is too big (% of price movement!)
