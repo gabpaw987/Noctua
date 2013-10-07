@@ -22,6 +22,9 @@ namespace BacktestingSoftware
         private string _highestDailyProfit;
         private string _highestDailyLoss;
         private string _lastDayProfitLoss;
+        private int _noOfGoodDays;
+        private int _noOfBadDays;
+        private decimal _goodDayBadDayRatio;
 
         public decimal NetWorth
         {
@@ -123,6 +126,24 @@ namespace BacktestingSoftware
         {
             get { return _lastDayProfitLoss; }
             set { _lastDayProfitLoss = value; }
+        }
+
+        public int NoOfGoodDays
+        {
+            get { return _noOfGoodDays; }
+            set { _noOfGoodDays = value; }
+        }
+
+        public int NoOfBadDays
+        {
+            get { return _noOfBadDays; }
+            set { _noOfBadDays = value; }
+        }
+
+        public decimal GoodDayBadDayRatio
+        {
+            get { return _goodDayBadDayRatio; }
+            set { _goodDayBadDayRatio = value; }
         }
     }
 }

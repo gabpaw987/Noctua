@@ -82,6 +82,10 @@
     <Compile Include="InvertableBooleanToVisibilityConverter.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="WindowExtensions.cs" />
+    <Page Include="BureauBlack.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -137,6 +141,7 @@
     <Resource Include="images\stop.ico" />
     <Resource Include="bts.ico" />
     <Resource Include="images\bts.ico" />
+    <Resource Include="images\pause.ico" />
     <Content Include="ListConverter.dll" />
     <Content Include="Prototyp4BTS.dll" />
     <Content Include="Xceed.Wpf.DataGrid.dll" />

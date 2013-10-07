@@ -40,7 +40,7 @@
                 <Image Source="images/start.ico"></Image>
             </Button>
             <Button Name="PauseButton" ToolTip="Pause Performance Measurement" Click="PauseButton_Click" Height="25" Width="25" IsEnabled="False">
-                <local:AutoGreyableImage Source="images/stop.ico"/>
+                <local:AutoGreyableImage Source="images/pause.ico"/>
             </Button>
             <Button Name="StopButton" ToolTip="Stop Performance Measurement" Click="StopButton_Click" Height="25" Width="25">
                 <Image Source="images/stop.ico"></Image>
@@ -67,25 +67,22 @@
             </StatusBarItem>
         </StatusBar>
         <TabControl DockPanel.Dock="Top">
-            <TabItem Header="Performance">
-                <StackPanel Grid.Row="0" Grid.Column="1">
+            <TabItem Header="Performance" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="5">
                         <Label Width="250">Choose Parameter-Set:</Label>
-                        <ComboBox Width="150"
+                        <ComboBox Width="500"
                                   ItemsSource="{Binding Path=CalculationResultSets.Keys}"
                                   SelectionChanged ="ComboBox_SelectionChanged" Name="ResultSelectionComboBox"
                                   SelectedIndex="1"/>
                     </StackPanel>
-                    <Grid Margin="5" >
+                    <StackPanel>
+                        <Separator Margin="5,5,105,2"/>
+                        <Separator Margin="5,0,105,15"/>
+                    </StackPanel>
+                    <!-- Text-Labels -->
+                    <Grid Margin="5,5,5,0" >
                         <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -98,60 +95,148 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Text-Labels -->
-                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" ToolTip="The virtual net worth after using this algorithm.">Net Worth:</Label>
-                        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NetWorthToDisplay}"></Label>
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,15" VerticalAlignment="Center" ToolTip="The virtual net worth after using this algorithm.">Net Worth:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,15" VerticalAlignment="Center" Content="{Binding Path=NetWorthToDisplay}"></Label>
 
-                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" ToolTip="The absolute performance of the algorithm relative to the virtual net worth.">Portfolio Performance [%]:</Label>
-                        <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=PortfolioPerformancePercent}"></Label>
-                        <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" ToolTip="The absolute performance of the algorithm relative to the amount of investment.">Return on Investment [%]:</Label>
-                        <Label Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="The absolute performance of the algorithm relative to the virtual net worth.">Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=PortfolioPerformancePercent}"></Label>
+                        <Label Grid.Row="1" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="The absolute performance of the algorithm relative to the amount of investment.">Return on Investment [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
 
-                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" ToolTip="The portfolio performance extrapolated to one year.">Annualized Portfolio Performance [%]:</Label>
-                        <Label Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=AnnualizedPortfolioPerformancePercent}"></Label>
-                        <Label Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" ToolTip="The return on investment exptrapolated to one year.">Annualized ROI [%]:</Label>
-                        <Label Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=AnnualizedGainLossPercent}"></Label>
+                        <Label Grid.Row="2" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="The portfolio performance extrapolated to one year.">Annualized Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=AnnualizedPortfolioPerformancePercent}"></Label>
+                        <Label Grid.Row="2" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="The return on investment exptrapolated to one year.">Annualized ROI [%]:</Label>
+                        <Label Grid.Row="2" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=AnnualizedGainLossPercent}"></Label>
 
-                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" ToolTip="The timespan between the start and the end date.">Timespan:</Label>
-                        <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=TimeSpanToDisplay}"></Label>
-                        <Label Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" ToolTip="The start date and the end date of the data.">Start &amp; End Date:</Label>
-                        <Label Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=DatesToDisplay}"></Label>
+                        <Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,100,15"/>
 
-                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" ToolTip="Percentage of the time at which positions have been held.">Time in Market [%]:</Label>
-                        <Label Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=TimeInMarket}"></Label>
+                    </Grid>
+                    <Grid Margin="5,0,5,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio showing the performance relative to the risk.">Sharpe Ratio:</Label>
-                        <Label Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=SharpeRatio}"></Label>
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="The timespan between the start and the end date.">Timespan:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=TimeSpanToDisplay}"></Label>
+                        <Label Grid.Row="0" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="The start date and the end date of the data.">Start &amp; End Date:</Label>
+                        <Label Grid.Row="0" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=DatesToDisplay}"></Label>
 
-                        <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" ToolTip="Realtive mean deviation of the absolute changes of the net worth.">Mean Deviation of Portfolio Performance [%]:</Label>
-                        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfProfit}"></Label>
-                        <Label Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" ToolTip="Absolute mean deviation of the equity price graph.">Mean Deviation of Equity Price:</Label>
-                        <Label Grid.Row="6" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=StdDevOfPEquityPrice}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Percentage of the time at which positions have been held.">Time in Market [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=TimeInMarket}"></Label>
 
-                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" ToolTip="Count of trades with a positive portfolio performance.">Number of Good Trades:</Label>
-                        <Label Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
-                        <Label Grid.Row="7" Grid.Column="2" VerticalAlignment="Center" ToolTip="Sum of the performance of all good trades relative to the invested capital.">Gain From Good Trades [%]:</Label>
-                        <Label Grid.Row="7" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
+                        <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,100,15"/>
+                    </Grid>
 
-                        <Label Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" ToolTip="Count of trades with a negative portfolio performance.">Number of Bad Trades:</Label>
-                        <Label Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
-                        <Label Grid.Row="8" Grid.Column="2" VerticalAlignment="Center" ToolTip="Sum of the performance of all bad trades relative to the invested capital.">Loss From Bad Trades [%]:</Label>
-                        <Label Grid.Row="8" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
+                    <Grid Margin="5,0,5,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio of the number of good trades compared to the number of bad trades.">Ratio of Good Trades - Bad Trades:</Label>
-                        <Label Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Ratio showing the performance relative to the risk.">Sharpe Ratio:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=SharpeRatio}"></Label>
 
-                        <Label Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the most profitable day.">Highest Daily Portfolio Performance:</Label>
-                        <Label Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=HighestDailyProfit}"></Label>
-                        <Label Grid.Row="10" Grid.Column="2" VerticalAlignment="Center" ToolTip="Portfolio performance of the least profitable day.">Lowest Daily Portfolio Performance:</Label>
-                        <Label Grid.Row="10" Grid.Column="3" VerticalAlignment="Center" Content="{Binding Path=HighestDailyLoss}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Realtive mean deviation of the absolute changes of the net worth.">Mean Deviation of Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=StdDevOfProfit}"></Label>
+                        <Label Grid.Row="1" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Absolute mean deviation of the equity price graph.">Mean Deviation of Equity Price:</Label>
+                        <Label Grid.Row="1" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=StdDevOfPEquityPrice}"></Label>
 
-                        <Label Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" ToolTip="Portfolio performance of the current/last day.">Portfolio Performance of the Current Day:</Label>
-                        <Label Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LastDayProfitLoss}"></Label>
+                        <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,100,15"/>
+                    </Grid>
+
+                    <Grid Margin="5,0,5,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Count of trades with a positive portfolio performance.">Number of Good Trades:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
+                        <Label Grid.Row="0" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Sum of the performance of all good trades relative to the invested capital.">Gain From Good Trades [%]:</Label>
+                        <Label Grid.Row="0" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
+
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Count of trades with a negative portfolio performance.">Number of Bad Trades:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
+                        <Label Grid.Row="1" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Sum of the performance of all bad trades relative to the invested capital.">Loss From Bad Trades [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
+
+                        <Label Grid.Row="2" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Ratio of the number of good trades compared to the number of bad trades.">Ratio of Good Trades - Bad Trades:</Label>
+                        <Label Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
+
+                        <Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,100,15"/>
+                    </Grid>
+
+                    <Grid Margin="5,0,5,0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Count of days with a positive portfolio performance.">Number of Good Days:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodDays}"></Label>
+                        <Label Grid.Row="0" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Count of days with a negative portfolio performance.">Number of Bad Days:</Label>
+                        <Label Grid.Row="0" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=NoOfBadDays}"></Label>
+
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Ratio of the number of good days compared to the number of bad days.">Ratio of Good Days - Bad Days:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=GoodDayBadDayRatio}"></Label>
+
+                        <Separator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,0,100,15"/>
+                    </Grid>
+
+                    <Grid Margin="5,0,5,5" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="150" ></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Portfolio performance of the most profitable day.">Highest Daily Portfolio Performance:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=HighestDailyProfit}"></Label>
+                        <Label Grid.Row="0" Grid.Column="2" Margin="0,0,0,5" VerticalAlignment="Center" ToolTip="Portfolio performance of the least profitable day.">Lowest Daily Portfolio Performance:</Label>
+                        <Label Grid.Row="0" Grid.Column="3" Margin="0,0,0,5" VerticalAlignment="Center" Content="{Binding Path=HighestDailyLoss}"></Label>
+
+                        <Label Grid.Row="1" Grid.Column="0" Margin="0,0,0,15" VerticalAlignment="Center" ToolTip="Portfolio performance of the current/last day.">Portfolio Performance of the Current Day:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,15" VerticalAlignment="Center" Content="{Binding Path=LastDayProfitLoss}"></Label>
                     </Grid>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Orders">
+            <TabItem Header="Orders" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -176,7 +261,7 @@
                               IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn" SelectionChanged="orderList_SelectionChanged"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Net Worth">
+            <TabItem Header="Net Worth" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"></RowDefinition>
@@ -196,7 +281,7 @@
                     </WindowsFormsHost>
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="Settings" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <Grid Margin="2">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>

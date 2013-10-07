@@ -415,6 +415,18 @@ namespace BacktestingSoftware
                     resultSet.HighestDailyLoss = Math.Round(min, 3, MidpointRounding.AwayFromZero) + " @ " + dailyPortfolioPerformances.FirstOrDefault(x => x.Value.Equals(min)).Key;
                     resultSet.LastDayProfitLoss = Math.Round(dailyPortfolioPerformances.Last().Value, 3, MidpointRounding.AwayFromZero) + " @ " + dailyPortfolioPerformances.Last().Key;
 
+                    resultSet.NoOfGoodDays = dailyPortfolioPerformances.Values.Count(x => x > 0);
+                    resultSet.NoOfBadDays = dailyPortfolioPerformances.Values.Count(x => x < 0);
+
+                    if (resultSet.NoOfBadDays > 0)
+                    {
+                        resultSet.GoodDayBadDayRatio = (decimal)resultSet.NoOfGoodDays / (decimal)resultSet.NoOfBadDays;
+                    }
+                    else
+                    {
+                        resultSet.GoodDayBadDayRatio = 0;
+                    }
+
                     resultSet.TimeInMarket = (decimal)signals.Count<int>(n => n != 0) / (decimal)signals.Count * 100m;
 
                     lock (lockObj)

@@ -1157,5 +1157,65 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private int _noOfGoodDays;
+
+        public int NoOfGoodDays
+        {
+            get
+            {
+                return _noOfGoodDays;
+            }
+            set
+            {
+                if (!value.Equals(_noOfGoodDays))
+                {
+                    _noOfGoodDays = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("NoOfGoodDays"));
+                }
+            }
+        }
+
+        private int _noOfBadDays;
+
+        public int NoOfBadDays
+        {
+            get
+            {
+                return _noOfBadDays;
+            }
+            set
+            {
+                if (!value.Equals(_noOfBadDays))
+                {
+                    _noOfBadDays = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("NoOfBadDays"));
+                }
+            }
+        }
+
+        private decimal _goodDayBadDayRatio;
+
+        public decimal GoodDayBadDayRatio
+        {
+            get
+            {
+                return Math.Round(_goodDayBadDayRatio, 3);
+            }
+            set
+            {
+                if (!value.Equals(_goodDayBadDayRatio))
+                {
+                    _goodDayBadDayRatio = value;
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("GoodDayBadDayRatio"));
+                }
+            }
+        }
     }
 }

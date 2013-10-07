@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Markup;
+using System.Windows.Media;
 using Krs.Ats.IBNet;
 using Xceed.Wpf.Toolkit;
 
@@ -138,6 +139,7 @@ namespace BacktestingSoftware
             this.refreshIndicatorList();
 
             this.orders.DataContext = this.mainViewModel.Orders;
+            this.orders.RowBackground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(247, 250, 254));
 
             this.bw = new BackgroundWorker();
             this.isRealTimeThreadRunning = false;
@@ -1093,8 +1095,6 @@ namespace BacktestingSoftware
             //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
             chart.Series["Data"].Color = System.Drawing.Color.Black;
 
-            this.FormatChart(chart);
-
             //Calculating Minimum and Maximum values for scaling of y axis
             decimal min = this.mainViewModel.BarList[0].Item4;
             decimal max = 0m;
@@ -1393,6 +1393,8 @@ namespace BacktestingSoftware
             if (chart.ChartAreas.Count <= 1)
                 this.drawSecondEmptyChartArea(chart);
 
+            this.FormatChart(chart);
+
             chart.DataBind();
 
             // draw!
@@ -1426,8 +1428,17 @@ namespace BacktestingSoftware
                 chart.ChartAreas[0].AxisX.LabelStyle.Format = "dd/MM/yy";
             }
 
-            chart.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chart.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            //Color of the other Background System.Drawing.Color.FromArgb(213, 216, 221)
+            System.Drawing.Color backgroundColor = System.Drawing.Color.FromArgb(247, 250, 254);
+
+            chart.BackColor = backgroundColor;
+            foreach (ChartArea area in chart.ChartAreas)
+            {
+                area.BackColor = backgroundColor;
+
+                area.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+                area.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            }
         }
 
         private void setArrowColor(ArrowAnnotation la, int signal)
@@ -1506,9 +1517,6 @@ namespace BacktestingSoftware
             chart.ChartAreas[1].CursorX.IsUserSelectionEnabled = true;
             chart.ChartAreas[1].AxisX.ScaleView.Zoomable = true;
             chart.ChartAreas[1].AxisX.ScrollBar.IsPositionedInside = false;
-
-            chart.ChartAreas[1].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-            chart.ChartAreas[1].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
 
             chart.ChartAreas[1].AlignWithChartArea = "MainArea";
 
@@ -1595,6 +1603,9 @@ namespace BacktestingSoftware
             this.mainViewModel.TimeInMarket = 0;
             this.mainViewModel.AnnualizedGainLossPercent = 0;
             this.mainViewModel.AnnualizedPortfolioPerformancePercent = 0;
+            this.mainViewModel.NoOfGoodDays = 0;
+            this.mainViewModel.NoOfBadDays = 0;
+            this.mainViewModel.GoodDayBadDayRatio = 0;
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
             chart.Series.Clear();
@@ -1806,7 +1817,8 @@ namespace BacktestingSoftware
                                    this.mainViewModel.SharpeRatio,
                                    this.mainViewModel.TimeInMarket,
                                    this.mainViewModel.AnnualizedPortfolioPerformancePercent,
-                                   this.mainViewModel.AnnualizedGainLossPercent});
+                                   this.mainViewModel.AnnualizedGainLossPercent,
+                                   this.mainViewModel.GoodDayBadDayRatio});
                 bFormatter.Serialize(stream, tempPerformanceList);
 
                 List<bool> tempBoolList = new List<bool>(new bool[] {
@@ -1841,7 +1853,9 @@ namespace BacktestingSoftware
                                                                  this.mainViewModel.RoundLotSize,
                                                                  this.mainViewModel.InnerValue,
                                                                  this.mainViewModel.MiniContractDenominator,
-                                                                 this.mainViewModel.CalculationThreadCount});
+                                                                 this.mainViewModel.CalculationThreadCount,
+                                                                 this.mainViewModel.NoOfGoodDays,
+                                                                 this.mainViewModel.NoOfBadDays});
                 bFormatter.Serialize(stream, tempIntList);
 
                 StringCollection serializableStackPanels = new StringCollection();
@@ -1913,6 +1927,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.TimeInMarket = tempPerfomanceList[11];
                 this.mainViewModel.AnnualizedPortfolioPerformancePercent = tempPerfomanceList[12];
                 this.mainViewModel.AnnualizedGainLossPercent = tempPerfomanceList[13];
+                this.mainViewModel.GoodDayBadDayRatio = tempPerfomanceList[14];
 
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
@@ -1947,6 +1962,8 @@ namespace BacktestingSoftware
                 this.mainViewModel.InnerValue = tempIntList[7];
                 this.mainViewModel.MiniContractDenominator = tempIntList[8];
                 this.mainViewModel.CalculationThreadCount = tempIntList[9];
+                this.mainViewModel.NoOfGoodDays = tempIntList[10];
+                this.mainViewModel.NoOfBadDays = tempIntList[11];
 
                 StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
@@ -2128,6 +2145,9 @@ namespace BacktestingSoftware
                     this.mainViewModel.HighestDailyProfit = resultSet.HighestDailyProfit;
                     this.mainViewModel.HighestDailyLoss = resultSet.HighestDailyLoss;
                     this.mainViewModel.LastDayProfitLoss = resultSet.LastDayProfitLoss;
+                    this.mainViewModel.NoOfGoodDays = resultSet.NoOfGoodDays;
+                    this.mainViewModel.NoOfBadDays = resultSet.NoOfBadDays;
+                    this.mainViewModel.GoodDayBadDayRatio = resultSet.GoodDayBadDayRatio;
                 }
             }
         }
