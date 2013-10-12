@@ -2154,16 +2154,19 @@ namespace BacktestingSoftware
 
         private void NetWorthChartButton_Click(object sender, RoutedEventArgs e)
         {
-            Chart netWorthchart = this.FindName("NetWorthChart") as Chart;
-            netWorthchart.Series.Clear();
-            netWorthchart.ChartAreas.Clear();
-            netWorthchart.ChartAreas.Add(new ChartArea("MainArea"));
+            if (this.mainViewModel.BarList.Count != 0 && this.mainViewModel.Orders.Count != 0 && this.mainViewModel.Signals.Count != 0)
+            {
+                Chart netWorthchart = this.FindName("NetWorthChart") as Chart;
+                netWorthchart.Series.Clear();
+                netWorthchart.ChartAreas.Clear();
+                netWorthchart.ChartAreas.Add(new ChartArea("MainArea"));
 
-            this.mainViewModel.PerformanceFromPrice.Clear();
+                this.mainViewModel.PerformanceFromPrice.Clear();
 
-            this.mainViewModel.IsNetWorthChartInPercentage = !this.mainViewModel.IsNetWorthChartInPercentage;
+                this.mainViewModel.IsNetWorthChartInPercentage = !this.mainViewModel.IsNetWorthChartInPercentage;
 
-            new Thread(this.LoadNetWorthChartData).Start();
+                new Thread(this.LoadNetWorthChartData).Start();
+            }
         }
     }
 }
