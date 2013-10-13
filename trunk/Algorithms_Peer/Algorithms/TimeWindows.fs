@@ -1,5 +1,6 @@
 ﻿// Parameters: 26.09.2013
 (*
+aggN,60,120,60
 s1,5,5,1
 s2,100,100,1
 m1,90,90,1
@@ -14,7 +15,6 @@ rsiN,30,30,1
 rsiEmaN,20,20,1
 rsiLong,60,60,1
 rsiShort,40,40,1
-wn,200,200,1
 barExtrN,150,150,1
 extrN,1000,1000,500
 extrPIn,27,27,2
@@ -61,11 +61,11 @@ namespace Algorithm
                 let range = bars.GetRange(i, n)
                 aggregated.Add(
                     new System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>(
-                        range.[n-1].Item1,
-                        [for j in range -> j.Item2] |> List.average,
-                        [for j in range -> j.Item3] |> List.average,
-                        [for j in range -> j.Item4] |> List.average,
-                        [for j in range -> j.Item5] |> List.average
+                        range.[0].Item1,
+                        range.[0].Item2,
+                        [for j in range -> j.Item3] |> List.max,
+                        [for j in range -> j.Item4] |> List.min,
+                        range.[n-1].Item5
                     )
                 )
             aggregated
@@ -297,7 +297,7 @@ namespace Algorithm
         let getExtremeValues(n:int, data:decimal[], extremes:decimal[])=
             let mutable mins = new ResizeArray<decimal>()
             let mutable maxs = new ResizeArray<decimal>()
-            for i in extremes.Length-1 .. -1 .. extremes.Length-1-n do
+            for i in extremes.Length-1 .. -1 .. extremes.Length-n do
                 if (extremes.[i] > 0m) then
                     maxs.Add(data.[i])
                 else if (extremes.[i] < 0m) then
@@ -307,6 +307,29 @@ namespace Algorithm
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   SIGNAL GENERATOR
         //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        let blockSignals (rsiN:int, rsiEmaN:int,
+                            long:int, short:int, blockLong:int, blockShort:int,
+                            prices:decimal[],
+                            signals:System.Collections.Generic.List<int>)=
+            let rsi = rsi (rsiN, prices)
+            // smooth RSI
+            let rsiEma = ema (rsiEmaN, Array.toList rsi)
+
+            signals.Add(0)
+            for i in 1 .. prices.Length-1 do
+                if (rsiEma.[i] > decimal long && rsiEma.[i-1] < decimal long) then
+                    signals.Add(1)
+                else if (rsiEma.[i] < decimal short && rsiEma.[i-1] > decimal short) then
+                    signals.Add(-1) 
+                else if (signals.[i-1] = 1 && rsiEma.[i] < decimal blockLong && rsiEma.[i-1] > decimal blockLong) then
+                    signals.Add(0)
+                else if (signals.[i-1] = -1 && rsiEma.[i] > decimal blockShort && rsiEma.[i-1] < decimal blockShort) then
+                    signals.Add(0)
+                else
+                    signals.Add(signals.[i-1])
+            signals
+                
 
         let strategy (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,
                         signals:System.Collections.Generic.List<int>,
@@ -335,8 +358,6 @@ namespace Algorithm
             let rsiEmaN = int parameters.["rsiEmaN"]
             let rsiLong = parameters.["rsiLong"]
             let rsiShort = parameters.["rsiShort"]
-            // Williams%R
-            let wn = int parameters.["wn"]
             // Price Extremes
             let barExtrN = int parameters.["barExtrN"]
             let extrN = int parameters.["extrN"]
@@ -348,12 +369,12 @@ namespace Algorithm
             let cutlossMin = abs parameters.["cutlossMin"]
             let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
 
-//            let s1 = even 0m //15m
-//            let s2 = even 80m
-//            let m1 = even 120m
-//            let m2 = even 160m
-//            let l1 = even 140m
-//            let l2 = even 240m
+//            let s1 = even 5m //15m
+//            let s2 = even 100m
+//            let m1 = even 90m
+//            let m2 = even 140m
+//            let l1 = even 200m
+//            let l2 = even 220m
 //            let framaNFactor = 1m
 //
 //            let regrXSN = 0
@@ -365,31 +386,30 @@ namespace Algorithm
 //            let rsiLong = 60m
 //            let rsiShort = 40m
 //
-//            let barExtrN = 100
-//            let extrN = 500
-//            let extrPIn = 25m
-//            let extrPOut = 25m
-//
-//            let wn = 20
+//            let barExtrN = 150
+//            let extrN = 1000
+//            let extrPIn = 27m
+//            let extrPOut = 34m
 //
 //            let cutlossMax = 0m
 //            let mutable cutloss = cutlossMax
 //            let cutlossMin = 0m
-//            let cutlossDecrN = 100
+//            let cutlossDecrN = 0
 
             // Chart Lines
-            chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
-            chart1.Add("FRAMAm;#0000FF", new System.Collections.Generic.List<decimal>())
-            chart1.Add("FRAMAl;#999999", new System.Collections.Generic.List<decimal>())
-            chart2.Add("W%R;#FF0000", new System.Collections.Generic.List<decimal>())
-            chart2.Add("W%R_os;#0000FF", new System.Collections.Generic.List<decimal>())
-            chart2.Add("W%R_ob;#0000FF", new System.Collections.Generic.List<decimal>())
-            chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
-            chart2.Add("regrLSlope;#00FF00", new System.Collections.Generic.List<decimal>())
-            chart2.Add("RSI;#FF0000", new System.Collections.Generic.List<decimal>())
-            chart2.Add("RSI_long;#0000FF", new System.Collections.Generic.List<decimal>())
-            chart2.Add("RSI_short;#0000FF", new System.Collections.Generic.List<decimal>())
-            chart2.Add("framaSig;#00FF00", new System.Collections.Generic.List<decimal>())
+            if (not agg) then
+                chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
+                chart1.Add("FRAMAm;#0000FF", new System.Collections.Generic.List<decimal>())
+                chart1.Add("FRAMAl;#999999", new System.Collections.Generic.List<decimal>())
+                chart2.Add("W%R;#FF0000", new System.Collections.Generic.List<decimal>())
+                chart2.Add("W%R_os;#0000FF", new System.Collections.Generic.List<decimal>())
+                chart2.Add("W%R_ob;#0000FF", new System.Collections.Generic.List<decimal>())
+                chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
+                chart2.Add("regrLSlope;#00FF00", new System.Collections.Generic.List<decimal>())
+                chart2.Add("RSI;#FF0000", new System.Collections.Generic.List<decimal>())
+                chart2.Add("RSI_long;#0000FF", new System.Collections.Generic.List<decimal>())
+                chart2.Add("RSI_short;#0000FF", new System.Collections.Generic.List<decimal>())
+                chart2.Add("framaSig;#00FF00", new System.Collections.Generic.List<decimal>())
 
             // list of closing prices
             let cPrices = 
@@ -441,7 +461,7 @@ namespace Algorithm
             let mutable priceExtreme = cPrices.[0]
 
             // first index with all data
-            let firstI = ([ m1; m2; s1; s2; l1; l2; wn ] |> List.max) - 1
+            let firstI = ([ m1; m2; s1; s2; l1; l2 ] |> List.max) - 1
             let mutable missingData = firstI+1
 
             signals.Clear();
@@ -630,8 +650,8 @@ namespace Algorithm
                         signals.[i] <- 0
             signals
 
-        let combineSignals(n:int, signals:ResizeArray<int>, aggSignals:ResizeArray<int>)=
-            for i in 0..aggSignals.Count do
+        let combineSignals(signals:ResizeArray<int>, aggSignals:int[])=
+            for i in 0..aggSignals.Length-1 do
                 if (aggSignals.[i] = 2) then
                     if (signals.[i] >= 0) then
                         signals.[i] <- signals.[i] + 1
@@ -648,7 +668,12 @@ namespace Algorithm
                     signals.[i] <- if (signals.[i] = 1) then 0 else 1
             signals
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,
+        let combineBlockSignals(signals:ResizeArray<int>, aggSignals:ResizeArray<int>)=
+            for i in 0..aggSignals.Count-1 do
+                if (aggSignals.[i] <> 0 && sign aggSignals.[i] <> sign signals.[i]) then
+                    signals.[i] <- sign aggSignals.[i]
+
+        let startCalculation (prices:ResizeArray<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>,
                                 signals:System.Collections.Generic.List<int>,
                                 chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                                 chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
@@ -657,9 +682,21 @@ namespace Algorithm
             let signals = strategy (prices, signals, chart1, chart2, parameters, false)
 
             // aggregated prices
-            let n = 120
+            let n = int parameters.["aggN"]
             let aggPrices = aggregateBars(n, prices)
-            let aggSignals = strategy (aggPrices, new ResizeArray<int>(), chart1, chart2, parameters, true)
-            let aggsignals = [for i in aggSignals do for j in 0..n -> i]
+            let cAggPrices = [| for i in aggPrices -> i.Item5 |]
 
-            combineSignals(n, signals, aggSignals)
+            let aggSignals = new ResizeArray<int>()
+            let aggSignalsDil = new ResizeArray<int>()
+            let aggSignals = blockSignals(30, 20, 60, 40, 45, 55, cAggPrices, aggSignals)
+            //signals.Clear()
+
+//            let aggSignals = strategy (aggPrices, new ResizeArray<int>(), chart1, chart2, parameters, true)
+            //let aggSignals1 = [|for i in aggSignals do for j in 0..n-1 -> i|]
+            for i in aggSignals do for j in 0..n-1 do aggSignalsDil.Add(i)
+            for i in 0 .. prices.Count - signals.Count - 1 do aggSignalsDil.Add(0)
+            //combineSignals(signals, aggSignals)
+            combineBlockSignals(signals, aggSignalsDil)
+            //let ret = new ResizeArray<int>(aggSignals1 |> Array.append (Array.zeroCreate (prices.Count - aggSignals1.Length)))
+            //ret
+            signals
