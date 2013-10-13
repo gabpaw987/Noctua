@@ -103,6 +103,10 @@ namespace BacktestingSoftware
                 if (value != _algorithmFileName)
                 {
                     _algorithmFileName = value;
+
+                    Properties.Settings.Default.AlgorithmFileName = this.AlgorithmFileName;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("AlgorithmFileName"));
                 }
@@ -122,6 +126,10 @@ namespace BacktestingSoftware
                 if (value != _dataFileName)
                 {
                     _dataFileName = value;
+
+                    Properties.Settings.Default.DataFileName = this.DataFileName;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("DataFileName"));
                 }
@@ -141,6 +149,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_startDate))
                 {
                     _startDate = value;
+
+                    Properties.Settings.Default.StartDate = this.StartDate;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("StartDate"));
                 }
@@ -160,6 +172,10 @@ namespace BacktestingSoftware
                 if (value != _stockSymbolForRealTime)
                 {
                     _stockSymbolForRealTime = value;
+
+                    Properties.Settings.Default.StockSymbolForRealTime = this.StockSymbolForRealTime;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("StockSymbolForRealTime"));
                 }
@@ -179,6 +195,10 @@ namespace BacktestingSoftware
                 if (value != _barsize)
                 {
                     _barsize = value;
+
+                    Properties.Settings.Default.Barsize = this.Barsize;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("Barsize"));
                 }
@@ -198,6 +218,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_endDate))
                 {
                     _endDate = value;
+
+                    Properties.Settings.Default.EndDate = this.EndDate;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("EndDate"));
                 }
@@ -407,6 +431,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_saveFileName))
                 {
                     _saveFileName = value;
+
+                    Properties.Settings.Default.SaveFileName = this.SaveFileName;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("SaveFileName"));
                 }
@@ -445,6 +473,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_valueOfSliderOne))
                 {
                     _valueOfSliderOne = value;
+
+                    Properties.Settings.Default.ValueOfSliderOne = this.ValueOfSliderOne;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderOne"));
                 }
@@ -464,6 +496,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_valueOfSliderTwo))
                 {
                     _valueOfSliderTwo = value;
+
+                    Properties.Settings.Default.ValueOfSliderTwo = this.ValueOfSliderTwo;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderTwo"));
                 }
@@ -483,6 +519,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_valueOfSliderThree))
                 {
                     _valueOfSliderThree = value;
+
+                    Properties.Settings.Default.ValueOfSliderThree = this.ValueOfSliderThree;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderThree"));
                 }
@@ -502,6 +542,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_valueOfSliderFour))
                 {
                     _valueOfSliderFour = value;
+
+                    Properties.Settings.Default.ValueOfSliderFour = this.ValueOfSliderFour;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderFour"));
                 }
@@ -521,6 +565,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_valueOfSliderFive))
                 {
                     _valueOfSliderFive = value;
+
+                    Properties.Settings.Default.ValueOfSliderFive = this.ValueOfSliderFive;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderFive"));
                 }
@@ -540,6 +588,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_valueOfSliderSix))
                 {
                     _valueOfSliderSix = value;
+
+                    Properties.Settings.Default.ValueOfSliderSix = this.ValueOfSliderSix;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ValueOfSliderSix"));
                 }
@@ -559,6 +611,10 @@ namespace BacktestingSoftware
                 if (!value.Equals(_roundLotSize))
                 {
                     _roundLotSize = value;
+
+                    Properties.Settings.Default.RoundLotSize = this.RoundLotSize;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("RoundLotSize"));
                 }
@@ -580,6 +636,7 @@ namespace BacktestingSoftware
                     if (!(int.Parse(value)).Equals(_capital))
                     {
                         _capital = int.Parse(value);
+
                         if (PropertyChanged != null)
                             PropertyChanged(this, new PropertyChangedEventArgs("Capital"));
                     }
@@ -587,8 +644,14 @@ namespace BacktestingSoftware
                 catch (Exception)
                 {
                     _capital = 0;
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("Capital"));
+                }
+                finally
+                {
+                    Properties.Settings.Default.Capital = this.Capital;
+                    Properties.Settings.Default.Save();
                 }
             }
         }
@@ -608,6 +671,7 @@ namespace BacktestingSoftware
                     if (!(decimal.Parse(value)).Equals(_absTransactionFee))
                     {
                         _absTransactionFee = decimal.Parse(value);
+
                         if (PropertyChanged != null)
                             PropertyChanged(this, new PropertyChangedEventArgs("AbsTransactionFee"));
                     }
@@ -615,8 +679,14 @@ namespace BacktestingSoftware
                 catch (Exception)
                 {
                     _absTransactionFee = 0;
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("AbsTransactionFee"));
+                }
+                finally
+                {
+                    Properties.Settings.Default.AbsTransactionFee = this.AbsTransactionFee;
+                    Properties.Settings.Default.Save();
                 }
             }
         }
@@ -636,6 +706,7 @@ namespace BacktestingSoftware
                     if (!(decimal.Parse(value)).Equals(_relTransactionFee))
                     {
                         _relTransactionFee = decimal.Parse(value);
+
                         if (PropertyChanged != null)
                             PropertyChanged(this, new PropertyChangedEventArgs("RelTransactionFee"));
                     }
@@ -643,8 +714,14 @@ namespace BacktestingSoftware
                 catch (Exception)
                 {
                     _relTransactionFee = 0;
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("RelTransactionFee"));
+                }
+                finally
+                {
+                    Properties.Settings.Default.RelTransactionFee = this.RelTransactionFee;
+                    Properties.Settings.Default.Save();
                 }
             }
         }
@@ -664,6 +741,7 @@ namespace BacktestingSoftware
                     if (!(decimal.Parse(value)).Equals(_pricePremium))
                     {
                         _pricePremium = decimal.Parse(value);
+
                         if (PropertyChanged != null)
                             PropertyChanged(this, new PropertyChangedEventArgs("PricePremium"));
                     }
@@ -671,8 +749,14 @@ namespace BacktestingSoftware
                 catch (Exception)
                 {
                     _pricePremium = 0;
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("PricePremium"));
+                }
+                finally
+                {
+                    Properties.Settings.Default.PricePremium = this.PricePremium;
+                    Properties.Settings.Default.Save();
                 }
             }
         }
@@ -794,6 +878,9 @@ namespace BacktestingSoftware
                 {
                     _isRealTimeEnabled = value;
 
+                    Properties.Settings.Default.IsRealTimeEnabled = this.IsRealTimeEnabled;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsRealTimeEnabled"));
                 }
@@ -813,6 +900,9 @@ namespace BacktestingSoftware
                 if (!value.Equals(_isAlgorithmUsingMaps))
                 {
                     _isAlgorithmUsingMaps = value;
+
+                    Properties.Settings.Default.IsAlgorithmUsingMaps = this.IsAlgorithmUsingMaps;
+                    Properties.Settings.Default.Save();
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsAlgorithmUsingMaps"));
@@ -891,6 +981,9 @@ namespace BacktestingSoftware
                 {
                     _additionalParameters = value;
 
+                    Properties.Settings.Default.AdditionalParameters = this.AdditionalParameters;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("AdditionalParameters"));
                 }
@@ -952,6 +1045,9 @@ namespace BacktestingSoftware
 
                     _isDataFutures = value;
 
+                    Properties.Settings.Default.IsDataFutures = this.IsDataFutures;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsDataFutures"));
                 }
@@ -971,6 +1067,9 @@ namespace BacktestingSoftware
                 if (!value.Equals(_innerValue))
                 {
                     _innerValue = value;
+
+                    Properties.Settings.Default.InnerValue = this.InnerValue;
+                    Properties.Settings.Default.Save();
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("InnerValue"));
@@ -1001,6 +1100,9 @@ namespace BacktestingSoftware
 
                     _isMiniContract = value;
 
+                    Properties.Settings.Default.IsMiniContract = this.IsMiniContract;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsMiniContract"));
                 }
@@ -1020,6 +1122,9 @@ namespace BacktestingSoftware
                 if (!value.Equals(_miniContractDenominator))
                 {
                     _miniContractDenominator = value;
+
+                    Properties.Settings.Default.MiniContractDenominator = this.MiniContractDenominator;
+                    Properties.Settings.Default.Save();
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("MiniContractDenominator"));
@@ -1068,6 +1173,9 @@ namespace BacktestingSoftware
                         _calculationThreadCount = value;
                     }
 
+                    Properties.Settings.Default.CalculationThreadCount = this.CalculationThreadCount;
+                    Properties.Settings.Default.Save();
+
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("CalculationThreadCount"));
                 }
@@ -1087,6 +1195,9 @@ namespace BacktestingSoftware
                 if (!value.Equals(_isNetWorthChartInPercentage))
                 {
                     _isNetWorthChartInPercentage = value;
+
+                    Properties.Settings.Default.IsNetWorthChartInPercentage = this.IsNetWorthChartInPercentage;
+                    Properties.Settings.Default.Save();
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("IsNetWorthChartInPercentage"));
@@ -1214,6 +1325,29 @@ namespace BacktestingSoftware
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("GoodDayBadDayRatio"));
+                }
+            }
+        }
+
+        private string _themeName;
+
+        public string ThemeName
+        {
+            get
+            {
+                return _themeName;
+            }
+            set
+            {
+                if (!value.Equals(_themeName))
+                {
+                    _themeName = value;
+
+                    Properties.Settings.Default.ThemeName = this.ThemeName;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ThemeName"));
                 }
             }
         }

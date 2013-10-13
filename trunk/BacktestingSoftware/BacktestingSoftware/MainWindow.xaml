@@ -5,6 +5,8 @@
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        x:Name="rootGrid"
+        local:MkThemeSelector.CurrentThemeDictionary="{Binding ElementName=cmbThemes, Path=SelectedItem.Tag}"
         Title="BTS" Height="600" Width="1000"
         Closing="Window_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <Window.Resources>
@@ -31,6 +33,17 @@
                 <MenuItem Header="E_xit" Click="ExitButton_Click"/>
             </MenuItem>
             <MenuItem Header="_Help">
+                <MenuItem Header="_Theme">
+                    <MenuItem Name="None" Header="None" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="BureauBlack" Header="Bureau Black" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="BureauBlue" Header="Bureau Blue" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="ExpressionDark" Header="ExpressionDark" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="ExpressionLight" Header="ExpressionLight" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="ShinyBlue" Header="Shiny Blue" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="ShinyRed" Header="Shiny Red" Click="ChangeThemeButton_Click" />
+                    <MenuItem Name="add" Header="Whistler Blue" Click="ChangeThemeButton_Click" />
+                </MenuItem>
+                <Separator />
                 <MenuItem Header="_Contact" Click="ContactButton_Click" />
                 <MenuItem Header="_About" Click="AboutButton_Click" />
             </MenuItem>
@@ -351,10 +364,11 @@
                                         </StackPanel>
                                         <!-- Time Period -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
-                                            <Label IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">From:</Label>
+                                            <Label Margin="0,5,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">From:</Label>
                                             <DatePicker SelectedDate="{Binding Path=StartDate}" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" />
-                                            <Label IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">To:</Label>
+                                            <Label Margin="25,5,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">To:</Label>
                                             <DatePicker SelectedDate="{Binding Path=EndDate}" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" />
+                                            <Button Margin="25,0,5,0" Content="Today" Click="TodayButton_Click" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="3" Grid.Column="1">
                                             <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsRealTimeEnabled}"/>

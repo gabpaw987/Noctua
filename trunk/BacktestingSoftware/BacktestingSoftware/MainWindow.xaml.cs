@@ -44,6 +44,8 @@ namespace BacktestingSoftware
 
         List<Thread> calculationThreads;
 
+        private System.Drawing.Color ChartBGColor;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -62,11 +64,6 @@ namespace BacktestingSoftware
             this.mainViewModel.HighestDailyProfit = "0";
             this.mainViewModel.HighestDailyLoss = "0";
             this.mainViewModel.LastDayProfitLoss = "0";
-
-            this.mainViewModel.SaveFileName = string.Empty;
-            this.mainViewModel.LoadFileName = string.Empty;
-
-            this.mainViewModel.AdditionalParameters = string.Empty;
 
             this.mainViewModel.AlgorithmFileName = Properties.Settings.Default.AlgorithmFileName;
             this.mainViewModel.IsAlgorithmUsingMaps = Properties.Settings.Default.IsAlgorithmUsingMaps;
@@ -136,10 +133,13 @@ namespace BacktestingSoftware
                 Properties.Settings.Default.IndicatorPanels = new System.Collections.Specialized.StringCollection();
             }
 
+            this.restoreTheme(Properties.Settings.Default.ThemeName);
+
             this.refreshIndicatorList();
 
             this.orders.DataContext = this.mainViewModel.Orders;
-            this.orders.RowBackground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(247, 250, 254));
+            this.orders.RowBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(this.ChartBGColor.A, this.ChartBGColor.R,
+                                                                                                this.ChartBGColor.G, this.ChartBGColor.B));
 
             this.bw = new BackgroundWorker();
             this.isRealTimeThreadRunning = false;
@@ -699,6 +699,8 @@ namespace BacktestingSoftware
                         }
 
                         this.orders.DataContext = this.mainViewModel.Orders;
+                        this.orders.RowBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(this.ChartBGColor.A, this.ChartBGColor.R,
+                                                                                                            this.ChartBGColor.G, this.ChartBGColor.B));
                         this.orders.Items.Refresh();
 
                         if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
@@ -1429,7 +1431,7 @@ namespace BacktestingSoftware
             }
 
             //Color of the other Background System.Drawing.Color.FromArgb(213, 216, 221)
-            System.Drawing.Color backgroundColor = System.Drawing.Color.FromArgb(247, 250, 254);
+            System.Drawing.Color backgroundColor = this.ChartBGColor;
 
             chart.BackColor = backgroundColor;
             foreach (ChartArea area in chart.ChartAreas)
@@ -1677,37 +1679,6 @@ namespace BacktestingSoftware
         {
             this.StopButton_Click(null, null);
 
-            Properties.Settings.Default.AlgorithmFileName = this.mainViewModel.AlgorithmFileName;
-            Properties.Settings.Default.IsAlgorithmUsingMaps = this.mainViewModel.IsAlgorithmUsingMaps;
-            Properties.Settings.Default.DataFileName = this.mainViewModel.DataFileName;
-            Properties.Settings.Default.StartDate = this.mainViewModel.StartDate;
-            Properties.Settings.Default.EndDate = this.mainViewModel.EndDate;
-            Properties.Settings.Default.IsRealTimeEnabled = this.mainViewModel.IsRealTimeEnabled;
-            Properties.Settings.Default.StockSymbolForRealTime = this.mainViewModel.StockSymbolForRealTime;
-            Properties.Settings.Default.Barsize = this.mainViewModel.Barsize;
-            Properties.Settings.Default.AdditionalParameters = this.mainViewModel.AdditionalParameters;
-
-            Properties.Settings.Default.ValueOfSliderOne = this.mainViewModel.ValueOfSliderOne;
-            Properties.Settings.Default.ValueOfSliderTwo = this.mainViewModel.ValueOfSliderTwo;
-            Properties.Settings.Default.ValueOfSliderThree = this.mainViewModel.ValueOfSliderThree;
-            Properties.Settings.Default.ValueOfSliderFour = this.mainViewModel.ValueOfSliderFour;
-            Properties.Settings.Default.ValueOfSliderFive = this.mainViewModel.ValueOfSliderFive;
-            Properties.Settings.Default.ValueOfSliderSix = this.mainViewModel.ValueOfSliderSix;
-
-            Properties.Settings.Default.AbsTransactionFee = this.mainViewModel.AbsTransactionFee;
-            Properties.Settings.Default.RelTransactionFee = this.mainViewModel.RelTransactionFee;
-            Properties.Settings.Default.PricePremium = this.mainViewModel.PricePremium;
-
-            Properties.Settings.Default.RoundLotSize = this.mainViewModel.RoundLotSize;
-            Properties.Settings.Default.Capital = this.mainViewModel.Capital;
-
-            Properties.Settings.Default.SaveFileName = this.mainViewModel.SaveFileName;
-
-            Properties.Settings.Default.IsDataFutures = this.mainViewModel.IsDataFutures;
-            Properties.Settings.Default.InnerValue = this.mainViewModel.InnerValue;
-            Properties.Settings.Default.IsMiniContract = this.mainViewModel.IsMiniContract;
-            Properties.Settings.Default.MiniContractDenominator = this.mainViewModel.MiniContractDenominator;
-
             if (this.mainViewModel.CalculationThreadCount == 0)
             {
                 Properties.Settings.Default.CalculationThreadCount = this.oldThreadCount;
@@ -1716,8 +1687,6 @@ namespace BacktestingSoftware
             {
                 Properties.Settings.Default.CalculationThreadCount = this.mainViewModel.CalculationThreadCount;
             }
-
-            Properties.Settings.Default.IsNetWorthChartInPercentage = this.mainViewModel.IsNetWorthChartInPercentage;
 
             Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
 
@@ -2167,6 +2136,58 @@ namespace BacktestingSoftware
 
                 new Thread(this.LoadNetWorthChartData).Start();
             }
+        }
+
+        private void TodayButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.mainViewModel.EndDate = DateTime.Today;
+        }
+
+        private void ChangeThemeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.mainViewModel.ThemeName = ((System.Windows.Controls.MenuItem)sender).Name;
+            if (this.mainViewModel.ThemeName.Equals("None"))
+            {
+                MkThemeSelector.SetCurrentThemeDictionary(this, null);
+                this.ChartBGColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            }
+            else
+            {
+                MkThemeSelector.SetCurrentThemeDictionary(this, new Uri("/BackTestingSoftware;component/Themes/" + this.mainViewModel.ThemeName + ".xaml", UriKind.Relative));
+                this.ChartBGColor = System.Drawing.Color.FromArgb(247, 250, 254);
+            }
+
+            if (this.mainViewModel.BarList.Count > 0 && this.mainViewModel.Orders.Count > 0)
+            {
+                System.Drawing.Color backgroundColor = this.ChartBGColor;
+
+                Chart chart = this.FindName("NetWorthChart") as Chart;
+
+                chart.BackColor = backgroundColor;
+                foreach (ChartArea area in chart.ChartAreas)
+                {
+                    area.BackColor = backgroundColor;
+                }
+
+                chart = this.FindName("MyWinformChart") as Chart;
+
+                chart.BackColor = backgroundColor;
+                foreach (ChartArea area in chart.ChartAreas)
+                {
+                    area.BackColor = backgroundColor;
+                }
+
+                this.orders.RowBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(this.ChartBGColor.A, this.ChartBGColor.R,
+                                                                                                                this.ChartBGColor.G, this.ChartBGColor.B));
+                this.orders.Items.Refresh();
+            }
+        }
+
+        private void restoreTheme(string themeName)
+        {
+            System.Windows.Controls.MenuItem menuItem = new System.Windows.Controls.MenuItem();
+            menuItem.Name = themeName;
+            this.ChangeThemeButton_Click(menuItem, null);
         }
     }
 }
