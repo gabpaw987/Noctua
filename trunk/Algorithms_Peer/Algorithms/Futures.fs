@@ -1,4 +1,5 @@
-﻿// Parameters: 26.09.2013
+﻿// Parameters: 07.11.2013
+// Working version: 14.01.2014
 (*
 s1,5,5,1
 s2,100,100,1
@@ -22,6 +23,10 @@ extrPOut,34,34,2
 cutlossMax,0,0,10
 cutlossMin,0,0,10
 cutlossDecrN,0,0,250
+t0H,8,8,1
+t0M,0,0,1
+t1H,21,21,1
+t1M,59,59,1
 *)
 
 namespace Algorithm
@@ -338,6 +343,15 @@ namespace Algorithm
             let mutable cutloss = cutlossMax
             let cutlossMin = abs parameters.["cutlossMin"]
             let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
+            // Trading Times
+            // hour when trading starts
+            let t0H = int parameters.["t0H"]
+            // minute when trading starts
+            let t0M = int parameters.["t0M"]
+            // hour when trading stops
+            let t1H = int parameters.["t1H"]
+            // minute when trading stops
+            let t1M = int parameters.["t1M"]
 
 //            let s1 = even 0m //15m
 //            let s2 = even 80m
@@ -671,8 +685,13 @@ namespace Algorithm
                     if (exit <> 4) then
                         signals.[i] <- exit
 
-                    if (prices.[i].Item1.Month < 6 || (prices.[i].Item1.Month = 6 && prices.[i].Item1.Day < 16)) then
-                        signals.[i] <- 0
+                    // TRADING TIMES
+//                    if (prices.[i].Item1.Month < 6 || (prices.[i].Item1.Month = 6 && prices.[i].Item1.Day < 16)) then
+//                        signals.[i] <- 0
+
+                    if (prices.[i].Item1.Hour < t0H || (prices.[i].Item1.Hour = t0H && prices.[i].Item1.Minute < t0M)) ||
+                       (prices.[i].Item1.Hour > t1H || (prices.[i].Item1.Hour = t1H && prices.[i].Item1.Minute > t1M)) then
+                       signals.[i] <- 0
 
 //            sw1.Stop()
 //            printfn "Total: %f" (sw1.Elapsed.TotalMilliseconds / 1000.0)
