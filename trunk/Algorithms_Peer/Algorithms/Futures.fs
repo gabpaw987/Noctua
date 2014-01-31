@@ -1,7 +1,7 @@
 ﻿// Parameters: 07.11.2013
-// Working version: 14.01.2014
+// Working version: 31.01.2014
 (*
-s1,5,5,1
+s1,0,0,1 //0,0,1
 s2,100,100,1
 m1,90,90,1
 m2,140,140,1
@@ -20,9 +20,9 @@ barExtrN,150,150,1
 extrN,1000,1000,500
 extrPIn,27,27,2
 extrPOut,34,34,2
-cutlossMax,0,0,10
+cutlossMax,8,8,10
 cutlossMin,0,0,10
-cutlossDecrN,0,0,250
+cutlossDecrN,60,60,1
 t0H,8,8,1
 t0M,0,0,1
 t1H,21,21,1
@@ -306,14 +306,14 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
+                              //parameters:System.Collections.Generic.Dictionary<string, decimal>)=
 
 //            sw1.Start()
 
             (*
              * Read Parameters
-             *)
+             *
             // FRAMA
             let s1 = even parameters.["s1"]
             let s2 = even parameters.["s2"]
@@ -352,35 +352,46 @@ namespace Algorithm
             let t1H = int parameters.["t1H"]
             // minute when trading stops
             let t1M = int parameters.["t1M"]
+            *)
 
-//            let s1 = even 0m //15m
-//            let s2 = even 80m
-//            let m1 = even 120m
-//            let m2 = even 160m
-//            let l1 = even 140m
-//            let l2 = even 240m
-//            let framaNFactor = 1m
-//
-//            let regrXSN = 0
-//            let regrSN = 0
-//            let regrLN = 0
-//
-//            let rsiN = 30
-//            let rsiEmaN = 20
-//            let rsiLong = 60m
-//            let rsiShort = 40m
-//
-//            let barExtrN = 100
-//            let extrN = 500
-//            let extrPIn = 25m
-//            let extrPOut = 25m
-//
-//            let wn = 20
-//
-//            let cutlossMax = 0m
-//            let mutable cutloss = cutlossMax
-//            let cutlossMin = 0m
-//            let cutlossDecrN = 100
+            let s1 = even 0m
+            let s2 = even 0m
+            let m1 = even 0m
+            let m2 = even 0m
+            let l1 = even 0m
+            let l2 = even 0m
+            let framaNFactor = 1m
+
+            let regrXSN = 0
+            let regrSN = 0
+            let regrLN = 0
+
+            let rsiN = 30
+            let rsiEmaN = 20
+            let rsiLong = 60m
+            let rsiShort = 40m
+
+            let barExtrN = 150
+            let extrN = 1000
+            let extrPIn = 27m
+            let extrPOut = 34m
+
+            let wn = 200
+
+            let cutlossMax = 8.0m
+            let mutable cutloss = cutlossMax
+            let cutlossMin = 0m
+            let cutlossDecrN = 60
+
+            // Trading Times
+            // hour when trading starts
+            let t0H = 8
+            // minute when trading starts
+            let t0M = 0
+            // hour when trading stops
+            let t1H = 21
+            // minute when trading stops
+            let t1M = 51
 
             // Chart Lines
             chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
