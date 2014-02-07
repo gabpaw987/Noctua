@@ -306,14 +306,14 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
-                              //parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
+                              parameters:System.Collections.Generic.Dictionary<string, decimal>)=
 
 //            sw1.Start()
 
             (*
              * Read Parameters
-             *
+             *)
             // FRAMA
             let s1 = even parameters.["s1"]
             let s2 = even parameters.["s2"]
@@ -352,46 +352,46 @@ namespace Algorithm
             let t1H = int parameters.["t1H"]
             // minute when trading stops
             let t1M = int parameters.["t1M"]
-            *)
+            
 
-            let s1 = even 0m
-            let s2 = even 0m
-            let m1 = even 0m
-            let m2 = even 0m
-            let l1 = even 0m
-            let l2 = even 0m
-            let framaNFactor = 1m
-
-            let regrXSN = 0
-            let regrSN = 0
-            let regrLN = 0
-
-            let rsiN = 30
-            let rsiEmaN = 20
-            let rsiLong = 60m
-            let rsiShort = 40m
-
-            let barExtrN = 150
-            let extrN = 1000
-            let extrPIn = 27m
-            let extrPOut = 34m
-
-            let wn = 200
-
-            let cutlossMax = 8.0m
-            let mutable cutloss = cutlossMax
-            let cutlossMin = 0m
-            let cutlossDecrN = 60
-
-            // Trading Times
-            // hour when trading starts
-            let t0H = 8
-            // minute when trading starts
-            let t0M = 0
-            // hour when trading stops
-            let t1H = 21
-            // minute when trading stops
-            let t1M = 51
+//            let s1 = even 0m
+//            let s2 = even 0m
+//            let m1 = even 0m
+//            let m2 = even 0m
+//            let l1 = even 0m
+//            let l2 = even 0m
+//            let framaNFactor = 1m
+//
+//            let regrXSN = 0
+//            let regrSN = 0
+//            let regrLN = 0
+//
+//            let rsiN = 30
+//            let rsiEmaN = 20
+//            let rsiLong = 60m
+//            let rsiShort = 40m
+//
+//            let barExtrN = 150
+//            let extrN = 1000
+//            let extrPIn = 27m
+//            let extrPOut = 34m
+//
+//            let wn = 200
+//
+//            let cutlossMax = 8.0m
+//            let mutable cutloss = cutlossMax
+//            let cutlossMin = 0m
+//            let cutlossDecrN = 60
+//
+//            // Trading Times
+//            // hour when trading starts
+//            let t0H = 8
+//            // minute when trading starts
+//            let t0M = 0
+//            // hour when trading stops
+//            let t1H = 21
+//            // minute when trading stops
+//            let t1M = 51
 
             // Chart Lines
             chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
@@ -596,7 +596,9 @@ namespace Algorithm
                         
                         // maximum minus minimum price in range
                         let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
-                        let mins, maxs = getExtremeValues(extrN, cPrices, localExtrema)
+                        // find extremes in the range i-extrN (position - 1000) to i-barExtrN (position - 150)
+                        // this purposefully ignores extrems in the latest barExtrN bars (150), because these can initially not be found!
+                        let mins, maxs = getExtremeValues(extrN - barExtrN, cPrices.[0..i+1-barExtrN], localExtrema.[0..i+1-barExtrN])
                         if (entry > 0) then
                             for max in maxs do
                                 // don't go long in maxs
