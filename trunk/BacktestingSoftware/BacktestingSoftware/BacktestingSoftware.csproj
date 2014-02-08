@@ -78,6 +78,7 @@
     </ApplicationDefinition>
     <Compile Include="AutoGreyableImage.cs" />
     <Compile Include="CalculationResultSet.cs" />
+    <Compile Include="ESInput.cs" />
     <Compile Include="IBInput.cs" />
     <Compile Include="InvertableBooleanToVisibilityConverter.cs" />
     <Compile Include="Settings.cs" />
@@ -172,6 +173,29 @@
     <Content Include="Prototyp4BTS.dll" />
     <Content Include="Xceed.Wpf.DataGrid.dll" />
     <Content Include="Xceed.Wpf.Toolkit.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IESignal">
+      <Guid>{9C7CCB46-E9E8-4DDD-9784-4458877C2F10}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="NewsManager">
+      <Guid>{33727860-308C-4390-8C5D-0533B3496C52}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

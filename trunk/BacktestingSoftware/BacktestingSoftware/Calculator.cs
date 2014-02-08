@@ -199,7 +199,8 @@ namespace BacktestingSoftware
                     int InnerValue = this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue);
 
                     //To remove all the remaining positions in the end
-                    signals[signals.Count - 1] = 0;
+                    if (signals[signals.Count - 1] != 0)
+                        signals[signals.Count - 1] = 0;
 
                     decimal paidForGainLoss = 0m;
 

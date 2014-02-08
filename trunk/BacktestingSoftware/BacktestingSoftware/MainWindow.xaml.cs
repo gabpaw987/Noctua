@@ -46,6 +46,9 @@ namespace BacktestingSoftware
 
         private System.Drawing.Color ChartBGColor;
 
+        private List<List<decimal>> valueSets;
+        private Dictionary<string, decimal> valueSet;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -144,6 +147,8 @@ namespace BacktestingSoftware
             this.bw = new BackgroundWorker();
             this.isRealTimeThreadRunning = false;
             this.curBarCount = 0;
+
+            this.valueSets = new List<List<decimal>>();
 
             this.selectedArrowIndex = -1;
         }
@@ -487,7 +492,7 @@ namespace BacktestingSoftware
                                     parameters.Add(separatedParameter[0], decimalParameter);
                                 }
 
-                                List<List<decimal>> valueSets = new List<List<decimal>>();
+                                this.valueSets = new List<List<decimal>>();
                                 List<List<decimal>> parameterRanges = new List<List<decimal>>();
 
                                 //fill parameterRanges list
@@ -499,15 +504,15 @@ namespace BacktestingSoftware
                                         col.Add(i);
                                     }
                                     parameterRanges.Add(col);
-                                    valueSets.Add(new List<decimal>());
+                                    this.valueSets.Add(new List<decimal>());
                                 }
-                                Calculator.mesh(0, parameterRanges, valueSets);
+                                Calculator.mesh(0, parameterRanges, this.valueSets);
 
                                 progress = 20m;
                                 Type t = c.LoadAlgorithmFile();
 
                                 //Calculate all value sets
-                                for (int i = 0; i < valueSets[0].Count; i++)
+                                for (int i = 0; i < this.valueSets[0].Count; i++)
                                 {
                                     bool isThreadReady = false;
 
@@ -520,7 +525,7 @@ namespace BacktestingSoftware
                                     if (calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
                                     {
                                         int i2 = i;
-                                        calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                        calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, this.valueSets, i2, t, b)));
                                         calculationThreads[calculationThreads.Count - 1].Start();
                                         isThreadReady = true;
                                     }
@@ -538,7 +543,7 @@ namespace BacktestingSoftware
                                                 if (this.calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
                                                 {
                                                     int i2 = i;
-                                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, valueSets, i2, t, b)));
+                                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, this.valueSets, i2, t, b)));
                                                     calculationThreads[calculationThreads.Count - 1].Start();
                                                 }
                                             }
@@ -704,7 +709,7 @@ namespace BacktestingSoftware
                         this.orders.Items.Refresh();
 
                         if (this.ErrorMessage.Length == 0 && this.mainViewModel.IsRealTimeEnabled && !this.isRealTimeThreadRunning && this.iscalculating &&
-                            this.mainViewModel.AdditionalParameters.Length == 0)
+                            (this.mainViewModel.AdditionalParameters.Length == 0 || this.valueSets[0].Count == 1))
                         {
                             this.realTimeThread = new Thread(doRealTimeThreadWork);
                             this.realTimeThread.Start();
@@ -762,6 +767,11 @@ namespace BacktestingSoftware
                     description += ",";
                 }
                 description += parameters.Keys.ToList()[j] + ": " + valueSets[j][i];
+            }
+
+            if (this.valueSets[0].Count == 1)
+            {
+                this.valueSet = valueSet;
             }
 
             progress += (80m / (2 * valueSets[0].Count));
@@ -928,7 +938,14 @@ namespace BacktestingSoftware
                     if (this.ErrorMessage.Length == 0)
                     {
                         Type t = c.LoadAlgorithmFile();
-                        this.mainViewModel.Signals = c.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
+                        if (this.valueSets.Count == 0)
+                        {
+                            this.mainViewModel.Signals = c.CalculateSignals(t, null, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
+                        }
+                        else
+                        {
+                            this.mainViewModel.Signals = c.CalculateSignals(t, this.valueSet, this.mainViewModel.IndicatorDictionary, this.mainViewModel.OscillatorDictionary);
+                        }
                     }
 
                     if (this.ErrorMessage.Length == 0)
@@ -1019,9 +1036,13 @@ namespace BacktestingSoftware
 
                  for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
                  {
-                     if (this.mainViewModel.Orders[current + 1].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
+                     //To stop checking after reaching the last order, if last order is 0 but not at the last bar
+                     if (this.mainViewModel.Orders.Count > current + 1)
                      {
-                         ++current;
+                         if (this.mainViewModel.Orders[current + 1].Timestamp.Equals(this.mainViewModel.BarList[i].Item1))
+                         {
+                             ++current;
+                         }
                      }
 
                      if (this.mainViewModel.IsNetWorthChartInPercentage)
@@ -1608,6 +1629,9 @@ namespace BacktestingSoftware
             this.mainViewModel.NoOfGoodDays = 0;
             this.mainViewModel.NoOfBadDays = 0;
             this.mainViewModel.GoodDayBadDayRatio = 0;
+
+            this.valueSets = new List<List<decimal>>();
+            this.valueSet = new Dictionary<string, decimal>();
 
             Chart chart = this.FindName("MyWinformChart") as Chart;
             chart.Series.Clear();
