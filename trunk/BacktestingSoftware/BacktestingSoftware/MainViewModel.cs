@@ -1010,6 +1010,77 @@ namespace BacktestingSoftware
             }
         }
 
+        private string _performancePageMargin;
+
+        public string PerformancePageMargin
+        {
+            get
+            {
+                return _performancePageMargin;
+            }
+            set
+            {
+                if (!value.Equals(_performancePageMargin))
+                {
+                    _performancePageMargin = value;
+
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("PerformancePageMargin"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("PerformancePageMarginLarge"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("PerformancePageMarginIntLarge"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("PerformancePageMarginSeparatorLarge"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("PerformancePageMarginFirstSeparatorLarge"));
+                    }
+                }
+            }
+        }
+
+        public string PerformancePageMarginLarge
+        {
+            get
+            {
+                return "0,0,0," + this.PerformancePageMarginIntLarge;
+            }
+        }
+
+        public string PerformancePageMarginSeparatorLarge
+        {
+            get
+            {
+                return "0,0,100," + this.PerformancePageMarginIntLarge;
+            }
+        }
+
+        public string PerformancePageMarginFirstSeparatorLarge
+        {
+            get
+            {
+                return "5,0,105," + this.PerformancePageMarginIntLarge;
+            }
+        }
+
+        public string PerformancePageMarginIntLarge
+        {
+            get
+            {
+                if (this.PerformancePageMargin != null)
+                {
+                    int margin = int.Parse(this.PerformancePageMargin.Substring(6));
+                    if (margin <= 0)
+                        return "5";
+                    else
+                    {
+                        return "15";
+                    }
+                }
+                else
+                {
+                    return "5";
+                }
+            }
+        }
+
         private bool _isDataFutures;
 
         public bool IsDataFutures
@@ -1024,8 +1095,11 @@ namespace BacktestingSoftware
                 {
                     if (value)
                     {
-                        this.InnerValue = this.RoundLotSize;
-                        this.RoundLotSize = -1;
+                        if (this.RoundLotSize != -1)
+                        {
+                            this.InnerValue = this.RoundLotSize;
+                            this.RoundLotSize = -1;
+                        }
 
                         if (this.IsMiniContract)
                         {

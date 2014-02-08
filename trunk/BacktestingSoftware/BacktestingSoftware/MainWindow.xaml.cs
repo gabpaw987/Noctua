@@ -2174,11 +2174,35 @@ namespace BacktestingSoftware
             {
                 MkThemeSelector.SetCurrentThemeDictionary(this, null);
                 this.ChartBGColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                this.mainViewModel.PerformancePageMargin = "0,0,0,-5";
+            }
+            else if (this.mainViewModel.ThemeName.Equals("Mercury"))
+            {
+                MkThemeSelector.SetCurrentThemeDictionary(this, new Uri("/ReuxablesLegacy;component/" + this.mainViewModel.ThemeName + ".xaml", UriKind.Relative));
+                this.ChartBGColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                this.mainViewModel.PerformancePageMargin = "0,0,0,-5";
+            }
+            else if (this.mainViewModel.ThemeName.Equals("Candy")
+                || this.mainViewModel.ThemeName.Equals("Edge")
+                || this.mainViewModel.ThemeName.Equals("Frog")
+                || this.mainViewModel.ThemeName.Equals("Inc")
+                || this.mainViewModel.ThemeName.Equals("Metal"))
+            {
+                MkThemeSelector.SetCurrentThemeDictionary(this, new Uri("/ReuxablesLegacy;component/" + this.mainViewModel.ThemeName + ".xaml", UriKind.Relative));
+                this.ChartBGColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                this.mainViewModel.PerformancePageMargin = "0,0,0,5";
+            }
+            else if (this.mainViewModel.ThemeName.Equals("WhistlerBlue"))
+            {
+                MkThemeSelector.SetCurrentThemeDictionary(this, new Uri("/BackTestingSoftware;component/Themes/" + this.mainViewModel.ThemeName + ".xaml", UriKind.Relative));
+                this.ChartBGColor = System.Drawing.Color.FromArgb(247, 250, 254);
+                this.mainViewModel.PerformancePageMargin = "0,0,0,5";
             }
             else
             {
                 MkThemeSelector.SetCurrentThemeDictionary(this, new Uri("/BackTestingSoftware;component/Themes/" + this.mainViewModel.ThemeName + ".xaml", UriKind.Relative));
                 this.ChartBGColor = System.Drawing.Color.FromArgb(247, 250, 254);
+                this.mainViewModel.PerformancePageMargin = "0,0,0,5";
             }
 
             if (this.mainViewModel.BarList.Count > 0 && this.mainViewModel.Orders.Count > 0)
