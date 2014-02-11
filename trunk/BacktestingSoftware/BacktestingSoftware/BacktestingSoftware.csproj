@@ -82,6 +82,7 @@
     <Compile Include="ESInput.cs" />
     <Compile Include="IBInput.cs" />
     <Compile Include="InvertableBooleanToVisibilityConverter.cs" />
+    <Compile Include="MathConverter.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ThemeResourceDictionary.cs" />
     <Compile Include="MkThemeSelector.cs" />
