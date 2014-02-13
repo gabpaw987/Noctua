@@ -1,4 +1,34 @@
-﻿// Parameters: 07.11.2013
+﻿// 13.02.2014
+(*
+s1,0,0,1
+s2,100,100,1
+m1,90,90,1
+m2,140,140,1
+l1,200,200,1
+l2,220,220,1
+framaNFactor,1,1,1
+regrXSN,0,0,1
+regrSN,0,0,1
+regrLN,0,0,1
+rsiN,24,24,1
+rsiEmaN,2,2,1
+rsiLong,80,80,1
+rsiShort,20,20,1
+wn,200,200,1
+barExtrN,150,150,1
+extrN,1000,1000,500
+extrPIn,27,27,1
+extrPOut,34,34,1
+cutlossMax,8,8,10
+cutlossMin,0,0,10
+cutlossDecrN,60,60,1
+t0H,8,8,1
+t0M,0,0,1
+t1H,21,21,1
+t1M,59,59,1
+*)
+
+// Parameters: 07.11.2013
 // Working version: 31.01.2014
 (*
 s1,0,0,1 //0,0,1
@@ -331,8 +361,6 @@ namespace Algorithm
             let rsiEmaN = int parameters.["rsiEmaN"]
             let rsiLong = parameters.["rsiLong"]
             let rsiShort = parameters.["rsiShort"]
-            // Williams%R
-            let wn = int parameters.["wn"]
             // Price Extremes
             let barExtrN = int parameters.["barExtrN"]
             let extrN = int parameters.["extrN"]
@@ -376,8 +404,6 @@ namespace Algorithm
             let extrPIn = 27m
             let extrPOut = 34m
 
-            let wn = 200
-
             let cutlossMax = 8.0m
             let mutable cutloss = cutlossMax
             let cutlossMin = 0m
@@ -414,7 +440,6 @@ namespace Algorithm
             let tPrices =
                 [| for i in prices -> (i.Item3 + i.Item4 + i.Item5)/3m |]
 
-//            sw2.Start()
             let useFramas = if (s1 <> 0 && s2 <> 0 && m1 <> 0 && m2 <> 0 && l1 <> 0 && l2 <> 0) then true else false
             // calculate FRAMAs
             let framaS = if (useFramas) then frama(even ((decimal(s2+s1)*framaNFactor)/2m), s1, s2, prices) else Array.empty
@@ -424,7 +449,6 @@ namespace Algorithm
             let framaL = if (useFramas) then frama(even ((decimal(l2+l1)*framaNFactor)/2m), l1, l2, prices) else Array.empty
             for i in 0..framaL.Length-1 do chart1.["FRAMAl;#999999"].Add(framaL.[i])
 
-//            sw2.Stop()
             // how long ago frama has given a signal
             let mutable framaSinceSig = 0
             // indicates that the long averages have given a signal (waiting for short)
@@ -444,27 +468,9 @@ namespace Algorithm
             for i in 0..rsiEma.Length-1 do chart2.["RSI;#FF0000"].Add(rsiEma.[i])
             for i in 0..rsiEma.Length-1 do chart2.["RSI_long;#0000FF"].Add(rsiLong)
             for i in 0..rsiEma.Length-1 do chart2.["RSI_short;#0000FF"].Add(rsiShort)
-            
-//            sw3.Start()
-//            // calculate Williams%R
-//            let w = williamsR(wn, prices)
-//            sw3.Stop()
-//            for i in 0..w.Length-1 do chart2.["W%R;#FF0000"].Add(w.[i])
-//            let mutable wLastCross = 0
-//            let mutable wSinceCross = 0
-//            // Williams%R threshholds
-//            // oversold
-//            let wOS = -80m
-//            // overbought
-//            let wOB = -20m
-//            let wChannel = 20m
-//            for i in 0..w.Length-1 do chart2.["W%R_os;#0000FF"].Add(wOS)
-//            for i in 0..w.Length-1 do chart2.["W%R_ob;#0000FF"].Add(wOB)
 
-//            sw4.Start()
             // try to find n bar price extrema
             let localExtrema = findExtremes (barExtrN, cPrices)
-//            sw4.Stop()
             // add to chart2
             for i in 0..localExtrema.Length-1 do chart2.["LocalExtremes;#00FFFF"].Add(localExtrema.[i])
 
