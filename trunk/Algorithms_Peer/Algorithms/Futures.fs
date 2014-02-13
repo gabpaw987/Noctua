@@ -14,7 +14,6 @@ rsiN,24,24,1
 rsiEmaN,2,2,1
 rsiLong,80,80,1
 rsiShort,20,20,1
-wn,200,200,1
 barExtrN,150,150,1
 extrN,1000,1000,500
 extrPIn,27,27,1
@@ -45,7 +44,6 @@ rsiN,30,30,1
 rsiEmaN,20,20,1
 rsiLong,60,60,1
 rsiShort,40,40,1
-wn,200,200,1
 barExtrN,150,150,1
 extrN,1000,1000,500
 extrPIn,27,27,2
@@ -336,14 +334,14 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
-                              //parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
+                              parameters:System.Collections.Generic.Dictionary<string, decimal>)=
 
 //            sw1.Start()
 
             (*
              * Read Parameters
-             *
+             *)
             // FRAMA
             let s1 = even parameters.["s1"]
             let s2 = even parameters.["s2"]
@@ -380,34 +378,34 @@ namespace Algorithm
             let t1H = int parameters.["t1H"]
             // minute when trading stops
             let t1M = int parameters.["t1M"]
-            *)
+            
 
-            let s1 = even 0m
-            let s2 = even 0m
-            let m1 = even 0m
-            let m2 = even 0m
-            let l1 = even 0m
-            let l2 = even 0m
-            let framaNFactor = 1m
-
-            let regrXSN = 0
-            let regrSN = 0
-            let regrLN = 0
-
-            let rsiN = 30
-            let rsiEmaN = 20
-            let rsiLong = 60m
-            let rsiShort = 40m
-
-            let barExtrN = 150
-            let extrN = 1000
-            let extrPIn = 27m
-            let extrPOut = 34m
-
-            let cutlossMax = 8.0m
-            let mutable cutloss = cutlossMax
-            let cutlossMin = 0m
-            let cutlossDecrN = 60
+//            let s1 = even 0m
+//            let s2 = even 0m
+//            let m1 = even 0m
+//            let m2 = even 0m
+//            let l1 = even 0m
+//            let l2 = even 0m
+//            let framaNFactor = 1m
+//
+//            let regrXSN = 0
+//            let regrSN = 0
+//            let regrLN = 0
+//
+//            let rsiN = 30
+//            let rsiEmaN = 20
+//            let rsiLong = 60m
+//            let rsiShort = 40m
+//
+//            let barExtrN = 150
+//            let extrN = 1000
+//            let extrPIn = 27m
+//            let extrPOut = 34m
+//
+//            let cutlossMax = 8.0m
+//            let mutable cutloss = cutlossMax
+//            let cutlossMin = 0m
+//            let cutlossDecrN = 60
 
             // Trading Times
             // hour when trading starts
@@ -480,7 +478,7 @@ namespace Algorithm
             let mutable priceExtreme = cPrices.[0]
 
             // first index with all data
-            let firstI = ([ m1; m2; s1; s2; l1; l2; wn ] |> List.max) - 1
+            let firstI = ([ m1; m2; s1; s2; l1; l2 ] |> List.max) - 1
             let mutable missingData = firstI+1
 
             signals.Clear();
