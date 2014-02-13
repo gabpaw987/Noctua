@@ -407,15 +407,15 @@ namespace Algorithm
 //            let cutlossMin = 0m
 //            let cutlossDecrN = 60
 
-            // Trading Times
-            // hour when trading starts
-            let t0H = 8
-            // minute when trading starts
-            let t0M = 0
-            // hour when trading stops
-            let t1H = 21
-            // minute when trading stops
-            let t1M = 51
+//            // Trading Times
+//            // hour when trading starts
+//            let t0H = 8
+//            // minute when trading starts
+//            let t0M = 0
+//            // hour when trading stops
+//            let t1H = 21
+//            // minute when trading stops
+//            let t1M = 51
 
             // Chart Lines
             chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
