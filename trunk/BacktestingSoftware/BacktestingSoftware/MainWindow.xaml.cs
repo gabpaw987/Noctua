@@ -60,7 +60,7 @@ namespace BacktestingSoftware
             this.mainViewModel.BarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
             this.mainViewModel.IndicatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.OscillatorDictionary = new Dictionary<string, List<decimal>>();
-            this.mainViewModel.CalculationResultSets = new SortedDictionary<string, CalculationResultSet>();
+            this.mainViewModel.CalculationResultSets = new Dictionary<string, CalculationResultSet>();
             this.mainViewModel.PerformanceFromPrice = new List<decimal>();
             this.calculationThreads = new List<Thread>();
 
@@ -645,6 +645,8 @@ namespace BacktestingSoftware
                                         this.mainViewModel.CalculationResultSets.Remove(lowestPPResultSetKey);
                                         lowestPPResultSetKey += " [Worst]";
                                         this.mainViewModel.CalculationResultSets.Add(lowestPPResultSetKey, lowestPPResultSet);
+
+                                        this.mainViewModel.CalculationResultSets = this.mainViewModel.CalculationResultSets.OrderBy(x => -x.Value.PortfolioPerformancePercent).ToDictionary(pair => pair.Key, pair => pair.Value);
 
                                         this.Dispatcher.Invoke((Action)(() =>
                                         {
@@ -1962,7 +1964,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
                 this.refreshIndicatorList();
 
-                this.mainViewModel.CalculationResultSets = (SortedDictionary<string, CalculationResultSet>)bFormatter.Deserialize(stream);
+                this.mainViewModel.CalculationResultSets = (Dictionary<string, CalculationResultSet>)bFormatter.Deserialize(stream);
 
                 this.mainViewModel.SaveFileName = this.mainViewModel.LoadFileName;
 

@@ -990,9 +990,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private SortedDictionary<string, CalculationResultSet> _calculationResultSets;
+        private Dictionary<string, CalculationResultSet> _calculationResultSets;
 
-        public SortedDictionary<string, CalculationResultSet> CalculationResultSets
+        public Dictionary<string, CalculationResultSet> CalculationResultSets
         {
             get
             {

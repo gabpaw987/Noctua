@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlgorthimTesting
 {
-    class Program
+    internal class Program
     {
         // SWITCHES BETWEEN ALL PRICES AT ONCE (false) OR REAL TIME DEMO (one value at a time) (true)
         public const bool realTimeDemo = true;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //"C:/noctua/trunk/Input_Data/NKD_1mBar_20110809.csv"
             //"C:/noctua/trunk/Input_Data/GOOG_1dBar_20130110.csv"
@@ -24,7 +23,7 @@ namespace AlgorthimTesting
 
             List<int> signals = new List<int>();
 
-            if (Program.realTimeDemo)
+            /*if (Program.realTimeDemo)
             {
                 // first value
                 Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, 50), signals);
@@ -34,8 +33,8 @@ namespace AlgorthimTesting
             else
             {
                 signals = Algorithm.DecisionCalculator.startCalculation(prices, signals);
-            }
-            
+            }*/
+
             //for (int i = 0; i < test.Count; i++)
             //    Console.WriteLine(test.ElementAt(i));
             if (prices.Count == signals.Count)
