@@ -1,4 +1,4 @@
-﻿// 13.02.2014
+﻿// 18.02.2014
 (*
 s1,0,0,1
 s2,100,100,1
@@ -10,19 +10,48 @@ framaNFactor,1,1,1
 regrXSN,0,0,1
 regrSN,0,0,1
 regrLN,0,0,1
-rsiN,24,24,1
-rsiEmaN,2,2,1
-rsiLong,80,80,1
-rsiShort,20,20,1
-barExtrN,150,150,1
-extrN,1000,1000,500
-extrPIn,27,27,1
-extrPOut,34,34,1
-cutlossMax,8,8,10
-cutlossMin,0,0,10
-cutlossDecrN,60,60,1
-t0H,8,8,1
-t0M,0,0,1
+rsiN,30,30,1
+rsiEmaN,20,20,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+barExtrN,100,100,1
+extrN,1000,1000,1
+extrPIn,35,35,1
+extrPOut,20,20,1
+cutlossMax,5,5,1
+cutlossMin,0,0,1
+cutlossDecrN,100,100,1
+t0H,15,15,1
+t0M,30,30,1
+t1H,21,21,1
+t1M,59,59,1
+ *)
+
+// 13.02.2014
+(*
+s1,0,0,1
+s2,100,100,1
+m1,90,90,1
+m2,140,140,1
+l1,200,200,1
+l2,220,220,1
+framaNFactor,1,1,1
+regrXSN,0,0,1
+regrSN,0,0,1
+regrLN,0,0,1
+rsiN,30,30,1
+rsiEmaN,20,20,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+barExtrN,100,100,1
+extrN,1000,1000,1
+extrPIn,35,35,1
+extrPOut,20,20,1
+cutlossMax,5,5,1
+cutlossMin,0,0,1
+cutlossDecrN,100,100,1
+t0H,15,15,1
+t0M,30,30,1
 t1H,21,21,1
 t1M,59,59,1
 *)
@@ -341,7 +370,7 @@ namespace Algorithm
 
             (*
              * Read Parameters
-             *)
+             *
             // FRAMA
             let s1 = even parameters.["s1"]
             let s2 = even parameters.["s2"]
@@ -378,36 +407,36 @@ namespace Algorithm
             let t1H = int parameters.["t1H"]
             // minute when trading stops
             let t1M = int parameters.["t1M"]
-            
+            *)
 
-//            let s1 = even 0m
-//            let s2 = even 0m
-//            let m1 = even 0m
-//            let m2 = even 0m
-//            let l1 = even 0m
-//            let l2 = even 0m
-//            let framaNFactor = 1m
-//
-//            let regrXSN = 0
-//            let regrSN = 0
-//            let regrLN = 0
-//
-//            let rsiN = 30
-//            let rsiEmaN = 20
-//            let rsiLong = 60m
-//            let rsiShort = 40m
-//
-//            let barExtrN = 150
-//            let extrN = 1000
-//            let extrPIn = 27m
-//            let extrPOut = 34m
-//
-//            let cutlossMax = 8.0m
-//            let mutable cutloss = cutlossMax
-//            let cutlossMin = 0m
-//            let cutlossDecrN = 60
+            let s1 = even 0m
+            let s2 = even 0m
+            let m1 = even 0m
+            let m2 = even 0m
+            let l1 = even 0m
+            let l2 = even 0m
+            let framaNFactor = 1m
 
-//            // Trading Times
+            let regrXSN = 0
+            let regrSN = 0
+            let regrLN = 0
+
+            let rsiN = 30
+            let rsiEmaN = 20
+            let rsiLong = 60m
+            let rsiShort = 40m
+
+            let barExtrN = 100
+            let extrN = 1000
+            let extrPIn = 35m
+            let extrPOut = 20m
+
+            let cutlossMax = 5.0m
+            let mutable cutloss = cutlossMax
+            let cutlossMin = 0m
+            let cutlossDecrN = 100
+
+//            // Trading Times (now !! HARDCODED !!)
 //            // hour when trading starts
 //            let t0H = 8
 //            // minute when trading starts
@@ -700,13 +729,37 @@ namespace Algorithm
                     if (exit <> 4) then
                         signals.[i] <- exit
 
-                    // TRADING TIMES
-//                    if (prices.[i].Item1.Month < 6 || (prices.[i].Item1.Month = 6 && prices.[i].Item1.Day < 16)) then
-//                        signals.[i] <- 0
+                    // TRADING TIMES (!!HARDCODED!!)
+//                    if (prices.[i].Item1.Hour < t0H || (prices.[i].Item1.Hour = t0H && prices.[i].Item1.Minute < t0M)) ||
+//                       (prices.[i].Item1.Hour > t1H || (prices.[i].Item1.Hour = t1H && prices.[i].Item1.Minute > t1M)) then
+//                       signals.[i] <- 0
 
-                    if (prices.[i].Item1.Hour < t0H || (prices.[i].Item1.Hour = t0H && prices.[i].Item1.Minute < t0M)) ||
-                       (prices.[i].Item1.Hour > t1H || (prices.[i].Item1.Hour = t1H && prices.[i].Item1.Minute > t1M)) then
-                       signals.[i] <- 0
+                    // Monday to Thursday: 0:00 - 15:15; 17:00 - 24:00
+                    if (match prices.[i].Item1.DayOfWeek with 
+                        | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday 
+                            -> true
+                        | _ -> false) then
+                            if (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) &&
+                               (prices.[i].Item1.Hour < 17) then
+                                    signals.[i] <- 0
+                    // Friday: 0:00 - 15:15
+                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Friday) then
+                        if (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) then
+                            signals.[i] <- 0
+                    // Saturday: 8:30 - 15:15
+                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Saturday) then
+                        if (prices.[i].Item1.Hour < 8 || (prices.[i].Item1.Hour = 8 && prices.[i].Item1.Minute < 30)) ||
+                           (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) then
+                            signals.[i] <- 0
+                    // Sunday: 17:00 - 0:00
+                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Sunday) then
+                        if (prices.[i].Item1.Hour < 17) then
+                            signals.[i] <- 0
+
+                    // TODO: IB Shutdown
+//                    if (prices.[i].Item1.Hour < 4 || (prices.[i].Item1.Hour = 4 && prices.[i].Item1.Minute < 30)) ||
+//                       (prices.[i].Item1.Hour > 3 || (prices.[i].Item1.Hour = 3 && prices.[i].Item1.Minute > 30)) then
+//                            signals.[i] <- 0
 
 //            sw1.Stop()
 //            printfn "Total: %f" (sw1.Elapsed.TotalMilliseconds / 1000.0)
