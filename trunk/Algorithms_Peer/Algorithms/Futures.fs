@@ -363,8 +363,8 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
+                              //parameters:System.Collections.Generic.Dictionary<string, decimal>)=
 
 //            sw1.Start()
 
@@ -507,7 +507,7 @@ namespace Algorithm
             let mutable priceExtreme = cPrices.[0]
 
             // first index with all data
-            let firstI = ([ m1; m2; s1; s2; l1; l2 ] |> List.max) - 1
+            let firstI = ([ rsiN; rsiEmaN ] |> List.max) - 1
             let mutable missingData = firstI+1
 
             signals.Clear();
