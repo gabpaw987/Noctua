@@ -733,7 +733,7 @@ namespace Algorithm
 //                    if (prices.[i].Item1.Hour < t0H || (prices.[i].Item1.Hour = t0H && prices.[i].Item1.Minute < t0M)) ||
 //                       (prices.[i].Item1.Hour > t1H || (prices.[i].Item1.Hour = t1H && prices.[i].Item1.Minute > t1M)) then
 //                       signals.[i] <- 0
-                    
+     
                     
                     // Monday: 0:00 - 22:15
                     if (match prices.[i].Item1.DayOfWeek with 
