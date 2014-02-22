@@ -51,16 +51,16 @@
             // + !indexmover
             let indexmover = ref 0
             let myindex = [|for i = 0 to prices.Count - 1 do
-                        if(prices.[i].Item1.Equals(first(index.[i]))) then 
-                            yield index.[i + !indexmover]
-                        else if (prices.[i].Item1.CompareTo(first(index.[i + !indexmover]))>0) then                            
-                            indexmover := !indexmover - 1
-                            yield (prices.[i].Item1,(second(index.[i-1])+second(index.[i]))/2m,(third(index.[i-1])+third(index.[i]))/2m,(fourth(index.[i-1])+fourth(index.[i]))/2m,(fifth(index.[i-1])+fifth(index.[i]))/2m)
-                        else if (prices.[i].Item1.CompareTo(first(index.[i + !indexmover]))<0) then
-                            prices.Insert(i,new System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>(first(index.[i + !indexmover]), (prices.[i-1].Item2+prices.[i].Item2)/2m,(prices.[i-1].Item3+prices.[i].Item3)/2m,(prices.[i-1].Item4+prices.[i].Item4)/2m,(prices.[i-1].Item5+prices.[i].Item5)/2m))
-                            yield index.[i]
-                        else 
-                            yield index.[i + !indexmover]
+                if(prices.[i].Item1.Equals(first(index.[i]))) then 
+                    yield index.[i + !indexmover]
+                else if (prices.[i].Item1.CompareTo(first(index.[i + !indexmover]))>0) then                            
+                    indexmover := !indexmover - 1
+                    yield (prices.[i].Item1,(second(index.[i-1])+second(index.[i]))/2m,(third(index.[i-1])+third(index.[i]))/2m,(fourth(index.[i-1])+fourth(index.[i]))/2m,(fifth(index.[i-1])+fifth(index.[i]))/2m)
+                else if (prices.[i].Item1.CompareTo(first(index.[i + !indexmover]))<0) then
+                    prices.Insert(i,new System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>(first(index.[i + !indexmover]), (prices.[i-1].Item2+prices.[i].Item2)/2m,(prices.[i-1].Item3+prices.[i].Item3)/2m,(prices.[i-1].Item4+prices.[i].Item4)/2m,(prices.[i-1].Item5+prices.[i].Item5)/2m))
+                    yield index.[i]
+                else 
+                    yield index.[i + !indexmover]
             |]
             // list of closing prices (skipped)
             let cPrices = 

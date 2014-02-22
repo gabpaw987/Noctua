@@ -1,122 +1,45 @@
-﻿namespace Algorithm
-    module DecisionCalculator007=(*007*)
-        let divideZero denom nom =
-            match denom with
-            | 0m -> 0m
-            | _ -> nom/denom
-        
-        let ema (n:int, prices:List<decimal>)=
-            let alpha = (2.0m / (decimal n + 1.0m))
-            // t-1: calculate average of first n-1 elements as initial value for the ema
-            let tm1 =
-                prices
-                |> Seq.take (n-1)
-                |> Seq.average
-            // create output array
-            let ema : decimal array = Array.zeroCreate (List.length prices)
-            // put initial ema value into output as first t-1 value
-            ema.[n-2] <- tm1
-            // calculate ema for each price in the list
-            prices
-            |> List.iteri (fun i p -> 
-                match i with
-                | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
-                | _              -> ignore i)
-            // set initial ema value (sma) to 0
-            ema.[n-2] <- 0m
-            ema
-        
+﻿// Parameters: 07.11.2013
+// Working version: 31.01.2014
+(*
+s1,0,0,1 //0,0,1
+s2,100,100,1
+m1,90,90,1
+m2,140,140,1
+l1,200,200,1
+l2,220,220,1
+framaNFactor,1,1,1
+regrXSN,0,0,1
+regrSN,0,0,1
+regrLN,0,0,1
+rsiN,30,30,1
+rsiEmaN,20,20,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+wn,200,200,1
+barExtrN,150,150,1
+extrN,1000,1000,500
+extrPIn,27,27,2
+extrPOut,34,34,2
+cutlossMax,8,8,10
+cutlossMin,0,0,10
+cutlossDecrN,60,60,1
+t0H,8,8,1
+t0M,0,0,1
+t1H,21,21,1
+t1M,59,59,1
+*)
 
+namespace Algorithm
+    module DecisionCalculator4311234=(*007*)
 
-        (*
-         * Calculates the Directional Movement 
-         * dependent on which char is given(+/-) the positive or negative dm
-         *)
-        let calculateDm(decision:char, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
-            // calculate the directional movements (pos / neg)
-            let dm = Array.zeroCreate prices.Count
-            dm.[0] <- 0m
-            for i = 1 to prices.Count - 1 do
-                if(decision.Equals('+')) then
-                    if(prices.[i].Item5 > prices.[i-1].Item5) then
-                        dm.[i] <- prices.[i].Item3 - prices.[i-1].Item3
-                    else 
-                        dm.[i] <- 0m
-                else if(decision.Equals('-')) then
-                    if (prices.[i].Item5 < prices.[i-1].Item5) then 
-                        dm.[i] <- prices.[i-1].Item4 - prices.[i].Item4
-                    else 
-                        dm.[i] <- 0m
-                else 
-                    dm.[i] <- 0m
-                if(dm.[i] < 0m) then
-                    dm.[i] <- 0m
-            Array.toList dm
-
-        (*
-         * Calculates the True Range
-         * the tr is the highest of:
-         * Today's High - Today's Low,
-         * Today's High - Yesterday's Close, and
-         * Yesterday's Close - Today's Low
-         *)
-        let calculateTr(prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
-            let tr = Array.zeroCreate prices.Count
-            tr.[0] <- 0m
-            for i = 1 to prices.Count - 1 do
-                let tr1 = prices.[i].Item3-prices.[i].Item4
-                let tr2 = prices.[i].Item3-prices.[i-1].Item5
-                let tr3 = prices.[i-1].Item5-prices.[i].Item4
-                let max = [tr1;tr2;tr3] |> List.max
-                tr.[i] <- max
-            let a = (0m,0m,0m,0m)
-            Array.toList tr
-
-        let sec (_,c,_,_) = c
-        let third (_,_,c,_) = c
-        let fourth (_,_,_,c) = c
-        let trueRange(newBar:(decimal * decimal * decimal * decimal), oldBar:(decimal * decimal * decimal * decimal))=
-            [sec newBar - third newBar; sec newBar - fourth oldBar; fourth oldBar - third newBar]
-            |> List.max
-
-
-        let adx(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
-            // calculate the directional movements (pos & neg)
-            let posdm = ema (n, calculateDm ('+', prices))
-            let negdm = ema (n, calculateDm ('-', prices))
-            let tr    = ema (n, calculateTr (prices))
-
-            let posdi = Array.zeroCreate (prices.Count)
-            let negdi = Array.zeroCreate prices.Count
-            for i in n .. posdm.Length-1 do
-                posdi.[i] <- 100m*(posdm.[i] |> divideZero tr.[i])
-                negdi.[i] <- 100m*(negdm.[i] |> divideZero tr.[i])
-
-
-            // calculate the difference between the two indicators as a positive number
-            let dx = [ for x in 0 .. prices.Count - 1 ->   100m*((abs(posdi.[x] - negdi.[x]))) |> divideZero (abs(posdi.[x] + negdi.[x])) ]
-            let adx = ema(n*2, dx)
-            adx
-
-        let regression(prices:decimal array)=
-            let mutable xy = 0m
-            let mutable xx = 0m
-            let mutable x = 0m
-            let mutable y = 0m
-            for i = 0 to prices.Length - 1 do 
-                x <- x+decimal i
-                y <- y + prices.[i]
-                xy <- xy + prices.[i] * decimal i
-                xx <- xx + decimal i* decimal i
-            let b = (decimal prices.Length * xy - (x*y))/(decimal prices.Length * xx - x*x)
-            let a = (y - b*x)/decimal prices.Length
-            //decimal liste2D.Count*b + a
-            b
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////   GENERIC FUNCTIONS
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
 
         (*
          * rounds the given number to the nearest even number
          *)
-        let even (x)=
+        let even (x:decimal)=
             let s = sign x
             let x = abs x
             let a = decimal(x) % 2m
@@ -141,9 +64,37 @@
         /////////   TREND FOLLOWER (e.g. averages)
         //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let mutable dimension = new System.Collections.Generic.List<decimal>()
-        let mutable alphas = new System.Collections.Generic.List<decimal>()
-        let mutable ns = new System.Collections.Generic.List<decimal>()
+//        let mutable dimension = new System.Collections.Generic.List<decimal>()
+//        let mutable alphas = new System.Collections.Generic.List<decimal>()
+//        let mutable ns = new System.Collections.Generic.List<decimal>()
+
+        let sma(n:int, prices:decimal[])=
+            prices
+            |> Seq.windowed n
+            |> Seq.map Seq.average
+            |> Seq.toArray
+            |> Array.append (Array.zeroCreate (n-1))
+
+        let ema (n:int, prices:List<decimal>)=
+            let alpha = (2.0m / (decimal n + 1.0m))
+            // t-1: calculate average of first n-1 elements as initial value for the ema
+            let tm1 =
+                prices
+                |> Seq.take (n-1)
+                |> Seq.average
+            // create output array
+            let ema : decimal array = Array.zeroCreate (List.length prices)
+            // put initial ema value into output as first t-1 value
+            ema.[n-2] <- tm1
+            // calculate ema for each price in the list
+            prices
+            |> List.iteri (fun i p -> 
+                match i with
+                | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
+                | _              -> ignore i)
+            // set initial ema value (sma) to 0
+            ema.[n-2] <- 0m
+            ema
 
         // α = EXP(W*(D – 1))
         // D = (Log(HL1 + HL2) – Log(HL)) / Log(2)
@@ -179,16 +130,16 @@
                 |> List.min
             let hl = double(max - min) / double(n)
 
-            let mutable d = 0.
-            if(hl1 <> 0. && hl2 <> 0. && hl <> 0.) then 
-                d <- (log10 (hl1 + hl2) - log10 (hl)) / log10(2.0)
+            let mutable d = (log10 (hl1 + hl2) - log10 (hl)) / log10(2.0)
             if (d < 1.0) then
                 d <- 1.0
             else if (d > 2.0) then
                 d <- 2.0
-            dimension.Add(decimal(d))
+            // TODO:remove
+//            dimension.Add(decimal(d))
             let alpha = decimal (exp ((double w)*(d - 1.0)))
-            alphas.Add(alpha)
+            // TODO:remove
+//            alphas.Add(alpha)
             alpha
 
         // W = LN(2 / (SC + 1))
@@ -226,7 +177,7 @@
                     // shift to modified N
                     let n = decimal(sc - fc) * ((origN - 1m) / decimal(sc - 1)) + decimal fc
                     // TODO:remove
-                    ns.Add(n)
+//                    ns.Add(n)
                     // revert new N to new alpha
                     a <- nToAlphaDec n
 
@@ -241,122 +192,522 @@
             // set initial frama value (sma) to 0
             frama.[n-2] <- 0m
             frama
-        
 
-        (* Frama / Price, added Regression 4 middle- and longranged trendacceptance *)
-        let startCalculation1 (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
-                               signals:System.Collections.Generic.List<int>,
-                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                               parameter:System.Collections.Generic.Dictionary<string, decimal>)=
+        (*
+         * Calculates the slope of a regression over the given data.
+         * The data points are therefore assumed to be of successive nature, i.e. x = 1,2,3,..
+         *)
+        let regressionSlope(prices:decimal array)=
+            let mutable xy = 0m
+            let mutable xx = 0m
+            let mutable x = 0m
+            let mutable y = 0m
+            for i = 0 to prices.Length - 1 do 
+                x <- x+decimal i
+                y <- y + prices.[i]
+                xy <- xy + prices.[i] * decimal i
+                xx <- xx + decimal i* decimal i
+            let b = (decimal prices.Length * xy - (x*y))/(decimal prices.Length * xx - x*x)
+            //let a = (y - b*x)/decimal prices.Length
+            //decimal liste2D.Count*b + a
+            b
 
-(*
-FramaN,100,152,26
-FramaFC,4,20,16
-FramaSC,200,300,50
-r1,20,60,10
-r2,50,100,10
-*)
-            chart1.Clear();
-            // Chart Lines
-            chart1.Add("FRAMA;#00FF00", new System.Collections.Generic.List<decimal>()) 
-            //chart2.Add("W%R;#FF0000", new System.Collections.Generic.List<decimal>())
-            
-            // list of closing prices
-            let cPrices = 
-                [| for i in prices -> i.Item5 |]
+        (*
+         * Calculates a "moving" regression over the given data,
+         * resulting in a slope of the regression over the last n values for each data point
+         *)
+        let regression(n:int, prices:decimal[])=
+            [|for i in n-1..prices.Length-1 -> regressionSlope(prices.[i-n+1..i])|]
+            |> Array.append (Array.zeroCreate (n-1))
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////   OSCILLATORS
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            let frama = frama((int)parameter.["FramaN"],(int)parameter.["FramaFC"],(int)parameter.["FramaSC"],prices)
-            for i in 0..frama.Length-1 do chart1.["FRAMA;#00FF00"].Add(frama.[i])
-            
-            let mtr = Array.append (Array.zeroCreate((int)parameter.["r1"])) [|for i in (int)parameter.["r1"] .. prices.Count - 1 do yield regression([|for j in i - (int)parameter.["r1"] .. i do yield cPrices.[j]|])|]  
-            let ltr = Array.append (Array.zeroCreate((int)parameter.["r2"])) [|for i in (int)parameter.["r2"] .. prices.Count - 1 do yield regression([|for j in i - (int)parameter.["r2"] .. i do yield cPrices.[j]|])|]
-                        
-            signals.Clear();
-            for i in 0 .. frama.Length-1 do
-                if frama.[i] < cPrices.[i] then
-                    signals.Add(1)
-                    if mtr.[i] > 0.10m then
-                        signals.[i] <- 2
-                    if ltr.[i] > 0.10m && signals.[i] = 2 then
-                        signals.[i] <- 3
-                else if frama.[i] > cPrices.[i] then
-                        signals.Add(-1)
-                        if mtr.[i] < -0.10m then
-                            signals.[i] <- -2
-                        if ltr.[i] < -0.10m && signals.[i] = -2 then
-                            signals.[i] <- -3
-                if sign ltr.[i] <> sign mtr.[i] || frama.[i] = 0m || ltr.[i] = 0m then signals.[i] <- 0
+        (*
+         * Williams%R:
+         * %R = (Highest High - Close)/(Highest High - Lowest Low) * -100
+         *
+         *  Lowest Low = lowest low for the look-back period
+         *  Highest High = highest high for the look-back period
+         *  %R is multiplied by -100 correct the inversion and move the decimal.
+         *)
+        let williamsRVal(bars:System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>[])=
+            let mutable high = 0m
+            let mutable low = 0m
+            for bar in bars do
+                if (bar.Item3 > high) then 
+                    high <- bar.Item3
+                if (bar.Item4 < low || low = 0m) && bar.Item4 <> 0m then
+                    low <- bar.Item4
+            ((high - bars.[bars.Length-1].Item5)/(high - low)) * -100m
 
-            signals
+        let williamsR(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
+            let windows = Seq.windowed n prices
+            Seq.map williamsRVal windows
+            |> Seq.toArray
+            |> Array.append (Array.zeroCreate (n-1))
 
-            (* Frama / Price, added Regression 4 middle- and longranged trendacceptance *)
-(*
-FramaLongN,50,50,1
-FramaLongFC,1,1,1
-FramaLongSC,200,200,1
-FramaShortN,5,5,1
-FramaShortFC,1,1,1
-FramaShortSC,10,10,1
-r1,20,60,10
-r2,50,100,10
-ts,0.5,1.5,0.5
-ADXS,30,40,5
-*)
+        let rsi (n:int, prices:decimal[]) = 
+            let intervals = 
+                prices
+                |> Array.toSeq
+                |> Seq.windowed n
+                |> Seq.toArray
+            let sumup = [for i in 0 .. intervals.Length - 1 do yield Array.sum [|for j in 1 .. intervals.[i].Length - 1 do yield Array.max [|intervals.[i].[j] - intervals.[i].[j - 1]; 0m|]|] ]
+            let sumdown = [for i in 0 .. intervals.Length - 1 do yield - Array.sum [|for j in 1 .. intervals.[i].Length - 1 do yield Array.min [|intervals.[i].[j] - intervals.[i].[j - 1]; 0m|]|] ]
+            [| for i in 0 .. sumup.Length - 1 do yield 100m * (sumup.[i]/(decimal n))/((sumup.[i]/(decimal n)) + (sumdown.[i]/(decimal n)))|]
+            |> Array.append (Array.create (n - 1) 0m)
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////   SPECIAL FUNCTIONS
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        (*
+         * Tries to identify minima and maxima in the given array
+         * @n: number of bars an extremum has to be extremer on both sides
+         *)
+        let findExtremes(n:int, data:decimal[])=
+            let extremes = Array.zeroCreate data.Length
+            let mutable isMin = false
+            let mutable isMax = false
+            for i in n..data.Length-1-n do
+                isMin <- true
+                isMax <- true
+                for j in -n..n do
+                    if (data.[i+j] < data.[i]) then
+                        isMin <- false
+                    if (data.[i+j] > data.[i]) then
+                        isMax <- false
+                if (isMin) then extremes.[i] <- decimal (-1*n)
+                if (isMax) then extremes.[i] <- decimal n
+            extremes
+
+        let getExtremeValues(n:int, data:decimal[], extremes:decimal[])=
+            let mutable mins = new ResizeArray<decimal>()
+            let mutable maxs = new ResizeArray<decimal>()
+            for i in extremes.Length-1 .. -1 .. extremes.Length-1-n do
+                if (extremes.[i] > 0m) then
+                    maxs.Add(data.[i])
+                else if (extremes.[i] < 0m) then
+                    mins.Add(data.[i])
+            mins, maxs
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////   SIGNAL GENERATOR
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//        let sw1 = new System.Diagnostics.Stopwatch()
+//        let sw2 = new System.Diagnostics.Stopwatch()
+//        let sw3 = new System.Diagnostics.Stopwatch()
+//        let sw4 = new System.Diagnostics.Stopwatch()
+//        let sw5 = new System.Diagnostics.Stopwatch()
+
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              parameter:System.Collections.Generic.Dictionary<string, decimal>)=
-            chart1.Clear();
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
+                              //parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+
+//            sw1.Start()
+
+            (*
+             * Read Parameters
+             *
+            // FRAMA
+            let s1 = even parameters.["s1"]
+            let s2 = even parameters.["s2"]
+            let m1 = even parameters.["m1"]
+            let m2 = even parameters.["m2"]
+            let l1 = even parameters.["l1"]
+            let l2 = even parameters.["l2"]
+            let framaNFactor = abs parameters.["framaNFactor"]
+            // Regressions
+            let regrXSN = int parameters.["regrXSN"]
+            let regrSN = int parameters.["regrSN"]
+            let regrLN = int parameters.["regrLN"]
+            // RSI
+            let rsiN = int parameters.["rsiN"]
+            let rsiEmaN = int parameters.["rsiEmaN"]
+            let rsiLong = parameters.["rsiLong"]
+            let rsiShort = parameters.["rsiShort"]
+            // Williams%R
+            let wn = int parameters.["wn"]
+            // Price Extremes
+            let barExtrN = int parameters.["barExtrN"]
+            let extrN = int parameters.["extrN"]
+            let extrPIn = parameters.["extrPIn"]
+            let extrPOut = parameters.["extrPOut"]
+            // Cutloss
+            let cutlossMax = abs parameters.["cutlossMax"]
+            let mutable cutloss = cutlossMax
+            let cutlossMin = abs parameters.["cutlossMin"]
+            let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
+            // Trading Times
+            // hour when trading starts
+            let t0H = int parameters.["t0H"]
+            // minute when trading starts
+            let t0M = int parameters.["t0M"]
+            // hour when trading stops
+            let t1H = int parameters.["t1H"]
+            // minute when trading stops
+            let t1M = int parameters.["t1M"]
+            *)
+
+            let s1 = even 0m
+            let s2 = even 0m
+            let m1 = even 0m
+            let m2 = even 0m
+            let l1 = even 0m
+            let l2 = even 0m
+            let framaNFactor = 1m
+
+            let regrXSN = 0
+            let regrSN = 0
+            let regrLN = 0
+
+            let rsiN = 30
+            let rsiEmaN = 20
+            let rsiLong = 60m
+            let rsiShort = 40m
+
+            let barExtrN = 150
+            let extrN = 1000
+            let extrPIn = 27m
+            let extrPOut = 34m
+
+            let wn = 200
+
+            let cutlossMax = 8.0m
+            let mutable cutloss = cutlossMax
+            let cutlossMin = 0m
+            let cutlossDecrN = 60
+
+            // Trading Times
+            // hour when trading starts
+            let t0H = 8
+            // minute when trading starts
+            let t0M = 0
+            // hour when trading stops
+            let t1H = 21
+            // minute when trading stops
+            let t1M = 51
+
             // Chart Lines
-            chart1.Add("FRAMALong;#00FF00", new System.Collections.Generic.List<decimal>()) 
-            chart1.Add("FRAMAShort;#FF0000", new System.Collections.Generic.List<decimal>())
+            chart1.Add("FRAMAs;#FF0000", new System.Collections.Generic.List<decimal>())
+            chart1.Add("FRAMAm;#0000FF", new System.Collections.Generic.List<decimal>())
+            chart1.Add("FRAMAl;#999999", new System.Collections.Generic.List<decimal>())
+            chart2.Add("W%R;#FF0000", new System.Collections.Generic.List<decimal>())
+            chart2.Add("W%R_os;#0000FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("W%R_ob;#0000FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("regrLSlope;#00FF00", new System.Collections.Generic.List<decimal>())
+            chart2.Add("RSI;#FF0000", new System.Collections.Generic.List<decimal>())
+            chart2.Add("RSI_long;#0000FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("RSI_short;#0000FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("framaSig;#00FF00", new System.Collections.Generic.List<decimal>())
             
             // list of closing prices
             let cPrices = 
                 [| for i in prices -> i.Item5 |]
+            // list of typical prices
+            let tPrices =
+                [| for i in prices -> (i.Item3 + i.Item4 + i.Item5)/3m |]
 
+//            sw2.Start()
+            let useFramas = if (s1 <> 0 && s2 <> 0 && m1 <> 0 && m2 <> 0 && l1 <> 0 && l2 <> 0) then true else false
+            // calculate FRAMAs
+            let framaS = if (useFramas) then frama(even ((decimal(s2+s1)*framaNFactor)/2m), s1, s2, prices) else Array.empty
+            for i in 0..framaS.Length-1 do chart1.["FRAMAs;#FF0000"].Add(framaS.[i])
+            let framaM = if (useFramas) then frama(even ((decimal(m2+m1)*framaNFactor)/2m), m1, m2,  prices) else Array.empty
+            for i in 0..framaM.Length-1 do chart1.["FRAMAm;#0000FF"].Add(framaM.[i])
+            let framaL = if (useFramas) then frama(even ((decimal(l2+l1)*framaNFactor)/2m), l1, l2, prices) else Array.empty
+            for i in 0..framaL.Length-1 do chart1.["FRAMAl;#999999"].Add(framaL.[i])
 
-            let framaLong = frama((int)parameter.["FramaLongN"],(int)parameter.["FramaLongFC"],(int)parameter.["FramaLongSC"],prices)
-            for i in 0..framaLong.Length-1 do chart1.["FRAMALong;#00FF00"].Add(framaLong.[i])
-            
-            let framaShort = frama((int)parameter.["FramaShortN"],(int)parameter.["FramaShortFC"],(int)parameter.["FramaShortSC"],prices)
-            for i in 0..framaShort.Length-1 do chart1.["FRAMAShort;#FF0000"].Add(framaShort.[i])
-            
+//            sw2.Stop()
+            // how long ago frama has given a signal
+            let mutable framaSinceSig = 0
+            // indicates that the long averages have given a signal (waiting for short)
+            let mutable framaPreSig = 0
+            let mutable framaSig = 0
 
-            let mtr = Array.append (Array.zeroCreate((int)parameter.["r1"])) [|for i in (int)parameter.["r1"] .. prices.Count - 1 do yield regression([|for j in i - (int)parameter.["r1"] .. i do yield cPrices.[j]|])|]  
-            let ltr = Array.append (Array.zeroCreate((int)parameter.["r2"])) [|for i in (int)parameter.["r2"] .. prices.Count - 1 do yield regression([|for j in i - (int)parameter.["r2"] .. i do yield cPrices.[j]|])|]
+            // calculate regressions
+            let regrXS = if (regrXSN <> 0) then regression(regrXSN, cPrices) else Array.empty
+            let regrS = if (regrSN <> 0) then regression(regrSN, cPrices)  else Array.empty
+            let regrL = if (regrLN <> 0) then regression(regrLN, cPrices)  else Array.empty
+
+            let useRsi = if (rsiN <> 0 && rsiEmaN <> 0) then true else false
+            // calculate RSI
+            let rsi = if (useRsi) then rsi (rsiN, tPrices) else Array.empty
+            // smooth RSI
+            let rsiEma = if (useRsi) then ema (rsiEmaN, Array.toList rsi) else Array.empty
+            for i in 0..rsiEma.Length-1 do chart2.["RSI;#FF0000"].Add(rsiEma.[i])
+            for i in 0..rsiEma.Length-1 do chart2.["RSI_long;#0000FF"].Add(rsiLong)
+            for i in 0..rsiEma.Length-1 do chart2.["RSI_short;#0000FF"].Add(rsiShort)
             
-            let ts = parameter.["FramaShortN"]
-                 
-            let adx = adx(14,prices)     
-                        
+//            sw3.Start()
+//            // calculate Williams%R
+//            let w = williamsR(wn, prices)
+//            sw3.Stop()
+//            for i in 0..w.Length-1 do chart2.["W%R;#FF0000"].Add(w.[i])
+//            let mutable wLastCross = 0
+//            let mutable wSinceCross = 0
+//            // Williams%R threshholds
+//            // oversold
+//            let wOS = -80m
+//            // overbought
+//            let wOB = -20m
+//            let wChannel = 20m
+//            for i in 0..w.Length-1 do chart2.["W%R_os;#0000FF"].Add(wOS)
+//            for i in 0..w.Length-1 do chart2.["W%R_ob;#0000FF"].Add(wOB)
+
+//            sw4.Start()
+            // try to find n bar price extrema
+            let localExtrema = findExtremes (barExtrN, cPrices)
+//            sw4.Stop()
+            // add to chart2
+            for i in 0..localExtrema.Length-1 do chart2.["LocalExtremes;#00FFFF"].Add(localExtrema.[i])
+
+            // price at trade entry (long or short)
+            let mutable entryPrice = 0m
+            // price extreme in trade for cut loss
+            let mutable priceExtreme = cPrices.[0]
+
+            // first index with all data
+            let firstI = ([ m1; m2; s1; s2; l1; l2; wn ] |> List.max) - 1
+            let mutable missingData = firstI+1
+
             signals.Clear();
-            for i in 0 .. framaLong.Length-1 do
-                signals.Add(0)
-                if framaLong.[i] < framaShort.[i] then
-                    signals.[i] <- (1)
-                    if mtr.[i] > ts then
-                        signals.[i] <- 2
-                    if ltr.[i] > ts && signals.[i] = 2 then
-                        signals.[i] <- 3
-                else if framaLong.[i] > framaShort.[i] then
-                        signals.[i] <- (-1)
-                        if mtr.[i] < - ts then
-                            signals.[i] <- -2
-                        if ltr.[i] < - ts && signals.[i] = -2 then
-                            signals.[i] <- -3
-                if signals.Count > 2 then
-                    if sign signals.[i - 1] = sign signals.[i] then
-                        if sign signals.[i] = 1 then
-                            if signals.[i - 1] > signals.[i] then 
-                                signals.[i] <- signals.[i - 1]
-                        else if sign signals.[i] = -1 then
-                            if signals.[i - 1] < signals.[i] then
-                                signals.[i] <- signals.[i - 1]
-                if sign ltr.[i] <> sign mtr.[i] || framaLong.[i] = 0m || ltr.[i] = 0m then signals.[i] <- 0
-                if mtr.[i] < 0.08m && mtr.[i] > - 0.08m then signals.[i] <- 0
-                if adx.[i] < parameter.["ADXS"] then signals.[i] <- 0
+            for i in 0 .. prices.Count-1 do
+                // one bar more available
+                missingData <- missingData - 1
+
+                // Not all neccessary data available yet
+                // (.. or new day)
+                if i < firstI || missingData > 0 then
+                    signals.Add(0)
+                    chart2.["framaSig;#00FF00"].Add(0m)
+                else
+                    (*
+                     * // standard behaviour is to keep the last signal
+                     *)
+                    signals.Add(if (i=0) then 0 else signals.[i-1])
+
+                    /////////////////////////////////////
+                    //////   ENTRY SIGNAL
+                    /////////////////////////////////////
+                    let mutable entry = 0
+
+                    (*
+                     * // FRAMA entry
+                     *)
+//                    let mutable framaSig = 0
+
+                    if (useFramas) then
+                        if (framaM.[i] > framaL.[i] && framaM.[i-1] < framaL.[i-1]) then
+                            framaPreSig <- 1
+                            // save how long ago the frama gave an entry signal
+    //                        framaSinceSig <- 0
+                        else if (framaM.[i] < framaL.[i] && framaM.[i-1] > framaL.[i-1]) then
+                            framaPreSig <- -1
+                            // save how long ago the frama gave an entry signal
+    //                        framaSinceSig <- 0
+
+                        if (framaPreSig <> 0) then
+                            if (framaPreSig = sign (framaS.[i] - framaM.[i])) then
+                                framaSig <- framaPreSig
+                                framaPreSig <- 0
+
+                    // still give a frama signal n bars after actual crossing
+//                    if (framaSinceSig <= 3 && signals.[i] = 0 && framaSig = 0) then
+//                        framaSig <- sign (framaM.[i] - framaL.[i])
+//                    framaSinceSig <- framaSinceSig + 1
+
+                    chart2.["framaSig;#00FF00"].Add(decimal framaSig*100m)
+
+                    (*
+                     * // RSI entry
+                     *)
+                    let mutable rsiSig = 0
+
+                    if (useRsi) then
+                        if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
+                            rsiSig <- 1
+                        else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
+                            rsiSig <- -1
+
+//                    (*
+//                     * // Williams%R entry
+//                     *)
+//                    let mutable wSig = 0
+//
+//                    // Williams%R either overbought or oversold
+//                    if (w.[i] < wOS || w.[i] > wOB) then
+//                        wLastCross <- 0
+//                        wSinceCross <- 0
+//
+//                    // Williams%R went over oversold
+//                    if (w.[i] > wOS && w.[i-1] < wOS) then
+//                        wLastCross <- 1
+//                        wSinceCross <- 0
+//                    // Williams%R went below overbought
+//                    else if (w.[i] < wOB && w.[i-1] > wOB) then
+//                        wLastCross <- -1
+//                        wSinceCross <- 0
+//                    
+//                    // Williams%R recently crossed from overbought/oversold and is still in the signal channel
+//                    if (wLastCross = 1 && (w.[i] < wOS + wChannel || wSinceCross <= 3)) || (wLastCross = -1 && (w.[i] > wOB - wChannel || wSinceCross <= 3)) then
+//                        wSig <- wLastCross
+//                        
+//                    wSinceCross <- wSinceCross + 1
+
+                    (*
+                     * // entry decision
+                     *)
+                    if (useRsi) then
+                        if (sign rsiSig <> sign signals.[i]) then
+                            if (sign rsiSig = sign framaSig) then
+                                entry <- rsiSig * 2
+                            else
+                                entry <- rsiSig
+                        // entry level 2 decision
+                        if (abs signals.[i] = 1 && sign framaSig = signals.[i]) then
+                            entry <- 2*framaSig
+                    else if (useFramas) then
+                        if (framaSig <> signals.[i-1]) then
+                            entry <- framaSig
+                    
+                    (*
+                     * // Check regressions
+                     *)
+                    // don't decide against short term trend! (7)
+                    // or very short term trend (3)
+                    // new signal contradicts short term price trend
+                    if (regrSN <> 0 && sign regrS.[i] <> sign entry) then
+                        entry <- 0
+                    if (regrXSN <> 0 && sign regrXS.[i] <> sign entry) then
+                        entry <- 0
+
+                    (*
+                     * // don't enter in extreme price situations
+                     *)
+                    if (i >= extrN-1 && (extrN <> 0 && (extrPIn > 0m || extrPOut > 0m))) then
+//                        sw5.Start()
+                        
+                        // maximum minus minimum price in range
+                        let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
+                        let mins, maxs = getExtremeValues(extrN, cPrices, localExtrema)
+                        if (entry > 0) then
+                            for max in maxs do
+                                // don't go long in maxs
+                                if (cPrices.[i] > max-(extrPIn*0.01m*priceBreadth/2m) && cPrices.[i] < max+(extrPOut*0.01m*priceBreadth/2m)) then
+                                    entry <- 0
+                        if (entry < 0) then
+                            for min in mins do
+                                // don't short in mins
+                                if (cPrices.[i] > min-(extrPOut*0.01m*priceBreadth/2m) && cPrices.[i] < min+(extrPIn*0.01m*priceBreadth/2m)) then
+                                    entry <- 0
+
+//                        sw5.Stop()
+
+                    // changed signal
+//                    if (entry <> 0 && sign entry <> sign signals.[i-1]) then
+//                        framaSig <- 0
+
+                    // open position / add to position
+                    if (entry <> 0) then
+                        signals.[i] <- entry
+
+                    /////////////////////////////////////
+                    //////   EXIT SIGNAL
+                    /////////////////////////////////////
+                    let mutable exit = 4
+
+                    // FRAMA exit
+//                    // long
+//                    if (signals.[i] > 0) then
+//                        // exit if S is between M and L and Williams is overbought
+//                        if (framaS.[i] < framaM.[i] && framaS.[i] > framaL.[i] && w.[i] > wOB) then
+//                            exit <- 0
+//                        // FRAMAs point to falling prices
+//                        if (framaS.[i] < framaM.[i] && framaS.[i] < framaL.[i] && framaM.[i] < framaL.[i]) then
+//                            exit <- 0
+//                    // short
+//                    else if (signals.[i] < 0) then
+//                        // exit if S is between M and L and Williams is oversold
+//                        if (framaS.[i] > framaM.[i] && framaS.[i] < framaL.[i] && w.[i] < wOS) then
+//                            exit <- 0
+//                        // FRAMAs point to rising prices
+//                        if (framaS.[i] > framaM.[i] && framaS.[i] > framaL.[i] && framaM.[i] > framaL.[i]) then
+//                            exit <- 0
+                    
+                    if (useFramas) then
+                        // long
+                        if (signals.[i] > 0) then
+                            if (framaS.[i] < framaM.[i] && framaS.[i-1] > framaM.[i-1]) then
+                                if (signals.[i] = 2) then
+                                    exit <- 1
+                                    framaSig <- 0
+                        // short
+                        else if (signals.[i] < 0) then
+                            if (framaS.[i] > framaM.[i] && framaS.[i-1] < framaM.[i-1]) then
+                                if (signals.[i] = -2) then
+                                    exit <- -1
+                                    framaSig <- 0
+
+                        // exit if RSI and FRAMA are contradictory
+    //                    if (abs framaSig = 1 && rsiSig + framaSig = 0) then
+    //                        exit <- 0
+
+                    (*
+                     * // Cutloss: neutralise if loss is too big (% of price movement!)
+                     *)
+
+                    if (cutlossMax <> 0m) then
+                        // same sign: signal now and last bar
+                        if (sign signals.[i] = sign signals.[i-1]) then
+                            // decrease cutloss over time until it reaches the given minimum
+                            // e.g. <- 2 - (2-1)/100
+                            cutloss <- cutloss - (cutloss-cutlossMin)/(decimal cutlossDecrN)
+                            if (cutloss < cutlossMin) then
+                                cutloss <- cutlossMin
+                            // cut loss: price extreme
+                            if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
+                                priceExtreme <- cPrices.[i]
+
+                        // new buy or sell signal (different direction)
+                        if (signals.[i] <> 0 && sign signals.[i] <> sign signals.[i-1]) then
+                            // reset cutloss to maximum for new trade
+                            cutloss <- cutlossMax
+                            entryPrice <- cPrices.[i]
+                            // reset priceExtreme for new trade
+                            priceExtreme <- cPrices.[i]
+
+                        // same trading direction (-/+)
+                        else if (signals.[i] <> 0) then
+                            // check cut loss:
+                            if (abs (priceExtreme - cPrices.[i]) > cutloss*0.01m*entryPrice) then
+                                // neutralise -> liquidate
+                                exit <- 0
+
+                    (*
+                     * // close position / liquidate part
+                     *)
+                    if (exit <> 4) then
+                        signals.[i] <- exit
+
+                    // TRADING TIMES
+//                    if (prices.[i].Item1.Month < 6 || (prices.[i].Item1.Month = 6 && prices.[i].Item1.Day < 16)) then
+//                        signals.[i] <- 0
+
+                    if (prices.[i].Item1.Hour < t0H || (prices.[i].Item1.Hour = t0H && prices.[i].Item1.Minute < t0M)) ||
+                       (prices.[i].Item1.Hour > t1H || (prices.[i].Item1.Hour = t1H && prices.[i].Item1.Minute > t1M)) then
+                       signals.[i] <- 0
+
+//            sw1.Stop()
+//            printfn "Total: %f" (sw1.Elapsed.TotalMilliseconds / 1000.0)
+//            printfn "FRAMAs: %f" (sw2.Elapsed.TotalMilliseconds / 1000.0)
+//            printfn "WilliamsR: %f" (sw3.Elapsed.TotalMilliseconds / 1000.0)
+//            printfn "Extrema: %f" (sw4.Elapsed.TotalMilliseconds / 1000.0)
+//            printfn "Extrema check: %f" (sw4.Elapsed.TotalMilliseconds / 1000.0)
             signals

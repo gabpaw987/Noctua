@@ -1,15 +1,6 @@
 ﻿namespace Algorithm
     module DecisionCalculator=(*007*)
         
-        let sma (n: int, prices:decimal[])  =
-            let intervals = 
-                prices
-                |> Array.toSeq
-                |> Seq.windowed n
-            [|for i in intervals -> Array.average i|]
-            |> Array.append (Array.zeroCreate (n - 1)) 
-            
-
         (*
          * Williams%R:
          * %R = (Highest High - Close)/(Highest High - Lowest Low) * -100
@@ -81,6 +72,10 @@ rsi,14,30,2
 ema,2,10,1
 rsio,60,80,5
 rsiu,20,40,5
+extremaDeviation,0.25,0.75,0.25
+extremaRange,100,1000,100
+winnings,1,10,1
+stopLoss,1,10,1
 *)
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
@@ -88,10 +83,7 @@ rsiu,20,40,5
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>
                               ,parameter:System.Collections.Generic.Dictionary<string, decimal>)=
 //                              )=
-            chart1.Clear();
             chart2.Clear();
-//            parameter.Add("ema", 3m)
-//            parameter.Add("rsi", 18m)
             // RSI Lines
             let rsi40 = new System.Collections.Generic.List<decimal>();
             for i in 0 .. prices.Count - 1 do rsi40.Add(40m)
@@ -99,15 +91,28 @@ rsiu,20,40,5
             for i in 0 .. prices.Count - 1 do rsi60.Add(60m)
             chart2.Add("RSI40;#0000FF", rsi40) 
             chart2.Add("RSI60;#0000FF", rsi60)
-
+            
             let rsi = ema ((int) parameter.["ema"], Array.toList ( rsi((int parameter.["rsi"]), [| for i in 0 .. prices.Count - 1 do yield ((prices.[i].Item3) + (prices.[i].Item4) + (prices.[i].Item5))/3m|])))
             
             let rsiC = new System.Collections.Generic.List<decimal>();
             for i in 0 .. prices.Count - 1 do rsiC.Add(rsi.[i])
             chart2.Add("RSI;#00FF00", rsiC)
 
+            let mutable extremas = new System.Collections.Generic.List<decimal>();
+
+            let mutable old = 0
             signals.Add (0)
+
+            let mutable lastBoughtIndex = 0
+
             for i in 1 .. prices.Count - 1 do 
+                
+                
+                // gathering the local mins and maxs 
+                let extremas = [ for j in 1 .. prices.Count do if (j < i && j > (i - (int) parameter.["extremaRange"])) then yield prices.[j].Item5 ]
+
+
+                // printfn "%d" (old)
                 signals.Add (0)
                 if rsi.[i] > parameter.["rsio"] then
                     signals.[i] <- 1
@@ -115,7 +120,35 @@ rsiu,20,40,5
                     signals.[i] <- -1
                 else 
                     signals.[i] <- signals.[i - 1]
-                if rsi.[i] = 0m then 
+                if prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute = 14 then 
+                    old <- signals.[i - 1]
                     signals.[i] <- 0
+                if prices.[i].Item1.Hour = 3 && prices.[i].Item1.Minute = 30 then 
+                    signals.[i] <- old
 
+                // don´t buy in extremas
+                if (signals.Count > 2) then
+                    
+                    if (signals.[i] <> signals.[i - 1]) then 
+                        lastBoughtIndex <- i
+                        if signals.[i] = 1 then
+                            if prices.[i].Item5 >= (List.max (extremas) - parameter.["extremaDeviation"]) then signals.[i] <- signals.[i - 1]
+                        if signals.[i] = -1 then
+                            if prices.[i].Item5 <= (List.max (extremas) + parameter.["extremaDeviation"]) then signals.[i] <- signals.[i - 1]
+
+                // wont affect the beginning of the prices list
+                if i < 50 then signals.[i] <- 0
+
+                // take winnings 
+                // + 
+                if signals.[i] = 1 && (prices.[i].Item5 - (prices.[lastBoughtIndex].Item5)) >= parameter.["winnings"] && rsi.[i] < parameter.["rsio"] then signals.[i] <- 0
+                // - 
+                if signals.[i] = - 1 && ((prices.[lastBoughtIndex].Item5) - prices.[i].Item5 ) >= parameter.["winnings"] && rsi.[i] > parameter.["rsiu"] then signals.[i] <- 0
+                
+                // reduce loss
+                // +
+                if signals.[i] = 1 && (prices.[i].Item5 - (prices.[lastBoughtIndex].Item5)) <= parameter.["stopLoss"] && rsi.[i] < parameter.["rsio"] then signals.[i] <- 0
+                // -
+                if signals.[i] = -1 && (prices.[i].Item5 - (prices.[lastBoughtIndex].Item5)) >= parameter.["stopLoss"] && rsi.[i] > parameter.["rsiu"] then signals.[i] <- 0
+                
             signals
