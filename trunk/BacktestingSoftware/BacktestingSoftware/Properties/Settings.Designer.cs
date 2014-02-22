@@ -367,5 +367,17 @@ namespace BacktestingSoftware.Properties {
                 this["ThemeName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseRegularTradingHours {
+            get {
+                return ((bool)(this["UseRegularTradingHours"]));
+            }
+            set {
+                this["UseRegularTradingHours"] = value;
+            }
+        }
     }
 }

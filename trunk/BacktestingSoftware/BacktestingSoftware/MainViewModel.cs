@@ -1425,5 +1425,28 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private bool _useRegularTradingHours;
+
+        public bool UseRegularTradingHours
+        {
+            get
+            {
+                return _useRegularTradingHours;
+            }
+            set
+            {
+                if (!value.Equals(_useRegularTradingHours))
+                {
+                    _useRegularTradingHours = value;
+
+                    Properties.Settings.Default.UseRegularTradingHours = this.UseRegularTradingHours;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("UseRegularTradingHours"));
+                }
+            }
+        }
     }
 }

@@ -115,6 +115,8 @@ namespace BacktestingSoftware
 
             this.mainViewModel.IsNetWorthChartInPercentage = Properties.Settings.Default.IsNetWorthChartInPercentage;
 
+            this.mainViewModel.UseRegularTradingHours = Properties.Settings.Default.UseRegularTradingHours;
+
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
             {
@@ -331,13 +333,13 @@ namespace BacktestingSoftware
                     {
                         if (this.mainViewModel.Barsize.Equals("Minute"))
                         {
-                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
-                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
+                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
                         }
                         else if (this.mainViewModel.Barsize.Equals("Daily"))
                         {
-                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
-                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
+                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
                         }
 
                         this.ibClient.hadFirst = false;
@@ -876,11 +878,11 @@ namespace BacktestingSoftware
 
             if (this.mainViewModel.Barsize.Equals("Minute"))
             {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
             }
             else if (this.mainViewModel.Barsize.Equals("Daily"))
             {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
             }
 
             if (this.isRealTimeThreadRunning)
@@ -1821,7 +1823,8 @@ namespace BacktestingSoftware
                                    this.mainViewModel.IsAlgorithmUsingMaps,
                                    this.mainViewModel.IsDataFutures,
                                    this.mainViewModel.IsMiniContract,
-                                   this.mainViewModel.IsNetWorthChartInPercentage});
+                                   this.mainViewModel.IsNetWorthChartInPercentage,
+                                   this.mainViewModel.UseRegularTradingHours});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1930,6 +1933,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.IsDataFutures = tempBoolList[2];
                 this.mainViewModel.IsMiniContract = tempBoolList[3];
                 this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[4];
+                this.mainViewModel.UseRegularTradingHours = tempBoolList[5];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
