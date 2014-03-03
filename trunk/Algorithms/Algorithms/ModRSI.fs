@@ -111,11 +111,6 @@ stopLoss,1,10,1
 
             for i in 1 .. prices.Count - 1 do 
                 
-                
-                // gathering the local mins and maxs 
-                let extremas = [ for j in 1 .. prices.Count do if (j < i && j > (i - (int) parameter.["extremaRange"])) then yield prices.[j].Item5 ]
-
-
                 // printfn "%d" (old)
                 signals.Add (0)
                 if rsi.[i] > (*parameter.["rsio"]*)60m then
