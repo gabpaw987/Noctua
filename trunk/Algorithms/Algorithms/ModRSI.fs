@@ -81,9 +81,13 @@ stopLoss,1,10,1
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>
-                              ,parameter:System.Collections.Generic.Dictionary<string, decimal>)=
+                              (*,parameter:System.Collections.Generic.Dictionary<string, decimal>*))=
 //                              )=
+            chart1.Clear();
             chart2.Clear();
+//            parameter.Add("ema", 3m)
+//            parameter.Add("rsi", 18m)
+
             // RSI Lines
             let rsi40 = new System.Collections.Generic.List<decimal>();
             for i in 0 .. prices.Count - 1 do rsi40.Add(40m)
@@ -91,8 +95,8 @@ stopLoss,1,10,1
             for i in 0 .. prices.Count - 1 do rsi60.Add(60m)
             chart2.Add("RSI40;#0000FF", rsi40) 
             chart2.Add("RSI60;#0000FF", rsi60)
-            
-            let rsi = ema ((int) parameter.["ema"], Array.toList ( rsi((int parameter.["rsi"]), [| for i in 0 .. prices.Count - 1 do yield ((prices.[i].Item3) + (prices.[i].Item4) + (prices.[i].Item5))/3m|])))
+
+            let rsi = ema ((*(int) parameter.["ema"]*)20, Array.toList ( rsi((*(int parameter.["rsi"])*)30, [| for i in 0 .. prices.Count - 1 do yield ((prices.[i].Item3) + (prices.[i].Item4) + (prices.[i].Item5))/3m|])))
             
             let rsiC = new System.Collections.Generic.List<decimal>();
             for i in 0 .. prices.Count - 1 do rsiC.Add(rsi.[i])
@@ -114,41 +118,13 @@ stopLoss,1,10,1
 
                 // printfn "%d" (old)
                 signals.Add (0)
-                if rsi.[i] > parameter.["rsio"] then
+                if rsi.[i] > (*parameter.["rsio"]*)60m then
                     signals.[i] <- 1
-                else if rsi.[i] < parameter.["rsiu"] then
+                else if rsi.[i] < (*parameter.["rsiu"]*)40m then
                     signals.[i] <- -1
                 else 
                     signals.[i] <- signals.[i - 1]
-                if prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute = 14 then 
-                    old <- signals.[i - 1]
+                if rsi.[i] = 0m then 
                     signals.[i] <- 0
-                if prices.[i].Item1.Hour = 3 && prices.[i].Item1.Minute = 30 then 
-                    signals.[i] <- old
 
-                // don´t buy in extremas
-                if (signals.Count > 2) then
-                    
-                    if (signals.[i] <> signals.[i - 1]) then 
-                        lastBoughtIndex <- i
-                        if signals.[i] = 1 then
-                            if prices.[i].Item5 >= (List.max (extremas) - parameter.["extremaDeviation"]) then signals.[i] <- signals.[i - 1]
-                        if signals.[i] = -1 then
-                            if prices.[i].Item5 <= (List.max (extremas) + parameter.["extremaDeviation"]) then signals.[i] <- signals.[i - 1]
-
-                // wont affect the beginning of the prices list
-                if i < 50 then signals.[i] <- 0
-
-                // take winnings 
-                // + 
-                if signals.[i] = 1 && (prices.[i].Item5 - (prices.[lastBoughtIndex].Item5)) >= parameter.["winnings"] && rsi.[i] < parameter.["rsio"] then signals.[i] <- 0
-                // - 
-                if signals.[i] = - 1 && ((prices.[lastBoughtIndex].Item5) - prices.[i].Item5 ) >= parameter.["winnings"] && rsi.[i] > parameter.["rsiu"] then signals.[i] <- 0
-                
-                // reduce loss
-                // +
-                if signals.[i] = 1 && (prices.[i].Item5 - (prices.[lastBoughtIndex].Item5)) <= parameter.["stopLoss"] && rsi.[i] < parameter.["rsio"] then signals.[i] <- 0
-                // -
-                if signals.[i] = -1 && (prices.[i].Item5 - (prices.[lastBoughtIndex].Item5)) >= parameter.["stopLoss"] && rsi.[i] > parameter.["rsiu"] then signals.[i] <- 0
-                
             signals
