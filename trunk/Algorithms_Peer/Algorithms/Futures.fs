@@ -1,4 +1,33 @@
-﻿// 18.02.2014
+﻿// 03.03.2014
+(*
+s1,0,0,1
+s2,100,100,1
+m1,90,90,1
+m2,140,140,1
+l1,200,200,1
+l2,220,220,1
+framaNFactor,1,1,1
+regrXSN,0,0,1
+regrSN,0,0,1
+regrLN,0,0,1
+rsiN,30,30,1
+rsiEmaN,20,20,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+barExtrN,100,100,50
+extrN,1000,1000,1
+extrPIn,40,40,2
+extrPOut,45,45,2
+cutlossMax,5,5,1
+cutlossMin,0,0,1
+cutlossDecrN,100,100,1
+t0H,15,15,1
+t0M,30,30,1
+t1H,21,21,1
+t1M,59,59,1
+*)
+
+// 18.02.2014
 (*
 s1,0,0,1
 s2,100,100,1
@@ -364,13 +393,13 @@ namespace Algorithm
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
-                              //parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+//                              parameters:System.Collections.Generic.Dictionary<string, decimal>)=
 
 //            sw1.Start()
 
             (*
-             * Read Parameters
-             *
+//             * Read Parameters
+//             *
             // FRAMA
             let s1 = even parameters.["s1"]
             let s2 = even parameters.["s2"]
@@ -409,6 +438,7 @@ namespace Algorithm
             let t1M = int parameters.["t1M"]
             *)
 
+            
             let s1 = even 0m
             let s2 = even 0m
             let m1 = even 0m
@@ -428,13 +458,14 @@ namespace Algorithm
 
             let barExtrN = 100
             let extrN = 1000
-            let extrPIn = 35m
-            let extrPOut = 20m
+            let extrPIn = 40m
+            let extrPOut = 45m
 
             let cutlossMax = 5.0m
             let mutable cutloss = cutlossMax
             let cutlossMin = 0m
             let cutlossDecrN = 100
+            
 
 //            // Trading Times (now !! HARDCODED !!)
 //            // hour when trading starts
@@ -621,35 +652,10 @@ namespace Algorithm
                     if (regrXSN <> 0 && sign regrXS.[i] <> sign entry) then
                         entry <- 0
 
-                    (*
-                     * // don't enter in extreme price situations
-                     *)
-                    if (i >= extrN-1 && (extrN <> 0 && (extrPIn > 0m || extrPOut > 0m))) then
-//                        sw5.Start()
-                        
-                        // maximum minus minimum price in range
-                        let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
-                        let mins, maxs = getExtremeValues(extrN, cPrices, localExtrema)
-                        if (entry > 0) then
-                            for max in maxs do
-                                // don't go long in maxs
-                                if (cPrices.[i] > max-(extrPIn*0.01m*priceBreadth/2m) && cPrices.[i] < max+(extrPOut*0.01m*priceBreadth/2m)) then
-                                    entry <- 0
-                        if (entry < 0) then
-                            for min in mins do
-                                // don't short in mins
-                                if (cPrices.[i] > min-(extrPOut*0.01m*priceBreadth/2m) && cPrices.[i] < min+(extrPIn*0.01m*priceBreadth/2m)) then
-                                    entry <- 0
-
-//                        sw5.Stop()
 
                     // changed signal
 //                    if (entry <> 0 && sign entry <> sign signals.[i-1]) then
 //                        framaSig <- 0
-
-                    // open position / add to position
-                    if (entry <> 0) then
-                        signals.[i] <- entry
 
                     /////////////////////////////////////
                     //////   EXIT SIGNAL
@@ -693,6 +699,37 @@ namespace Algorithm
     //                        exit <- 0
 
                     (*
+                     * // don't enter in extreme price situations
+                     *)
+                    if (i >= extrN-1 && (extrN <> 0 && (extrPIn > 0m || extrPOut > 0m))) then
+                        
+                        // maximum minus minimum price in range
+                        let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
+                        let mins, maxs = getExtremeValues(extrN, cPrices, localExtrema)
+                        if (entry > 0) then
+                            for max in maxs do
+                                // don't go long in maxs
+                                if (cPrices.[i] > max-(extrPIn*0.01m*priceBreadth/2m) && cPrices.[i] < max+(extrPOut*0.01m*priceBreadth/2m)) then
+                                    entry <- 0
+                                    // neutral instead of new position
+                                    if (signals.[i-1] < 0) then
+                                        exit <- 0
+                        if (entry < 0) then
+                            for min in mins do
+                                // don't short in mins
+                                if (cPrices.[i] > min-(extrPOut*0.01m*priceBreadth/2m) && cPrices.[i] < min+(extrPIn*0.01m*priceBreadth/2m)) then
+                                    entry <- 0
+                                    // neutral instead of new position
+                                    if (signals.[i-1] > 0) then
+                                        exit <- 0
+
+
+                    // open position / add to position
+                    if (entry <> 0) then
+                        signals.[i] <- entry
+
+
+                    (*
                      * // Cutloss: neutralise if loss is too big (% of price movement!)
                      *)
 
@@ -733,38 +770,45 @@ namespace Algorithm
 //                    if (prices.[i].Item1.Hour < t0H || (prices.[i].Item1.Hour = t0H && prices.[i].Item1.Minute < t0M)) ||
 //                       (prices.[i].Item1.Hour > t1H || (prices.[i].Item1.Hour = t1H && prices.[i].Item1.Minute > t1M)) then
 //                       signals.[i] <- 0
-
-                    // Monday to Thursday: 0:00 - 15:15; 17:00 - 24:00
+     
+            
+                    // Trading Times ignoring short pauses
+                    // Monday to Friday: 0:00 - 22:10
                     if (match prices.[i].Item1.DayOfWeek with 
-                        | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday 
+                        | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday | System.DayOfWeek.Friday
                             -> true
                         | _ -> false) then
-                            if (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) &&
-                               (prices.[i].Item1.Hour < 17) then
-                                    signals.[i] <- 0
-                    // Friday: 0:00 - 15:15
-                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Friday) then
-                        if (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) then
-                            signals.[i] <- 0
-                    // Saturday: 8:30 - 15:15
-                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Saturday) then
-                        if (prices.[i].Item1.Hour < 8 || (prices.[i].Item1.Hour = 8 && prices.[i].Item1.Minute < 30)) ||
-                           (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) then
-                            signals.[i] <- 0
-                    // Sunday: 17:00 - 0:00
-                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Sunday) then
-                        if (prices.[i].Item1.Hour < 17) then
-                            signals.[i] <- 0
+                            if (prices.[i].Item1.Hour > 22 || (prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute > 10)) then
+                                signals.[i] <- 0
+                    // Saturday, Sunday (no trading)
+                    else
+                        signals.[i] <- 0
+                    
+//                    // Monday to Thursday: 0:00 - 15:15; 17:00 - 24:00
+//                    if (match prices.[i].Item1.DayOfWeek with 
+//                        | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday 
+//                            -> true
+//                        | _ -> false) then
+//                            if (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) &&
+//                               (prices.[i].Item1.Hour < 17) then
+//                                    signals.[i] <- 0
+//                    // Friday: 0:00 - 15:15
+//                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Friday) then
+//                        if (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) then
+//                            signals.[i] <- 0
+//                    // Saturday: 8:30 - 15:15
+//                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Saturday) then
+//                        if (prices.[i].Item1.Hour < 8 || (prices.[i].Item1.Hour = 8 && prices.[i].Item1.Minute < 30)) ||
+//                           (prices.[i].Item1.Hour > 15 || (prices.[i].Item1.Hour = 15 && prices.[i].Item1.Minute > 13)) then
+//                            signals.[i] <- 0
+//                    // Sunday: 17:00 - 0:00
+//                    else if (prices.[i].Item1.DayOfWeek = System.DayOfWeek.Sunday) then
+//                        if (prices.[i].Item1.Hour < 17) then
+//                            signals.[i] <- 0
 
                     // TODO: IB Shutdown
 //                    if (prices.[i].Item1.Hour < 4 || (prices.[i].Item1.Hour = 4 && prices.[i].Item1.Minute < 30)) ||
 //                       (prices.[i].Item1.Hour > 3 || (prices.[i].Item1.Hour = 3 && prices.[i].Item1.Minute > 30)) then
 //                            signals.[i] <- 0
 
-//            sw1.Stop()
-//            printfn "Total: %f" (sw1.Elapsed.TotalMilliseconds / 1000.0)
-//            printfn "FRAMAs: %f" (sw2.Elapsed.TotalMilliseconds / 1000.0)
-//            printfn "WilliamsR: %f" (sw3.Elapsed.TotalMilliseconds / 1000.0)
-//            printfn "Extrema: %f" (sw4.Elapsed.TotalMilliseconds / 1000.0)
-//            printfn "Extrema check: %f" (sw4.Elapsed.TotalMilliseconds / 1000.0)
             signals
