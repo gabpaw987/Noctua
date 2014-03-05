@@ -16,7 +16,7 @@
                 if (bar.Item3 > high) then 
                     high <- bar.Item3
                 if (bar.Item4 < low || low = 0m) && bar.Item4 <> 0m then
-                    low <- bar.Item4
+                   low <- bar.Item4
             ((high - bars.[bars.Length-1].Item5)/(high - low)) * -100m
 
         let williamsR(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=
@@ -81,12 +81,16 @@ stopLoss,1,10,1
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>
-                              (*,parameter:System.Collections.Generic.Dictionary<string, decimal>*))=
-//                              )=
+                              //,parameter:System.Collections.Generic.Dictionary<string, decimal>
+                              )=
             chart1.Clear();
             chart2.Clear();
-//            parameter.Add("ema", 3m)
-//            parameter.Add("rsi", 18m)
+            let parameter = new System.Collections.Generic.Dictionary<string, decimal>();
+            //TODO: Hier kannst du's aendern 
+            parameter.Add("ema", 30m)
+            parameter.Add("rsi", 21m)
+            parameter.Add("rsio", 60m)
+            parameter.Add("rsiu", 40m)
 
             // RSI Lines
             let rsi40 = new System.Collections.Generic.List<decimal>();
@@ -96,7 +100,7 @@ stopLoss,1,10,1
             chart2.Add("RSI40;#0000FF", rsi40) 
             chart2.Add("RSI60;#0000FF", rsi60)
 
-            let rsi = ema ((*(int) parameter.["ema"]*)20, Array.toList ( rsi((*(int parameter.["rsi"])*)30, [| for i in 0 .. prices.Count - 1 do yield ((prices.[i].Item3) + (prices.[i].Item4) + (prices.[i].Item5))/3m|])))
+            let rsi = ema ((int) parameter.["ema"], Array.toList ( rsi(((int) parameter.["rsi"]), [| for i in 0 .. prices.Count - 1 do yield ((prices.[i].Item3) + (prices.[i].Item4) + (prices.[i].Item5))/3m|])))
             
             let rsiC = new System.Collections.Generic.List<decimal>();
             for i in 0 .. prices.Count - 1 do rsiC.Add(rsi.[i])
@@ -111,11 +115,10 @@ stopLoss,1,10,1
 
             for i in 1 .. prices.Count - 1 do 
                 
-                // printfn "%d" (old)
                 signals.Add (0)
-                if rsi.[i] > (*parameter.["rsio"]*)60m then
+                if rsi.[i] > parameter.["rsio"] then
                     signals.[i] <- 1
-                else if rsi.[i] < (*parameter.["rsiu"]*)40m then
+                else if rsi.[i] < parameter.["rsiu"] then
                     signals.[i] <- -1
                 else 
                     signals.[i] <- signals.[i - 1]
