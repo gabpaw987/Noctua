@@ -16,7 +16,7 @@
                 if (bar.Item3 > high) then 
                     high <- bar.Item3
                 if (bar.Item4 < low || low = 0m) && bar.Item4 <> 0m then
-                    low <- bar.Item4
+                   low <- bar.Item4
             ((high - bars.[bars.Length-1].Item5)/(high - low)) * -100m
 
         let williamsR(n:int, prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>)=

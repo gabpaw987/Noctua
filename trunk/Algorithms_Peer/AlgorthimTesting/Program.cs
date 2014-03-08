@@ -14,12 +14,15 @@ namespace AlgorthimTesting
         {
             //"C:/noctua/trunk/Input_Data/NKD_1mBar_20110809.csv"
             //"C:/noctua/trunk/Input_Data/GOOG_1dBar_20130110.csv"
+            //"C:/noctua/trunk/Input_Data/GOOG_1mBar_20130110.csv"
             //"C:/noctua/trunk/Input_Data/SPX_1dBar_20130220.csv"
             //"C:/noctua/trunk/Input_Data/INTC_1dBar_20130220.csv"
+            //"C:/noctua/trunk/Input_Data/NQ_U3_EMINI_NASDAQ_100.csv"
+            //NQ_U3_EMINI_NASDAQ_100_cropped
             //"C:/Dropbox/Diplomprojekt/CAD_1mBar_20110924.csv"
             Console.WriteLine("File einlesen");
             List<Tuple<DateTime, decimal, decimal, decimal, decimal>> prices;
-            prices = CSVReader.EnumerateExcelFile("C:/noctua/trunk/Input_Data/GOOG_1dBar_20130110.csv", new DateTime(), DateTime.Now).ToList();
+            prices = CSVReader.EnumerateExcelFile("C:/noctua/trunk/Input_Data/NQ_U3_EMINI_NASDAQ_100_cropped.csv", new DateTime(), DateTime.Now).ToList();
             Console.WriteLine("Algorithmus starten");
 
             List<int> signals = new List<int>();
@@ -27,13 +30,13 @@ namespace AlgorthimTesting
             if (Program.realTimeDemo)
             {
                 // first value
-                Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, 50), signals);
+                Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, 1500), signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>());//, new System.Collections.Generic.Dictionary<string, decimal>());
                 while (signals.Count < prices.Count)
-                    Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, signals.Count + 1), signals);
+                    Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, signals.Count + 1), signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>());//, new System.Collections.Generic.Dictionary<string, decimal>());
             }
             else
             {
-                signals = Algorithm.DecisionCalculator.startCalculation(prices, signals);
+                signals = Algorithm.DecisionCalculator.startCalculation(prices, signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>());//, new System.Collections.Generic.Dictionary<string, decimal>());
             }
             
             //for (int i = 0; i < test.Count; i++)
