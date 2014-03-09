@@ -94,6 +94,7 @@
                                   ItemsSource="{Binding Path=CalculationResultSets.Keys}"
                                   SelectionChanged ="ComboBox_SelectionChanged" Name="ResultSelectionComboBox"
                                   SelectedIndex="1"  />
+                        <Button Margin="15,0,0,0" Content="Compare Sets" Click="ComparePerformancesButton_Click"/>
                     </StackPanel>
                     <StackPanel>
                         <Separator Margin="5,5,105,2"/>
