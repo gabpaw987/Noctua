@@ -79,6 +79,9 @@
     </ApplicationDefinition>
     <Compile Include="AutoGreyableImage.cs" />
     <Compile Include="CalculationResultSet.cs" />
+    <Compile Include="ComparePerformancesWindow.xaml.cs">
+      <DependentUpon>ComparePerformancesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ESInput.cs" />
     <Compile Include="IBInput.cs" />
     <Compile Include="InvertableBooleanToVisibilityConverter.cs" />
@@ -87,6 +90,10 @@
     <Compile Include="ThemeResourceDictionary.cs" />
     <Compile Include="MkThemeSelector.cs" />
     <Compile Include="WindowExtensions.cs" />
+    <Page Include="ComparePerformancesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -36,6 +36,8 @@ namespace BacktestingSoftware
         public bool isRealTimeThreadRunning;
         public int curBarCount;
 
+        private ComparePerformancesWindow comparePerformancesWindow;
+
         private int oldThreadCount = 0;
 
         private int selectedArrowIndex;
@@ -44,7 +46,7 @@ namespace BacktestingSoftware
 
         List<Thread> calculationThreads;
 
-        private System.Drawing.Color ChartBGColor;
+        public System.Drawing.Color ChartBGColor;
 
         private List<List<decimal>> valueSets;
         private Dictionary<string, decimal> valueSet;
@@ -1468,7 +1470,7 @@ namespace BacktestingSoftware
             }
         }
 
-        private void setArrowColor(ArrowAnnotation la, int signal)
+        public void setArrowColor(ArrowAnnotation la, int signal)
         {
             switch (signal)
             {
@@ -2242,6 +2244,15 @@ namespace BacktestingSoftware
             System.Windows.Controls.MenuItem menuItem = new System.Windows.Controls.MenuItem();
             menuItem.Name = themeName;
             this.ChangeThemeButton_Click(menuItem, null);
+        }
+
+        private void ComparePerformancesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.mainViewModel.CalculationResultSets.Count > 1)
+            {
+                this.comparePerformancesWindow = new ComparePerformancesWindow(this);
+                this.comparePerformancesWindow.Show();
+            }
         }
     }
 }
