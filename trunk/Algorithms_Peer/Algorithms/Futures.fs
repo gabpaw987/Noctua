@@ -1,4 +1,18 @@
-﻿namespace Algorithm
+﻿(*
+rsiN,30,30,1
+rsiEmaN,20,20,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+barExtrN,100,100,50
+extrN,1000,1000,1
+extrPIn,15,15,1
+extrPOut,15,15,1
+cutlossMax,5,5,1
+cutlossMin,0,0,1
+cutlossDecrN,100,100,1
+*)
+
+namespace Algorithm
     module DecisionCalculator=(*017*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,12 +135,28 @@
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>)=
-//                              parameters:System.Collections.Generic.Dictionary<string, decimal>)=
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>
+                              //parameters:System.Collections.Generic.Dictionary<string, decimal>
+                              )=
+
+            let rsiN = 30
+            let rsiEmaN = 20
+            let rsiLong = 60m
+            let rsiShort = 40m
+
+            let barExtrN = 100
+            let extrN = 1000
+            let extrPIn = 15m
+            let extrPOut = 15m
+
+            let cutlossMax = 5m
+            let mutable cutloss = cutlossMax
+            let cutlossMin = 0m
+            let cutlossDecrN = 100
 
             (*
-//             * Read Parameters
-//             *
+             * Read Parameters
+             *
             // RSI
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
@@ -143,21 +173,6 @@
             let cutlossMin = abs parameters.["cutlossMin"]
             let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
             *)
-
-            let rsiN = 21
-            let rsiEmaN = 30
-            let rsiLong = 60m
-            let rsiShort = 40m
-
-            let barExtrN = 100
-            let extrN = 1000
-            let extrPIn = 40m
-            let extrPOut = 45m
-
-            let cutlossMax = 5m
-            let mutable cutloss = cutlossMax
-            let cutlossMin = 0m
-            let cutlossDecrN = 100
             
             // Chart Lines
             chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
