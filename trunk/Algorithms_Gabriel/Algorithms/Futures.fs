@@ -116,7 +116,7 @@ t1M,59,59,1
 *)
 
 namespace Algorithm
-    module DecisionCalculator=(*007*)
+    module DecisionCalculator007=
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
