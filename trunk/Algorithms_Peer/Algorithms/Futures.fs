@@ -237,9 +237,9 @@ namespace Algorithm
 
                     if (useRsi) then
                         if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
-                            rsiSig <- 1
+                            rsiSig <- 2
                         else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
-                            rsiSig <- -1
+                            rsiSig <- -2
 
                     (*
                      * // entry decision
