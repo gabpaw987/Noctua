@@ -1,4 +1,17 @@
 ﻿(*
+// 21.03.14 (NQH4)
+rsiN,18,18,1
+rsiEmaN,31,31,1
+rsiLong,60,60,1
+rsiShort,40,40,1
+barExtrN,105,105,1
+extrN,1000,1000,1
+extrPIn,15,15,1
+extrPOut,15,15,1
+cutlossMax,2.2,2.2,1
+cutlossMin,0.01,0.01,0.1
+cutlossDecrN,100,100,1
+
 rsiN,30,30,1
 rsiEmaN,20,20,1
 rsiLong,60,60,1
@@ -91,7 +104,7 @@ namespace Algorithm
                 |> Seq.toArray
             let sumup = [for i in 0 .. intervals.Length - 1 do yield Array.sum [|for j in 1 .. intervals.[i].Length - 1 do yield Array.max [|intervals.[i].[j] - intervals.[i].[j - 1]; 0m|]|] ]
             let sumdown = [for i in 0 .. intervals.Length - 1 do yield - Array.sum [|for j in 1 .. intervals.[i].Length - 1 do yield Array.min [|intervals.[i].[j] - intervals.[i].[j - 1]; 0m|]|] ]
-            [| for i in 0 .. sumup.Length - 1 do yield 100m * (sumup.[i]/(decimal n))/((sumup.[i]/(decimal n)) + (sumdown.[i]/(decimal n)))|]
+            [| for i in 0 .. sumup.Length - 1 do yield if (sumup.[i] = sumdown.[i]) then 50m else 100m * (sumup.[i]/(decimal n))/((sumup.[i]/(decimal n)) + (sumdown.[i]/(decimal n)))|]
             |> Array.append (Array.create (n - 1) 0m)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,8 +148,8 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>
-                              //parameters:System.Collections.Generic.Dictionary<string, decimal>
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
+                              parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
 
             let rsiN = 30
@@ -156,7 +169,7 @@ namespace Algorithm
 
             (*
              * Read Parameters
-             *
+             *)
             // RSI
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
@@ -172,7 +185,7 @@ namespace Algorithm
             let mutable cutloss = cutlossMax
             let cutlossMin = abs parameters.["cutlossMin"]
             let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
-            *)
+            //*)
             
             // Chart Lines
             chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
@@ -237,9 +250,9 @@ namespace Algorithm
 
                     if (useRsi) then
                         if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
-                            rsiSig <- 2
+                            rsiSig <- 1
                         else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
-                            rsiSig <- -2
+                            rsiSig <- -1
 
                     (*
                      * // entry decision
