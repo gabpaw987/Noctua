@@ -8,7 +8,7 @@ namespace AlgorthimTesting
     class Program
     {
         // SWITCHES BETWEEN ALL PRICES AT ONCE (false) OR REAL TIME DEMO (one value at a time) (true)
-        public const bool realTimeDemo = true;
+        public const bool realTimeDemo = false;
 
         static void Main(string[] args)
         {
@@ -22,11 +22,12 @@ namespace AlgorthimTesting
             //"C:/Dropbox/Diplomprojekt/CAD_1mBar_20110924.csv"
             Console.WriteLine("File einlesen");
             List<Tuple<DateTime, decimal, decimal, decimal, decimal>> prices;
-            prices = CSVReader.EnumerateExcelFile("C:/noctua/trunk/Input_Data/NQ_U3_EMINI_NASDAQ_100_cropped.csv", new DateTime(), DateTime.Now).ToList();
+            prices = CSVReader.EnumerateExcelFile("D:/noctua/trunk/Input_Data/NQ_U3_EMINI_NASDAQ_100_cropped.csv", new DateTime(), DateTime.Now).ToList();
             Console.WriteLine("Algorithmus starten");
 
             List<int> signals = new List<int>();
 
+            // Trading Algo
             if (Program.realTimeDemo)
             {
                 // first value
@@ -38,6 +39,19 @@ namespace AlgorthimTesting
             {
                 signals = Algorithm.DecisionCalculator.startCalculation(prices, signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>());//, new System.Collections.Generic.Dictionary<string, decimal>());
             }
+
+            // BTS Algo
+            //if (Program.realTimeDemo)
+            //{
+            //    // first value
+            //    Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, 1500), signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, decimal>());
+            //    while (signals.Count < prices.Count)
+            //        Algorithm.DecisionCalculator.startCalculation(prices.GetRange(0, signals.Count + 1), signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, decimal>());
+            //}
+            //else
+            //{
+            //    signals = Algorithm.DecisionCalculator.startCalculation(prices, signals, new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>(), new System.Collections.Generic.Dictionary<string, decimal>());
+            //}
             
             //for (int i = 0; i < test.Count; i++)
             //    Console.WriteLine(test.ElementAt(i));

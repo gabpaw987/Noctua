@@ -1,4 +1,17 @@
 ﻿(*
+// 25.03.14
+rsiN,18,18,1
+rsiEmaN,5,5,1
+rsiLong,80,80,20
+rsiShort,20,20,20
+barExtrN,100,100,5
+extrN,1000,1000,100
+extrPIn,5,5,5
+extrPOut,15,15,1
+cutlossMax,5,5,1
+cutlossMin,0.01,0.01,0.01
+cutlossDecrN,148,148,20
+
 // 21.03.14 (NQH4)
 rsiN,18,18,1
 rsiEmaN,31,31,1
@@ -148,28 +161,28 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              parameters:System.Collections.Generic.Dictionary<string, decimal>
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>> //,
+                              //parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
 
-            let rsiN = 30
-            let rsiEmaN = 20
-            let rsiLong = 60m
-            let rsiShort = 40m
+            let rsiN = 18
+            let rsiEmaN = 5
+            let rsiLong = 80m
+            let rsiShort = 20m
 
             let barExtrN = 100
             let extrN = 1000
-            let extrPIn = 15m
+            let extrPIn = 5m
             let extrPOut = 15m
 
             let cutlossMax = 5m
             let mutable cutloss = cutlossMax
-            let cutlossMin = 0m
-            let cutlossDecrN = 100
+            let cutlossMin = 0.01m
+            let cutlossDecrN = 148
 
             (*
              * Read Parameters
-             *)
+             *
             // RSI
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
