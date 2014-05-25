@@ -1,5 +1,5 @@
 ﻿namespace Algorithm
-    module DecisionCalculator=
+    module DecisionCalculator007=
         let first ((a,b)) = a
         let second ((a,b)) = b
         (*
