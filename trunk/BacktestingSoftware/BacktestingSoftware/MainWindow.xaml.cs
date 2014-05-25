@@ -119,6 +119,8 @@ namespace BacktestingSoftware
 
             this.mainViewModel.UseRegularTradingHours = Properties.Settings.Default.UseRegularTradingHours;
 
+            this.mainViewModel.IsDataFromESignal11 = Properties.Settings.Default.IsDataFromESignal11;
+
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
             {
@@ -1826,7 +1828,8 @@ namespace BacktestingSoftware
                                    this.mainViewModel.IsDataFutures,
                                    this.mainViewModel.IsMiniContract,
                                    this.mainViewModel.IsNetWorthChartInPercentage,
-                                   this.mainViewModel.UseRegularTradingHours});
+                                   this.mainViewModel.UseRegularTradingHours,
+                                   this.mainViewModel.IsDataFromESignal11});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1936,6 +1939,7 @@ namespace BacktestingSoftware
                 this.mainViewModel.IsMiniContract = tempBoolList[3];
                 this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[4];
                 this.mainViewModel.UseRegularTradingHours = tempBoolList[5];
+                this.mainViewModel.IsDataFromESignal11 = tempBoolList[6];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];

@@ -1448,5 +1448,28 @@ namespace BacktestingSoftware
                 }
             }
         }
+
+        private bool _isDataFromESignal11;
+
+        public bool IsDataFromESignal11
+        {
+            get
+            {
+                return _isDataFromESignal11;
+            }
+            set
+            {
+                if (!value.Equals(_isDataFromESignal11))
+                {
+                    _isDataFromESignal11 = value;
+
+                    Properties.Settings.Default.IsDataFromESignal11 = this.IsDataFromESignal11;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsDataFromESignal11"));
+                }
+            }
+        }
     }
 }

@@ -130,7 +130,8 @@ namespace BacktestingSoftware
                                                                       this.mainViewModel.StartDate,
                                                                       this.mainViewModel.EndDate,
                                                                       this.mainViewModel.IsDataFutures,
-                                                                      this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue)).ToList();
+                                                                      this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue),
+                                                                      this.mainViewModel.IsDataFromESignal11).ToList();
         }
 
         public Type LoadAlgorithmFile()

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using IESignal;
 
@@ -31,8 +31,8 @@ namespace BacktestingSoftware
 
             this.IsFuture = isFuture;
 
-            /*
-            if (this.IsFuture)*/
+            
+            //if (this.IsFuture)
 
             this.IsConnected = false;
         }
@@ -106,4 +106,4 @@ namespace BacktestingSoftware
             Console.WriteLine();
         }
     }
-}
+}*/

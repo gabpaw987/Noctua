@@ -364,10 +364,8 @@
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
                                             <Button IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Width="300" Text="{Binding Path=DataFileName}" />
-                                            <Label VerticalAlignment="Center" Margin="25,0,0,0">Future Data?</Label>
-                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsDataFutures}" VerticalAlignment="Center"/>
-                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Mini Contract?</Label>
-                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsMiniContract}" VerticalAlignment="Center" IsEnabled="{Binding Path=IsDataFutures}"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Data From eSignal 11?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" IsChecked="{Binding Path=IsDataFromESignal11}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <!-- Time Period -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
@@ -381,6 +379,10 @@
                                             <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsRealTimeEnabled}" VerticalAlignment="Center"/>
                                             <Label VerticalAlignment="Center" Margin="25,0,0,0">Using Regular Trading Hours?</Label>
                                             <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=UseRegularTradingHours}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0">Future Data?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsDataFutures}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Mini Contract?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsMiniContract}" VerticalAlignment="Center" IsEnabled="{Binding Path=IsDataFutures}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="4" Grid.Column="1">
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled}" Width="300" Text="{Binding Path=StockSymbolForRealTime}" />
