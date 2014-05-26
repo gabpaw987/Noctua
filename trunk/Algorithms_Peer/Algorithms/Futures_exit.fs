@@ -87,7 +87,7 @@ namespace Algorithm
         let ema (n:int, prices:List<decimal>)=
             let alpha = (2.0m / (decimal n + 1.0m))
             // return original prices if n = 1
-            if (alpha = 1m) then
+            if (n = 1) then
                 List.toArray prices
             else
                 // t-1: calculate average of first n-1 elements as initial value for the ema
