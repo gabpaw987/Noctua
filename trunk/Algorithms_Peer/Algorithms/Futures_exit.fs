@@ -1,6 +1,21 @@
 ﻿(*
-// 18.05.14
-takeEarningsD,,,
+// 26.05.14
+rsiN,18,18,1
+rsiEmaN,5,5,1
+rsiLong,80,80,10
+rsiExitLong,0,0,1
+rsiShort,20,20,10
+rsiExitShort,0,0,1
+barExtrN,0,0,100
+extrN,0,0,1000
+extrPIn,0,0,5
+extrPOut,0,0,1
+cutlossMax,0,0,0.5
+cutlossMin,0,0,0.05
+cutlossDecrN,0,0,50
+takeEarningsMax,0,0,2.1
+takeEarningsMin,0.05,0.05,1
+takeEarningsD,45,45,1
 *)
 
 (*
@@ -15,6 +30,9 @@ barExtrN,100,100,5
 extrN,1000,1000,100
 extrPIn,5,5,5
 extrPOut,15,15,1
+takeEarningsMax,2.1,2.1,2.1
+takeEarningsMin,0.05,0.05,0.01
+takeEarningsD,45,45,1
 cutlossMax,5,5,1
 cutlossMin,0.01,0.01,0.01
 cutlossDecrN,148,148,20
@@ -68,24 +86,28 @@ namespace Algorithm
 
         let ema (n:int, prices:List<decimal>)=
             let alpha = (2.0m / (decimal n + 1.0m))
-            // t-1: calculate average of first n-1 elements as initial value for the ema
-            let tm1 =
+            // return original prices if n = 1
+            if (alpha = 1m) then
+                List.toArray prices
+            else
+                // t-1: calculate average of first n-1 elements as initial value for the ema
+                let tm1 =
+                    prices
+                    |> Seq.take (n-1)
+                    |> Seq.average
+                // create output array
+                let ema : decimal array = Array.zeroCreate (List.length prices)
+                // put initial ema value into output as first t-1 value
+                ema.[n-2] <- tm1
+                // calculate ema for each price in the list
                 prices
-                |> Seq.take (n-1)
-                |> Seq.average
-            // create output array
-            let ema : decimal array = Array.zeroCreate (List.length prices)
-            // put initial ema value into output as first t-1 value
-            ema.[n-2] <- tm1
-            // calculate ema for each price in the list
-            prices
-            |> List.iteri (fun i p -> 
-                match i with
-                | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
-                | _              -> ignore i)
-            // set initial ema value (sma) to 0
-            ema.[n-2] <- 0m
-            ema
+                |> List.iteri (fun i p -> 
+                    match i with
+                    | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
+                    | _              -> ignore i)
+                // set initial ema value (sma) to 0
+                ema.[n-2] <- 0m
+                ema
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   OSCILLATORS
@@ -261,9 +283,9 @@ namespace Algorithm
                     let mutable rsiSig = 0
 
                     if (useRsi) then
-                        if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
+                        if (rsiEma.[i] >= rsiLong && rsiEma.[i-1] < rsiLong) then
                             rsiSig <- 1
-                        else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
+                        else if (rsiEma.[i] <= rsiShort && rsiEma.[i-1] > rsiShort) then
                             rsiSig <- -1
 
                     (*
@@ -286,10 +308,10 @@ namespace Algorithm
                      * // RSI EXIT
                      *)
                     // exit long position
-                    if (signals.[i] > 0 && rsiEma.[i] < rsiExitLong && rsiEma.[i-1] > rsiExitLong) then
+                    if (rsiExitLong <> 0m && signals.[i] > 0 && rsiEma.[i] < rsiExitLong && rsiEma.[i-1] > rsiExitLong) then
                         exit <- 0
                     // exit short position
-                    else if (signals.[i] < 0 && rsiEma.[i] > rsiExitShort && rsiEma.[i-1] < rsiExitShort) then
+                    else if (rsiExitShort <> 0m && signals.[i] < 0 && rsiEma.[i] > rsiExitShort && rsiEma.[i-1] < rsiExitShort) then
                         exit <- 0
 
                     (*

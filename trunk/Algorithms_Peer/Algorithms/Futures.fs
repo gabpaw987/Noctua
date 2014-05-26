@@ -38,8 +38,12 @@ cutlossMin,0,0,1
 cutlossDecrN,100,100,1
 *)
 
+
+(*
+* DEPRECATED!! PLEASE USE "Futures_exit.fs"
+*)
 namespace Algorithm
-    module DecisionCalculator=(*017*)
+    module DecisionCalculator017=(*017*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -161,8 +165,8 @@ namespace Algorithm
         let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
-                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>> //,
-                              //parameters:System.Collections.Generic.Dictionary<string, decimal>
+                              chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
+                              parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
 
             let rsiN = 18
@@ -182,7 +186,7 @@ namespace Algorithm
 
             (*
              * Read Parameters
-             *
+             *)
             // RSI
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
@@ -335,7 +339,8 @@ namespace Algorithm
                             if (cutloss < cutlossMin) then
                                 cutloss <- cutlossMin
                             // cut loss: price extreme
-                            if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
+                            //if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
+                            if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * priceExtreme) then
                                 priceExtreme <- cPrices.[i]
 
                         // new buy or sell signal (different direction)
