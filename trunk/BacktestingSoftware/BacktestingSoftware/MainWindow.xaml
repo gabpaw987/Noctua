@@ -8,7 +8,7 @@
         xmlns:ikriv="clr-namespace:IKriv.Wpf"
         x:Name="rootGrid"
         local:MkThemeSelector.CurrentThemeDictionary="{Binding ElementName=cmbThemes, Path=SelectedItem.Tag}"
-        Title="BTS" Height="650" Width="1000"
+        Title="BTS" Height="650" Width="1050"
         Closing="Window_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <Window.Resources>
         <xctk:InverseBoolConverter x:Key="InverseBoolConverter" />
@@ -366,6 +366,8 @@
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Width="300" Text="{Binding Path=DataFileName}" />
                                             <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Data From eSignal 11?</Label>
                                             <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" IsChecked="{Binding Path=IsDataFromESignal11}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Price data of full Future?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsDataFutures}" IsChecked="{Binding Path=IsFullFuturePriceData}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <!-- Time Period -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
@@ -505,16 +507,33 @@
                                         </ComboBox>
 
                                         <Label Content="Inner Value:"
-                                               Visibility="{Binding Path=IsDataFutures,
+                                               Visibility="{Binding Path=IsFullFuturePriceData,
                                                Converter={StaticResource InvertableBooleanToVisibilityConverter},
                                                ConverterParameter=Normal}"/>
                                         <ComboBox Width="50" Margin="0,3,0,3" SelectedIndex="{Binding Path=InnerValue}"
-                                                  Visibility="{Binding Path=IsDataFutures,
+                                                  Visibility="{Binding Path=IsFullFuturePriceData,
                                                   Converter={StaticResource InvertableBooleanToVisibilityConverter},
                                                   ConverterParameter=Normal}">
                                             <ComboBoxItem Name="CBI10" Content="10"/>
                                             <ComboBoxItem Name="CBI11" Content="50"/>
                                             <ComboBoxItem Name="CBI12" Content="100"/>
+                                        </ComboBox>
+
+                                        <Label Content="Mini Contract Factor:"
+                                               Visibility="{Binding Path=IsMiniContract,
+                                               Converter={StaticResource InvertableBooleanToVisibilityConverter},
+                                               ConverterParameter=Normal}"/>
+                                        <ComboBox Width="50" Margin="0,3,0,3" SelectedIndex="{Binding Path=MiniContractFactor}"
+                                                  Visibility="{Binding Path=IsMiniContract,
+                                                  Converter={StaticResource InvertableBooleanToVisibilityConverter},
+                                                  ConverterParameter=Normal}">
+                                            <ComboBoxItem Name="MCF1" Content="1"/>
+                                            <ComboBoxItem Name="MCF5" Content="5"/>
+                                            <ComboBoxItem Name="MCF10" Content="10"/>
+                                            <ComboBoxItem Name="MCF20" Content="20"/>
+                                            <ComboBoxItem Name="MCF40" Content="40"/>
+                                            <ComboBoxItem Name="MCF50" Content="50"/>
+                                            <ComboBoxItem Name="MCF100" Content="100"/>
                                         </ComboBox>
                                     </StackPanel>
                                 </StackPanel>

@@ -129,7 +129,7 @@ namespace BacktestingSoftware
             this.mainViewModel.BarList = CSVReader.EnumerateExcelFile(this.mainViewModel.DataFileName,
                                                                       this.mainViewModel.StartDate,
                                                                       this.mainViewModel.EndDate,
-                                                                      this.mainViewModel.IsDataFutures,
+                                                                      this.mainViewModel.IsFullFuturePriceData,
                                                                       this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue),
                                                                       this.mainViewModel.IsDataFromESignal11).ToList();
         }
@@ -215,7 +215,8 @@ namespace BacktestingSoftware
                             //TODO:  / this.mainViewModel.MiniContractDenominator
                             if (signals[i] != 0 || (signals[i - 1] != 0 && signals[i] == 0))
                                 addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 *
-                                    (this.mainViewModel.BarList[i].Item5 * InnerValue / this.mainViewModel.MiniContractDenominator * RoundLotSize * this.GetAbsWeightedSignalDifference(i, true, signals))) +
+                                    (this.mainViewModel.BarList[i].Item5 * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor))) 
+                                    * RoundLotSize * this.GetAbsWeightedSignalDifference(i, true, signals))) +
                                     decimal.Parse(this.mainViewModel.AbsTransactionFee);
 
                             int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1, signals);
@@ -236,7 +237,7 @@ namespace BacktestingSoftware
 
                             //Calculation of absolute portfolio performance
                             decimal currentGainLoss = 0;
-                            currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator;
+                            currentGainLoss = (priceOfThisTrade - priceOfLastTrade) * oldWeightingMultiplier * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor));
                             currentGainLoss -= addableFee;
 
                             //Calculation of portfolio Performance
@@ -261,7 +262,7 @@ namespace BacktestingSoftware
                                 (Math.Sign(oldWeightingMultiplier) == Math.Sign(WeightingMultiplier) &&
                                 (Math.Abs(WeightingMultiplier) - Math.Abs(oldWeightingMultiplier)) > 0))
                             {
-                                percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator *
+                                percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) *
                                                                         this.GetAbsWeightedSignalDifference(i, true, signals))) * 100;
                                 paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i, true, signals));
                             }
@@ -271,7 +272,7 @@ namespace BacktestingSoftware
                                 //if there was no last trade... should not happen
                                 if (priceOfLastTrade == 0)
                                 {
-                                    percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator *
+                                    percentageOfThisTrade = (-addableFee / (priceOfThisTrade * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) *
                                                                             this.GetAbsWeightedSignalDifference(i, true, signals))) * 100;
                                     paidForGainLoss += (priceOfThisTrade * this.GetAbsWeightedSignalDifference(i, true, signals));
                                 }
@@ -282,7 +283,7 @@ namespace BacktestingSoftware
                                     {
                                         decimal partOfPaidForGainLoss = (paidForGainLoss / Math.Abs(oldWeightingMultiplier)) * this.GetAbsWeightedSignalDifference(i, true, signals);
                                         percentageOfThisTrade = ((((this.GetAbsWeightedSignalDifference(i, true, signals) * priceOfThisTrade) - partOfPaidForGainLoss) / partOfPaidForGainLoss) * 100) -
-                                                                (addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifference(i, true, signals)));
+                                                                (addableFee / (priceOfThisTrade * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) * this.GetAbsWeightedSignalDifference(i, true, signals)));
 
                                         //The calculation process works without signs, therefore checking if the percentage of this trade
                                         //is positive or negative (because you could have bought or sold stocks) is very important
@@ -299,7 +300,7 @@ namespace BacktestingSoftware
                                     {
                                         //TODO: DivideByZeroException at paidForGainLoss if weighting multipliers at signal 3 are smaller than at 2 and so on
                                         percentageOfThisTrade = ((((Math.Abs(oldWeightingMultiplier) * priceOfThisTrade) - paidForGainLoss) / paidForGainLoss) * 100) -
-                                                                (addableFee / (priceOfThisTrade * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifference(i, true, signals)));
+                                                                (addableFee / (priceOfThisTrade * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) * this.GetAbsWeightedSignalDifference(i, true, signals)));
 
                                         //If within the current trade stocks are bought, changes the sign of the percentage
                                         if (Math.Sign(this.GetAbsWeightedSignalDifference(i, false, signals)) == 1)
@@ -331,7 +332,7 @@ namespace BacktestingSoftware
                             absCumGainLoss += currentGainLoss;
                             resultSet.NetWorth += currentGainLoss;
 
-                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * (Math.Abs(WeightingMultiplier) + Math.Abs(oldWeightingMultiplier)) * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * (this.GetAbsWeightedSignalDifference(i, true, signals) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
+                            decimal transactionPriceToDisplay = (this.mainViewModel.BarList[i].Item5 * (Math.Abs(WeightingMultiplier) + Math.Abs(oldWeightingMultiplier)) * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) * (this.GetAbsWeightedSignalDifference(i, true, signals) * WeightingMultiplier > oldWeightingMultiplier ? 1 : -1)) + addableFee;
                             orders.Add(new Order(this.mainViewModel.BarList[i].Item1, signals[i], this.GetWeightingMultiplier(i, signals), priceOfThisTrade, transactionPriceToDisplay, addableFee, percentageOfThisTrade, resultSet.GainLossPercent, portfolioPerformance, resultSet.PortfolioPerformancePercent, currentGainLoss, absCumGainLoss, resultSet.NetWorth));
 
                             priceOfLastTrade = priceOfThisTrade;
@@ -346,7 +347,7 @@ namespace BacktestingSoftware
                     {
                         Order order = orders[i];
 
-                        decimal ZeroWithFeePaid = Math.Round((-order.PaidFee / (order.Price * RoundLotSize * InnerValue / this.mainViewModel.MiniContractDenominator * this.GetAbsWeightedSignalDifferenceForOrders(i, signals, orders))) * 100, 3);
+                        decimal ZeroWithFeePaid = Math.Round((-order.PaidFee / (order.Price * RoundLotSize * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) * this.GetAbsWeightedSignalDifferenceForOrders(i, signals, orders))) * 100, 3);
 
                         //Get all the normal profit and dont take fee into account for good trades or bad trades
                         if (order.GainLossPercent > ZeroWithFeePaid)
@@ -569,7 +570,7 @@ namespace BacktestingSoftware
             return ret;
         }
 
-        private int switchRoundLotSizeOrInnerValue(int value)
+        public int switchRoundLotSizeOrInnerValue(int value)
         {
             switch (value)
             {
@@ -580,6 +581,31 @@ namespace BacktestingSoftware
                 case 1:
                     return 50;
                 case 2:
+                    return 100;
+            }
+
+            return 1;
+        }
+
+        public int switchMiniContractFactor(int value)
+        {
+            switch (value)
+            {
+                case -1:
+                    return 1;
+                case 0:
+                    return 1;
+                case 1:
+                    return 5;
+                case 2:
+                    return 10;
+                case 3:
+                    return 20;
+                case 4:
+                    return 40;
+                case 5:
+                    return 50;
+                case 6:
                     return 100;
             }
 

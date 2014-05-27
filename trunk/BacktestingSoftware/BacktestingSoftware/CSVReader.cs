@@ -18,17 +18,17 @@ namespace BacktestingSoftware
         /// <param name="filePath">The excel file path.</param>
         /// <returns>An enumeration of bars.</returns>
         /// <remarks></remarks>
-        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate, bool isDataFutures, int innerValue, bool isDataFromESignal11)
+        public static IEnumerable<Tuple<DateTime, decimal, decimal, decimal, decimal>> EnumerateExcelFile(string filePath, DateTime startDate, DateTime endDate, bool isFullFuturePriceData, int innerValue, bool isDataFromESignal11)
         {
             // Enumerate all lines, but skip the header
             return from line in File.ReadLines(filePath).Skip(1)
                    select line.Split(',')
                        into fields
                        let timeStamp = parseBarDateTime(fields[isDataFromESignal11 ? 0 : 1], fields[isDataFromESignal11 ? 1 : 2], isDataFromESignal11)
-                       let open = decimal.Parse(fields[isDataFromESignal11 ? 2 : 3], CultureInfo.InvariantCulture) / (isDataFromESignal11 ? 1 : (isDataFutures ? innerValue : 1))
-                       let high = decimal.Parse(fields[isDataFromESignal11 ? 3 : 4], CultureInfo.InvariantCulture) / (isDataFromESignal11 ? 1 : (isDataFutures ? innerValue : 1))
-                       let low = decimal.Parse(fields[isDataFromESignal11 ? 4 : 5], CultureInfo.InvariantCulture) / (isDataFromESignal11 ? 1 : (isDataFutures ? innerValue : 1))
-                       let close = decimal.Parse(fields[isDataFromESignal11 ? 5 : 6], CultureInfo.InvariantCulture) / (isDataFromESignal11 ? 1 : (isDataFutures ? innerValue : 1))
+                       let open = decimal.Parse(fields[isDataFromESignal11 ? 2 : 3], CultureInfo.InvariantCulture) / (isFullFuturePriceData ? innerValue : 1)
+                       let high = decimal.Parse(fields[isDataFromESignal11 ? 3 : 4], CultureInfo.InvariantCulture) / (isFullFuturePriceData ? innerValue : 1)
+                       let low = decimal.Parse(fields[isDataFromESignal11 ? 4 : 5], CultureInfo.InvariantCulture) / (isFullFuturePriceData ? innerValue : 1)
+                       let close = decimal.Parse(fields[isDataFromESignal11 ? 5 : 6], CultureInfo.InvariantCulture) / (isFullFuturePriceData ? innerValue : 1)
                        where timeStamp.Date >= startDate.Date && timeStamp.Date <= endDate.Date
                        select new Tuple<DateTime, decimal, decimal, decimal, decimal>(timeStamp, open, high, low, close);
         }

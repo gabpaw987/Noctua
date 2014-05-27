@@ -391,5 +391,29 @@ namespace BacktestingSoftware.Properties {
                 this["IsDataFromESignal11"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int MiniContractFactor {
+            get {
+                return ((int)(this["MiniContractFactor"]));
+            }
+            set {
+                this["MiniContractFactor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsFullFuturePriceData {
+            get {
+                return ((bool)(this["IsFullFuturePriceData"]));
+            }
+            set {
+                this["IsFullFuturePriceData"] = value;
+            }
+        }
     }
 }
