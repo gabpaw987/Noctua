@@ -1,49 +1,45 @@
 ﻿(*
+// 26.05.14
+rsiN,18,18,1
+rsiEmaN,5,5,1
+rsiLong,80,80,10
+rsiExitLong,0,0,1
+rsiShort,20,20,10
+rsiExitShort,0,0,1
+barExtrN,0,0,100
+extrN,0,0,1000
+extrPIn,0,0,5
+extrPOut,0,0,1
+cutlossMax,0,0,0.5
+cutlossMin,0,0,0.05
+cutlossDecrN,0,0,50
+takeEarningsMax,0,0,2.1
+takeEarningsMin,0.05,0.05,1
+takeEarningsD,45,45,1
+*)
+
+(*
 // 25.03.14
 rsiN,18,18,1
 rsiEmaN,5,5,1
 rsiLong,80,80,20
+rsiExitLong,
 rsiShort,20,20,20
+rsiExitShort,
 barExtrN,100,100,5
 extrN,1000,1000,100
 extrPIn,5,5,5
 extrPOut,15,15,1
+takeEarningsMax,2.1,2.1,2.1
+takeEarningsMin,0.05,0.05,0.01
+takeEarningsD,45,45,1
 cutlossMax,5,5,1
 cutlossMin,0.01,0.01,0.01
 cutlossDecrN,148,148,20
-
-// 21.03.14 (NQH4)
-rsiN,18,18,1
-rsiEmaN,31,31,1
-rsiLong,60,60,1
-rsiShort,40,40,1
-barExtrN,105,105,1
-extrN,1000,1000,1
-extrPIn,15,15,1
-extrPOut,15,15,1
-cutlossMax,2.2,2.2,1
-cutlossMin,0.01,0.01,0.1
-cutlossDecrN,100,100,1
-
-rsiN,30,30,1
-rsiEmaN,20,20,1
-rsiLong,60,60,1
-rsiShort,40,40,1
-barExtrN,100,100,50
-extrN,1000,1000,1
-extrPIn,15,15,1
-extrPOut,15,15,1
-cutlossMax,5,5,1
-cutlossMin,0,0,1
-cutlossDecrN,100,100,1
 *)
 
-
-(*
-* DEPRECATED!! PLEASE USE "Futures_exit.fs"
-*)
 namespace Algorithm
-    module DecisionCalculator017=(*017*)
+    module DecisionCalculator=(*018*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -90,24 +86,28 @@ namespace Algorithm
 
         let ema (n:int, prices:List<decimal>)=
             let alpha = (2.0m / (decimal n + 1.0m))
-            // t-1: calculate average of first n-1 elements as initial value for the ema
-            let tm1 =
+            // return original prices if n = 1
+            if (n = 1) then
+                List.toArray prices
+            else
+                // t-1: calculate average of first n-1 elements as initial value for the ema
+                let tm1 =
+                    prices
+                    |> Seq.take (n-1)
+                    |> Seq.average
+                // create output array
+                let ema : decimal array = Array.zeroCreate (List.length prices)
+                // put initial ema value into output as first t-1 value
+                ema.[n-2] <- tm1
+                // calculate ema for each price in the list
                 prices
-                |> Seq.take (n-1)
-                |> Seq.average
-            // create output array
-            let ema : decimal array = Array.zeroCreate (List.length prices)
-            // put initial ema value into output as first t-1 value
-            ema.[n-2] <- tm1
-            // calculate ema for each price in the list
-            prices
-            |> List.iteri (fun i p -> 
-                match i with
-                | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
-                | _              -> ignore i)
-            // set initial ema value (sma) to 0
-            ema.[n-2] <- 0m
-            ema
+                |> List.iteri (fun i p -> 
+                    match i with
+                    | _ when i > n-2 -> ema.[i] <- alpha * p + (1m - alpha) * ema.[i-1]
+                    | _              -> ignore i)
+                // set initial ema value (sma) to 0
+                ema.[n-2] <- 0m
+                ema
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   OSCILLATORS
@@ -184,6 +184,12 @@ namespace Algorithm
             let cutlossMin = 0.01m
             let cutlossDecrN = 148
 
+            let takeEarningsMax = 5m
+            let mutable takeEarnings = takeEarningsMax
+            let takeEarningsMin = 0.01m
+            // minimise take earnings based cutloss after this positive price change (absolute!)
+            let takeEarningsD = 50m
+
             (*
              * Read Parameters
              *)
@@ -191,7 +197,9 @@ namespace Algorithm
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
             let rsiLong = parameters.["rsiLong"]
+            let rsiExitLong = parameters.["rsiExitLong"]
             let rsiShort = parameters.["rsiShort"]
+            let rsiExitShort =parameters.["rsiExitShort"]
             // Price Extremes
             let barExtrN = int parameters.["barExtrN"]
             let extrN = int parameters.["extrN"]
@@ -202,6 +210,10 @@ namespace Algorithm
             let mutable cutloss = cutlossMax
             let cutlossMin = abs parameters.["cutlossMin"]
             let cutlossDecrN = abs (int parameters.["cutlossDecrN"])
+            // Take Earnings
+            let takeEarningsMax = parameters.["takeEarningsMax"]
+            let takeEarningsMin = parameters.["takeEarningsMin"]
+            let takeEarningsD = parameters.["takeEarningsD"]
             //*)
             
             // Chart Lines
@@ -209,6 +221,8 @@ namespace Algorithm
             chart2.Add("RSI;#FF0000", new System.Collections.Generic.List<decimal>())
             chart2.Add("RSI_long;#0000FF", new System.Collections.Generic.List<decimal>())
             chart2.Add("RSI_short;#0000FF", new System.Collections.Generic.List<decimal>())
+            chart2.Add("cl;#00FF00", new System.Collections.Generic.List<decimal>())
+            chart2.Add("loss;#4181F0", new System.Collections.Generic.List<decimal>())
             
             // list of closing prices
             let cPrices = 
@@ -240,6 +254,7 @@ namespace Algorithm
             let firstI = ([ rsiN; rsiEmaN ] |> List.max) - 1
             let mutable missingData = firstI+1
 
+            // clear list of all signals before calculation (necessary for real time testing/trading!)
             signals.Clear();
             for i in 0 .. prices.Count-1 do
                 // one bar more available
@@ -249,6 +264,8 @@ namespace Algorithm
                 // (.. or new day)
                 if i < firstI || missingData > 0 then
                     signals.Add(0)
+                    chart2.["cl;#00FF00"].Add(0m)
+                    chart2.["loss;#4181F0"].Add(0m)
                 else
                     (*
                      * // standard behaviour is to keep the last signal
@@ -266,9 +283,9 @@ namespace Algorithm
                     let mutable rsiSig = 0
 
                     if (useRsi) then
-                        if (rsiEma.[i] > rsiLong && rsiEma.[i-1] < rsiLong) then
+                        if (rsiEma.[i] >= rsiLong && rsiEma.[i-1] < rsiLong) then
                             rsiSig <- 1
-                        else if (rsiEma.[i] < rsiShort && rsiEma.[i-1] > rsiShort) then
+                        else if (rsiEma.[i] <= rsiShort && rsiEma.[i-1] > rsiShort) then
                             rsiSig <- -1
 
                     (*
@@ -286,6 +303,16 @@ namespace Algorithm
                     //////   EXIT SIGNAL
                     /////////////////////////////////////
                     let mutable exit = 4
+
+                    (*
+                     * // RSI EXIT
+                     *)
+                    // exit long position
+                    if (rsiExitLong <> 0m && signals.[i] > 0 && rsiEma.[i] < rsiExitLong && rsiEma.[i-1] > rsiExitLong) then
+                        exit <- 0
+                    // exit short position
+                    else if (rsiExitShort <> 0m && signals.[i] < 0 && rsiEma.[i] > rsiExitShort && rsiEma.[i-1] < rsiExitShort) then
+                        exit <- 0
 
                     (*
                      * // PRICE EXTREMES
@@ -327,7 +354,7 @@ namespace Algorithm
                                         exit <- 0
 
                     (*
-                     * // CUTLOSS: neutralise if loss is too big (% of price movement!)
+                     * // CUTLOSS: neutralise if loss is too big
                      *)
 
                     if (cutlossMax <> 0m) then
@@ -335,11 +362,10 @@ namespace Algorithm
                         if (sign signals.[i] = sign signals.[i-1]) then
                             // decrease cutloss over time until it reaches the given minimum
                             // e.g. <- 2 - (2-1)/100
-                            cutloss <- cutloss - (cutloss-cutlossMin)/(decimal cutlossDecrN)
+                            cutloss <- cutloss - (cutlossMax-cutlossMin)/(decimal cutlossDecrN)
                             if (cutloss < cutlossMin) then
                                 cutloss <- cutlossMin
                             // cut loss: price extreme
-                            //if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * cPrices.[i-1]) then
                             if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * priceExtreme) then
                                 priceExtreme <- cPrices.[i]
 
@@ -355,7 +381,41 @@ namespace Algorithm
                         else if (signals.[i] <> 0) then
                             // check cut loss:
                             if (abs (priceExtreme - cPrices.[i]) > cutloss*0.01m*entryPrice) then
-                                // neutralise -> liquidate
+                                // neutral -> liquidate
+                                exit <- 0
+
+                    chart2.["cl;#00FF00"].Add(cutloss*entryPrice * -0.1m)
+                    chart2.["loss;#4181F0"].Add( abs(priceExtreme - cPrices.[i]) * -10m )
+
+                    (*
+                     * // TAKE EARNINGS: proportionately decrease a separate earnings based cutloss with increasing profit
+                     *)
+
+                    if (takeEarningsMax <> 0m) then
+                        // same sign: signal now and last bar
+                        if (sign signals.[i] = sign signals.[i-1]) then
+                            // profit oriented take earnings: factor (50) is the positive price change (absolute!) for cutloss to be minimum
+                            //         5          - (5         - 1        )*50/50 +1
+                            takeEarnings <- takeEarningsMax - (takeEarningsMax-takeEarningsMin)*abs(priceExtreme - entryPrice)/(takeEarningsD)
+                            if (takeEarnings < takeEarningsMin) then
+                                takeEarnings <- takeEarningsMin
+                            // take earnings: price extreme
+                            if (decimal(sign signals.[i]) * cPrices.[i] > decimal(sign signals.[i-1]) * priceExtreme) then
+                                priceExtreme <- cPrices.[i]
+
+                        // new buy or sell signal (different direction)
+                        if (signals.[i] <> 0 && sign signals.[i] <> sign signals.[i-1]) then
+                            // reset cutloss to maximum for new trade
+                            takeEarnings <- takeEarningsMax
+                            entryPrice <- cPrices.[i]
+                            // reset priceExtreme for new trade
+                            priceExtreme <- cPrices.[i]
+
+                        // same trading direction (-/+)
+                        else if (signals.[i] <> 0) then
+                            // check cut loss:
+                            if (abs (priceExtreme - cPrices.[i]) > takeEarnings*0.01m*entryPrice) then
+                                // neutral -> liquidate
                                 exit <- 0
 
                     (*
@@ -375,7 +435,7 @@ namespace Algorithm
                         | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday | System.DayOfWeek.Friday
                             -> true
                         | _ -> false) then
-                            if (prices.[i].Item1.Hour > 22 || (prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute > 10)) then
+                           if (prices.[i].Item1.Hour > 22 || prices.[i].Item1.Hour < 8 || (prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute > 10)) then
                                 signals.[i] <- 0
                     // Saturday, Sunday (no trading)
                     else

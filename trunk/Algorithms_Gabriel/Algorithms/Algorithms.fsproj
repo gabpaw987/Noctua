@@ -54,6 +54,7 @@
     <Compile Include="SingleSignal.fs" />
     <Compile Include="Futures.fs" />
     <Compile Include="ModRSI.fs" />
+    <Compile Include="Futures_exit.fs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '11.0'">

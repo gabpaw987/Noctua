@@ -212,12 +212,15 @@ namespace BacktestingSoftware
                             isCalculating)
                         {
                             decimal addableFee = 0;
-                            //TODO:  / this.mainViewModel.MiniContractDenominator
+
                             if (signals[i] != 0 || (signals[i - 1] != 0 && signals[i] == 0))
+                            {
+                                int weightedAbsSignalDifference = this.GetAbsWeightedSignalDifference(i, true, signals);
                                 addableFee = Math.Abs(decimal.Parse(this.mainViewModel.RelTransactionFee) / 100 *
-                                    (this.mainViewModel.BarList[i].Item5 * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor))) 
-                                    * RoundLotSize * this.GetAbsWeightedSignalDifference(i, true, signals))) +
-                                    decimal.Parse(this.mainViewModel.AbsTransactionFee);
+                                    (this.mainViewModel.BarList[i].Item5 * (!this.mainViewModel.IsMiniContract ? this.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : this.switchMiniContractFactor(this.mainViewModel.MiniContractFactor))
+                                    * RoundLotSize * weightedAbsSignalDifference)) +
+                                    (decimal.Parse(this.mainViewModel.AbsTransactionFee) * weightedAbsSignalDifference);
+                            }
 
                             int oldWeightingMultiplier = this.GetWeightingMultiplier(i - 1, signals);
                             int WeightingMultiplier = this.GetWeightingMultiplier(i, signals);
