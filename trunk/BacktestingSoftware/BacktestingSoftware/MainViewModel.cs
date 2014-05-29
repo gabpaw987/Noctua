@@ -1100,21 +1100,13 @@ namespace BacktestingSoftware
                             this.InnerValue = this.RoundLotSize;
                             this.RoundLotSize = -1;
                         }
-
-                        if (this.IsMiniContract)
-                        {
-                            this.MiniContractDenominator = 5;
-                        }
-                        else
-                        {
-                            this.MiniContractDenominator = 1;
-                        }
                     }
                     else
                     {
                         this.RoundLotSize = this.InnerValue;
                         this.InnerValue = -1;
-                        this.MiniContractDenominator = 1;
+                        this.IsFullFuturePriceData = false;
+                        this.IsMiniContract = false;
                     }
 
                     _isDataFutures = value;
@@ -1163,15 +1155,6 @@ namespace BacktestingSoftware
             {
                 if (!value.Equals(_isMiniContract))
                 {
-                    if (value)
-                    {
-                        MiniContractDenominator = 5;
-                    }
-                    else
-                    {
-                        MiniContractDenominator = 1;
-                    }
-
                     _isMiniContract = value;
 
                     Properties.Settings.Default.IsMiniContract = this.IsMiniContract;
@@ -1183,29 +1166,29 @@ namespace BacktestingSoftware
             }
         }
 
-        private int _miniContractDenominator;
+        private int _miniContractFactor;
 
-        public int MiniContractDenominator
+        public int MiniContractFactor
         {
             get
             {
-                return _miniContractDenominator;
+                return _miniContractFactor;
             }
             set
             {
-                if (!value.Equals(_miniContractDenominator))
+                if (!value.Equals(_miniContractFactor))
                 {
-                    _miniContractDenominator = value;
+                    _miniContractFactor = value;
 
-                    Properties.Settings.Default.MiniContractDenominator = this.MiniContractDenominator;
+                    Properties.Settings.Default.MiniContractFactor = this.MiniContractFactor;
                     Properties.Settings.Default.Save();
 
                     if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("MiniContractDenominator"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("MiniContractFactor"));
                 }
             }
         }
-
+        
         private decimal _timeInMarket;
 
         public decimal TimeInMarket
@@ -1422,6 +1405,75 @@ namespace BacktestingSoftware
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("ThemeName"));
+                }
+            }
+        }
+
+        private bool _useRegularTradingHours;
+
+        public bool UseRegularTradingHours
+        {
+            get
+            {
+                return _useRegularTradingHours;
+            }
+            set
+            {
+                if (!value.Equals(_useRegularTradingHours))
+                {
+                    _useRegularTradingHours = value;
+
+                    Properties.Settings.Default.UseRegularTradingHours = this.UseRegularTradingHours;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("UseRegularTradingHours"));
+                }
+            }
+        }
+
+        private bool _isDataFromESignal11;
+
+        public bool IsDataFromESignal11
+        {
+            get
+            {
+                return _isDataFromESignal11;
+            }
+            set
+            {
+                if (!value.Equals(_isDataFromESignal11))
+                {
+                    _isDataFromESignal11 = value;
+
+                    Properties.Settings.Default.IsDataFromESignal11 = this.IsDataFromESignal11;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsDataFromESignal11"));
+                }
+            }
+        }
+
+        private bool _isFullFuturePriceData;
+
+        public bool IsFullFuturePriceData
+        {
+            get
+            {
+                return _isFullFuturePriceData;
+            }
+            set
+            {
+                if (!value.Equals(_isFullFuturePriceData))
+                {
+                    _isFullFuturePriceData = value;
+
+                    Properties.Settings.Default.IsFullFuturePriceData = this.IsFullFuturePriceData;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("IsFullFuturePriceData"));
                 }
             }
         }

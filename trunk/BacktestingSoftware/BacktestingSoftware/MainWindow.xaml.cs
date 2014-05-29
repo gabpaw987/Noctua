@@ -36,6 +36,8 @@ namespace BacktestingSoftware
         public bool isRealTimeThreadRunning;
         public int curBarCount;
 
+        private ComparePerformancesWindow comparePerformancesWindow;
+
         private int oldThreadCount = 0;
 
         private int selectedArrowIndex;
@@ -44,7 +46,7 @@ namespace BacktestingSoftware
 
         List<Thread> calculationThreads;
 
-        private System.Drawing.Color ChartBGColor;
+        public System.Drawing.Color ChartBGColor;
 
         private List<List<decimal>> valueSets;
         private Dictionary<string, decimal> valueSet;
@@ -108,12 +110,17 @@ namespace BacktestingSoftware
 
             this.mainViewModel.AdditionalParameters = Properties.Settings.Default.AdditionalParameters;
 
+            this.mainViewModel.MiniContractFactor = Properties.Settings.Default.MiniContractFactor;
             this.mainViewModel.IsDataFutures = Properties.Settings.Default.IsDataFutures;
             this.mainViewModel.InnerValue = Properties.Settings.Default.InnerValue;
             this.mainViewModel.IsMiniContract = Properties.Settings.Default.IsMiniContract;
-            this.mainViewModel.MiniContractDenominator = Properties.Settings.Default.MiniContractDenominator;
+            this.mainViewModel.IsFullFuturePriceData = Properties.Settings.Default.IsFullFuturePriceData;
 
             this.mainViewModel.IsNetWorthChartInPercentage = Properties.Settings.Default.IsNetWorthChartInPercentage;
+
+            this.mainViewModel.UseRegularTradingHours = Properties.Settings.Default.UseRegularTradingHours;
+
+            this.mainViewModel.IsDataFromESignal11 = Properties.Settings.Default.IsDataFromESignal11;
 
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
@@ -331,13 +338,13 @@ namespace BacktestingSoftware
                     {
                         if (this.mainViewModel.Barsize.Equals("Minute"))
                         {
-                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
-                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
+                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
                         }
                         else if (this.mainViewModel.Barsize.Equals("Daily"))
                         {
-                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
-                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                            this.ibClient = new IBInput(1, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
+                            this.historicalDataClient = new IBInput(2, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
                         }
 
                         this.ibClient.hadFirst = false;
@@ -876,11 +883,11 @@ namespace BacktestingSoftware
 
             if (this.mainViewModel.Barsize.Equals("Minute"))
             {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures);
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneMinute, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
             }
             else if (this.mainViewModel.Barsize.Equals("Daily"))
             {
-                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures);
+                this.historicalDataClient = new IBInput(3, this.mainViewModel.BarList, this.mainViewModel.StockSymbolForRealTime, BarSize.OneDay, this.mainViewModel.IsDataFutures, this.mainViewModel.UseRegularTradingHours);
             }
 
             if (this.isRealTimeThreadRunning)
@@ -1070,14 +1077,15 @@ namespace BacktestingSoftware
 
         private void CalculatePerformanceFromPrize()
         {
-            decimal roundLotPrice = this.mainViewModel.BarList[0].Item5 * this.mainViewModel.RoundLotSize * this.mainViewModel.InnerValue / this.mainViewModel.MiniContractDenominator;
+            Calculator calculatorForSwitching = new Calculator(this.mainViewModel);
+            decimal roundLotPrice = this.mainViewModel.BarList[0].Item5 * this.mainViewModel.RoundLotSize * (!this.mainViewModel.IsMiniContract ? calculatorForSwitching.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : calculatorForSwitching.switchMiniContractFactor(this.mainViewModel.MiniContractFactor));
             decimal roundLotCount = ((decimal)((int)(Decimal.Parse(this.mainViewModel.Capital) / roundLotPrice)));
             decimal valueInMarket = roundLotCount * roundLotPrice;
 
             for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
             {
                 decimal currentRoundLotsPrice = (this.mainViewModel.BarList[i].Item5 * this.mainViewModel.RoundLotSize *
-                                                this.mainViewModel.InnerValue / this.mainViewModel.MiniContractDenominator) * roundLotCount;
+                                                (!this.mainViewModel.IsMiniContract ? calculatorForSwitching.switchRoundLotSizeOrInnerValue(this.mainViewModel.InnerValue) : calculatorForSwitching.switchMiniContractFactor(this.mainViewModel.MiniContractFactor)) * roundLotCount);
 
                 if (this.mainViewModel.IsNetWorthChartInPercentage)
                 {
@@ -1466,7 +1474,7 @@ namespace BacktestingSoftware
             }
         }
 
-        private void setArrowColor(ArrowAnnotation la, int signal)
+        public void setArrowColor(ArrowAnnotation la, int signal)
         {
             switch (signal)
             {
@@ -1821,7 +1829,10 @@ namespace BacktestingSoftware
                                    this.mainViewModel.IsAlgorithmUsingMaps,
                                    this.mainViewModel.IsDataFutures,
                                    this.mainViewModel.IsMiniContract,
-                                   this.mainViewModel.IsNetWorthChartInPercentage});
+                                   this.mainViewModel.IsNetWorthChartInPercentage,
+                                   this.mainViewModel.UseRegularTradingHours,
+                                   this.mainViewModel.IsDataFromESignal11,
+                                   this.mainViewModel.IsFullFuturePriceData});
                 bFormatter.Serialize(stream, tempBoolList);
 
                 List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
@@ -1847,7 +1858,7 @@ namespace BacktestingSoftware
                                                                  this.mainViewModel.ValueOfSliderSix,
                                                                  this.mainViewModel.RoundLotSize,
                                                                  this.mainViewModel.InnerValue,
-                                                                 this.mainViewModel.MiniContractDenominator,
+                                                                 this.mainViewModel.MiniContractFactor,
                                                                  this.mainViewModel.CalculationThreadCount,
                                                                  this.mainViewModel.NoOfGoodDays,
                                                                  this.mainViewModel.NoOfBadDays});
@@ -1907,22 +1918,22 @@ namespace BacktestingSoftware
                 }
                 this.orders.Items.Refresh();
 
-                List<decimal> tempPerfomanceList = (List<decimal>)bFormatter.Deserialize(stream);
-                this.mainViewModel.GainLossPercent = tempPerfomanceList[0];
-                this.mainViewModel.GainPercent = tempPerfomanceList[1];
-                this.mainViewModel.LossPercent = tempPerfomanceList[2];
-                this.mainViewModel.StdDevOfProfit = tempPerfomanceList[3];
-                this.mainViewModel.StdDevOfPEquityPrice = tempPerfomanceList[4];
-                this.mainViewModel.NoOfGoodTrades = tempPerfomanceList[5];
-                this.mainViewModel.NoOfBadTrades = tempPerfomanceList[6];
-                this.mainViewModel.GtBtRatio = tempPerfomanceList[7];
-                this.mainViewModel.NetWorth = tempPerfomanceList[8];
-                this.mainViewModel.PortfolioPerformancePercent = tempPerfomanceList[9];
-                this.mainViewModel.SharpeRatio = tempPerfomanceList[10];
-                this.mainViewModel.TimeInMarket = tempPerfomanceList[11];
-                this.mainViewModel.AnnualizedPortfolioPerformancePercent = tempPerfomanceList[12];
-                this.mainViewModel.AnnualizedGainLossPercent = tempPerfomanceList[13];
-                this.mainViewModel.GoodDayBadDayRatio = tempPerfomanceList[14];
+                List<decimal> tempPerformanceList = (List<decimal>)bFormatter.Deserialize(stream);
+                this.mainViewModel.GainLossPercent = tempPerformanceList[0];
+                this.mainViewModel.GainPercent = tempPerformanceList[1];
+                this.mainViewModel.LossPercent = tempPerformanceList[2];
+                this.mainViewModel.StdDevOfProfit = tempPerformanceList[3];
+                this.mainViewModel.StdDevOfPEquityPrice = tempPerformanceList[4];
+                this.mainViewModel.NoOfGoodTrades = tempPerformanceList[5];
+                this.mainViewModel.NoOfBadTrades = tempPerformanceList[6];
+                this.mainViewModel.GtBtRatio = tempPerformanceList[7];
+                this.mainViewModel.NetWorth = tempPerformanceList[8];
+                this.mainViewModel.PortfolioPerformancePercent = tempPerformanceList[9];
+                this.mainViewModel.SharpeRatio = tempPerformanceList[10];
+                this.mainViewModel.TimeInMarket = tempPerformanceList[11];
+                this.mainViewModel.AnnualizedPortfolioPerformancePercent = tempPerformanceList[12];
+                this.mainViewModel.AnnualizedGainLossPercent = tempPerformanceList[13];
+                this.mainViewModel.GoodDayBadDayRatio = tempPerformanceList[14];
 
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
@@ -1930,6 +1941,9 @@ namespace BacktestingSoftware
                 this.mainViewModel.IsDataFutures = tempBoolList[2];
                 this.mainViewModel.IsMiniContract = tempBoolList[3];
                 this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[4];
+                this.mainViewModel.UseRegularTradingHours = tempBoolList[5];
+                this.mainViewModel.IsDataFromESignal11 = tempBoolList[6];
+                this.mainViewModel.IsFullFuturePriceData = tempBoolList[7];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
@@ -1955,10 +1969,10 @@ namespace BacktestingSoftware
                 this.mainViewModel.ValueOfSliderSix = tempIntList[5];
                 this.mainViewModel.RoundLotSize = tempIntList[6];
                 this.mainViewModel.InnerValue = tempIntList[7];
-                this.mainViewModel.MiniContractDenominator = tempIntList[8];
-                this.mainViewModel.CalculationThreadCount = tempIntList[9];
-                this.mainViewModel.NoOfGoodDays = tempIntList[10];
-                this.mainViewModel.NoOfBadDays = tempIntList[11];
+                this.mainViewModel.MiniContractFactor = tempIntList[8];
+                this.mainViewModel.CalculationThreadCount = tempIntList[10];
+                this.mainViewModel.NoOfGoodDays = tempIntList[11];
+                this.mainViewModel.NoOfBadDays = tempIntList[12];
 
                 StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
                 this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
@@ -2238,6 +2252,15 @@ namespace BacktestingSoftware
             System.Windows.Controls.MenuItem menuItem = new System.Windows.Controls.MenuItem();
             menuItem.Name = themeName;
             this.ChangeThemeButton_Click(menuItem, null);
+        }
+
+        private void ComparePerformancesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.mainViewModel.CalculationResultSets.Count > 1)
+            {
+                this.comparePerformancesWindow = new ComparePerformancesWindow(this);
+                this.comparePerformancesWindow.Show();
+            }
         }
     }
 }

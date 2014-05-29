@@ -8,7 +8,7 @@
         xmlns:ikriv="clr-namespace:IKriv.Wpf"
         x:Name="rootGrid"
         local:MkThemeSelector.CurrentThemeDictionary="{Binding ElementName=cmbThemes, Path=SelectedItem.Tag}"
-        Title="BTS" Height="650" Width="1000"
+        Title="BTS" Height="650" Width="1050"
         Closing="Window_Closing" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <Window.Resources>
         <xctk:InverseBoolConverter x:Key="InverseBoolConverter" />
@@ -94,6 +94,7 @@
                                   ItemsSource="{Binding Path=CalculationResultSets.Keys}"
                                   SelectionChanged ="ComboBox_SelectionChanged" Name="ResultSelectionComboBox"
                                   SelectedIndex="1"  />
+                        <Button Margin="15,0,0,0" Content="Compare Sets" Click="ComparePerformancesButton_Click"/>
                     </StackPanel>
                     <StackPanel>
                         <Separator Margin="5,5,105,2"/>
@@ -363,10 +364,10 @@
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
                                             <Button IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Width="300" Text="{Binding Path=DataFileName}" />
-                                            <Label VerticalAlignment="Center" Margin="25,0,0,0">Future Data?</Label>
-                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsDataFutures}" VerticalAlignment="Center"/>
-                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Mini Contract?</Label>
-                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsMiniContract}" VerticalAlignment="Center" IsEnabled="{Binding Path=IsDataFutures}"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Data From eSignal 11?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" IsChecked="{Binding Path=IsDataFromESignal11}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Price data of full Future?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsDataFutures}" IsChecked="{Binding Path=IsFullFuturePriceData}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <!-- Time Period -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
@@ -377,7 +378,13 @@
                                             <Button Margin="25,0,5,0" Content="Today" Click="TodayButton_Click" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="3" Grid.Column="1">
-                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsRealTimeEnabled}"/>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsRealTimeEnabled}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0">Using Regular Trading Hours?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=UseRegularTradingHours}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0">Future Data?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsDataFutures}" VerticalAlignment="Center"/>
+                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Mini Contract?</Label>
+                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsMiniContract}" VerticalAlignment="Center" IsEnabled="{Binding Path=IsDataFutures}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="4" Grid.Column="1">
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled}" Width="300" Text="{Binding Path=StockSymbolForRealTime}" />
@@ -500,16 +507,33 @@
                                         </ComboBox>
 
                                         <Label Content="Inner Value:"
-                                               Visibility="{Binding Path=IsDataFutures,
+                                               Visibility="{Binding Path=IsFullFuturePriceData,
                                                Converter={StaticResource InvertableBooleanToVisibilityConverter},
                                                ConverterParameter=Normal}"/>
                                         <ComboBox Width="50" Margin="0,3,0,3" SelectedIndex="{Binding Path=InnerValue}"
-                                                  Visibility="{Binding Path=IsDataFutures,
+                                                  Visibility="{Binding Path=IsFullFuturePriceData,
                                                   Converter={StaticResource InvertableBooleanToVisibilityConverter},
                                                   ConverterParameter=Normal}">
                                             <ComboBoxItem Name="CBI10" Content="10"/>
                                             <ComboBoxItem Name="CBI11" Content="50"/>
                                             <ComboBoxItem Name="CBI12" Content="100"/>
+                                        </ComboBox>
+
+                                        <Label Content="Mini Contract Factor:"
+                                               Visibility="{Binding Path=IsMiniContract,
+                                               Converter={StaticResource InvertableBooleanToVisibilityConverter},
+                                               ConverterParameter=Normal}"/>
+                                        <ComboBox Width="50" Margin="0,3,0,3" SelectedIndex="{Binding Path=MiniContractFactor}"
+                                                  Visibility="{Binding Path=IsMiniContract,
+                                                  Converter={StaticResource InvertableBooleanToVisibilityConverter},
+                                                  ConverterParameter=Normal}">
+                                            <ComboBoxItem Name="MCF1" Content="1"/>
+                                            <ComboBoxItem Name="MCF5" Content="5"/>
+                                            <ComboBoxItem Name="MCF10" Content="10"/>
+                                            <ComboBoxItem Name="MCF20" Content="20"/>
+                                            <ComboBoxItem Name="MCF40" Content="40"/>
+                                            <ComboBoxItem Name="MCF50" Content="50"/>
+                                            <ComboBoxItem Name="MCF100" Content="100"/>
                                         </ComboBox>
                                     </StackPanel>
                                 </StackPanel>

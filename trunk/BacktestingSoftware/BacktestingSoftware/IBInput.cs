@@ -57,6 +57,8 @@ namespace BacktestingSoftware
 
         private bool IsFuture;
 
+        public bool UseRegularTradingHours { get; set; }
+
         /// <summary>
         /// When this method is called, the HistrocialData bars are requested. After the request the client_HistoricalData event is called every time a bar<br/>
         /// arrives.
@@ -67,13 +69,13 @@ namespace BacktestingSoftware
             if (timeSpan.Equals(new TimeSpan()))
             {
                 if (this.Barsize == BarSize.OneMinute)
-                    inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, 1);
+                    inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, new TimeSpan(0, 23, 59, 59), Barsize, HistoricalDataType.Trades, this.UseRegularTradingHours ? 1 : 0);
                 else if (this.Barsize == BarSize.OneDay)
-                    inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, 1);
+                    inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, new TimeSpan(364, 0, 0, 0), Barsize, HistoricalDataType.Trades, this.UseRegularTradingHours ? 1 : 0);
             }
             else
             {
-                inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, timeSpan, Barsize, HistoricalDataType.Trades, 1);
+                inputClient.RequestHistoricalData(17, this.Contract, DateTime.Now, timeSpan, Barsize, HistoricalDataType.Trades, this.UseRegularTradingHours ? 1 : 0);
             }
         }
 
@@ -84,7 +86,7 @@ namespace BacktestingSoftware
         /// <remarks></remarks>
         public void SubscribeForRealTimeBars()
         {
-            inputClient.RequestRealTimeBars(16, this.Contract, 5, RealTimeBarType.Trades, (this.IsFuture) ? false : true);
+            inputClient.RequestRealTimeBars(16, this.Contract, 5, RealTimeBarType.Trades, (this.UseRegularTradingHours) ? true : false);
         }
 
         /// <summary>
@@ -117,13 +119,16 @@ namespace BacktestingSoftware
         /// can connect to it.</param>
         /// <param name="equity">The equity this class shall represent.</param>
         /// <remarks></remarks>
-        public IBInput(int id, List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, string contractSymbol, BarSize barsize, bool isFuture)
+        public IBInput(int id, List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, string contractSymbol,
+                       BarSize barsize, bool isFuture, bool useRegularTradingHours)
         {
             this.Id = id;
 
             ListOfBars = LOB;
 
             this.Barsize = barsize;
+
+            this.UseRegularTradingHours = useRegularTradingHours;
 
             //creating the IBClient
             inputClient = new IBClient();
