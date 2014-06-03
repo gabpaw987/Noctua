@@ -1,4 +1,43 @@
 ﻿(*
+// 03.06.14
+NQ
+quantity,2
+rsiN,16
+rsiEmaN,6
+rsiLong,80
+rsiExitLong,0
+rsiShort,20
+rsiExitShort,0
+barExtrN,0
+extrN,0
+extrPIn,0
+extrPOut,0
+cutlossMax,2.4
+cutlossMin,0.05
+cutlossDecrN,800
+takeEarningsMax,0
+takeEarningsMin,0.05
+takeEarningsD,40
+
+ES
+quantity,1
+rsiN,20
+rsiEmaN,11
+rsiLong,80
+rsiExitLong,0
+rsiShort,20
+rsiExitShort,0
+barExtrN,100
+extrN,1000
+extrPIn,0
+extrPOut,13
+cutlossMax,2.5
+cutlossMin,0.25
+cutlossDecrN,1000
+takeEarningsMax,0
+takeEarningsMin,0
+takeEarningsD,10
+
 // 26.05.14
 rsiN,18,18,1
 rsiEmaN,5,5,1
@@ -169,6 +208,9 @@ namespace Algorithm
                               parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
 
+            // how many futures are traded
+            let quantity = 1
+
             let rsiN = 18
             let rsiEmaN = 5
             let rsiLong = 80m
@@ -188,11 +230,13 @@ namespace Algorithm
             let mutable takeEarnings = takeEarningsMax
             let takeEarningsMin = 0.01m
             // minimise take earnings based cutloss after this positive price change (absolute!)
-            let takeEarningsD = 50m
+            let takeEarningsD = 45m
 
             (*
              * Read Parameters
              *)
+            // Future count
+            let quantity = int (abs parameters.["quantity"])
             // RSI
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
@@ -284,9 +328,9 @@ namespace Algorithm
 
                     if (useRsi) then
                         if (rsiEma.[i] >= rsiLong && rsiEma.[i-1] < rsiLong) then
-                            rsiSig <- 1
+                            rsiSig <- quantity
                         else if (rsiEma.[i] <= rsiShort && rsiEma.[i-1] > rsiShort) then
-                            rsiSig <- -1
+                            rsiSig <- -1 * quantity
 
                     (*
                      * // entry decision
