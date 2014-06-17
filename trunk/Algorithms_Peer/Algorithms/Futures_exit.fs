@@ -1,6 +1,7 @@
 ﻿(*
 // 03.06.14
 NQ
+timeZone,-5
 quantity,2
 rsiN,16
 rsiEmaN,6
@@ -20,6 +21,7 @@ takeEarningsMin,0.05
 takeEarningsD,40
 
 ES
+timeZone,-5
 quantity,1
 rsiN,20
 rsiEmaN,11
@@ -208,6 +210,8 @@ namespace Algorithm
                               parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
 
+            // time zone of the server country
+            let timeZone = -5
             // how many futures are traded
             let quantity = 1
 
@@ -235,6 +239,9 @@ namespace Algorithm
             (*
              * Read Parameters
              *)
+            // currently the only supported time zones are -7 to +2 (trading MO - FR)
+            // other settings will produce 0 signals
+            let timeZone = int parameters.["timeZone"]
             // Future count
             let quantity = int (abs parameters.["quantity"])
             // RSI
@@ -243,7 +250,7 @@ namespace Algorithm
             let rsiLong = parameters.["rsiLong"]
             let rsiExitLong = parameters.["rsiExitLong"]
             let rsiShort = parameters.["rsiShort"]
-            let rsiExitShort =parameters.["rsiExitShort"]
+            let rsiExitShort = parameters.["rsiExitShort"]
             // Price Extremes
             let barExtrN = int parameters.["barExtrN"]
             let extrN = int parameters.["extrN"]
@@ -479,10 +486,14 @@ namespace Algorithm
                         | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday | System.DayOfWeek.Friday
                             -> true
                         | _ -> false) then
-                           if (prices.[i].Item1.Hour > 22 || prices.[i].Item1.Hour < 8 || (prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute > 10)) then
+                           if (prices.[i].Item1.Hour > 22 - 1 + timeZone || prices.[i].Item1.Hour < 8 - 1 + timeZone || (prices.[i].Item1.Hour = 22 - 1 + timeZone && prices.[i].Item1.Minute > 10)) then
                                 signals.[i] <- 0
                     // Saturday, Sunday (no trading)
                     else
+                        signals.[i] <- 0
+                    // currently the only supported time zones are -7 to +2 (trading MO - FR)
+                    // other settings will produce 0 signals
+                    if (timeZone > 2 || timeZone < -7) then
                         signals.[i] <- 0
                     
             signals
