@@ -1,4 +1,25 @@
 ﻿(*
+// 24.06.14
+NQ, trad. thresh.
+timeZone,1,1,1
+quantity,1,1,1
+rsiN,10,10,1
+rsiEmaN,15,15,1
+rsiLong,20,20,10
+rsiExitLong,0,0,1
+rsiShort,90,90,10
+rsiExitShort,0,0,1
+barExtrN,100,100,10
+extrN,400,400,50
+extrPIn,18,18,1
+extrPOut,2,2,1
+cutlossMax,2.2,2.2,0.2
+cutlossMin,0.05,0.05,0.05
+cutlossDecrN,300,300,50
+takeEarningsMax,0.8,0.8,1
+takeEarningsMin,0,0,1
+takeEarningsD,38,38,1
+
 // 03.06.14
 NQ
 timeZone,-5
@@ -382,7 +403,7 @@ namespace Algorithm
 
                         // maximum minus minimum price in range
                         let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
-                        let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..i], localExtrema.[firstExtrI..i])
+                        let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0], localExtrema.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0])
                         if (entry > 0) then
                             for max in maxs do
                                 let extrInVal = max-(extrPIn*0.01m*priceBreadth/2m)

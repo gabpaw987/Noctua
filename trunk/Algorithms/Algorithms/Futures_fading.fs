@@ -320,7 +320,7 @@ namespace Algorithm
 
                         // maximum minus minimum price in range
                         let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
-                        let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..i], localExtrema.[firstExtrI..i])
+                        let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0], localExtrema.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0])
 //                        if (entry > 0) then
                         for max in maxs do
                             let extrInVal = max-(extrPIn*0.01m*priceBreadth/2m)
