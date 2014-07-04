@@ -101,7 +101,7 @@ cutlossDecrN,148,148,20
 *)
 
 namespace Algorithm
-    module DecisionCalculator=(*018*)
+    module DecisionCalculator018=(*018*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -213,7 +213,8 @@ namespace Algorithm
         let getExtremeValues(n:int, data:decimal[], extremes:decimal[])=
             let mutable mins = new ResizeArray<decimal>()
             let mutable maxs = new ResizeArray<decimal>()
-            for i in extremes.Length-1 .. -1 .. extremes.Length-n do
+            let countDownTo = if (extremes.Length-n > 0) then extremes.Length-n else 0
+            for i in extremes.Length-1 .. -1 .. countDownTo do
                 if (extremes.[i] > 0m) then
                     maxs.Add(data.[i])
                 else if (extremes.[i] < 0m) then
