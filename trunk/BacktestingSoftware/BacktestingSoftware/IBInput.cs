@@ -23,7 +23,7 @@ namespace BacktestingSoftware
         /// <summary>
         /// A List were all bars that are in the application at the moment, are saved.
         /// </summary>
-        private List<Tuple<DateTime, decimal, decimal, decimal, decimal>> ListOfBars;
+        private List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> ListOfBars;
 
         /// <summary>
         /// The client that handles all the input connections. In the constructor this one is connected to the IB with the id 0.<br/>
@@ -49,7 +49,7 @@ namespace BacktestingSoftware
         /// If this is the case, the CreateMinuteBar()-method is called to create a minute-bar out of the 12 5-second bars and this minute bar is added to the<br/>
         /// ListOfBars-list. Also when this happens the RealTimeBarList gets cleared to hold 12 new bars later on.
         /// </summary>
-        public List<Tuple<DateTime, decimal, decimal, decimal, decimal>> RealTimeBarList;
+        public List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> RealTimeBarList;
 
         public BarSize Barsize { get; private set; }
 
@@ -95,7 +95,7 @@ namespace BacktestingSoftware
         /// </summary>
         /// <returns>The created minute Bar.</returns>
         /// <remarks></remarks>
-        private Tuple<DateTime, decimal, decimal, decimal, decimal> AggregateBar()
+        private Tuple<DateTime, decimal, decimal, decimal, decimal, long> AggregateBar()
         {
             //First open value in the list
             decimal open = RealTimeBarList[0].Item2;
@@ -105,9 +105,11 @@ namespace BacktestingSoftware
             decimal low = RealTimeBarList.MinBy(x => x.Item4).Item4;
             //The Last close value in the list
             decimal close = RealTimeBarList[RealTimeBarList.ToArray().Length - 1].Item5;
+            //sum all volumes of the 5 sec bars
+            long volume = RealTimeBarList.Sum(x => x.Item6);
 
             //creates the bar with these values and returns it
-            return new Tuple<DateTime, decimal, decimal, decimal, decimal>(RealTimeBarList.First().Item1, open, high, low, close);
+            return new Tuple<DateTime, decimal, decimal, decimal, decimal, long>(RealTimeBarList.First().Item1, open, high, low, close, volume);
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace BacktestingSoftware
         /// can connect to it.</param>
         /// <param name="equity">The equity this class shall represent.</param>
         /// <remarks></remarks>
-        public IBInput(int id, List<Tuple<DateTime, decimal, decimal, decimal, decimal>> LOB, string contractSymbol,
+        public IBInput(int id, List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> LOB, string contractSymbol,
                        BarSize barsize, bool isFuture, bool useRegularTradingHours)
         {
             this.Id = id;
@@ -134,7 +136,7 @@ namespace BacktestingSoftware
             inputClient = new IBClient();
             inputClient.ThrowExceptions = true;
 
-            RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
+            RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>>();
 
             this.IsFuture = isFuture;
 
@@ -205,8 +207,8 @@ namespace BacktestingSoftware
                 System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                 dtDateTime = dtDateTime.AddSeconds(e.Time).ToLocalTime();
 
-                RealTimeBarList.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal>(dtDateTime, e.Open, e.High, e.Low, e.Close));
-                Tuple<DateTime, decimal, decimal, decimal, decimal> b = null;
+                RealTimeBarList.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal, long>(dtDateTime, e.Open, e.High, e.Low, e.Close, e.Volume));
+                Tuple<DateTime, decimal, decimal, decimal, decimal, long> b = null;
 
                 if (this.hadFirst)
                 {
@@ -215,9 +217,8 @@ namespace BacktestingSoftware
                     if ((RealTimeBarList.ToArray().Length >= 12 && this.Barsize == BarSize.OneMinute) || (RealTimeBarList.ToArray().Length >= 4680 && this.Barsize == BarSize.OneDay))
                     {
                         b = AggregateBar();
-                        RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
-                        Console.WriteLine("Received Real Time Minute-Bar: " + b.Item1 + ", " + b.Item2 + ", " + b.Item3 + ", " + b.Item4 + ", " + b.Item5);
-                        ListOfBars.Add(new Tuple<DateTime, decimal, decimal, decimal, decimal>(b.Item1, b.Item2, b.Item3, b.Item4, b.Item5));
+                        RealTimeBarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>>();
+                        ListOfBars.Add(b);
                     }
                 }
                 else
@@ -255,7 +256,7 @@ namespace BacktestingSoftware
             {
                 //Saves how many bars were requested in total to the attribute
                 totalHistoricalBars = e.RecordTotal;
-                Tuple<DateTime, decimal, decimal, decimal, decimal> t = new Tuple<DateTime, decimal, decimal, decimal, decimal>(e.Date, e.Open, e.High, e.Low, e.Close);
+                Tuple<DateTime, decimal, decimal, decimal, decimal, long> t = new Tuple<DateTime, decimal, decimal, decimal, decimal, long>(e.Date, e.Open, e.High, e.Low, e.Close, e.Volume);
                 if (!ListOfBars.Contains(t))
                 {
                     //parses the received bar to one of my bars

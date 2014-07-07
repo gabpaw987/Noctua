@@ -1,107 +1,28 @@
 ﻿(*
-// 24.06.14
-NQ, trad. thresh.
+// 03.07.14
+NQ
 timeZone,1,1,1
 quantity,1,1,1
-rsiN,10,10,1
-rsiEmaN,15,15,1
-rsiLong,20,20,10
-rsiExitLong,0,0,1
-rsiShort,90,90,10
-rsiExitShort,0,0,1
-barExtrN,100,100,10
-extrN,400,400,50
-extrPIn,18,18,1
-extrPOut,2,2,1
-cutlossMax,2.2,2.2,0.2
-cutlossMin,0.05,0.05,0.05
-cutlossDecrN,300,300,50
-takeEarningsMax,0.8,0.8,1
-takeEarningsMin,0,0,1
-takeEarningsD,38,38,1
-
-// 03.06.14
-NQ
-timeZone,-5
-quantity,2
-rsiN,16
-rsiEmaN,6
-rsiLong,80
-rsiExitLong,0
-rsiShort,20
-rsiExitShort,0
-barExtrN,0
-extrN,0
-extrPIn,0
-extrPOut,0
-cutlossMax,2.4
-cutlossMin,0.05
-cutlossDecrN,800
-takeEarningsMax,0
-takeEarningsMin,0.05
-takeEarningsD,40
-
-ES
-timeZone,-5
-quantity,1
-rsiN,20
-rsiEmaN,11
-rsiLong,80
-rsiExitLong,0
-rsiShort,20
-rsiExitShort,0
-barExtrN,100
-extrN,1000
-extrPIn,0
-extrPOut,13
-cutlossMax,2.5
-cutlossMin,0.25
-cutlossDecrN,1000
-takeEarningsMax,0
-takeEarningsMin,0
-takeEarningsD,10
-
-// 26.05.14
-rsiN,18,18,1
-rsiEmaN,5,5,1
-rsiLong,80,80,10
+rsiN,0,0,1
+rsiEmaN,0,0,1
+rsiLong,60,60,10
 rsiExitLong,0,0,1
 rsiShort,20,20,10
 rsiExitShort,0,0,1
-barExtrN,0,0,100
-extrN,0,0,1000
-extrPIn,0,0,5
-extrPOut,0,0,1
-cutlossMax,0,0,0.5
-cutlossMin,0,0,0.05
-cutlossDecrN,0,0,50
-takeEarningsMax,0,0,2.1
-takeEarningsMin,0.05,0.05,1
-takeEarningsD,45,45,1
-*)
-
-(*
-// 25.03.14
-rsiN,18,18,1
-rsiEmaN,5,5,1
-rsiLong,80,80,20
-rsiExitLong,
-rsiShort,20,20,20
-rsiExitShort,
-barExtrN,100,100,5
-extrN,1000,1000,100
-extrPIn,5,5,5
-extrPOut,15,15,1
-takeEarningsMax,2.1,2.1,2.1
-takeEarningsMin,0.05,0.05,0.01
-takeEarningsD,45,45,1
-cutlossMax,5,5,1
-cutlossMin,0.01,0.01,0.01
-cutlossDecrN,148,148,20
+barExtrN,60,120,20
+extrN,200,1000,200
+extrPIn,12,20,2
+extrPOut,4,10,2
+cutlossMax,0,0,2
+cutlossMin,0.15,0.15,0.05
+cutlossDecrN,700,700,50
+takeEarningsMax,0,0,1
+takeEarningsMin,0,0,1
+takeEarningsD,38,38,1
 *)
 
 namespace Algorithm
-    module DecisionCalculator=(*018*)
+    module DecisionCalculator09=(*018*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -225,7 +146,7 @@ namespace Algorithm
         /////////   SIGNAL GENERATOR
         //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal, System.Int64>>, 
+        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
@@ -368,9 +289,6 @@ namespace Algorithm
                         if (sign rsiSig <> sign signals.[i]) then
                             entry <- rsiSig
 
-                    // open position / add to position
-                    if (entry <> 0) then
-                        signals.[i] <- entry
                     
                     /////////////////////////////////////
                     //////   EXIT SIGNAL
@@ -397,7 +315,6 @@ namespace Algorithm
 //                    let localExtrema = findExtremes (barExtrN, cPrices.[firstExtrI..i])
 //                    // add to chart2
 //                    chart2.["LocalExtremes;#00FFFF"].Add(localExtrema.[localExtrema.Length-1])
-
                     // don't enter in extreme price situations
                     if (i >= extrN-1 && (extrN <> 0 && (extrPIn > 0m || extrPOut > 0m))) then
                         let firstExtrI = if (i-extrN+1 > 0) then (i-extrN+1) else 0
@@ -405,27 +322,30 @@ namespace Algorithm
                         // maximum minus minimum price in range
                         let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
                         let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0], localExtrema.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0])
-                        if (entry > 0) then
-                            for max in maxs do
-                                let extrInVal = max-(extrPIn*0.01m*priceBreadth/2m)
-                                let extrOutVal = max+(extrPOut*0.01m*priceBreadth/2m)
-                                // don't go long in maxs
-                                if (cPrices.[i] > extrInVal && cPrices.[i] < extrOutVal) then
-                                    entry <- 0
+//                        if (entry > 0) then
+                        for max in maxs do
+                            let extrInVal = max-(extrPIn*0.01m*priceBreadth/2m)
+                            let extrOutVal = max+(extrPOut*0.01m*priceBreadth/2m)
+                            // don't go long in maxs
+                            if (cPrices.[i] > extrInVal && cPrices.[i] < extrOutVal) then
+                                entry <- -1
+                                // neutral instead of new position
+//                                    if (signals.[i-1] < 0) then
+//                                        exit <- 0
+//                        else if (entry < 0) then
+                        for min in mins do
+                            let extrInVal = min-(extrPOut*0.01m*priceBreadth/2m)
+                            let extrOutVal = min+(extrPIn*0.01m*priceBreadth/2m)
+                            // don't short in mins
+                            if (cPrices.[i] > extrInVal && cPrices.[i] < extrOutVal) then
+                                entry <- 1
                                     // neutral instead of new position
-                                    if (signals.[i-1] < 0) then
-                                        exit <- 0
-                        else if (entry < 0) then
-                            for min in mins do
-                                let extrInVal = min-(extrPOut*0.01m*priceBreadth/2m)
-                                let extrOutVal = min+(extrPIn*0.01m*priceBreadth/2m)
-                                // don't short in mins
-                                if (cPrices.[i] > extrInVal && cPrices.[i] < extrOutVal) then
-                                    entry <- 0
-                                    // neutral instead of new position
-                                    if (signals.[i-1] > 0) then
-                                        exit <- 0
-
+//                                    if (signals.[i-1] > 0) then
+//                                        exit <- 0
+// open position / add to position
+                    if (entry <> 0) then
+                        signals.[i] <- entry
+                    
                     (*
                      * // CUTLOSS: neutralise if loss is too big
                      *)

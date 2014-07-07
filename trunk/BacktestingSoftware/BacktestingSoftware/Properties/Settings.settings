@@ -62,7 +62,7 @@
     <Setting Name="Barsize" Type="System.String" Scope="User">
       <Value Profile="(Default)">Minute</Value>
     </Setting>
-    <Setting Name="IsAlgorithmUsingMaps" Type="System.Boolean" Scope="User">
+    <Setting Name="ShallDrawIndicatorMap" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AdditionalParameters" Type="System.String" Scope="User">
@@ -92,14 +92,17 @@
     <Setting Name="UseRegularTradingHours" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="IsDataFromESignal11" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="MiniContractFactor" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
     <Setting Name="IsFullFuturePriceData" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShallDrawOscillatorMap" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShallDrawVolume" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

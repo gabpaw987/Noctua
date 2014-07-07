@@ -259,9 +259,9 @@
             <TabItem Header="Orders" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="7*"></RowDefinition>
                         <RowDefinition Height="5"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="3*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -357,15 +357,11 @@
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
                                             <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
                                             <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
-                                            <Label VerticalAlignment="Center" Margin="25,0,0,0">Using Maps?</Label>
-                                            <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsAlgorithmUsingMaps}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                         <!-- Data File -->
                                         <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
                                             <Button IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
                                             <TextBox IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" Width="300" Text="{Binding Path=DataFileName}" />
-                                            <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}">Data From eSignal 11?</Label>
-                                            <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsRealTimeEnabled, Converter={StaticResource InverseBoolConverter}}" IsChecked="{Binding Path=IsDataFromESignal11}" VerticalAlignment="Center"/>
                                             <Label VerticalAlignment="Center" Margin="25,0,0,0" IsEnabled="{Binding Path=IsDataFutures}">Price data of full Future?</Label>
                                             <CheckBox Margin="10,0,0,0" IsEnabled="{Binding Path=IsDataFutures}" IsChecked="{Binding Path=IsFullFuturePriceData}" VerticalAlignment="Center"/>
                                         </StackPanel>
@@ -541,26 +537,44 @@
                         </TabItem>
                         <TabItem Name="ChartSettingsTab">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="25"></RowDefinition>
-                                        <RowDefinition></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                        <ComboBox Name="IndicatorComboBox"  Width="300" SelectedIndex="0">
-                                            <ComboBoxItem Content="Simple Moving Average"></ComboBoxItem>
-                                            <ComboBoxItem Content="Weighted Moving Average"></ComboBoxItem>
-                                            <ComboBoxItem Content="Exponential Moving Average"></ComboBoxItem>
-                                            <ComboBoxItem Content="Moving Average Convergence-Divergence"></ComboBoxItem>
-                                        </ComboBox>
-                                        <Button VerticalContentAlignment="Center" Content="+" Width="25" Margin="5,0,0,0" Click="AddIndicatorButton_Click" />
+                                <StackPanel Orientation="Vertical">
+                                    <Label>
+                                        <Span FontWeight="Bold">General</Span>
+                                    </Label>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label VerticalAlignment="Center" Margin="0,0,0,0">Draw Indicator Map?</Label>
+                                        <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=ShallDrawIndicatorMap}" VerticalAlignment="Center"/>
+                                        <Label VerticalAlignment="Center" Margin="25,0,0,0">Draw Oscillator Map?</Label>
+                                        <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=ShallDrawOscillatorMap}" VerticalAlignment="Center"/>
                                     </StackPanel>
-                                    <StackPanel Name="IndicatorStackPanel" Grid.Row="1" Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label VerticalAlignment="Center" Margin="0,0,0,0">Draw Volume?</Label>
+                                        <CheckBox Margin="10,0,0,0" IsChecked="{Binding Path=ShallDrawVolume}" VerticalAlignment="Center"/>
                                     </StackPanel>
-                                </Grid>
+                                    <Label>
+                                        <Span FontWeight="Bold">Indicators</Span>
+                                    </Label>
+                                    <Grid Margin="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                            <ComboBox Name="IndicatorComboBox"  Width="300" SelectedIndex="0">
+                                                <ComboBoxItem Content="Simple Moving Average"></ComboBoxItem>
+                                                <ComboBoxItem Content="Weighted Moving Average"></ComboBoxItem>
+                                                <ComboBoxItem Content="Exponential Moving Average"></ComboBoxItem>
+                                                <ComboBoxItem Content="Moving Average Convergence-Divergence"></ComboBoxItem>
+                                            </ComboBox>
+                                            <Button VerticalContentAlignment="Center" Content="+" Width="25" Margin="5,0,0,0" Click="AddIndicatorButton_Click" />
+                                        </StackPanel>
+                                        <StackPanel Name="IndicatorStackPanel" Grid.Row="1" Orientation="Vertical">
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
                             </ScrollViewer>
                         </TabItem>
                     </TabControl>

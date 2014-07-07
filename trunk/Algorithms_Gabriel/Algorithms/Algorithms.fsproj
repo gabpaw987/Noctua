@@ -55,6 +55,8 @@
     <Compile Include="Futures.fs" />
     <Compile Include="ModRSI.fs" />
     <Compile Include="Futures_exit.fs" />
+    <Compile Include="Futures_exit_withParameters.fs" />
+    <Compile Include="Futures_fading.fs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '11.0'">

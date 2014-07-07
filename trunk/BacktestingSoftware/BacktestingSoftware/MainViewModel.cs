@@ -29,9 +29,9 @@ namespace BacktestingSoftware
             }
         }
 
-        private List<Tuple<DateTime, decimal, decimal, decimal, decimal>> _barList;
+        private List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> _barList;
 
-        public List<Tuple<DateTime, decimal, decimal, decimal, decimal>> BarList
+        public List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> BarList
         {
             get
             {
@@ -887,25 +887,71 @@ namespace BacktestingSoftware
             }
         }
 
-        private bool _isAlgorithmUsingMaps;
+        private bool _shallDrawIndicatorMap;
 
-        public bool IsAlgorithmUsingMaps
+        public bool ShallDrawIndicatorMap
         {
             get
             {
-                return _isAlgorithmUsingMaps;
+                return _shallDrawIndicatorMap;
             }
             set
             {
-                if (!value.Equals(_isAlgorithmUsingMaps))
+                if (!value.Equals(_shallDrawIndicatorMap))
                 {
-                    _isAlgorithmUsingMaps = value;
+                    _shallDrawIndicatorMap = value;
 
-                    Properties.Settings.Default.IsAlgorithmUsingMaps = this.IsAlgorithmUsingMaps;
+                    Properties.Settings.Default.ShallDrawIndicatorMap = this.ShallDrawIndicatorMap;
                     Properties.Settings.Default.Save();
 
                     if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("IsAlgorithmUsingMaps"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("ShallDrawIndicatorMap"));
+                }
+            }
+        }
+
+        private bool _shallDrawOscillatorMap;
+
+        public bool ShallDrawOscillatorMap
+        {
+            get
+            {
+                return _shallDrawOscillatorMap;
+            }
+            set
+            {
+                if (!value.Equals(_shallDrawOscillatorMap))
+                {
+                    _shallDrawOscillatorMap = value;
+
+                    Properties.Settings.Default.ShallDrawOscillatorMap = this.ShallDrawOscillatorMap;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ShallDrawOscillatorMap"));
+                }
+            }
+        }
+
+        private bool _shallDrawVolume;
+
+        public bool ShallDrawVolume
+        {
+            get
+            {
+                return _shallDrawVolume;
+            }
+            set
+            {
+                if (!value.Equals(_shallDrawVolume))
+                {
+                    _shallDrawVolume = value;
+
+                    Properties.Settings.Default.ShallDrawVolume = this.ShallDrawVolume;
+                    Properties.Settings.Default.Save();
+
+                    if (PropertyChanged != null)
+                        PropertyChanged(this, new PropertyChangedEventArgs("ShallDrawVolume"));
                 }
             }
         }
@@ -1428,29 +1474,6 @@ namespace BacktestingSoftware
 
                     if (PropertyChanged != null)
                         PropertyChanged(this, new PropertyChangedEventArgs("UseRegularTradingHours"));
-                }
-            }
-        }
-
-        private bool _isDataFromESignal11;
-
-        public bool IsDataFromESignal11
-        {
-            get
-            {
-                return _isDataFromESignal11;
-            }
-            set
-            {
-                if (!value.Equals(_isDataFromESignal11))
-                {
-                    _isDataFromESignal11 = value;
-
-                    Properties.Settings.Default.IsDataFromESignal11 = this.IsDataFromESignal11;
-                    Properties.Settings.Default.Save();
-
-                    if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("IsDataFromESignal11"));
                 }
             }
         }

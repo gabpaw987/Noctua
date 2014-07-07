@@ -1,66 +1,4 @@
 ﻿(*
-// 24.06.14
-NQ, trad. thresh.
-timeZone,1,1,1
-quantity,1,1,1
-rsiN,10,10,1
-rsiEmaN,15,15,1
-rsiLong,20,20,10
-rsiExitLong,0,0,1
-rsiShort,90,90,10
-rsiExitShort,0,0,1
-barExtrN,100,100,10
-extrN,400,400,50
-extrPIn,18,18,1
-extrPOut,2,2,1
-cutlossMax,2.2,2.2,0.2
-cutlossMin,0.05,0.05,0.05
-cutlossDecrN,300,300,50
-takeEarningsMax,0.8,0.8,1
-takeEarningsMin,0,0,1
-takeEarningsD,38,38,1
-
-// 03.06.14
-NQ
-timeZone,-5
-quantity,2
-rsiN,16
-rsiEmaN,6
-rsiLong,80
-rsiExitLong,0
-rsiShort,20
-rsiExitShort,0
-barExtrN,0
-extrN,0
-extrPIn,0
-extrPOut,0
-cutlossMax,2.4
-cutlossMin,0.05
-cutlossDecrN,800
-takeEarningsMax,0
-takeEarningsMin,0.05
-takeEarningsD,40
-
-ES
-timeZone,-5
-quantity,1
-rsiN,20
-rsiEmaN,11
-rsiLong,80
-rsiExitLong,0
-rsiShort,20
-rsiExitShort,0
-barExtrN,100
-extrN,1000
-extrPIn,0
-extrPOut,13
-cutlossMax,2.5
-cutlossMin,0.25
-cutlossDecrN,1000
-takeEarningsMax,0
-takeEarningsMin,0
-takeEarningsD,10
-
 // 26.05.14
 rsiN,18,18,1
 rsiEmaN,5,5,1
@@ -101,7 +39,7 @@ cutlossDecrN,148,148,20
 *)
 
 namespace Algorithm
-    module DecisionCalculator=(*018*)
+    module DecisionCalculator124=(*018*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////   GENERIC FUNCTIONS
@@ -213,8 +151,7 @@ namespace Algorithm
         let getExtremeValues(n:int, data:decimal[], extremes:decimal[])=
             let mutable mins = new ResizeArray<decimal>()
             let mutable maxs = new ResizeArray<decimal>()
-            let countDownTo = if (extremes.Length-n > 0) then extremes.Length-n else 0
-            for i in extremes.Length-1 .. -1 .. countDownTo do
+            for i in extremes.Length-1 .. -1 .. extremes.Length-n do
                 if (extremes.[i] > 0m) then
                     maxs.Add(data.[i])
                 else if (extremes.[i] < 0m) then
@@ -225,17 +162,12 @@ namespace Algorithm
         /////////   SIGNAL GENERATOR
         //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal, System.Int64>>, 
+        let startCalculation (prices:System.Collections.Generic.List<System.Tuple<System.DateTime, decimal, decimal, decimal, decimal>>, 
                               signals:System.Collections.Generic.List<int>,
                               chart1:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
-
-            // time zone of the server country
-            let timeZone = -5
-            // how many futures are traded
-            let quantity = 1
 
             let rsiN = 18
             let rsiEmaN = 5
@@ -256,23 +188,18 @@ namespace Algorithm
             let mutable takeEarnings = takeEarningsMax
             let takeEarningsMin = 0.01m
             // minimise take earnings based cutloss after this positive price change (absolute!)
-            let takeEarningsD = 45m
+            let takeEarningsD = 50m
 
             (*
              * Read Parameters
              *)
-            // currently the only supported time zones are -7 to +2 (trading MO - FR)
-            // other settings will produce 0 signals
-            let timeZone = int parameters.["timeZone"]
-            // Future count
-            let quantity = int (abs parameters.["quantity"])
             // RSI
             let rsiN = int parameters.["rsiN"]
             let rsiEmaN = int parameters.["rsiEmaN"]
             let rsiLong = parameters.["rsiLong"]
             let rsiExitLong = parameters.["rsiExitLong"]
             let rsiShort = parameters.["rsiShort"]
-            let rsiExitShort = parameters.["rsiExitShort"]
+            let rsiExitShort =parameters.["rsiExitShort"]
             // Price Extremes
             let barExtrN = int parameters.["barExtrN"]
             let extrN = int parameters.["extrN"]
@@ -357,9 +284,9 @@ namespace Algorithm
 
                     if (useRsi) then
                         if (rsiEma.[i] >= rsiLong && rsiEma.[i-1] < rsiLong) then
-                            rsiSig <- quantity
+                            rsiSig <- 1
                         else if (rsiEma.[i] <= rsiShort && rsiEma.[i-1] > rsiShort) then
-                            rsiSig <- -1 * quantity
+                            rsiSig <- -1
 
                     (*
                      * // entry decision
@@ -404,7 +331,7 @@ namespace Algorithm
 
                         // maximum minus minimum price in range
                         let priceBreadth = ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item3] |> List.max) - ([for p in prices.GetRange(i-extrN+1, extrN) -> p.Item4] |> List.min)
-                        let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0], localExtrema.[firstExtrI..if(i-barExtrN/2 > 0) then i-barExtrN/2 else 0])
+                        let mins, maxs = getExtremeValues(extrN, cPrices.[firstExtrI..i], localExtrema.[firstExtrI..i])
                         if (entry > 0) then
                             for max in maxs do
                                 let extrInVal = max-(extrPIn*0.01m*priceBreadth/2m)
@@ -508,14 +435,10 @@ namespace Algorithm
                         | System.DayOfWeek.Monday | System.DayOfWeek.Tuesday | System.DayOfWeek.Wednesday | System.DayOfWeek.Thursday | System.DayOfWeek.Friday
                             -> true
                         | _ -> false) then
-                           if (prices.[i].Item1.Hour > 22 - 1 + timeZone || prices.[i].Item1.Hour < 8 - 1 + timeZone || (prices.[i].Item1.Hour = 22 - 1 + timeZone && prices.[i].Item1.Minute > 10)) then
+                           if (prices.[i].Item1.Hour > 22 || prices.[i].Item1.Hour < 8 || (prices.[i].Item1.Hour = 22 && prices.[i].Item1.Minute > 10)) then
                                 signals.[i] <- 0
                     // Saturday, Sunday (no trading)
                     else
-                        signals.[i] <- 0
-                    // currently the only supported time zones are -7 to +2 (trading MO - FR)
-                    // other settings will produce 0 signals
-                    if (timeZone > 2 || timeZone < -7) then
                         signals.[i] <- 0
                     
             signals

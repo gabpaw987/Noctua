@@ -263,12 +263,12 @@ namespace BacktestingSoftware.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsAlgorithmUsingMaps {
+        public bool ShallDrawIndicatorMap {
             get {
-                return ((bool)(this["IsAlgorithmUsingMaps"]));
+                return ((bool)(this["ShallDrawIndicatorMap"]));
             }
             set {
-                this["IsAlgorithmUsingMaps"] = value;
+                this["ShallDrawIndicatorMap"] = value;
             }
         }
         
@@ -382,18 +382,6 @@ namespace BacktestingSoftware.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsDataFromESignal11 {
-            get {
-                return ((bool)(this["IsDataFromESignal11"]));
-            }
-            set {
-                this["IsDataFromESignal11"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1")]
         public int MiniContractFactor {
             get {
@@ -413,6 +401,30 @@ namespace BacktestingSoftware.Properties {
             }
             set {
                 this["IsFullFuturePriceData"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShallDrawOscillatorMap {
+            get {
+                return ((bool)(this["ShallDrawOscillatorMap"]));
+            }
+            set {
+                this["ShallDrawOscillatorMap"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShallDrawVolume {
+            get {
+                return ((bool)(this["ShallDrawVolume"]));
+            }
+            set {
+                this["ShallDrawVolume"] = value;
             }
         }
     }

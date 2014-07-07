@@ -59,7 +59,7 @@ namespace BacktestingSoftware
 
             this.mainViewModel.Orders = new List<Order>();
             this.mainViewModel.Signals = new List<int>();
-            this.mainViewModel.BarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal>>();
+            this.mainViewModel.BarList = new List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>>();
             this.mainViewModel.IndicatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.OscillatorDictionary = new Dictionary<string, List<decimal>>();
             this.mainViewModel.CalculationResultSets = new Dictionary<string, CalculationResultSet>();
@@ -71,7 +71,9 @@ namespace BacktestingSoftware
             this.mainViewModel.LastDayProfitLoss = "0";
 
             this.mainViewModel.AlgorithmFileName = Properties.Settings.Default.AlgorithmFileName;
-            this.mainViewModel.IsAlgorithmUsingMaps = Properties.Settings.Default.IsAlgorithmUsingMaps;
+            this.mainViewModel.ShallDrawIndicatorMap = Properties.Settings.Default.ShallDrawIndicatorMap;
+            this.mainViewModel.ShallDrawOscillatorMap = Properties.Settings.Default.ShallDrawOscillatorMap;
+            this.mainViewModel.ShallDrawVolume = Properties.Settings.Default.ShallDrawVolume;
             this.mainViewModel.DataFileName = Properties.Settings.Default.DataFileName;
 
             if (Properties.Settings.Default.StartDate != new DateTime() && Properties.Settings.Default.EndDate != new DateTime())
@@ -119,8 +121,6 @@ namespace BacktestingSoftware
             this.mainViewModel.IsNetWorthChartInPercentage = Properties.Settings.Default.IsNetWorthChartInPercentage;
 
             this.mainViewModel.UseRegularTradingHours = Properties.Settings.Default.UseRegularTradingHours;
-
-            this.mainViewModel.IsDataFromESignal11 = Properties.Settings.Default.IsDataFromESignal11;
 
             this.mainViewModel.IndicatorPanels = new List<StackPanel>();
             if (Properties.Settings.Default.IndicatorPanels != null)
@@ -1020,15 +1020,18 @@ namespace BacktestingSoftware
                  decimal min1 = 0m;
                  decimal max1 = 0m;
 
-                 if (this.mainViewModel.IsNetWorthChartInPercentage)
+                 if (this.mainViewModel.Orders.Count != 0)
                  {
-                     min1 = this.mainViewModel.Orders.Min(p => p.CumulativePortfolioPerformance);
-                     max1 = this.mainViewModel.Orders.Max(p => p.CumulativePortfolioPerformance);
-                 }
-                 else
-                 {
-                     min1 = this.mainViewModel.Orders.Min(p => p.CurrentCapital);
-                     max1 = this.mainViewModel.Orders.Max(p => p.CurrentCapital);
+                     if (this.mainViewModel.IsNetWorthChartInPercentage)
+                     {
+                         min1 = this.mainViewModel.Orders.Min(p => p.CumulativePortfolioPerformance);
+                         max1 = this.mainViewModel.Orders.Max(p => p.CumulativePortfolioPerformance);
+                     }
+                     else
+                     {
+                         min1 = this.mainViewModel.Orders.Min(p => p.CurrentCapital);
+                         max1 = this.mainViewModel.Orders.Max(p => p.CurrentCapital);
+                     }
                  }
 
                  //decide which one is higher/lower
@@ -1054,17 +1057,20 @@ namespace BacktestingSoftware
                          }
                      }
 
-                     if (this.mainViewModel.IsNetWorthChartInPercentage)
+                     if (this.mainViewModel.Orders.Count != 0)
                      {
-                         // adding date and net worth
-                         chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CumulativePortfolioPerformance));
-                         chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
-                     }
-                     else
-                     {
-                         // adding date and portfolio performance
-                         chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CurrentCapital));
-                         chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                         if (this.mainViewModel.IsNetWorthChartInPercentage)
+                         {
+                             // adding date and net worth
+                             chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CumulativePortfolioPerformance));
+                             chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                         }
+                         else
+                         {
+                             // adding date and portfolio performance
+                             chart.Series["Data"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.Orders[current].CurrentCapital));
+                             chart.Series["PerformanceFromPrice"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.PerformanceFromPrice[i]));
+                         }
                      }
                  }
 
@@ -1173,6 +1179,11 @@ namespace BacktestingSoftware
                 // adding close
                 chart.Series["Data"].Points[i].YValues[3] = Convert.ToDouble(this.mainViewModel.BarList[i].Item5);
 
+                if (this.mainViewModel.BarList[i].Item2 == this.mainViewModel.BarList[i].Item5)
+                {
+                    chart.Series["Data"].Points[i].BorderColor = System.Drawing.Color.Orange;
+                }
+
                 if (i != 0)
                 {
                     if (this.mainViewModel.Signals[i - 1] != this.mainViewModel.Signals[i])
@@ -1272,10 +1283,20 @@ namespace BacktestingSoftware
                         if (shortLength.Length != 0 && longLength.Length != 0 &&
                             !shortLength.Length.Equals("0") && !longLength.Length.Equals("0"))
                         {
-                            if (chart.ChartAreas.Count <= 1)
-                                this.drawSecondChartArea(chart);
+                            bool containsArea = false;
+                            foreach (ChartArea area in chart.ChartAreas)
+                            {
+                                if (area.Name.Equals("OscillatorArea"))
+                                {
+                                    containsArea = true;
+                                }
+                            }
+                            if (!containsArea)
+                            {
+                                this.drawAdditionalChartArea(chart, "OscillatorArea");
+                            }
 
-                            formula.ChartArea = "IndicatorArea";
+                            formula.ChartArea = "OscillatorArea";
 
                             chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, shortLength + "," + longLength, "Data:Y3", "FinFor" + i);
                             chart.Series["FinFor" + i].ChartType = SeriesChartType.FastLine;
@@ -1314,96 +1335,193 @@ namespace BacktestingSoftware
                 this.resetCalculation(true);
             }
 
+            double minVolume = 0;
+            double maxVolume = 0;
+
+            if (this.mainViewModel.ShallDrawVolume && this.mainViewModel.BarList.Count(bar => bar.Item6 == 0) != this.mainViewModel.BarList.Count())
+            {
+                try
+                {
+                    Series formula = new Series("Volume");
+                    chart.Series.Add(formula);
+
+                    bool containsArea = false;
+                    foreach (ChartArea area in chart.ChartAreas)
+                    {
+                        if (area.Name.Equals("VolumeArea"))
+                        {
+                            containsArea = true;
+                        }
+                    }
+                    if (!containsArea)
+                    {
+                        this.drawAdditionalChartArea(chart, "VolumeArea");
+                    }
+
+                    formula.ChartArea = "VolumeArea";
+
+                    for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                    {
+                        // adding date and volume
+                        chart.Series["Volume"].Points.AddXY(this.mainViewModel.BarList[i].Item1, Convert.ToDouble(this.mainViewModel.BarList[i].Item6));
+
+                        if (this.mainViewModel.BarList[i].Item2 > this.mainViewModel.BarList[i].Item5)
+                        {
+                            chart.Series["Volume"].Points[i].Color = System.Drawing.Color.Red;
+                        }
+                        else if (this.mainViewModel.BarList[i].Item2 < this.mainViewModel.BarList[i].Item5)
+                        {
+                            chart.Series["Volume"].Points[i].Color = System.Drawing.Color.Green;
+                        }
+                        else
+                        {
+                            chart.Series["Volume"].Points[i].Color = System.Drawing.Color.Orange;
+                        }
+                    }
+                    chart.Series["Volume"].ChartType = SeriesChartType.Column;
+
+                    for (int j = 0; j < chart.Series["Volume"].Points.Count; j++)
+                    {
+                        if (chart.Series["Volume"].Points[j].YValues[0] < minVolume)
+                            minVolume = chart.Series["Volume"].Points[j].YValues[0];
+                        else if (chart.Series["Volume"].Points[j].YValues[0] > maxVolume)
+                            maxVolume = chart.Series["Volume"].Points[j].YValues[0];
+                    }
+
+                    double marginVolume = (maxVolume - minVolume) * 5 / 100;
+                    chart.ChartAreas["VolumeArea"].AxisY.Minimum = Math.Round(minVolume - marginVolume);
+                    chart.ChartAreas["VolumeArea"].AxisY.Maximum = Math.Round(maxVolume + marginVolume);
+
+                    if (this.mainViewModel.BarList.Count > 100)
+                    {
+                        //Calculating Minimum and Maximum values for zooming to the last 100 values
+                        decimal min100 = this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item6;
+                        decimal max100 = 0m;
+                        for (int i = this.mainViewModel.BarList.Count - 100; i < this.mainViewModel.BarList.Count; i++)
+                        {
+                            if (this.mainViewModel.BarList[i].Item6 < min100)
+                                min100 = this.mainViewModel.BarList[i].Item6;
+                            if (this.mainViewModel.BarList[i].Item6 > max100)
+                                max100 = this.mainViewModel.BarList[i].Item6;
+                        }
+
+                        decimal margin100 = (max100 - min100) * 5 / 100;
+                        chart.ChartAreas["VolumeArea"].AxisY.ScaleView.Zoom(Math.Round(Convert.ToDouble(min100 - margin100)), Math.Round(Convert.ToDouble(max100 + margin100)));
+                    }
+                }
+                catch (Exception)
+                {
+                    this.ErrorMessage = "An error occured while drawing indicators!";
+
+                    //reset calculation
+                    this.resetCalculation(true);
+                }
+            }
+            
             try
             {
                 int index = 0;
 
-                foreach (string key in this.mainViewModel.IndicatorDictionary.Keys)
+                if (this.mainViewModel.ShallDrawIndicatorMap)
                 {
-                    if (this.mainViewModel.IndicatorDictionary[key].Count == this.mainViewModel.BarList.Count)
+                    foreach (string key in this.mainViewModel.IndicatorDictionary.Keys)
                     {
-                        Series indicatorSeries = new Series("Indicator" + index);
-                        chart.Series.Add(indicatorSeries);
-
-                        for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                        if (this.mainViewModel.IndicatorDictionary[key].Count == this.mainViewModel.BarList.Count)
                         {
-                            chart.Series["Indicator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.IndicatorDictionary[key][i]);
-                        }
-
-                        foreach (decimal value in this.mainViewModel.IndicatorDictionary[key])
-                        {
-                            if (value < min && value != 0)
-                            {
-                                min = value;
-                            }
-                        }
-
-                        max = this.mainViewModel.IndicatorDictionary[key].Max();
-
-                        margin = (max - min) * 5 / 100;
-                        if (Convert.ToDouble(min - margin) < chart.ChartAreas[0].AxisY.Minimum)
-                        {
-                            chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
-                        }
-                        if (Convert.ToDouble(max + margin) > chart.ChartAreas[0].AxisY.Maximum)
-                        {
-                            chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
-                        }
-
-                        // Set series chart type
-                        chart.Series["Indicator" + index].ChartType = SeriesChartType.FastLine;
-
-                        //chart.DataSource = this.mainViewModel.BarList;
-                        chart.Series["Indicator" + index].XValueMember = "DateStamp";
-                        chart.Series["Indicator" + index].XValueType = ChartValueType.DateTime;
-                        chart.Series["Indicator" + index].YValueMembers = "Value";
-
-                        //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
-                        chart.Series["Indicator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
-
-                        index++;
-                    }
-                }
-
-                if (this.mainViewModel.OscillatorDictionary.Count > 0)
-                {
-                    if (chart.ChartAreas.Count <= 1)
-                    {
-                        this.drawSecondChartArea(chart);
-                    }
-                    foreach (string key in this.mainViewModel.OscillatorDictionary.Keys)
-                    {
-                        if (this.mainViewModel.OscillatorDictionary[key].Count == this.mainViewModel.BarList.Count)
-                        {
-                            Series indicatorSeries = new Series("Oscillator" + index);
-                            indicatorSeries.ChartArea = "OscillatorArea";
+                            Series indicatorSeries = new Series("Indicator" + index);
                             chart.Series.Add(indicatorSeries);
 
                             for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
                             {
-                                chart.Series["Oscillator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.OscillatorDictionary[key][i]);
+                                chart.Series["Indicator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.IndicatorDictionary[key][i]);
+                            }
+
+                            foreach (decimal value in this.mainViewModel.IndicatorDictionary[key])
+                            {
+                                if (value < min && value != 0)
+                                {
+                                    min = value;
+                                }
+                            }
+
+                            max = this.mainViewModel.IndicatorDictionary[key].Max();
+
+                            margin = (max - min) * 5 / 100;
+                            if (Convert.ToDouble(min - margin) < chart.ChartAreas[0].AxisY.Minimum)
+                            {
+                                chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+                            }
+                            if (Convert.ToDouble(max + margin) > chart.ChartAreas[0].AxisY.Maximum)
+                            {
+                                chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
                             }
 
                             // Set series chart type
-                            chart.Series["Oscillator" + index].ChartType = SeriesChartType.FastLine;
+                            chart.Series["Indicator" + index].ChartType = SeriesChartType.FastLine;
 
                             //chart.DataSource = this.mainViewModel.BarList;
-                            chart.Series["Oscillator" + index].XValueMember = "DateStamp";
-                            chart.Series["Oscillator" + index].XValueType = ChartValueType.DateTime;
-                            chart.Series["Oscillator" + index].YValueMembers = "Value";
+                            chart.Series["Indicator" + index].XValueMember = "DateStamp";
+                            chart.Series["Indicator" + index].XValueType = ChartValueType.DateTime;
+                            chart.Series["Indicator" + index].YValueMembers = "Value";
 
                             //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
-                            chart.Series["Oscillator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
-
-                            for (int j = 0; j < chart.Series["Oscillator" + index].Points.Count; j++)
-                            {
-                                if (chart.Series["Oscillator" + index].Points[j].YValues[0] < min2)
-                                    min2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
-                                else if (chart.Series["Oscillator" + index].Points[j].YValues[0] > max2)
-                                    max2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
-                            }
+                            chart.Series["Indicator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
 
                             index++;
+                        }
+                    }
+                }
+
+                if (this.mainViewModel.ShallDrawOscillatorMap)
+                {
+                    if (this.mainViewModel.OscillatorDictionary.Count > 0)
+                    {
+                        bool containsArea = false;
+                        foreach (ChartArea area in chart.ChartAreas)
+                        {
+                            if (area.Name.Equals("OscillatorArea"))
+                            {
+                                containsArea = true;
+                            }
+                        }
+                        if (!containsArea)
+                        {
+                            this.drawAdditionalChartArea(chart, "OscillatorArea");
+                        }
+                        foreach (string key in this.mainViewModel.OscillatorDictionary.Keys)
+                        {
+                            if (this.mainViewModel.OscillatorDictionary[key].Count == this.mainViewModel.BarList.Count)
+                            {
+                                Series indicatorSeries = new Series("Oscillator" + index);
+                                indicatorSeries.ChartArea = "OscillatorArea";
+                                chart.Series.Add(indicatorSeries);
+
+                                for (int i = 0; i < this.mainViewModel.BarList.Count; i++)
+                                {
+                                    chart.Series["Oscillator" + index].Points.AddXY(this.mainViewModel.BarList[i].Item1, this.mainViewModel.OscillatorDictionary[key][i]);
+                                }
+
+                                // Set series chart type
+                                chart.Series["Oscillator" + index].ChartType = SeriesChartType.FastLine;
+
+                                //chart.DataSource = this.mainViewModel.BarList;
+                                chart.Series["Oscillator" + index].XValueMember = "DateStamp";
+                                chart.Series["Oscillator" + index].XValueType = ChartValueType.DateTime;
+                                chart.Series["Oscillator" + index].YValueMembers = "Value";
+
+                                //chart.Series["Data"].BorderColor = System.Drawing.Color.Black;
+                                chart.Series["Oscillator" + index].Color = System.Drawing.ColorTranslator.FromHtml(key.Split(';')[1]);
+
+                                for (int j = 0; j < chart.Series["Oscillator" + index].Points.Count; j++)
+                                {
+                                    if (chart.Series["Oscillator" + index].Points[j].YValues[0] < min2)
+                                        min2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
+                                    else if (chart.Series["Oscillator" + index].Points[j].YValues[0] > max2)
+                                        max2 = chart.Series["Oscillator" + index].Points[j].YValues[0];
+                                }
+
+                                index++;
+                            }
                         }
                     }
                 }
@@ -1416,15 +1534,23 @@ namespace BacktestingSoftware
                 this.resetCalculation(true);
             }
 
-            if (chart.ChartAreas.Count > 1)
+            bool containsOscillatorArea = false;
+            foreach (ChartArea area in chart.ChartAreas)
+            {
+                if (area.Name.Equals("OscillatorArea"))
+                {
+                    containsOscillatorArea = true;
+                }
+            }
+            if (containsOscillatorArea)
             {
                 double margin2 = (max2 - min2) * 5 / 100;
-                chart.ChartAreas[1].AxisY.Minimum = Math.Round(min2 - margin2);
-                chart.ChartAreas[1].AxisY.Maximum = Math.Round(max2 + margin2);
+                chart.ChartAreas["OscillatorArea"].AxisY.Minimum = Math.Round(min2 - margin2);
+                chart.ChartAreas["OscillatorArea"].AxisY.Maximum = Math.Round(max2 + margin2);
             }
 
             if (chart.ChartAreas.Count <= 1)
-                this.drawSecondEmptyChartArea(chart);
+                this.drawAdditionalEmptyChartArea(chart);
 
             this.FormatChart(chart);
 
@@ -1436,6 +1562,8 @@ namespace BacktestingSoftware
 
         public void FormatChart(Chart chart)
         {
+            //chart.EnableZoomAndPanControls();
+            
             //chart.ChartAreas[0].AxisY.IsStartedFromZero = false;
             chart.ChartAreas[0].CursorY.IsUserEnabled = true;
             chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
@@ -1533,46 +1661,70 @@ namespace BacktestingSoftware
                     chart.ChartAreas[1].AxisX.ScaleView.ZoomReset();
                     chart.ChartAreas[1].AxisY.ScaleView.ZoomReset();
                 }
+                if (chart.ChartAreas.Count > 2)
+                {
+                    chart.ChartAreas[2].AxisX.ScaleView.ZoomReset();
+                    chart.ChartAreas[2].AxisY.ScaleView.ZoomReset();
+                }
             }
         }
 
-        public void drawSecondChartArea(Chart chart)
+        public void drawAdditionalChartArea(Chart chart, string name)
         {
-            ChartArea indicatorArea = new ChartArea("OscillatorArea");
-            chart.ChartAreas.Add(indicatorArea);
+            ChartArea additionalArea = new ChartArea(name);
+            chart.ChartAreas.Add(additionalArea);
 
-            chart.ChartAreas[1].CursorY.IsUserEnabled = true;
-            chart.ChartAreas[1].CursorY.IsUserSelectionEnabled = true;
-            chart.ChartAreas[1].AxisY.ScaleView.Zoomable = true;
-            chart.ChartAreas[1].AxisY.ScrollBar.IsPositionedInside = false;
+            int newAreaIndex = chart.ChartAreas.Count - 1;
 
-            chart.ChartAreas[1].CursorX.IsUserEnabled = true;
-            chart.ChartAreas[1].CursorX.IsUserSelectionEnabled = true;
-            chart.ChartAreas[1].AxisX.ScaleView.Zoomable = true;
-            chart.ChartAreas[1].AxisX.ScrollBar.IsPositionedInside = false;
+            chart.ChartAreas[newAreaIndex].CursorY.IsUserEnabled = true;
+            chart.ChartAreas[newAreaIndex].CursorY.IsUserSelectionEnabled = true;
+            chart.ChartAreas[newAreaIndex].AxisY.ScaleView.Zoomable = true;
+            chart.ChartAreas[newAreaIndex].AxisY.ScrollBar.IsPositionedInside = false;
 
-            chart.ChartAreas[1].AlignWithChartArea = "MainArea";
+            chart.ChartAreas[newAreaIndex].CursorX.IsUserEnabled = true;
+            chart.ChartAreas[newAreaIndex].CursorX.IsUserSelectionEnabled = true;
+            chart.ChartAreas[newAreaIndex].AxisX.ScaleView.Zoomable = true;
+            chart.ChartAreas[newAreaIndex].AxisX.ScrollBar.IsPositionedInside = false;
 
-            chart.ChartAreas[1].AxisX.Minimum = this.mainViewModel.BarList[0].Item1.ToOADate();
-            chart.ChartAreas[1].AxisX.Maximum = this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate();
+            chart.ChartAreas[newAreaIndex].AlignWithChartArea = "MainArea";
 
-            chart.ChartAreas[1].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
+            chart.ChartAreas[newAreaIndex].AxisX.Minimum = this.mainViewModel.BarList[0].Item1.ToOADate();
+            chart.ChartAreas[newAreaIndex].AxisX.Maximum = this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate();
+
+            chart.ChartAreas[newAreaIndex].AxisX.ScaleView.Zoom(this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
                                  this.mainViewModel.BarList[this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
 
-            chart.ChartAreas[0].Position.Width = 100;
             chart.ChartAreas[0].Position.X = 0;
-            chart.ChartAreas[0].Position.Height = 70;
+            chart.ChartAreas[0].Position.Width = 100;
             chart.ChartAreas[0].Position.Y = 0;
 
             chart.ChartAreas[1].Position.Width = 100;
             chart.ChartAreas[1].Position.X = 0;
-            chart.ChartAreas[1].Position.Height = 30;
-            chart.ChartAreas[1].Position.Y = 70;
+
+            if (newAreaIndex == 1)
+            {
+                chart.ChartAreas[0].Position.Height = 70;
+
+                chart.ChartAreas[1].Position.Height = 30;
+                chart.ChartAreas[1].Position.Y = 70;
+            }
+            else if (newAreaIndex == 2)
+            {
+                chart.ChartAreas[0].Position.Height = 50;
+
+                chart.ChartAreas[1].Position.Height = 25;
+                chart.ChartAreas[1].Position.Y = 50;
+
+                chart.ChartAreas[2].Position.Width = 100;
+                chart.ChartAreas[2].Position.X = 0;
+                chart.ChartAreas[2].Position.Height = 25;
+                chart.ChartAreas[2].Position.Y = 75;
+            }
         }
 
-        public void drawSecondEmptyChartArea(Chart chart)
+        public void drawAdditionalEmptyChartArea(Chart chart)
         {
-            ChartArea indicatorArea = new ChartArea("IndicatorArea");
+            ChartArea indicatorArea = new ChartArea("EmptyArea");
             chart.ChartAreas.Add(indicatorArea);
 
             chart.ChartAreas[1].AlignWithChartArea = "MainArea";
@@ -1826,12 +1978,13 @@ namespace BacktestingSoftware
 
                 List<bool> tempBoolList = new List<bool>(new bool[] {
                                    this.mainViewModel.IsRealTimeEnabled,
-                                   this.mainViewModel.IsAlgorithmUsingMaps,
+                                   this.mainViewModel.ShallDrawIndicatorMap,
+                                   this.mainViewModel.ShallDrawOscillatorMap,
+                                   this.mainViewModel.ShallDrawVolume,
                                    this.mainViewModel.IsDataFutures,
                                    this.mainViewModel.IsMiniContract,
                                    this.mainViewModel.IsNetWorthChartInPercentage,
                                    this.mainViewModel.UseRegularTradingHours,
-                                   this.mainViewModel.IsDataFromESignal11,
                                    this.mainViewModel.IsFullFuturePriceData});
                 bFormatter.Serialize(stream, tempBoolList);
 
@@ -1937,13 +2090,14 @@ namespace BacktestingSoftware
 
                 List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
                 this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
-                this.mainViewModel.IsAlgorithmUsingMaps = tempBoolList[1];
-                this.mainViewModel.IsDataFutures = tempBoolList[2];
-                this.mainViewModel.IsMiniContract = tempBoolList[3];
-                this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[4];
-                this.mainViewModel.UseRegularTradingHours = tempBoolList[5];
-                this.mainViewModel.IsDataFromESignal11 = tempBoolList[6];
-                this.mainViewModel.IsFullFuturePriceData = tempBoolList[7];
+                this.mainViewModel.ShallDrawIndicatorMap = tempBoolList[1];
+                this.mainViewModel.ShallDrawOscillatorMap = tempBoolList[2];
+                this.mainViewModel.ShallDrawVolume = tempBoolList[3];
+                this.mainViewModel.IsDataFutures = tempBoolList[4];
+                this.mainViewModel.IsMiniContract = tempBoolList[5];
+                this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[6];
+                this.mainViewModel.UseRegularTradingHours = tempBoolList[7];
+                this.mainViewModel.IsFullFuturePriceData = tempBoolList[8];
 
                 List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
                 this.mainViewModel.AlgorithmFileName = tempStringList[0];
