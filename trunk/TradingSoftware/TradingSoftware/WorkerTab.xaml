@@ -1,0 +1,80 @@
+﻿<TabItem x:Class="TradingSoftware.WorkerTab"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TradingSoftware"
+      Name="WorkerTabItem">
+    <TabItem.DataContext>
+        <local:WorkerViewModel x:Name="workerViewModel" />
+    </TabItem.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="3"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <DataGrid Name="workerGrid" Grid.Row="0" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
+                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True"
+                              IsReadOnly="False" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="RemoveWorkerButton_Click">Remove</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn IsReadOnly="True" Binding="{Binding EquityAsString}" Header="Symbol"/>
+                <DataGridCheckBoxColumn Binding="{Binding IsTrading}" Header="Is trading?"/>
+                <DataGridCheckBoxColumn Binding="{Binding ShallIgnoreFirstSignal}" Header="Ignore First Signal?"/>
+                <DataGridTextColumn Binding="{Binding CurrentPosition}" Header="Current Position"/>
+
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="ChangeWorkerSettingsButton_Click">Settings</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3"/>
+        
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="34"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Name="ConsoleBoxScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="0">
+                    <TextBox Name="ConsoleBox" IsEnabled="False" TextChanged="ScrollToEnd_TextChanged" Text="{Binding Path=ConsoleText}" />
+                </ScrollViewer>
+                <ScrollViewer Name="SignalBoxScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="1">
+                    <TextBox Name="SignalBox" IsEnabled="False" TextChanged="ScrollToEnd_TextChanged" Text="{Binding Path=SignalText}" />
+                </ScrollViewer>
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5" Grid.Row="1">
+                <Button Click="StartThisWorkerButton_Click" Height="24" Width="100" Margin="0,0,10,0" Content="Start this worker"/>
+                <Button Click="StopTradingThisWorkerButton_Click" Height="24" Width="100" Margin="0,0,10,0" Content="Stop trading"/>
+                <Button Click="StopThisWorkerAfterSignalButton_Click" Name="StopTradingAfterSignalButton" Height="24" Width="140" Margin="0,0,10,0" Content="Stop trading after signal"/>
+                <Button Click="StopThisWorkerButton_Click" Height="24" Width="100" Content="Stop this worker"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</TabItem>
