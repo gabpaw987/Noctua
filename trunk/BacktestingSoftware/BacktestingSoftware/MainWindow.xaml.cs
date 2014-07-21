@@ -242,10 +242,15 @@ namespace BacktestingSoftware
             // Process open file dialog box results
             if (result == true)
             {
-                string[] lines = new string[]
+                List<KeyValuePair<string, CalculationResultSet>> sortedCalcualtionResultSets = this.mainViewModel.CalculationResultSets.ToList();
+                sortedCalcualtionResultSets.Sort((pair1,pair2)=>pair2.Value.PortfolioPerformancePercent.CompareTo(pair1.Value.PortfolioPerformancePercent));
+                
+                List<string> lines = new List<string>(new string[]
                 {
                     "Algorithm used: " + algorithmUsed,
                     "Data-File used: " + datafileUsed,
+                    "",
+                    "Best Set: " + sortedCalcualtionResultSets[0].Key,
                     "",
                     "Net Worth:                                    " + (this.mainViewModel.NetWorth < 0 ? "" : " ")                     + this.mainViewModel.NetWorthToDisplay,
                     "Portfolio Performance [%]:                    " + (this.mainViewModel.PortfolioPerformancePercent < 0 ? "" : " ")  + this.mainViewModel.PortfolioPerformancePercent,
@@ -261,8 +266,18 @@ namespace BacktestingSoftware
                     "Ratio of Good Trades - Bad Trades:            " + (this.mainViewModel.GtBtRatio < 0 ? "" : " ")                    + this.mainViewModel.GtBtRatio,
                     "Highest Daily Portfolio Performance:          " + this.mainViewModel.HighestDailyProfit,
                     "Lowest Daily Portfolio Performance:           " + this.mainViewModel.HighestDailyLoss,
-                    "Portfolio Performance of the Current Day:     " + this.mainViewModel.HighestDailyProfit
-               };
+                    "Portfolio Performance of the Current Day:     " + this.mainViewModel.LastDayProfitLoss,
+                    "",
+                    "Other Sets, ordered by portfolio performance: ",
+                    ""
+                });
+
+                foreach (KeyValuePair<string, CalculationResultSet> keyValuePair in sortedCalcualtionResultSets.Skip(1))
+                {
+                    lines.Add(keyValuePair.Key + ":");
+                    lines.Add(keyValuePair.Value.PortfolioPerformancePercent + "");
+                    lines.Add("");
+                }
 
                 // Open document
                 System.IO.File.WriteAllLines(dlg.FileName, lines);
@@ -307,7 +322,7 @@ namespace BacktestingSoftware
             }
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        public void StartButton_Click(object sender, RoutedEventArgs e)
         {
             if (this.oldThreadCount != 0)
             {
@@ -325,7 +340,13 @@ namespace BacktestingSoftware
                 {
                     this.StopButton_Click(null, null);
 
-                    this.resetCalculation(true);
+                    this.c = new Calculator(this.mainViewModel);
+
+                    if ((this.mainViewModel.CalculationResultSets.Count == c.ReadAndMeshParameters().Item2[0].Count && sender != null) || this.mainViewModel.CalculationResultSets.Count == 0)
+                    {
+                        this.resetCalculation(true);
+                        ResultPersistencyHandler.CreateNewPersistencyFile(this);
+                    }
 
                     this.iscalculating = true;
 
@@ -370,8 +391,6 @@ namespace BacktestingSoftware
                         {
                             this.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
                         }));
-
-                        this.c = new Calculator(this.mainViewModel);
 
                         // report the progress
                         if (this.mainViewModel.IsRealTimeEnabled)
@@ -485,140 +504,118 @@ namespace BacktestingSoftware
                                     this.PauseButton.IsEnabled = true;
                                 }));
 
-                                Dictionary<string, List<decimal>> parameters = new Dictionary<string, List<decimal>>();
-                                //split AdditionalParameters string
-                                string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split('\n');
-                                foreach (string parameter in separatedAdditionalParameters)
-                                {
-                                    string[] separatedParameter = parameter.Split(',');
-                                    List<decimal> decimalParameter = new List<decimal>();
-                                    for (int i = 1; i < separatedParameter.Length; i++)
-                                    {
-                                        decimalParameter.Add(decimal.Parse(separatedParameter[i], CultureInfo.InvariantCulture));
-                                    }
-                                    parameters.Add(separatedParameter[0], decimalParameter);
-                                }
-
-                                this.valueSets = new List<List<decimal>>();
-                                List<List<decimal>> parameterRanges = new List<List<decimal>>();
-
-                                //fill parameterRanges list
-                                foreach (List<decimal> informations in parameters.Values)
-                                {
-                                    List<decimal> col = new List<decimal>();
-                                    for (decimal i = informations[0]; i <= informations[1]; i += informations[2])
-                                    {
-                                        col.Add(i);
-                                    }
-                                    parameterRanges.Add(col);
-                                    this.valueSets.Add(new List<decimal>());
-                                }
-                                Calculator.mesh(0, parameterRanges, this.valueSets);
-
+                                Tuple<Dictionary<string, List<decimal>>, List<List<decimal>>> results = c.ReadAndMeshParameters();
+                                Dictionary<string, List<decimal>> parameters = results.Item1;
+                                this.valueSets = results.Item2;
+                                
                                 progress = 20m;
                                 Type t = c.LoadAlgorithmFile();
 
                                 //Calculate all value sets
-                                for (int i = 0; i < this.valueSets[0].Count; i++)
+                                if (this.mainViewModel.CalculationResultSets.Count < this.valueSets[0].Count)
                                 {
-                                    bool isThreadReady = false;
-
-                                    if (!this.iscalculating)
+                                    for (int i = 0; i < this.valueSets[0].Count; i++)
                                     {
-                                        break;
-                                    }
+                                        bool isThreadReady = false;
 
-                                    //create new threads if there are less that CalculationThreadCount
-                                    if (calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
-                                    {
-                                        int i2 = i;
-                                        calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, this.valueSets, i2, t, b)));
-                                        calculationThreads[calculationThreads.Count - 1].Start();
-                                        isThreadReady = true;
-                                    }
-
-                                    //reuse running threads
-                                    while (!isThreadReady && this.mainViewModel.CalculationThreadCount != 0)
-                                    {
-                                        for (int j = 0; j < calculationThreads.Count; j++)
-                                        {
-                                            if (!calculationThreads[j].IsAlive)
-                                            {
-                                                isThreadReady = true;
-                                                calculationThreads.Remove(calculationThreads[j]);
-
-                                                if (this.calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
-                                                {
-                                                    int i2 = i;
-                                                    calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, this.valueSets, i2, t, b)));
-                                                    calculationThreads[calculationThreads.Count - 1].Start();
-                                                }
-                                            }
-                                            if (isThreadReady)
-                                            {
-                                                break;
-                                            }
-                                        }
                                         if (!this.iscalculating)
                                         {
                                             break;
                                         }
-                                        Thread.Sleep(50);
-                                    }
 
-                                    //handle pausing
-                                    if (this.mainViewModel.CalculationThreadCount == 0)
-                                    {
-                                        //if this valueSet hasnt been calculated yet, calculate it next run
-                                        if (!isThreadReady)
+                                        //create new threads if there are less that CalculationThreadCount
+                                        if (calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
                                         {
-                                            i--;
+                                            int i2 = i;
+                                            calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, this.valueSets, i2, t, b)));
+                                            calculationThreads[calculationThreads.Count - 1].Start();
+                                            isThreadReady = true;
                                         }
 
-                                        //Wait until all threads are run out
-                                        bool isAThreadStillRunning = true;
-                                        while (isAThreadStillRunning)
+                                        //reuse running threads
+                                        while (!isThreadReady && this.mainViewModel.CalculationThreadCount != 0)
                                         {
-                                            isAThreadStillRunning = false;
                                             for (int j = 0; j < calculationThreads.Count; j++)
                                             {
-                                                if (calculationThreads[j].IsAlive)
+                                                if (!calculationThreads[j].IsAlive)
                                                 {
-                                                    isAThreadStillRunning = true;
+                                                    isThreadReady = true;
+                                                    calculationThreads.Remove(calculationThreads[j]);
+
+                                                    if (this.calculationThreads.Count < this.mainViewModel.CalculationThreadCount)
+                                                    {
+                                                        int i2 = i;
+                                                        calculationThreads.Add(new Thread(() => doCalculationThreadWork(parameters, this.valueSets, i2, t, b)));
+                                                        calculationThreads[calculationThreads.Count - 1].Start();
+                                                    }
+                                                }
+                                                if (isThreadReady)
+                                                {
+                                                    break;
                                                 }
                                             }
-                                            if (this.mainViewModel.CalculationThreadCount != 0)
+                                            if (!this.iscalculating)
                                             {
                                                 break;
                                             }
                                             Thread.Sleep(50);
                                         }
 
-                                        //Show that its now paused
-                                        b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Paused");
-                                    }
-
-                                    while (this.mainViewModel.CalculationThreadCount == 0)
-                                    {
-                                        Thread.Sleep(50);
-                                    }
-                                }
-
-                                while (true)
-                                {
-                                    bool isThreadStillAlive = false;
-                                    foreach (Thread thread in calculationThreads)
-                                    {
-                                        if (thread.IsAlive)
+                                        //handle pausing
+                                        if (this.mainViewModel.CalculationThreadCount == 0)
                                         {
-                                            isThreadStillAlive = true;
+                                            //if this valueSet hasnt been calculated yet, calculate it next run
+                                            if (!isThreadReady)
+                                            {
+                                                i--;
+                                            }
+
+                                            //Wait until all threads are run out
+                                            bool isAThreadStillRunning = true;
+                                            while (isAThreadStillRunning)
+                                            {
+                                                isAThreadStillRunning = false;
+                                                for (int j = 0; j < calculationThreads.Count; j++)
+                                                {
+                                                    if (calculationThreads[j].IsAlive)
+                                                    {
+                                                        isAThreadStillRunning = true;
+                                                    }
+                                                }
+                                                if (this.mainViewModel.CalculationThreadCount != 0)
+                                                {
+                                                    break;
+                                                }
+                                                Thread.Sleep(50);
+                                            }
+
+                                            //Show that its now paused
+                                            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Paused");
+                                        }
+
+                                        while (this.mainViewModel.CalculationThreadCount == 0)
+                                        {
+                                            Thread.Sleep(50);
                                         }
                                     }
-                                    if (!isThreadStillAlive)
+
+
+                                    while (true)
                                     {
-                                        break;
+                                        bool isThreadStillAlive = false;
+                                        foreach (Thread thread in calculationThreads)
+                                        {
+                                            if (thread.IsAlive)
+                                            {
+                                                isThreadStillAlive = true;
+                                            }
+                                        }
+                                        if (!isThreadStillAlive)
+                                        {
+                                            break;
+                                        }
+                                        Thread.Sleep(100);
                                     }
-                                    Thread.Sleep(100);
                                 }
 
                                 if (this.ErrorMessage.Length == 0 && this.iscalculating)
@@ -783,57 +780,72 @@ namespace BacktestingSoftware
                 this.valueSet = valueSet;
             }
 
-            progress += (80m / (2 * valueSets[0].Count));
-
-            // report the progress
-            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals... (" + (i + 1) + "/" + valueSets[0].Count + ")");
-
-            List<int> signals = new List<int>();
-            Dictionary<string, List<decimal>> indicatorDictionary = new Dictionary<string, List<decimal>>();
-            Dictionary<string, List<decimal>> oscillatorDictionary = new Dictionary<string, List<decimal>>();
-
-            try
+            if (!this.mainViewModel.CalculationResultSets.ContainsKey(description))
             {
-                if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                progress += (80m / (2 * valueSets[0].Count));
+
+                // report the progress
+                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Signals... (" + (i + 1) + "/" + valueSets[0].Count + ")");
+
+                List<int> signals = new List<int>();
+                Dictionary<string, List<decimal>> indicatorDictionary = new Dictionary<string, List<decimal>>();
+                Dictionary<string, List<decimal>> oscillatorDictionary = new Dictionary<string, List<decimal>>();
+
+                try
                 {
-                    signals = c.CalculateSignals(t, valueSet, indicatorDictionary, oscillatorDictionary);
-                }
-            }
-            catch (ThreadAbortException) { }
-            catch (Exception)
-            {
-                this.ErrorMessage = "An error with the Algorithm-File occured.";
-            }
-
-            progress += (80m / (2 * valueSets[0].Count));
-
-            // report the progress
-            b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance... (" + (i + 1) + "/" + valueSets[0].Count + ")");
-
-            try
-            {
-                List<Order> orders = new List<Order>();
-                if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                    this.ErrorMessage = c.CalculateNumbers(description, signals, orders, this.iscalculating);
-
-                if (this.ErrorMessage.Length == 0 && this.iscalculating)
-                {
-                    decimal newPortfolioPerformancePercent = this.mainViewModel.CalculationResultSets[description].PortfolioPerformancePercent;
-                    if (newPortfolioPerformancePercent > this.mainViewModel.PortfolioPerformancePercent ||
-                        this.mainViewModel.PortfolioPerformancePercent == 0)
+                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
                     {
-                        this.mainViewModel.Orders = orders;
-                        this.mainViewModel.Signals = signals;
-                        this.mainViewModel.IndicatorDictionary = indicatorDictionary;
-                        this.mainViewModel.OscillatorDictionary = oscillatorDictionary;
-
-                        this.mainViewModel._portfolioPerformancePercent = newPortfolioPerformancePercent;
+                        signals = c.CalculateSignals(t, valueSet, indicatorDictionary, oscillatorDictionary);
                     }
                 }
+                catch (ThreadAbortException) { }
+                catch (Exception)
+                {
+                    this.ErrorMessage = "An error with the Algorithm-File occured.";
+                }
+
+                progress += (80m / (2 * valueSets[0].Count));
+
+                // report the progress
+                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Calculating Performance... (" + (i + 1) + "/" + valueSets[0].Count + ")");
+
+                try
+                {
+                    List<Order> orders = new List<Order>();
+                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                        this.ErrorMessage = c.CalculateNumbers(description, signals, orders, this.iscalculating);
+
+                    ResultPersistencyHandler.WriteResultSet(description, this.mainViewModel.CalculationResultSets[description]);
+
+                    if (this.ErrorMessage.Length == 0 && this.iscalculating)
+                    {
+                        decimal newPortfolioPerformancePercent = this.mainViewModel.CalculationResultSets[description].PortfolioPerformancePercent;
+                        if (newPortfolioPerformancePercent > this.mainViewModel.PortfolioPerformancePercent ||
+                            this.mainViewModel.PortfolioPerformancePercent == 0)
+                        {
+                            this.mainViewModel.Orders = orders;
+                            this.mainViewModel.Signals = signals;
+                            this.mainViewModel.IndicatorDictionary = indicatorDictionary;
+                            this.mainViewModel.OscillatorDictionary = oscillatorDictionary;
+
+                            this.mainViewModel._portfolioPerformancePercent = newPortfolioPerformancePercent;
+
+                            ResultPersistencyHandler.UpdateBestSet(this);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    this.ErrorMessage = "An error while calculating performance data occured.";
+                }
             }
-            catch (Exception)
+            else
             {
-                this.ErrorMessage = "An error while calculating performance data occured.";
+                progress += 2 * (80m / (2 * valueSets[0].Count));
+
+                // report the progress
+                b.ReportProgress((int)Math.Round(progress, 0, MidpointRounding.AwayFromZero), "Read Performance... (" + (i + 1) + "/" + valueSets[0].Count + ")");
+
             }
         }
 
@@ -1874,7 +1886,7 @@ namespace BacktestingSoftware
                 Properties.Settings.Default.CalculationThreadCount = this.mainViewModel.CalculationThreadCount;
             }
 
-            Properties.Settings.Default.IndicatorPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
+            Properties.Settings.Default.IndicatorPanels = storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
 
             Properties.Settings.Default.Save();
         }
@@ -1922,15 +1934,32 @@ namespace BacktestingSoftware
 
             if (this.mainViewModel.SaveFileName.Length != 0)
             {
-                this.SaveToFile();
+                bool finishedWithoutErrors = ResultPersistencyHandler.SaveBackup(this.mainViewModel.SaveFileName);
+
+                if (!finishedWithoutErrors)
+                {
+                    this.StatusLabel.Text = "Error occured while saving";
+                }
             }
         }
 
         private void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
+            string algorithmUsed = this.mainViewModel.AlgorithmFileName.Split(new char[] { '/', '\\' }).Last();
+            string datafileUsed = this.mainViewModel.DataFileName.Split(new char[] { '/', '\\' }).Last();
+
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
 
-            dlg.FileName = "PerformanceData"; // Default file name
+            try
+            {
+                dlg.FileName = algorithmUsed.Split(new char[] { '.' })[algorithmUsed.Split(new char[] { '.' }).Length - 2]
+                           + "#" +
+                           datafileUsed.Split(new char[] { '.' })[datafileUsed.Split(new char[] { '.' }).Length - 2]; // Default file name
+            }
+            catch (Exception)
+            {
+                dlg.FileName = "ExportedFile";
+            }
             dlg.DefaultExt = ".bts"; // Default file extension
             dlg.Filter = "Performance Data File (.bts)|*.bts"; // Filter files by extension
 
@@ -1946,88 +1975,12 @@ namespace BacktestingSoftware
 
             if (this.mainViewModel.SaveFileName.Length != 0)
             {
-                this.SaveToFile();
-            }
-        }
+                bool finishedWithoutErrors = ResultPersistencyHandler.SaveBackup(this.mainViewModel.SaveFileName);
 
-        private void SaveToFile()
-        {
-            try
-            {
-                Stream stream = File.Open(this.mainViewModel.SaveFileName, FileMode.Create);
-                BinaryFormatter bFormatter = new BinaryFormatter();
-                bFormatter.Serialize(stream, this.mainViewModel.Orders);
-
-                List<decimal> tempPerformanceList = new List<decimal>(new decimal[] {
-                                   this.mainViewModel.GainLossPercent,
-                                   this.mainViewModel.GainPercent,
-                                   this.mainViewModel.LossPercent,
-                                   this.mainViewModel.StdDevOfProfit,
-                                   this.mainViewModel.StdDevOfPEquityPrice,
-                                   this.mainViewModel.NoOfGoodTrades,
-                                   this.mainViewModel.NoOfBadTrades,
-                                   this.mainViewModel.GtBtRatio,
-                                   this.mainViewModel.NetWorth,
-                                   this.mainViewModel.PortfolioPerformancePercent,
-                                   this.mainViewModel.SharpeRatio,
-                                   this.mainViewModel.TimeInMarket,
-                                   this.mainViewModel.AnnualizedPortfolioPerformancePercent,
-                                   this.mainViewModel.AnnualizedGainLossPercent,
-                                   this.mainViewModel.GoodDayBadDayRatio});
-                bFormatter.Serialize(stream, tempPerformanceList);
-
-                List<bool> tempBoolList = new List<bool>(new bool[] {
-                                   this.mainViewModel.IsRealTimeEnabled,
-                                   this.mainViewModel.ShallDrawIndicatorMap,
-                                   this.mainViewModel.ShallDrawOscillatorMap,
-                                   this.mainViewModel.ShallDrawVolume,
-                                   this.mainViewModel.IsDataFutures,
-                                   this.mainViewModel.IsMiniContract,
-                                   this.mainViewModel.IsNetWorthChartInPercentage,
-                                   this.mainViewModel.UseRegularTradingHours,
-                                   this.mainViewModel.IsFullFuturePriceData});
-                bFormatter.Serialize(stream, tempBoolList);
-
-                List<string> tempStringList = new List<string>(new string[] { this.mainViewModel.AlgorithmFileName,
-                                                                            this.mainViewModel.DataFileName,
-                                                                            this.mainViewModel.Capital,
-                                                                            this.mainViewModel.AbsTransactionFee,
-                                                                            this.mainViewModel.RelTransactionFee,
-                                                                            this.mainViewModel.PricePremium,
-                                                                            this.mainViewModel.StockSymbolForRealTime,
-                                                                            this.mainViewModel.Barsize,
-                                                                            this.mainViewModel.AdditionalParameters});
-                bFormatter.Serialize(stream, tempStringList);
-
-                List<DateTime> tempDateList = new List<DateTime>(new DateTime[] {this.mainViewModel.StartDate,
-                                                                              this.mainViewModel.EndDate});
-                bFormatter.Serialize(stream, tempDateList);
-
-                List<int> tempIntList = new List<int>(new int[] {this.mainViewModel.ValueOfSliderOne,
-                                                                 this.mainViewModel.ValueOfSliderTwo,
-                                                                 this.mainViewModel.ValueOfSliderThree,
-                                                                 this.mainViewModel.ValueOfSliderFour,
-                                                                 this.mainViewModel.ValueOfSliderFive,
-                                                                 this.mainViewModel.ValueOfSliderSix,
-                                                                 this.mainViewModel.RoundLotSize,
-                                                                 this.mainViewModel.InnerValue,
-                                                                 this.mainViewModel.MiniContractFactor,
-                                                                 this.mainViewModel.CalculationThreadCount,
-                                                                 this.mainViewModel.NoOfGoodDays,
-                                                                 this.mainViewModel.NoOfBadDays});
-                bFormatter.Serialize(stream, tempIntList);
-
-                StringCollection serializableStackPanels = new StringCollection();
-                serializableStackPanels = this.storeIndicatorStackPanels(this.mainViewModel.IndicatorPanels);
-                bFormatter.Serialize(stream, serializableStackPanels);
-
-                bFormatter.Serialize(stream, this.mainViewModel.CalculationResultSets);
-
-                stream.Close();
-            }
-            catch (Exception)
-            {
-                this.StatusLabel.Text = "Error occured while saving";
+                if (!finishedWithoutErrors)
+                {
+                    this.StatusLabel.Text = "Error occured while saving";
+                }
             }
         }
 
@@ -2051,96 +2004,12 @@ namespace BacktestingSoftware
 
             if (this.mainViewModel.LoadFileName.Length != 0)
             {
-                this.LoadFromFile();
-            }
-        }
+                bool finishedWithoutErrors = ResultPersistencyHandler.LoadPersistencyFile(this);
 
-        private void LoadFromFile()
-        {
-            try
-            {
-                Stream stream = File.Open(this.mainViewModel.LoadFileName, FileMode.Open);
-                BinaryFormatter bFormatter = new BinaryFormatter();
-
-                this.resetCalculation(true);
-
-                List<Order> tempOrderList = (List<Order>)bFormatter.Deserialize(stream);
-                foreach (Order order in tempOrderList)
+                if (!finishedWithoutErrors)
                 {
-                    this.mainViewModel.Orders.Add(order);
+                    this.StatusLabel.Text = "Error occured while loading";
                 }
-                this.orders.Items.Refresh();
-
-                List<decimal> tempPerformanceList = (List<decimal>)bFormatter.Deserialize(stream);
-                this.mainViewModel.GainLossPercent = tempPerformanceList[0];
-                this.mainViewModel.GainPercent = tempPerformanceList[1];
-                this.mainViewModel.LossPercent = tempPerformanceList[2];
-                this.mainViewModel.StdDevOfProfit = tempPerformanceList[3];
-                this.mainViewModel.StdDevOfPEquityPrice = tempPerformanceList[4];
-                this.mainViewModel.NoOfGoodTrades = tempPerformanceList[5];
-                this.mainViewModel.NoOfBadTrades = tempPerformanceList[6];
-                this.mainViewModel.GtBtRatio = tempPerformanceList[7];
-                this.mainViewModel.NetWorth = tempPerformanceList[8];
-                this.mainViewModel.PortfolioPerformancePercent = tempPerformanceList[9];
-                this.mainViewModel.SharpeRatio = tempPerformanceList[10];
-                this.mainViewModel.TimeInMarket = tempPerformanceList[11];
-                this.mainViewModel.AnnualizedPortfolioPerformancePercent = tempPerformanceList[12];
-                this.mainViewModel.AnnualizedGainLossPercent = tempPerformanceList[13];
-                this.mainViewModel.GoodDayBadDayRatio = tempPerformanceList[14];
-
-                List<bool> tempBoolList = (List<bool>)bFormatter.Deserialize(stream);
-                this.mainViewModel.IsRealTimeEnabled = tempBoolList[0];
-                this.mainViewModel.ShallDrawIndicatorMap = tempBoolList[1];
-                this.mainViewModel.ShallDrawOscillatorMap = tempBoolList[2];
-                this.mainViewModel.ShallDrawVolume = tempBoolList[3];
-                this.mainViewModel.IsDataFutures = tempBoolList[4];
-                this.mainViewModel.IsMiniContract = tempBoolList[5];
-                this.mainViewModel.IsNetWorthChartInPercentage = tempBoolList[6];
-                this.mainViewModel.UseRegularTradingHours = tempBoolList[7];
-                this.mainViewModel.IsFullFuturePriceData = tempBoolList[8];
-
-                List<string> tempStringList = (List<string>)bFormatter.Deserialize(stream);
-                this.mainViewModel.AlgorithmFileName = tempStringList[0];
-                this.mainViewModel.DataFileName = tempStringList[1];
-                this.mainViewModel.Capital = tempStringList[2];
-                this.mainViewModel.AbsTransactionFee = tempStringList[3];
-                this.mainViewModel.RelTransactionFee = tempStringList[4];
-                this.mainViewModel.PricePremium = tempStringList[5];
-                this.mainViewModel.StockSymbolForRealTime = tempStringList[6];
-                this.mainViewModel.Barsize = tempStringList[7];
-                this.mainViewModel.AdditionalParameters = tempStringList[8];
-
-                List<DateTime> tempDateList = (List<DateTime>)bFormatter.Deserialize(stream);
-                this.mainViewModel.StartDate = tempDateList[0];
-                this.mainViewModel.EndDate = tempDateList[1];
-
-                List<int> tempIntList = (List<int>)bFormatter.Deserialize(stream);
-                this.mainViewModel.ValueOfSliderOne = tempIntList[0];
-                this.mainViewModel.ValueOfSliderTwo = tempIntList[1];
-                this.mainViewModel.ValueOfSliderThree = tempIntList[2];
-                this.mainViewModel.ValueOfSliderFour = tempIntList[3];
-                this.mainViewModel.ValueOfSliderFive = tempIntList[4];
-                this.mainViewModel.ValueOfSliderSix = tempIntList[5];
-                this.mainViewModel.RoundLotSize = tempIntList[6];
-                this.mainViewModel.InnerValue = tempIntList[7];
-                this.mainViewModel.MiniContractFactor = tempIntList[8];
-                this.mainViewModel.CalculationThreadCount = tempIntList[10];
-                this.mainViewModel.NoOfGoodDays = tempIntList[11];
-                this.mainViewModel.NoOfBadDays = tempIntList[12];
-
-                StringCollection serializableStackPanels = (StringCollection)bFormatter.Deserialize(stream);
-                this.mainViewModel.IndicatorPanels = this.restoreIndicatorStackPanels(serializableStackPanels);
-                this.refreshIndicatorList();
-
-                this.mainViewModel.CalculationResultSets = (Dictionary<string, CalculationResultSet>)bFormatter.Deserialize(stream);
-
-                this.mainViewModel.SaveFileName = this.mainViewModel.LoadFileName;
-
-                stream.Close();
-            }
-            catch (Exception)
-            {
-                this.StatusLabel.Text = "Error occured while loading";
             }
         }
 

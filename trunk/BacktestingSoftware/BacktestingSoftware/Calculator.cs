@@ -15,7 +15,10 @@ namespace BacktestingSoftware
         public Calculator(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
-            this.mainViewModel.Signals = new List<int>();
+            if (this.mainViewModel.Signals == null)
+            {
+                this.mainViewModel.Signals = new List<int>();
+            }
         }
 
         public void Start()
@@ -93,6 +96,41 @@ namespace BacktestingSoftware
                     //if this method was used array access exceptions would have to be handled
                 }
             }
+        }
+
+        public Tuple<Dictionary<string, List<decimal>>, List<List<decimal>>> ReadAndMeshParameters()
+        {
+            Dictionary<string, List<decimal>> parameters = new Dictionary<string, List<decimal>>();
+            //split AdditionalParameters string
+            string[] separatedAdditionalParameters = this.mainViewModel.AdditionalParameters.Split('\n');
+            foreach (string parameter in separatedAdditionalParameters)
+            {
+                string[] separatedParameter = parameter.Split(',');
+                List<decimal> decimalParameter = new List<decimal>();
+                for (int i = 1; i < separatedParameter.Length; i++)
+                {
+                    decimalParameter.Add(decimal.Parse(separatedParameter[i], CultureInfo.InvariantCulture));
+                }
+                parameters.Add(separatedParameter[0], decimalParameter);
+            }
+
+            List<List<decimal>> valueSets = new List<List<decimal>>();
+            List<List<decimal>> parameterRanges = new List<List<decimal>>();
+
+            //fill parameterRanges list
+            foreach (List<decimal> informations in parameters.Values)
+            {
+                List<decimal> col = new List<decimal>();
+                for (decimal i = informations[0]; i <= informations[1]; i += informations[2])
+                {
+                    col.Add(i);
+                }
+                parameterRanges.Add(col);
+                valueSets.Add(new List<decimal>());
+            }
+            Calculator.mesh(0, parameterRanges, valueSets);
+
+            return new Tuple<Dictionary<string, List<decimal>>, List<List<decimal>>>(parameters, valueSets);
         }
 
         // when mesh is called from  outside, listNo always has to start with 0

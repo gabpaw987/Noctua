@@ -1,0 +1,12 @@
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\bin\Debug\MSChartExtensionDemo.exe
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\bin\Debug\MSChartExtensionDemo.pdb
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\MSChartExtensionDemo.Form1.resources
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\MSChartExtensionDemo.Properties.Resources.resources
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\MSChartExtensionDemo.exe
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\obj\x86\Debug\MSChartExtensionDemo.pdb
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\bin\Debug\System.Windows.Forms.DataVisualization.MSChartExtension.dll
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\bin\Debug\System.Windows.Forms.DataVisualization.MSChartExtension.pdb
+D:\CKMAI Documents\Programming\ClassLibraryNET\MSChartExtension\MSChartExtensionDemo\bin\Debug\System.Windows.Forms.DataVisualization.MSChartExtension.xml

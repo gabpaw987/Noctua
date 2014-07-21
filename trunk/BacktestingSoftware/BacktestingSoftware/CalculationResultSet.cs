@@ -3,7 +3,7 @@
 namespace BacktestingSoftware
 {
     [Serializable()]
-    internal class CalculationResultSet
+    public class CalculationResultSet
     {
         private decimal _netWorth;
         private decimal _portfolioPerformancePercent;
