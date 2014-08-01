@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace TradingSoftware
                     {
                         string barLineToWrite = "";
 
-                        barLineToWrite += bar.Item1.ToString("MM/dd/yyyy, hh:mm:ss tt") + ",";
+                        barLineToWrite += bar.Item1.ToString("MM/dd/yyyy, hh:mm:ss tt", CultureInfo.InvariantCulture) + ",";
                         barLineToWrite += bar.Item2 + "," + bar.Item3 + "," + bar.Item4 + "," + bar.Item5 + "," + bar.Item6;
 
                         using (StreamWriter writer = new StreamWriter(this.fileName, true))
