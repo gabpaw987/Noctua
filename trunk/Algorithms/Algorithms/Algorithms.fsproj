@@ -45,6 +45,8 @@
     <Compile Include="Futures - FULL.fs" />
     <Compile Include="Futures_exit.fs" />
     <Compile Include="Futures.fs" />
+    <Compile Include="Futures_adaptive.fs" />
+    <Compile Include="Vol.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
