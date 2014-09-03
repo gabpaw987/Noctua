@@ -1,4 +1,6 @@
-﻿namespace Algorithm
+﻿// functionality for using old signals so not everything needs to be recalculated works with params not higher than n=4000 
+// this n could be a new parameter
+namespace Algorithm
     module DecisionCalculator=(*018*)
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +146,7 @@
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
-
+            if signals.Count < 4000 then signals.Clear()
             // time zone of the server country
             let timeZone = -5
             // how many futures are traded
@@ -174,6 +176,7 @@
             let adaptN = 5
             let adaptSlope = 2m
             let adaptExtrN = 1000
+
 
             (*
              * Read Parameters
@@ -212,6 +215,10 @@
             let adaptSlope = parameters.["adaptSlope"]
             //*)
             
+
+            let recalcN = if signals.Count > 0 then 4000 else 0
+
+
             // Chart Lines
             chart2.Add("LocalExtremes;#00FFFF", new System.Collections.Generic.List<decimal>())
             chart2.Add("RSI;#FF0000", new System.Collections.Generic.List<decimal>())
@@ -229,21 +236,22 @@
 
             let useRsi = if (rsiN <> 0 && rsiEmaN <> 0) then true else false
             // calculate RSI
-            let rsi = if (useRsi) then rsi (rsiN, tPrices) else Array.empty
+            let rsi = if (useRsi) then  ((rsi (rsiN, tPrices.[signals.Count - recalcN .. tPrices.Length - 1]) |> Array.append [|for i in 0 .. signals.Count - recalcN - 1 do yield 0m|])) else Array.empty
+            //let rsi = if (useRsi) then  ((rsi (rsiN, tPrices))) else Array.empty
             // smooth RSI
-            let rsiEma = if (useRsi) then ema (rsiEmaN, Array.toList rsi) else Array.empty
+            let rsiEma = if (useRsi) then (ema (rsiEmaN, Array.toList (rsi.[signals.Count - recalcN .. tPrices.Length - 1]))) |> Array.append [|for i in 0 .. signals.Count - recalcN - 1 do yield 0m|] else Array.empty
             for i in 0..rsiEma.Length-1 do chart2.["RSI;#FF0000"].Add(rsiEma.[i])
-            for i in 0..rsiEma.Length-1 do chart2.["RSI_long;#0000FF"].Add(rsiLong)
-            for i in 0..rsiEma.Length-1 do chart2.["RSI_short;#0000FF"].Add(rsiShort)
+//            for i in 0..rsiEma.Length-1 do chart2.["RSI_long;#0000FF"].Add(rsiLong)
+//            for i in 0..rsiEma.Length-1 do chart2.["RSI_short;#0000FF"].Add(rsiShort)
 
             // try to find n bar price extrema
-            let localExtrema = findExtremes (barExtrN, cPrices)
+            let localExtrema = (findExtremes (barExtrN, cPrices.[signals.Count - recalcN .. tPrices.Length - 1])) |> Array.append [|for i in 0 .. signals.Count - recalcN - 1 do yield 0m|]
             // add to chart2
             for i in 0..localExtrema.Length-1 do chart2.["LocalExtremes;#00FFFF"].Add(localExtrema.[i])
 
 
             // try to find local extremas for to adapt the rsi borders
-            let borderExtremas = findExtremes (adaptBarExtrN, cPrices)
+            let borderExtremas = (findExtremes (adaptBarExtrN, cPrices.[signals.Count - recalcN .. tPrices.Length - 1])) |> Array.append [|for i in 0 .. signals.Count - recalcN - 1 do yield 0m|]
 
             // price at trade entry (long or short)
             let mutable entryPrice = 0m
@@ -255,8 +263,8 @@
             let mutable missingData = firstI+1
 
             // clear list of all signals before calculation (necessary for real time testing/trading!)
-            signals.Clear();
-            for i in 0 .. prices.Count-1 do
+            //signals.Clear();
+            for i in 0 + signals.Count - recalcN .. prices.Count-1 do
                 // one bar more available
                 missingData <- missingData - 1
 
@@ -270,7 +278,7 @@
                     (*
                      * // standard behaviour is to keep the last signal
                      *)
-                    signals.Add(if (i=0) then 0 else signals.[i-1])
+                    if i > signals.Count - 1 then signals.Add(if (i=0) then 0 else signals.[i-1])
 
 
                     //adapt RSI
@@ -290,7 +298,8 @@
                             else if minD <= adaptSlope * decimal (sign minD) && maxD <= adaptSlope * decimal (sign maxD) && sign minD = -1 then
                                 rsiShort <- 40m
                                 rsiLong <- 80m
-
+                    chart2.["RSI_long;#0000FF"].Add(rsiLong)
+                    chart2.["RSI_short;#0000FF"].Add(rsiShort)
                     /////////////////////////////////////
                     //////   ENTRY SIGNAL
                     /////////////////////////////////////
@@ -466,5 +475,9 @@
                     // other settings will produce 0 signals
                     if (timeZone > 2 || timeZone < -7) then
                         signals.[i] <- 0
+            
+            
+            parameters.["rsiShort"] <- rsiShort
+            parameters.["rsiLong"] <- rsiLong
                     
             signals
