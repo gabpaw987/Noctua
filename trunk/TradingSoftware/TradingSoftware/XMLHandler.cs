@@ -24,6 +24,7 @@ namespace TradingSoftware
                     XDocument document = new XDocument();
                     XElement rootElement = new XElement("TradingSoftware");
                     rootElement.Add(new XAttribute("orderId", 1));
+                    rootElement.Add(new XAttribute("noOfBarsGivenToAlgorithm", 10000));
                     document.Add(rootElement);
 
                     document.Save(settingsFilePath);
@@ -240,9 +241,9 @@ namespace TradingSoftware
                     document = XDocument.Load(settingsFilePath);
                 }
 
-                if (attributeToRead.Equals("orderId"))
+                if (attributeToRead.Equals("orderId") || attributeToRead.Equals("noOfBarsGivenToAlgorithm"))
                 {
-                    return document.Root.Attribute("orderId").Value;
+                    return document.Root.Attribute(attributeToRead).Value;
                 }
                 else
                 {
@@ -281,9 +282,9 @@ namespace TradingSoftware
                     document = XDocument.Load(settingsFilePath);
                 }
 
-                if (attributeToRead.Equals("orderId"))
+                if (attributeToRead.Equals("orderId") || attributeToRead.Equals("noOfBarsGivenToAlgorithm"))
                 {
-                    document.Root.Attribute("orderId").Value = valueToWrite;
+                    document.Root.Attribute(attributeToRead).Value = valueToWrite;
                 }
                 else
                 {

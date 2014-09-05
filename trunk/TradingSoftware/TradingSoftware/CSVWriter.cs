@@ -17,7 +17,6 @@ namespace TradingSoftware
         public CSVWriter(WorkerViewModel workerViewModel)
         {
             this.fileName = dirName + "/" + workerViewModel.EquityAsString + ".csv";
-            this.CreateOrReadCSV();
         }
 
         public bool WriteBar(Tuple<DateTime, decimal, decimal, decimal, decimal, long> bar)
@@ -37,6 +36,8 @@ namespace TradingSoftware
                         {
                             writer.WriteLine(barLineToWrite);
                         }
+
+                        this.lastWrittenDateTime = bar.Item1;
                     }
 
                     return true;
@@ -48,9 +49,11 @@ namespace TradingSoftware
             }
         }
 
-        public bool CreateOrReadCSV()
+        public List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> CreateOrReadCSV()
         {
-            try{
+            List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>> barsOfExistingFile = new List<Tuple<DateTime, decimal, decimal, decimal, decimal, long>>();
+
+            try{                
                 if (!Directory.Exists(dirName))
                 {
                     Directory.CreateDirectory(dirName);
@@ -70,6 +73,8 @@ namespace TradingSoftware
                 {
                     if (File.ReadLines(this.fileName).Count() > 1)
                     {
+                        barsOfExistingFile = CSVReader.EnumerateExcelFile(this.fileName, DateTime.MinValue, DateTime.MaxValue, false, 1).ToList();
+
                         //set lastWrittenDateTime
                         string lastLine = File.ReadLines(this.fileName).Last();
                         string[] splittedLastLine = lastLine.Split(',');
@@ -80,11 +85,11 @@ namespace TradingSoftware
                         this.lastWrittenDateTime = new DateTime();
                     }
                 }
-                return true;
+                return barsOfExistingFile;
             }
             catch(Exception)
             {
-                return false;
+                return barsOfExistingFile;
             }
         }
 

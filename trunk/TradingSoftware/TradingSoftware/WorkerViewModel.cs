@@ -532,6 +532,13 @@ namespace TradingSoftware
                 string tmpAlgorithmParameters = this.AlgorithmParameters;
                 return _parsedAlgorithmParameters;
             }
+            set
+            {
+                if (!value.Equals(_parsedAlgorithmParameters))
+                {
+                    this.AlgorithmParameters = this.unParseAlgorithmParameters(value);
+                }
+            }
         }
 
         public string _algorithmParameters;
@@ -732,6 +739,30 @@ namespace TradingSoftware
             }
 
             return parameters;
+        }
+
+        public string unParseAlgorithmParameters(Dictionary<string, decimal> parsedAlgorithmParameters)
+        {
+            string rawParameters = "";
+
+            if (parsedAlgorithmParameters.Count > 0)
+            {
+                try
+                {
+                    foreach (KeyValuePair<string, decimal> kVPair in parsedAlgorithmParameters)
+                    {
+                        rawParameters += kVPair.Key + "," + kVPair.Value + "\n";
+                    }
+                    rawParameters = rawParameters.Substring(0, rawParameters.Length - 1);
+                }
+                catch (Exception)
+                {
+                    this.ConsoleText += this.EquityAsString + ": Exception while unparsing parameters.";
+                    rawParameters = "";
+                }
+            }
+
+            return rawParameters;
         }
     }
 }

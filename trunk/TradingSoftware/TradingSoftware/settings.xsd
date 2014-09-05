@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:attribute name="orderId" type="xs:integer"/>
+  <xs:attribute name="noOfBarsGivenToAlgorithm" type="xs:integer"/>
 	
 	<xs:attribute name="symbol" type="xs:string"/>
 	<xs:attribute name="isTrading" type="xs:boolean"/>
@@ -39,6 +42,8 @@
 			<xs:sequence maxOccurs="unbounded" minOccurs="0">
 				<xs:element ref="Worker"/>
 			</xs:sequence>
+      <xs:attribute ref="orderId" use="required"/>
+      <xs:attribute ref="noOfBarsGivenToAlgorithm" use="required"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
