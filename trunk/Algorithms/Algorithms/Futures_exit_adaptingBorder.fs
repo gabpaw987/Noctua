@@ -146,6 +146,7 @@ namespace Algorithm
                               chart2:System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<decimal>>,
                               parameters:System.Collections.Generic.Dictionary<string, decimal>
                               )=
+            //for i in 1 .. 32729 do signals.Add 0
             if signals.Count < 4000 then signals.Clear()
             // time zone of the server country
             let timeZone = -5
@@ -270,17 +271,19 @@ namespace Algorithm
 
                 // Not all neccessary data available yet
                 // (.. or new day)
-                if i < firstI || missingData > 0 then
-                    signals.Add(0)
+                
+                if (i < firstI || missingData > 0) (*|| signals.Count - 1 < i*) then
+                    if i > signals.Count - 1 then signals.Add(0)
                     chart2.["cl;#00FF00"].Add(0m)
                     chart2.["loss;#4181F0"].Add(0m)
                 else
                     (*
                      * // standard behaviour is to keep the last signal
                      *)
+                    //
+                    
                     if i > signals.Count - 1 then signals.Add(if (i=0) then 0 else signals.[i-1])
-
-
+                    signals.[i] <- signals.[i - 1]
                     //adapt RSI
                     if adaptN <> 0 && i >= adaptExtrN then
                         let firstExtrI = if (i-adaptExtrN+1 > 0) then (i-adaptExtrN+1) else 0
