@@ -25,6 +25,7 @@ namespace TradingSoftware
                     XElement rootElement = new XElement("TradingSoftware");
                     rootElement.Add(new XAttribute("orderId", 1));
                     rootElement.Add(new XAttribute("noOfBarsGivenToAlgorithm", 10000));
+                    rootElement.Add(new XAttribute("timeToReconnectToIB", "00:30:00"));
                     document.Add(rootElement);
 
                     document.Save(settingsFilePath);
@@ -241,7 +242,7 @@ namespace TradingSoftware
                     document = XDocument.Load(settingsFilePath);
                 }
 
-                if (attributeToRead.Equals("orderId") || attributeToRead.Equals("noOfBarsGivenToAlgorithm"))
+                if (attributeToRead.Equals("orderId") || attributeToRead.Equals("noOfBarsGivenToAlgorithm") || attributeToRead.Equals("timeToReconnectToIB"))
                 {
                     return document.Root.Attribute(attributeToRead).Value;
                 }
@@ -282,7 +283,7 @@ namespace TradingSoftware
                     document = XDocument.Load(settingsFilePath);
                 }
 
-                if (attributeToRead.Equals("orderId") || attributeToRead.Equals("noOfBarsGivenToAlgorithm"))
+                if (attributeToRead.Equals("orderId") || attributeToRead.Equals("noOfBarsGivenToAlgorithm") || attributeToRead.Equals("timeToReconnectToIB"))
                 {
                     document.Root.Attribute(attributeToRead).Value = valueToWrite;
                 }

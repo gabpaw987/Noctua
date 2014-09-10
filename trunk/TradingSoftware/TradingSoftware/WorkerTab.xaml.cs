@@ -39,7 +39,7 @@ namespace TradingSoftware
 
         private void StopThisWorkerButton_Click(object sender, RoutedEventArgs e)
         {
-            this.worker.Stop();
+            this.worker.Stop(true);
         }
 
         private void StartThisWorkerButton_Click(object sender, RoutedEventArgs e)
@@ -47,7 +47,7 @@ namespace TradingSoftware
             this.worker.workerViewModel.IsTrading = true;
             if (!this.worker.workerViewModel.IsThreadRunning)
             {
-                this.worker.Start();
+                this.worker.Start(true);
             }
         }
 

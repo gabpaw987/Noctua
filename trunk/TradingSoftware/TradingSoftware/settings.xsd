@@ -3,6 +3,7 @@
   
   <xs:attribute name="orderId" type="xs:integer"/>
   <xs:attribute name="noOfBarsGivenToAlgorithm" type="xs:integer"/>
+  <xs:attribute name="timeToReconnectToIB" type="xs:time"/>
 	
 	<xs:attribute name="symbol" type="xs:string"/>
 	<xs:attribute name="isTrading" type="xs:boolean"/>
@@ -44,6 +45,7 @@
 			</xs:sequence>
       <xs:attribute ref="orderId" use="required"/>
       <xs:attribute ref="noOfBarsGivenToAlgorithm" use="required"/>
+      <xs:attribute ref="timeToReconnectToIB" use="required"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
