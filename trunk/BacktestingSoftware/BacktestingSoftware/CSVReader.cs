@@ -100,27 +100,14 @@ namespace BacktestingSoftware
 
         public static DateTime parseBarDateTime(string date, string time, bool isDataFromESignal11)
         {
-            string[] dateValues;
-            bool isUSDateFormat;
-
-            if (date.Count(c => c == '/') > date.Count(c => c == '.'))
-            {
-                dateValues = date.Split('/');
-                isUSDateFormat = true;
-            }
-            else
-            {
-                dateValues = date.Split('.');
-                isUSDateFormat = false;
-            }
-
+            string[] dateValues = date.Split('/');
             string[] timeValues = time.Split(':');
 
             DateTime timeOfBar = DateTime.MinValue;
 
             timeOfBar = timeOfBar.AddYears(int.Parse(dateValues[2]) - 1 + (isDataFromESignal11 ? 0 : 2000));
-            timeOfBar = timeOfBar.AddMonths(int.Parse(dateValues[isUSDateFormat ? 0 : 1]) - 1);
-            timeOfBar = timeOfBar.AddDays(int.Parse(dateValues[isUSDateFormat ? 1 : 0]) - 1);
+            timeOfBar = timeOfBar.AddMonths(int.Parse(dateValues[0]) - 1);
+            timeOfBar = timeOfBar.AddDays(int.Parse(dateValues[1]) - 1);
 
             //Convert the eSignal 11's AM-PM 12 hour clock to our 24 hour clock
             if (isDataFromESignal11)

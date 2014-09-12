@@ -1,0 +1,174 @@
+\lstset{style=sharpc}
+\subsection{Umsetzung des Charts}
+
+Generell soll nach jeder Berechnung in der \gls{bts} zusätzlich zur Ausgabe der berechneten Performancedaten auch ein Chart gezeichnet werden, das die übergebenen Aktien-Preisdaten, die Entscheidungen des Algorithmus und ggf. Indikatoren für den Benutzer in einem Candlestick-Chart visualisiert. Der allgemeine Aufbau eines solchen Charts kann unter \ref{charting} "`Microsoft Chart Controls"' nachgelesen werden.
+
+\subsubsection{Darstellung der Bars}
+
+Nach dem anfänglichen Erstellen eines \inline{Chart}s und einer \inline{Series} muss die neue \inline{Series} zunächst so konfiguriert werden, dass es nach einem echten Candlestick-Chart aussieht. Dies funktioniert so:
+
+\begin{lstlisting}[label=Konfiguration des Charts der BTS,caption=Konfiguration des Charts der BTS]
+//Typ der Series auf Candlestick setzen
+chart.Series["Data"].ChartType = SeriesChartType.Candlestick;
+
+//Achsenbezeichnungen und Datentypen zur inneren Verwaltung
+//definieren
+chart.Series["Data"].XValueMember = "DateStamp";
+chart.Series["Data"].XValueType = ChartValueType.DateTime;
+chart.Series["Data"].YValueMembers = "HighPrice, LowPrice, OpenPrice, ClosePrice";
+
+//Entsprechende Farben für positive und negative Bars setzen
+chart.Series["Data"]["PriceUpColor"] = "Green";
+chart.Series["Data"]["PriceDownColor"] = "Red";
+
+//Zooming der Y-Achse durch den User ermöglichen und
+//Scrollbalken definieren.
+chart.ChartAreas[0].CursorY.IsUserEnabled = true;
+chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
+chart.ChartAreas[0].AxisY.ScrollBar.IsPositionedInside = false;
+
+//Zooming der X-Achse durch den User ermöglichen und
+//Scrollbalken definieren.
+chart.ChartAreas[0].CursorX.IsUserEnabled = true;
+chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+chart.ChartAreas[0].AxisX.ScrollBar.IsPositionedInside = false;
+\end{lstlisting}
+
+Ein weiterer wichtiger Bestandteil der Darstellung ist auch noch die Skalierung und das Zooming zu Beginn. Anfangs wird auf die letzten 100 Werte gezoomt, sofern mindestens so viele vorhanden sind. Insgesamt soll das Diagramm allerdings auch nur einen ein wenig größeren Bereich darstellen, als Daten vorhanden sind und nicht die gesamte Skala bis hinunter zu 0. Die X-Achse wird vom Chart selbst automatisch entsprechend skaliert. Es müssen also zuerst der größte und der kleinste Wert sowohl in der gesamten Aktien-Preisdatenliste als auch in den letzten 100 Bars gesucht und gespeichert werden. Nachdem diese gefunden wurden, müssen 5\% aufgeschlagen werden, um das Diagramm schöner zu machen und entsprechend auf die gefundenen Werte für das gesamte Chart skaliert werden:
+
+\begin{lstlisting}[label=Darstellungsbereich des Charts konfigurieren,caption=Darstellungsbereich des Charts konfigurieren]
+decimal margin = (max - min) * 5 / 100;
+chart.ChartAreas[0].AxisY.Minimum = Math.Round(Convert.ToDouble(min - margin));
+chart.ChartAreas[0].AxisY.Maximum = Math.Round(Convert.ToDouble(max + margin));
+\end{lstlisting}
+
+Beim Zooming geschieht etwas sehr ähnliches, lediglich muss hier eine andere Variable der \inline{ChartArea} beeinflusst werden. Für den Zoom der X-Achse muss das Datum 100 Bars vor dem letzten und das des letzten Bars eingestellt werden. Dies wird allerdings aufgrund der Datentypenfreiheit dieser Angabe als \inline{double}-Wert verlangt und muss deshalb mit Hilfe der Methode \inline{ToOADate()} in ein Datum im OLE Automation Format umgerechnet werden. Weiters müssen die Grenzen der y-Achse erneut mit einem Aufschlag von 5\% auf die zuvor gesuchten Werte definiert werden. Im Code sieht das wie folgt aus:
+
+\begin{lstlisting}[label=Anfangszoom des Charts konfigurieren,caption=Anfangszoom des Charts konfigurieren]
+chart.ChartAreas[0].AxisX.ScaleView.Zoom(
+	this.mainViewModel.BarList[
+		this.mainViewModel.BarList.Count - 100].Item1.ToOADate(),
+	this.mainViewModel.BarList[
+    	this.mainViewModel.BarList.Count - 1].Item1.ToOADate());
+    	
+decimal margin100 = (max100 - min100) * 5 / 100;
+chart.ChartAreas[0].AxisY.ScaleView.Zoom(
+	Math.Round(Convert.ToDouble(min100 - margin100)),
+	Math.Round(Convert.ToDouble(max100 + margin100)));
+\end{lstlisting}
+
+Nun, da das Aussehen der \inline{Series} definiert ist, müssen nur noch die Daten, die vom Benutzer übergeben wurden, korrekt in diese übernommen werden. Dazu muss die gesamte Preisliste in einer Schleife durchgegangen werden, um aus jedem Bar-Tupel den Open-, den High-, den Low- und den Close-Wert auslesen und in die \inline{Series} speichern zu können. Dies muss für jeden Bar-Tupel so durchgeführt werden, wobei auch die Reihenfolge sehr wichtig ist:
+
+\begin{lstlisting}[label=Hinzufügen der Werte eines Bars zur Series,caption=Hinzufügen der Werte eines Bars zur Series]
+// Hinzufuegen des TimeStamps und des High-Werts
+chart.Series["Data"].Points.AddXY(
+	this.mainViewModel.BarList[i].Item1,
+	Convert.ToDouble(this.mainViewModel.BarList[i].Item3));
+// Hinzufuegen des Low-Werts
+chart.Series["Data"].Points[i].YValues[1] = 
+	Convert.ToDouble(this.mainViewModel.BarList[i].Item4);
+// Hinzufuegen des Open-Werts
+chart.Series["Data"].Points[i].YValues[2] = 
+	Convert.ToDouble(this.mainViewModel.BarList[i].Item2);
+// Hinzufuegen des Close-Werts
+chart.Series["Data"].Points[i].YValues[3] = 
+	Convert.ToDouble(this.mainViewModel.BarList[i].Item5);
+\end{lstlisting}
+
+\subsubsection{Annotations}
+
+Im Laufe des Projekts wurde entschieden, dass die Entscheidungen des Algorithmus im Chart in Form von \inline{ArrowAnnotation}s dargestellt werden sollen. Diese sind einfache Pfeile, die an einen bestimmten Bar in der \inline{Series} angehängt werden können. Farblich wurden für die Pfeile der Verkaufssignale -1, -2 und -3 drei unterschiedliche Rottöne gewählt. Entsprechend wurden für die Kaufsignale 1, 2 und 3 drei unterschiedliche Grüntöne gewählt. Außerdem zeigen die roten Pfeile nach unten und die grünen nach oben. Neutralpfeile, die das Signal 0 darstellen, sind die weißer Farbe gehalten. Da es sich bei Neutralpfeile immer um eine Neutralisierung der zuvor eingegangenen Position sind, zeigen die Neutralpfeile bei der Neutralisierung einer Short-Position (-1, -2 oder -3) nach oben, da gekauft werden muss, und bei der Neutralisierung einer Long-Position (1, 2 oder 3) nach unten, da verkauft werden muss. Die \inline{Annotation}s werden zu einer eigenen Eigenschaft des Charts, nämlich \inline{Annotations} hinzugefügt und die Berechnung des Aussehens der einzelnen Pfeile erfolgt direkt beim Hinzufügen jedes einzelnen Bars, sofern an diesem ein Signalwechsel des Algorithmus vorliegt. Die Berechnung der Signale muss daher klarerweise vor dem Aufbau des Charts erfolgen. Im Code sind \inline{ArrowAnnotation}s für einen roten Pfeil wie folgt realisiert. Für die anderen Pfeile müssen nur die jeweiligen Eigenschaften geändert werden:
+
+\begin{lstlisting}[label=Konfiguration der ArrowAnnotations im Chart,caption=Konfiguration der ArrowAnnotations im Chart]
+//Erzeugen der ArrowAnnotation
+ArrowAnnotation a = new ArrowAnnotation();
+//Vergabe eines Namens, da nicht alle gleich heissen duerfen
+a.Name = "Arrow-" + i;
+//Anhaengen an die ChartArea
+a.ClipToChartArea = chart.ChartAreas[0].Name;
+
+//Hoehe des Pfeils, -5 da er nach unten zeigen soll.
+//Mit 5 waere er gleich gross, wuerde aber nach oben zeigen
+a.Height = -5;
+//Aussenlinien werden schwarz gefaerbt
+a.LineColor = System.Drawing.Color.Black;
+//Im inneren wird der entsprechende Rotton fuer das jeweilige
+//Signal ausgewaehlt.
+switch (this.mainViewModel.Signals[i])
+{
+	case -1:
+		a.BackColor = System.Drawing.Color
+			.FromArgb(255, 204, 204);
+		break;
+	case -2:
+		a.BackColor = System.Drawing.Color
+			.FromArgb(255, 0, 0);
+		break;
+	case -3:
+		a.BackColor = System.Drawing.Color
+			.FromArgb(102, 0, 0);
+		break;
+}
+
+//Gibt an, an welchem Bar in der Series der Pfeil befestigt
+//werden soll
+a.AnchorDataPoint = chart.Series["Data"].Points[i];
+//Gibt an, dass der high-Wert als Ausgang fuer den Pfeil
+//gewaehlt werden soll
+a.AnchorY = chart.Series["Data"].Points[i].YValues[0];
+//Gibt an das der Pfeil vom Anker noch ein wenig nach oben
+//verschoben werden soll
+a.AnchorOffsetY = -2;
+
+//Hinzufuegen zum Chart
+chart.Annotations.Add(a);
+\end{lstlisting}
+
+\subsubsection{Indikatoren}
+
+Grundsätzlich können in der \gls{bts} auf dem Settings-Tab unter "`Chart"' neue Indikatoren hinzugefügt werden, die bei der Erstellung des Charts nach einer Berechnung automatisch in neue \inline{Series} eingezeichnet und so dargestellt werden. Intern wird dazu in der \gls{bts} eine Liste aus \inline{StackPanel}s gespeichert. Wenn ein neuer Indikator hinzugefügt wird, wird in dieser Liste ein neues \inline{StackPanel} erzeugt. Dieses beinhaltet, je nach Indikator, den es repräsentieren soll, unterschiedliche \gls{wpf}-\gls{gui}-Komponenten, die alle notwendigen Informationen speichern können. Es wurde die Unterstützung vier verschiedener Indikatoren (für finanzwirtschaftliche Erklärung siehe Abschnitt \ref{Indikatoren} "`Indikatoren"') implementiert:
+
+\begin{itemize}
+\item \textbf{Simple Moving Average} \\
+	Der \gls{sma} speichert seinen Namen, eine Länge, über die er berechnet werden soll und eine Farbe, in der er gezeichnet werden soll.
+\item \textbf{(Linear) Weighted Moving Average} \\
+	Der \gls{lwma} speichert die gleichen Werte wie der \gls{sma}, er unterscheidet sich nur in der Berechnung.
+\item \textbf{Exponential Moving Average} \\
+	Auch der \gls{ema} speichert die gleichen Werte wie der \gls{sma} und unterscheidet sich nur in der Berechnung.
+\item \textbf{Moving Average Convergence/Divergence} \\
+	Der \gls{macd} berechnet intern zwei \glspl{ma} und benötigt daher die Konfiguration von zwei unterschiedlichen Längen. Zudem speichert aber auch er seinen Namen und die Farbe, in der er gezeichnet werden soll.
+\end{itemize}
+
+Wurden diese Indikatoren festgelegt, wird bei folgenden Berechnungen nach der einfachen bisherigen Charterstellung auch noch die bereits erwähnte \inline{StackPanel}-Liste durchsucht. Dabei werden die Informationen jedes Indikators anhand seines Namens ausgelesen, es wird eine neue \inline{Series} erstellt und der Berechnung mittels \inline{FinancialFormula} übergeben. Dies funktioniert wie in \ref{finfor} "`Finanzielle Berechnungen"' beschrieben. Die Werte des Indikators werden automatisch in die \inline{Series} geschrieben und diese kann problemlos gezeichnet werden.\\
+\\
+Beim zuletzt erwähnten Indikator, dem \gls{macd}, gilt es allerdings noch eine weitere Problematik zu beachten. Als einziger der implementierten Indikatoren fluktuiert der \gls{macd} nämlich nicht um die Aktien-Preisdaten herum, sondern um die X-Achse. Da dies in der selben Zeichnung nicht wirklich schön aussehen würde, wird zur Darstellung des \gls{macd} nun eine extra \inline{ChartArea} erzeugt, die sich unter der Haupt-Area befindet. Eine solche zweite \inline{ChartArea} lässt sich grundsätzlich auch recht einfach auf dieselbe Art und Weise wie die erste erzeugen, nur dass sie noch auf die erste \inline{ChartArea} ausgerichtet werden muss. Hier wurde eine Größe von 70\% des gesamten Charts für die Candlestick-Area und 30\% für die \gls{macd}-Area festgelegt. Dies funktioniert wie folgt:
+
+\begin{lstlisting}[label=Zeichnen einer zweiten ChartArea,caption=Zeichnen einer zweiten ChartArea]
+public void drawSecondChartArea(Chart chart)
+{
+	//Erzeugen und hinzufügen der zweiten ChartArea
+	ChartArea indicatorArea = new ChartArea("IndicatorArea");
+	chart.ChartAreas.Add(indicatorArea);
+	
+	...            
+	
+	//Verknüpfung mit der Haupt-Area herstellen
+	chart.ChartAreas[1].AlignWithChartArea = "MainArea";
+    
+	...
+    
+	//Größe der Haupt-Area auf 70% setzen
+	chart.ChartAreas[0].Position.Width = 100;
+	chart.ChartAreas[0].Position.X = 0;
+	chart.ChartAreas[0].Position.Height = 70;
+	chart.ChartAreas[0].Position.Y = 0;
+
+	//Größe der MACD-Area auf 30% setzen
+	chart.ChartAreas[1].Position.Width = 100;
+	chart.ChartAreas[1].Position.X = 0;
+	chart.ChartAreas[1].Position.Height = 30;
+	chart.ChartAreas[1].Position.Y = 70;
+    
+\end{lstlisting}

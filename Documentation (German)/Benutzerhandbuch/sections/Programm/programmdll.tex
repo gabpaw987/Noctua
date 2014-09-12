@@ -1,0 +1,54 @@
+%!TEX root=../../Benutzerhandbuch.tex
+\section{Schreiben eines Algorithmus}
+Um die Software zu bedienen, wird ein in \gls{F-Sharp} geschriebener Algorithmus benötigt. Dieser muss als \gls{DLL}-Datei zur Laufzeit in die Software eingebunden werden. Eine solche Datei wird mittels Microsoft Visual Studio erzeugt werden, damit die Software funktionieren kann. \\
+Folgende Eigenschaften muss die Datei erfüllen:
+\begin{itemize}
+	\item Name der Methode: startCalculation
+	\item Übergabeparameter 1: eine Liste aller historischen Daten 
+	\item Übergabeparameter 2: eine Liste der Signale für die Entscheidungen (bei Übergabe ist diese Liste leer)
+\end{itemize}
+Mit dem Rückgabewert der Methode wird nicht gearbeitet, sondern mit der vom Algorithmus verarbeiteten Signalliste.
+
+\begin{lstlisting}[caption=Dateityp des 1. Parameters]{prices}
+System.Collections.Generic.List<System.Tuple
+<System.DateTime,decimal,decimal,decimal,decimal>>
+\end{lstlisting}
+\begin{lstlisting}[caption=Dateityp des 2. Parameters]{signals}
+System.Collections.Generic.List<int>
+\end{lstlisting}
+Außerdem muss sich der Algorithmus im Namespace  "`Algorithm"' und im Modul "`DecisionCalculator"' befinden.
+\subsection{Erzeugen eines Algorithmus-Files}
+Zuerst muss Microsoft Visual Studio geöffnet und ein neues Projekt erzeugt werden.\\
+\begin{figure}[!h]
+\centering
+\includegraphics[width=1\textwidth]{images/newProject.png}
+\caption{Erzeugen eines neuen Projekts}
+\end{figure} 
+\newpage
+Erstellen Sie es als \gls{F-Sharp}-Bibliothek.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=1\textwidth]{images/createProject.png}
+\caption{Erstellen Sie es als \gls{F-Sharp}-Bibliothek}
+\end{figure}
+Hält man sich an die im Kapitel "`Schreiben eines Algorithmus"' genannten Richtlinien und implementiert die Methode \inline{startCalculation}, kann das Projekt kompiliert werden und der Algorithmus ist einsatzbereit.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=1\textwidth]{images/makeFs.png}
+\caption{Kompilieren des Projekts}
+\end{figure}
+\clearpage
+\subsection{Entscheidungen}
+Folgende Entscheidungen sind zulässig:
+\begin{center}
+\begin{tabular}{ |  p{1cm} | p{8cm} |}
+\hline 
+3 & starkes Kaufssignal \\ \hline
+2 &   mittleres Kaufssignal \\ \hline
+1 &  schwaches Kaufssignal\\ \hline
+0 &  alle Bestände werden gekauft oder verkauft\\ \hline
+-1 &  schwaches Verkaufssignal\\ \hline
+-2 &  mittleres Verkaufssignal\\ \hline
+-3 &  starkes Verkaufssignal\\ \hline
+\end{tabular}
+\end{center}

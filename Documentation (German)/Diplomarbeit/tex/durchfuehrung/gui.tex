@@ -1,0 +1,149 @@
+\lstset{style=sharpc}
+\subsection{Aufbau der grafischen Benutzeroberfläche} \label{aufbauGUI}
+
+Als Grundelement der \gls{gui} der \gls{bts} wurde innerhalb des obligatorischen \inline{Window}s das \inline{DockPanel} gewählt. In diesem können weitere Elemente eingehängt werden. Damit einige der inneren Elemente über eine Bindung ihre Daten erhalten bzw. speichern können, wurde im \inline{Window} auch noch der \inline{DataContext} auf die \inline{MainViewModel} Klasse gesetzt, in der alle \gls{gui}-relevanten Informationen gespeichert werden:
+
+\begin{lstlisting}[label=Setzen des DataContext in XAML,caption=Setzen des DataContext in XAML]
+<Window.DataContext>
+	<local:MainViewModel x:Name="mainViewModel" />
+</Window.DataContext>
+\end{lstlisting}
+
+\subsubsection{Menü-, Symbol-, und Sta\-tus\-leiste}
+
+Als erstes wurde die Menüleiste (mit Hilfe des \inline{Menu}-Elements) ins \inline{Top} des \inline{Dock-} \inline{Panel}s hinzugefügt. In dieser können \inline{MenuItem}s definiert werden. Diese stellen die einzelnen Buttons in der Menüleiste dar. Innerhalb dieser \inline{MenuItem}s können erneut \inline{MenuItem}s definiert werden. Diese beschreiben wiederum die Unterpunkte der einzelnen Buttons, die beim Darüberhalten der Maus angezeigt werden. Auf ähnliche Art und Weise könnten hier auch noch weitere Ebenen ergänzt werden. Statt der \inline{MenuItem}s können auch immer sog. \inline{Separator}s definiert werden. Diese separieren optisch Gruppen von \inline{MenuItem}s voneinander und werden als senkrechte oder waagrechte Trennlinie angezeigt. Um die \inline{MenuItem}s auch noch jeweils mit einer Aktion zu versehen, kann einfach das \inline{Click}-Feld der einzelnen Items mit einem entsprechenden Methodenkopf gefüttert werden, der das richtige Senderobjekt und \inline{RoutedEventArgs} als Parameter übergeben bekommt und die gewünschte Aktion bei einem Klick beschreibt. Ein Teil des Menüs der \gls{bts} sieht demnach so aus:
+
+\begin{lstlisting}[label=Teil der Menüleiste der BTS,caption=Teil der Menüleiste der BTS]
+<Menu IsMainMenu="True" DockPanel.Dock="Top">
+	<MenuItem Header="_File">
+		<MenuItem Header="_Open" Click="LoadButton_Click"/>
+		<Separator />
+		<MenuItem Header="E_xit" Click="ExitButton_Click"/>
+	</MenuItem>
+	<MenuItem Header="_Help">
+		<MenuItem Header="_Contact" Click="ContactButton_Click" />
+		<MenuItem Header="_About" Click="AboutButton_Click" />
+	</MenuItem>
+</Menu>
+\end{lstlisting}
+
+Die nächste Zeile wurde mit Hilfe der \inline{ToolBar} realisiert. In dieser können alle möglichen Arten von \inline{Button}s und ebenfalls \inline{Separator}s angezeigt werden. Hier wurden die \inline{Button}s auch noch mit Icons versehen. Wie dies und ein Teil der \inline{ToolBar} der \gls{bts} funktionieren, kann man hier sehen:
+
+\begin{lstlisting}[label=Teil der Toolbar der BTS,caption=Teil der Toolbar der BTS]
+<ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+	<Button ToolTip="Start Performance Measurement" Click="StartButton_Click" Height="25" Width="25">
+		<Image Source="images/start.ico"></Image>
+	</Button>
+</ToolBar>
+\end{lstlisting}
+
+Die Statusleiste unten im Fenster der \gls{bts} wurde mit der \inline{StatusBar} realisiert, die hauptsächlich den aktuellen Zustand der Anwendung anzeigt. Im \gls{xaml}-Code sieht dies wie folgt aus:
+
+\begin{lstlisting}[label=Teil der Statusleiste der BTS,caption=Teil der Statusleiste der BTS]
+<StatusBar DockPanel.Dock="Bottom">
+	<StatusBarItem HorizontalContentAlignment="Stretch">
+	<TextBlock Name="StatusLabel">Ready</TextBlock>
+	</StatusBarItem>
+	<StatusBarItem HorizontalAlignment="Right">
+		<ProgressBar Height="15" Width="100" Name="ProgressBar" Visibility="Hidden" />
+	</StatusBarItem>
+</StatusBar>
+\end{lstlisting}
+
+Im \inline{StatusLabel} wird immer in Textform angezeigt, woran die \gls{bts} gerade arbeitet und etwaige Fehler, die während der Berechnungen aufgetreten sind. Die \inline{ProgressBar} zeigt an, wie weit die Software mit dem jeweiligen Arbeitsschritt bereits gekommen ist.\\
+\\
+Die Umsetzung der Leisten kann man in Abbildung \ref{fig:btsBars} erkennen.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.50\textwidth]{graphics/durchfuehrung/btsBars.png}
+	\caption{Menü-, Symbol-, und Statusleiste der fertigen BTS}
+	\label{fig:btsBars}
+\end{figure}
+
+\subsubsection{TabControl}
+
+Der eigentliche Inhalt, den die \gls{bts} hauptsächlich darstellen soll, befindet sich im großen mittleren Bereich, der durch ein \inline{TabControl} in drei Tabs (\inline{TabItem}s) unterteilt ist.\\
+\\
+Das erste Tab ist das "`Performance"'-Tab, das die allgemeinen Performance-Daten über den getesteten Algorithmus ausgibt. Die Oberfläche ist hier allgemein durch ein \inline{StackPanel} und darin durch 11 Reihen aus je zwei \inline{Label}s realisiert. Das jeweils linke \inline{Label} gibt dabei an, was der Wert im rechten \inline{Label} bedeutet und das rechte \inline{Label} ist direkt mit dem entsprechenden Property aus dem \inline{MainViewModel} über Data Binding (siehe Abschnitt \ref{databinding} "`Data Binding"') verbunden. Das Aussehen der \gls{bts} auf dem Performance-Tab kann der Abbildung entnommen werden.\\
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/durchfuehrung/btsPerformance.png}
+	\caption{Performance-Tab der \gls{bts}}
+	\label{fig:btsPerformance}
+\end{figure}
+
+Das zweite Tab ist das "`Orders"'-Tab, das durch ein Grid-Layout in zwei gleich große Teile geteilt wird. Oben wird mittels eines \inline{WinFormsHost}s (siehe Abschnitt \ref{winformshost} "`Nutzung mit WPF"') eine Microsoft Chart Control gezeichnet, die nach dem Einlesen der Daten-Datei in der \gls{bts} das entsprechende Chart mit ggf. auch entsprechenden Indikatoren anzeigt. Im unteren Bereich wird ein \inline{DataGrid} angezeigt, das alle wichtigen Informationen über jede Handelsaktion ausgibt, die der Algorithmus über die historischen Aktien-Preisdaten getätigt hätte. Die Daten bekommt das \inline{DataGrid} über eine spezielle Art des Data Bindings, bei der der \inline{DataContext} des DataGrids im C\#-Code manuell auf die \inline{Orders}-Liste des ViewModels gesetzt wird. Die funktioniert so:
+
+\begin{lstlisting}[label=Setzen des DataContext eines DataGrids,caption=Setzen des DataContext eines DataGrids]
+this.orders.DataContext = this.mainViewModel.Orders;
+\end{lstlisting}
+
+Das \inline{DataGrid} muss daraufhin im \gls{xaml}-Code wie folgt erzeugt werden:
+
+\begin{lstlisting}[label=Orders-DataGrid der BTS in XAML,caption=Orders-DataGrid der BTS in XAML]
+<DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
+ HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn"/>
+\end{lstlisting}
+
+Das Aussehen dieses Tabs nach einer Beispielberechnung kann der Abbildung entnommen werden. \\
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/durchfuehrung/btsOrders.png}
+	\caption{Orders-Tab der \gls{bts} nach einer Beispielberechnung}
+	\label{fig:btsOrders}
+\end{figure}
+
+Das dritte und letzte Tab ist das "`Settings"'-Tab. Auf diesem können jegliche Einstellungen, die das Laufzeitverhalten der \gls{bts} beeinflussen, getroffen werden. Dieses Tab nutzt auf der linken Seite einen \inline{TreeView} zur Auswahl der verschiedenen Seiten des Settings-Tabs. Die einzelnen Seiten auf der rechten Seite wiederum wurden durch ein weiteres \inline{TabControl} realisiert, bei dem der Kopf (in dem man normalerweise zwischen den einzelnen Tabs wechseln kann) einfach ausgeblendet wurde. Wann immer allerdings im \inline{TreeView} ein neues Item ausgewählt wird, wird eine besondere Methode aufgerufen, die den \inline{TabControl} auf der rechten Seite auf das richtige Tab wechseln lässt. Dies erweckt den Anschein, dass man durch die Auswahl eines Elements im \inline{TreeView} direkt das Fenster auf der rechten Seite wechseln kann. Der \inline{TreeView} sieht im \gls{xaml}-Code wie folgt aus:
+
+\begin{lstlisting}[label=Settings-TreeView der BTS in XAML,caption=Settings-TreeView der BTS in XAML]
+<TreeView Grid.Row="0" Grid.Column="0">
+	<TreeViewItem Name="GeneralSettingsTabSelector" Header="General" Selected="TreeViewItem_Selected">
+	</TreeViewItem>
+	<TreeViewItem Name="OrdersSettingsTabSelector" Header="Orders" Selected="TreeViewItem_Selected">
+	</TreeViewItem>
+	<TreeViewItem Name="ChartSettingsTabSelector" Header="Chart" Selected="TreeViewItem_Selected">
+	</TreeViewItem>
+</TreeView>
+\end{lstlisting}
+
+Die dazugehörige Methode \inline{TreeViewItem\_Selected} sieht so aus:
+
+\begin{lstlisting}[label=Methode zum Wechseln von Tabs aus einem TreeView,caption=Methode zum Wechseln von Tabs aus einem TreeView]
+private void TreeViewItem_Selected(object sender, RoutedEventArgs e)
+{
+	if (e.Source == this.GeneralSettingsTabSelector)
+		this.GeneralSettingsTab.IsSelected = true;
+	else if (e.Source == this.OrdersSettingsTabSelector)
+		this.OrdersSettingsTab.IsSelected = true;
+	else if (e.Source == this.ChartSettingsTabSelector)
+		this.ChartSettingsTab.IsSelected = true;
+}
+\end{lstlisting}
+
+Das Aussehen des Settings-Tabs auf der "`Chart"'-Seite kann der Abbildung \ref{fig:btsChartSettings} entnommen werden.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.90\textwidth]{graphics/durchfuehrung/btsChartSettings.png}
+	\caption{Settings-Tab der \gls{bts} auf der Chart-Seite mit Beispielindikatoren}
+	\label{fig:btsChartSettings}
+\end{figure}
+
+\subsubsection{Settings-Tabs}
+
+Generell kann hier wieder zwischen drei Tabs unterschieden werden. Das erste, das "`General"'-Tab, ist recht simpel. Es bietet einfach nur die Möglichkeit, ein Algorithmus- und ein Daten-File (mit Zeitraum, in dem die Daten ausgelesen werden sollen) auszuwählen. Alle Komponenten dafür sind an die entsprechenden Properties im ViewModel gebunden.\\
+\\
+Das zweite, das "`Orders"'-Tab, bietet alle Einstellungen bezüglich der Berechnungen der Orders innerhalb der Software. Zuerst kann ein fiktives Kapital konfiguriert werden, mit dem die \gls{bts} in ihren Berechnungen arbeitet und an dem die absoluten Zahlen für die Performance gemessen werden. Danach kann sowohl eine absolute als auch eine relative (in Prozent) Transaktionsgebühr konfiguriert werden, die dann ebenfalls in den Berechnungen der \gls{bts} von jeder Transaktion bzw. dem Gewinn oder Verlust jeder Transaktion abgezogen wird. Weiters kann ein sog. Price Premium konfiguriert werden, bei dem die \gls{bts} in weiteren Berechnungen davon ausgeht, dass die Aktien nicht immer zum normalen Handelspreis, sondern zum Handelspreis plus dem Price Premium gekauft oder dem Handelspreis minus dem Price Premium verkauft werden.  Zu guter Letzt kann noch mittels vertikaler \inline{Slider} und \inline{TextBox}en eingestellt werden, wie viele Round Lots (größere Mengen von Aktien, deren Größe direkt darunter konfiguriert werden kann) die \gls{bts} fiktiv bei dem jeweiligen Signal des Algorithmus kaufen bzw. verkaufen soll. All diese \gls{gui}-Komponenten werden ebenfalls mit Hilfe von Data Binding mit dem ViewModel verknüpft. Um bei den \inline{TextBox}en nur die Eingabe von Zahlen zu ermöglichen, kam auch folgende Methode öfter im Feld \inline{PreviewTextInput} der \inline{TextBox}en zum Einsatz:
+
+\begin{lstlisting}[label=Zahleneingabefilter mit dem TextCompositionEvent,caption=Zahleneingabefilter mit dem TextCompositionEvent]
+private void NumericOnly_WithDecimalPlace(System.Object sender, System.Windows.Input.TextCompositionEventArgs e)
+{
+	Regex reg = new Regex("[^0-9,]");
+	e.Handled = reg.IsMatch(e.Text);
+}
+\end{lstlisting}
+
+Das dritte, das "`Chart"'-Tab, ist das technologisch wohl spannendste der drei Tabs. Hier können einzelne Indikatoren ausgewählt und hinzugefügt werden, die nach einer Berechnung automatisch in das Chart im Orders-Tab eingezeichnet werden. Wenn man einen solchen Indikator hinzufügt, wird intern ein neues \inline{StackPanel} mit den jeweiligen Optionen für den Indikator eingeblendet. Die Informationen dieser \inline{StackPanel}s werden nicht wie gewöhnlich im ViewModel gespeichert, sondern nur intern in einer Liste mit allen \inline{StackPanel}s verwaltet, aus denen direkt die Informationen der einzelnen Panels ausgelesen werden können. Jedes \inline{StackPanel} besitzt, wie man in Abbildung \ref{fig:btsChartSettings} erkennen kann, auch einen \inline{ColorPicker}, mit dem die Farbe ausgewählt werden kann, in der der Indikator eingezeichnet werden soll. Dieser \inline{ColorPicker} ist nicht direkt in das .NET-Framework integriert, er muss zusätzlich aus dem Extended WPF Toolkit \cite{extended-wpf-toolkit} von Xceed bezogen werden, das die normale .NET-Library um einige \gls{wpf}-Komponenten erweitert. 

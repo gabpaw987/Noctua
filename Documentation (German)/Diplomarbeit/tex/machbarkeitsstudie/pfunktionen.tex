@@ -1,0 +1,191 @@
+\section{Produktfunktionen} \label{section:produktfunktionen}
+
+\subsection{Must-Have}
+
+\begin{minipage}{\textwidth}
+/F010/ \textbf{Vergangene Marktzustände bestimmen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Es sollen historische Marktzustände (innerhalb der letzten Jahre) auf transparenten
+Aktienmärkten, für die ein ausreichender Datenbestand vorhanden ist, automatisch bestimmt
+werden. Sollten sich verschiedene große Märkte entgegen der Erwartung
+unterschiedlich verhalten, sodass diese keiner einheitlichen Analyse unterzogen werden können,
+soll primär der US-amerikanische Aktienmarkt untersucht werden. Hierbei handelt es sich um
+eine Gruppierung von Zeitabschnitten nach gemeinsamen Kriterien.\\  \hline
+Aufwand & Hoch \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Ermittlung von Klassen für Marktzustände. \\ \hline
+Vorbedingungen & - \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F020/ \textbf{Aktuellen Marktzustand bestimmen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Dabei soll darauf geachtet werden, dass für eine frühe Erkennung möglicherweise nur ein Teil
+der Daten vorhanden ist, die für die historische Analyse herangezogen werden können.\\  \hline
+Aufwand & Mittel \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Zuordnung des aktuellen Marktzustandes zu einem bereits bekannten. \\ \hline
+Vorbedingungen & /F010/ Vergangene Marktzustände bestimmen \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F110/ \textbf{Trends erkennen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Durch \glspl{ma} soll es möglich sein, Trends in Aktienkursen zu identifizieren. Dazu
+kommen verschiedene Crossover-Verfahren (double- / triple-crossover) oder Indikatoren, wie
+der MACD (Moving Average Convergence Divergence) in Frage. Es soll eine statistisch
+möglichst profitable Variante hierfür gefunden werden, die aufscheinende nachhaltige Trends
+möglichst gut erkennt.\\  \hline
+Aufwand & Hoch \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Frühzeitige möglichst profitable Erkennung von Trends. \\ \hline
+Vorbedingungen & - \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F120/ \textbf{\gls{ma}-Dauer bestimmen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Je nachdem, wie lange ein Trend andauert, bedingt eine Trenderkennung andere \gls{ma}(-Paare)
+mit unterschiedlichen Laufzeiten. Durch Backtesting sollen viele verschiedene Varianten
+automatisch getestet werden können, um den statistisch besten Parametersatz zu ermitteln.\\  \hline
+Aufwand & Niedrig \\ \hline
+Nutzen & Mittel \\ \hline
+Ziel & Erarbeitung eines optimalen Parametersatzes für ein \gls{ma}-Paar. \\ \hline
+Vorbedingungen & - \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F130/ \textbf{An Marktzustand anpassen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Der Algorithmus soll sich durch Parameterveränderung an den erkannten Marktzustand zur
+Optimierung der Performance anpassen. Dies kann beispielsweise durch Verändern der \gls{ma}-Paare
+oder durch Anpassung der Market Exposure und damit des Risikos erfolgen.
+Dazu \textit{können} die Implikationen durch Nachforschung bekannt sein, woraufhin ein Modell
+angewandt wird, müssen aber nicht, da auch induktiv aus den Implikationen gelernt werden
+kann, wonach automatisch ein Modell entsteht (\textit{Maschinelles Lernen}). Dabei werden für die
+unterschiedlichen Markzustände verschiedene Parametersätze durchprobiert.\\  \hline
+Aufwand & Hoch \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Anpassung der Hauptfunktionen des Algorithmus an den aktuellen Marktzustand. \\ \hline
+Vorbedingungen & /F020/ Aktuellen Marktzustand bestimmen \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F140/ \textbf{Signale generieren}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Signalgeben bei potentiellen Einstiegspunkten (long signal) und Ausstiegspunkten (short
+signal).\\  \hline
+Aufwand & Niedrig \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Rückgabe von Handelssignalen. \\ \hline
+Vorbedingungen & /F110/ Trends erkennen, /F130/ An Marktzustand anpassen, /F120/ \gls{ma}-Dauer bestimmen \\ \hline
+Nachbedingungen & /F160/ Signale filtern \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F150/ \textbf{Trend-Nachhaltigkeit bestimmen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Durch geeignete Support- und Resistance-Indikatoren soll die Nachhaltigkeit eines Trends
+bestimmt werden (beispielsweise \gls{rsi}, \gls{cci} oder \glspl{ma}), um den Ausstiegspunkt zu
+optimieren.\\  \hline
+Aufwand & Mittel \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Festellen der Nachhaltigkeit erkannter Trends. \\ \hline
+Vorbedingungen & /F140/ Signale generieren \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F160/ \textbf{Signale filtern}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Zur Verminderung von unprofitablen, zu kurzen Trades sollen insbesondere Kaufsignale
+gefiltert werden. Die Trenderkennung könnte des Öfteren zu kurz anhaltende Trends
+erkennen, indem beispielsweise ein MA-Crossover nur für kurze Zeit besteht. Durch das
+Einführen eines Schwellenwertes (threshold), der überschritten werden muss, oder einer
+bestimmten Zeitspanne, die ein Signal überdauern muss, können zu kurze Trades vermindert
+werden, wenn sich im Backtesting dadurch ein Vorteil herausgestellt hat.\\  \hline
+Aufwand & Mittel \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Filterung der unbrauchbaren Signale. \\ \hline
+Vorbedingungen & /F140/ Signale generieren, /F150/ Trend-Nachhaltigkeit bestimmen \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F210/ \textbf{Performance berechnen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Die relative Performance eines Algorithmus soll in Prozent der Kapitalveränderung berechnet
+werden.\\  \hline
+Aufwand & Mittel \\ \hline
+Nutzen & Hoch \\ \hline
+Ziel & Berechnung der relativen Performance eines Algorithmus. \\ \hline
+Vorbedingungen & - \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 
+
+\begin{minipage}{\textwidth}
+/F220/ \textbf{Gewinn/Risiko-Verhältnis berechnen}
+
+\begin{center}
+\begin{tabular}{ | l | p{10cm} |}
+\hline 
+Beschreibung & Bestimmung des Risikos des Algorithmus (beispielsweise anhand der Volatilität) in
+Verbindung mit der Performance (e.g. sharpe ratio).\\  \hline
+Aufwand & Niedrig \\ \hline
+Nutzen & Mittel \\ \hline
+Ziel & Bestimmung des Gewinn/Risiko-Verhältnisses eines Algorithmus. \\ \hline
+Vorbedingungen & /F210/ Performance berechnen \\ \hline
+Nachbedingungen & - \\ \hline
+\end{tabular}
+\end{center}
+\end{minipage}\\[4ex] 

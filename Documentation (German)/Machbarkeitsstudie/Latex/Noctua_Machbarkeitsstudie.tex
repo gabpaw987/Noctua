@@ -1,0 +1,325 @@
+%%-----------------------------------------------------------------------
+% Loading the packages and classes
+%%-----------------------------------------------------------------------
+
+\documentclass[12pt,twoside,a4paper,final]{book}%
+\usepackage{a4}%                        %% Verwendet mehr Platz auf einer A4 Seite als Option a4paper in book
+\usepackage[english,ngerman]{babel}%    %% Babel Sprachen
+\usepackage[latin1]{inputenc}%          %% input encoder für umlaute usw.
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}%                   %% AMS Symbole
+\usepackage{amsmath}%                   %% AMS Math Funktionen
+\usepackage{amsfonts}%
+\usepackage[Sonny]{fncychap}%           %% Chapter Style
+\usepackage[english,noprefix]{nomencl}%  %% Nomenclature (Symbolverzeichnis)
+\usepackage{makeidx}%                   %% Index
+\usepackage{graphicx}%                  %% Graphiken
+\graphicspath{{img/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
+\usepackage{psfrag}%                    %% Tex-Schriftarten und Formeln in EPS-Grafiken
+\usepackage{color}
+\usepackage{nicefrac}
+\usepackage{ifthen}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage[xindy, acronym, toc]{glossaries}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{rotating}
+\input{tex/acronyms}
+\usepackage{multirow}
+\usepackage{eurosym}
+\usepackage{array}
+\usepackage{capt-of}
+\usepackage{glossaries}
+
+%%-----------------------------------------------------------------------
+% Makro for thick table lines
+%%-----------------------------------------------------------------------
+
+\makeatletter
+\newcommand{\thickhline}{%
+    \noalign {\ifnum 0=`}\fi \hrule height 1.5pt
+    \futurelet \reserved@a \@xhline
+}
+\newcolumntype{"}{@{\hskip\tabcolsep\vrule width 1.5pt\hskip\tabcolsep}}
+\makeatother
+
+%%-----------------------------------------------------------------------
+% Using the Hyperref-Package for PDF-Online Version
+%%-----------------------------------------------------------------------
+
+\usepackage[hyphens]{url}
+
+\def\usehyperref{1}
+
+\ifnum\usehyperref=1
+\usepackage[pdftex=true,
+  pdftitle={Diplomarbeit},
+  pdfauthor={Gottfried Koppensteiner},
+  bookmarksopen,
+  colorlinks,
+  citecolor=blue,
+  linkcolor=blue,
+  breaklinks%
+]{hyperref}%
+\fi
+
+\usepackage{breakurl}
+
+%%-----------------------------------------------------------------------
+% Rearranging Nomenclature
+%%-----------------------------------------------------------------------
+
+
+\renewcommand{\nomname}{List of symbols}
+%\renewcommand{\nompreamble}{The following list only contains symbols
+%  that are used continuously throughout the text. Local symbols are
+%  not listed.}
+\renewcommand{\nomgroup}[1]{
+ \ifthenelse{\equal{#1}{A}}{\item[\textbf{General symbols}\bigskip]}{
+ \ifthenelse{\equal{#1}{B}}{\item[\bigskip\bigskip\textbf{Chapter 2}\bigskip]}{
+ \ifthenelse{\equal{#1}{C}}{\item[\bigskip\bigskip\textbf{Chapter 3}\bigskip]}{
+ \ifthenelse{\equal{#1}{D}}{\item[\bigskip\bigskip\textbf{Chapter 4}\bigskip]}{
+ \ifthenelse{\equal{#1}{E}}{\item[\bigskip\bigskip\textbf{Chapter 5}\bigskip]}{
+ \ifthenelse{\equal{#1}{F}}{\item[\bigskip\bigskip\textbf{Appendix}\bigskip]}{
+ }}}}}}}
+\makenomenclature
+
+
+
+%%-----------------------------------------------------------------------
+% Makes Bibliography available in Winedt
+%%-----------------------------------------------------------------------
+
+%GATHER{bib_kiefer.bib}
+
+
+%%-----------------------------------------------------------------------
+% Definition of possible environments
+%%-----------------------------------------------------------------------
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{acknowledgement}{Acknowledgement}[chapter]
+\newtheorem{algorithm}{Algorithm}[chapter]
+\newtheorem{axiom}{Axiom}[chapter]
+\newtheorem{case}{Case}[chapter]
+\newtheorem{claim}{Claim}[chapter]
+\newtheorem{conclusion}{Conclusion}[chapter]
+\newtheorem{condition}{Condition}[chapter]
+\newtheorem{conjecture}{Conjecture}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{criterion}{Criterion}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{notation}{Notation}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{solution}{Solution}[chapter]
+\newtheorem{summary}{Summary}[chapter]
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+
+
+
+
+%%-----------------------------------------------------------------------
+% Marking of overfull boxes and increasing of tolerances
+%%-----------------------------------------------------------------------
+
+% Für die Final-Version die nächste Zeile auskommentieren um schawarze Balken (TU-Logo im Titelblatt) zu ignorieren!
+\overfullrule=10pt%                     %% Markiert überfüllte Boxen. z.b. hbox overfull (Evtl. nicht im pdf sichtbar!!!!)
+\hfuzz=1pt%                             %% Toleranz bei hbox overfull erhöht 1pt entspr. ca. 1/3 mm
+
+
+%%-----------------------------------------------------------------------
+% Counter
+%%-----------------------------------------------------------------------
+
+
+\setcounter{secnumdepth}{3}%
+\setcounter{tocdepth}{3}%
+
+
+
+% Clear Header Style on the Last Empty Odd pages
+\makeatletter
+\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else%
+    \hbox{}%
+    \thispagestyle{empty}%              % Empty header styles
+    \newpage%
+    \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+
+%%-----------------------------------------------------------------------
+% Avoid indents
+%%-----------------------------------------------------------------------
+
+\setlength{\parindent}{0pt}
+
+%%-----------------------------------------------------------------------
+%% Hyphenation for german abstract
+%%-----------------------------------------------------------------------
+
+\hyphenation{Fa-mi-lie
+             Ski-bil-dung
+             Ar-beits-wal-ze
+             neg-lec-ted
+             se-par-ate
+             di-men-sio-nal
+             her-r\"uhren
+             N\"a-herungs-l\"os-ungen
+             wissen-schaft-licher
+             Regelungs-technik
+             re-con-fi-gur-abili-ty
+             manage-ment
+             manu-facturing
+             not-wendigen
+             }
+
+
+%%-----------------------------------------------------------------------
+% Colored grafix
+% 1 = color
+% 0 = grey
+%%-----------------------------------------------------------------------
+
+
+\def\colorsw{1}
+
+%%-----------------------------------------------------------------------
+% Additional remarks
+% 1 = with remarks
+% 0 = without remarks
+%%-----------------------------------------------------------------------
+
+
+\def\addnotes{0}
+
+
+%%-----------------------------------------------------------------------
+% Define month
+%%-----------------------------------------------------------------------
+
+\def\monthdis{November 2012}
+
+\makeglossaries
+%%-----------------------------------------------------------------------
+% Document
+%%-----------------------------------------------------------------------
+
+
+\begin{document}%
+\selectlanguage{ngerman}%
+\renewcommand{\indexname}{Index}%
+\topmargin15.0mm
+\include{tex/title}
+\frontmatter%   %% front matter will be numbered in small Roman letters
+
+\include{tex/versionierung}%
+
+%%-----------------------------------------------------------------------
+
+
+%\include{tex/prefacea}%
+%\selectlanguage{english}%
+%\include{tex/abstracta}%
+%\selectlanguage{ngerman}%
+%\include{tex/kurzzfsg}%
+
+
+%%-----------------------------------------------------------------------
+% Define Header for Content chapter
+%%-----------------------------------------------------------------------
+
+
+\makeatletter
+\def\tableofcontents{\chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}
+  \@starttoc{toc}}
+\makeatother
+
+\clearpage%
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+% \lstlistoflistings %\listoftables
+\clearpage 
+\markboth{Contents}{Contents}
+
+
+%\addcontentsline{toc}{chapter}{\numberline{}\listfigurename}%
+%\listoffigures
+%\listoftables%
+%\addcontentsline{toc}{chapter}{\numberline{}\listtablename}%
+\clearpage%
+
+
+\include{tex/nomenclature}
+\markboth{\nomname}{\nomname}%
+\addcontentsline{toc}{chapter}{\numberline{}\nomname}%
+\printnomenclature
+
+
+\mainmatter%   %% main part will be numbered in Arabic letter
+
+
+% include chapters
+\include{tex/einleitung}%
+\include{tex/fingrundlagen}%
+\include{tex/voruntersuchung}%
+\include{tex/pfunktionen}%
+\include{tex/tmachbarkeit}%
+\include{tex/wirmachbarkeit}%
+\include{tex/Projektorganisation}%
+\include{tex/Projektplanung}%
+\include{tex/management_summary}%
+
+\addcontentsline{toc}{chapter}{Glossary} 
+\printglossary[type=\acronymtype]
+\glsaddall
+
+\printglossary[type=\acronymtype]
+%\printglossary[type=\acronymtype,style=listwithwidth]
+
+%% include appendix
+%\begin{appendix}
+%\include{tex/appendix}%
+%\end{appendix}
+
+% Use of the sorted IEEE style, with changes:
+% "dashification" was disabled
+
+
+\cleardoublepage
+
+% IEEE Style
+\bibliographystyle{sty/IEEEtranS}
+
+% GATHER
+%\input "bib_file.bib"
+\phantomsection{}
+\addcontentsline{toc}{chapter}{\bibname}
+\pagestyle{myheadings}\markboth{\bibname}{\bibname}
+\bibliography{tex/bib_file}
+
+%%% generate index
+%\clearpage%
+%\markboth{\indexname}{\indexname}%
+%\printindex%
+%\addcontentsline{toc}{chapter}{\numberline{}\indexname}%
+
+%% include affidavit
+
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End Dokument %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,318 @@
+﻿<Window x:Class="BacktestingSoftware.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:BacktestingSoftware"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:MSChart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+        xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        Title="BTS" Height="500" Width="1000"
+        Closing="Window_Closing">
+    <Window.DataContext>
+        <local:MainViewModel x:Name="mainViewModel" />
+    </Window.DataContext>
+    <DockPanel>
+        <Menu IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" />
+                <MenuItem Header="_Open" Click="LoadButton_Click"/>
+                <Separator />
+                <MenuItem Header="_Save" Click="SaveButton_Click"/>
+                <MenuItem Header="Save _As" Click="SaveAsButton_Click"/>
+                <Separator />
+                <MenuItem Header="_Export" Click="ExportButton_Click"/>
+                <Separator />
+                <MenuItem Header="E_xit" Click="ExitButton_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Contact" Click="ContactButton_Click" />
+                <MenuItem Header="_About" Click="AboutButton_Click" />
+            </MenuItem>
+        </Menu>
+        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+            <Button ToolTip="Start Performance Measurement" Click="StartButton_Click" Height="25" Width="25">
+                <Image Source="images/start.ico"></Image>
+            </Button>
+            <Button ToolTip="Stop Performance Measurement" Click="StopButton_Click" Height="25" Width="25">
+                <Image Source="images/stop.ico"></Image>
+            </Button>
+            <Separator />
+            <Button ToolTip="Select Algorithm-File" Click="AlgorithmButton_Click" Height="25" Width="25">
+                <Image Source="images/algorithm.ico"></Image>
+            </Button>
+            <Button ToolTip="Select Data-File" Click="DataButton_Click" Height="25" Width="25">
+                <Image Source="images/data.ico"></Image>
+            </Button>
+            <Separator />
+            <Button ToolTip="Save the current state." Click="SaveButton_Click" Height="25" Width="25">
+                <Image Source="images/save.ico"></Image>
+            </Button>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem HorizontalContentAlignment="Stretch">
+                <TextBlock Name="StatusLabel">Ready</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ProgressBar Height="15" Width="100" Name="ProgressBar" Visibility="Hidden" />
+            </StatusBarItem>
+        </StatusBar>
+        <TabControl DockPanel.Dock="Top">
+            <TabItem Header="Performance">
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <Grid Margin="5" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <!-- Text-Labels -->
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" ToolTip="The virtual net worth after using this algorithm.">Net Worth:</Label>
+                        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NetWorthToDisplay}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" ToolTip="The absolute performance of the algorithm relative to the virtual net worth.">Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=PortfolioPerformancePercent}"></Label>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio showing the performance relative to the risk.">Sharpe Ratio:</Label>
+                        <Label Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=SharpeRatio}"></Label>
+                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" ToolTip="Realtive mean deviation of the absolute changes of the net worth.">Mean Deviation of Portfolio Performance [%]:</Label>
+                        <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfProfit}"></Label>
+                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" ToolTip="Absolute mean deviation of the equity price graph.">Mean Deviation of Equity Price:</Label>
+                        <Label Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=StdDevOfPEquityPrice}"></Label>
+                        <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" ToolTip="The absolute performance of the algorithm relative to the amount of investment.">Return on Investment [%]:</Label>
+                        <Label Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainLossPercent}"></Label>
+                        <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" ToolTip="Count of trades with a positive portfolio performance.">Number of Good Trades:</Label>
+                        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfGoodTrades}"></Label>
+                        <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" ToolTip="Sum of the performance of all good trades relative to the invested capital.">Gain From Good Trades [%]:</Label>
+                        <Label Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GainPercent}"></Label>
+                        <Label Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" ToolTip="Count of trades with a negative portfolio performance.">Number of Bad Trades:</Label>
+                        <Label Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=NoOfBadTrades}"></Label>
+                        <Label Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" ToolTip="Sum of the performance of all bad trades relative to the invested capital.">Loss From Bad Trades [%]:</Label>
+                        <Label Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=LossPercent}"></Label>
+                        <Label Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ratio of the number of good trades compared to the number of bad trades.">Ratio of Good Trades - Bad Trades:</Label>
+                        <Label Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" Content="{Binding Path=GtBtRatio}"></Label>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Orders">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!-- CHART -->
+                    <WindowsFormsHost Name="WfHost" Grid.Row="0">
+                        <MSChart:Chart x:Name="MyWinformChart">
+                            <MSChart:Chart.ChartAreas>
+                                <MSChart:ChartArea Name="MainArea"/>
+                            </MSChart:Chart.ChartAreas>
+                        </MSChart:Chart>
+                    </WindowsFormsHost>
+                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="3"></GridSplitter>
+                    <!-- ORDERS -->
+                    <DataGrid Name="orders" Grid.Row="3" Grid.Column="0" Margin="0" ItemsSource="{Binding}"
+                              HorizontalAlignment="Stretch" CanUserReorderColumns="True" CanUserResizeColumns="True" IsReadOnly="True" AutoGeneratingColumn="OnAutoGeneratingColumn"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+                <Grid Margin="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TreeView Grid.Row="0" Grid.Column="0">
+                        <TreeViewItem Name="GeneralSettingsTabSelector" Header="General" Selected="TreeViewItem_Selected">
+                        </TreeViewItem>
+                        <TreeViewItem Name="OrdersSettingsTabSelector" Header="Orders" Selected="TreeViewItem_Selected">
+                        </TreeViewItem>
+                        <TreeViewItem Name="ChartSettingsTabSelector" Header="Chart" Selected="TreeViewItem_Selected">
+                        </TreeViewItem>
+                    </TreeView>
+                    <TabControl Grid.Column="1" Name="SettingsTabControl">
+                        <TabControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+                        <TabItem Name="GeneralSettingsTab">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Grid Margin="5" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <!-- Text-Labels -->
+                                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Algorithm-File:</Label>
+                                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Data-File:</Label>
+                                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Time Period:</Label>
+                                        <!-- OpenFileDialog
+                            http://msdn.microsoft.com/en-us/library/cc221415(v=vs.95).aspx -->
+                                        <!-- Algorithm File -->
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.Column="1">
+                                            <Button Margin="0,0,5,0" Content="Browse" Click="AlgorithmButton_Click" />
+                                            <TextBox Width="300" Text="{Binding Path=AlgorithmFileName}" />
+                                        </StackPanel>
+                                        <!-- Data File -->
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1" Grid.Column="1">
+                                            <Button Margin="0,0,5,0" Content="Browse" Click="DataButton_Click" />
+                                            <TextBox Width="300" Text="{Binding Path=DataFileName}" />
+                                        </StackPanel>
+                                        <!-- Time Period -->
+                                        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="2" Grid.Column="1">
+                                            <Label>From:</Label>
+                                            <DatePicker SelectedDate="{Binding Path=StartDate}" />
+                                            <Label>To:</Label>
+                                            <DatePicker SelectedDate="{Binding Path=EndDate}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Name="OrdersSettingsTab">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Orientation="Vertical">
+                                    <Label>
+                                        <Span FontWeight="Bold">Portfolio</Span>
+                                    </Label>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Width="50" Content="Capital:"/>
+                                        <TextBox Width="50" Text="{Binding Path=Capital}" Margin="0,3,0,3" PreviewTextInput="NumericOnly_WithDecimalPlace"/>
+                                    </StackPanel>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Row="0" Grid.ColumnSpan="3">
+                                            <Span FontWeight="Bold">Transaction Fee</Span>
+                                        </Label>
+
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Abs"/>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=AbsTransactionFee}" PreviewTextInput="NumericOnly_WithDecimalPlace" />
+                                        <Label Grid.Row="1" Grid.Column="2" Content="&#164;"/>
+
+                                        <Label Grid.Row="2" Grid.Column="0" Content="Rel"/>
+                                        <TextBox Grid.Row="2" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=RelTransactionFee}" PreviewTextInput="NumericOnly_WithDecimalPlace" />
+                                        <Label Grid.Row="2" Grid.Column="2" Content="%"/>
+                                    </Grid>
+                                    <Label>
+                                        <Span FontWeight="Bold">Price Premium</Span>
+                                    </Label>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Abs"/>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Margin="0,3,0,3" Text="{Binding Path=PricePremium}" PreviewTextInput="NumericOnly_WithDecimalPlace" />
+                                        <Label Grid.Row="1" Grid.Column="2" Content="&#164;"/>
+                                    </Grid>
+                                    <Label>
+                                        <Span FontWeight="Bold">Order Sizes</Span>
+                                    </Label>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="100"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                            <ColumnDefinition Width="50"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="-3" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
+                                        <Label Content="-2" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" />
+                                        <Label Content="-1" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" />
+                                        <Label Content="1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" />
+                                        <Label Content="2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" />
+                                        <Label Content="3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" />
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderOne}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderTwo}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderThree}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderFour}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderFive}" Minimum="0" Maximum="5"/>
+                                        <Slider Orientation="Vertical" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" Value="{Binding Path=ValueOfSliderSix}" Minimum="0" Maximum="5"/>
+                                        <TextBox Grid.Row="2" Grid.Column="0" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderOne}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="1" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderTwo}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="2" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderThree}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="3" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderFour}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="4" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderFive}" TextAlignment="Center"/>
+                                        <TextBox Grid.Row="2" Grid.Column="5" Margin="5,5,5,0" Text="{Binding Path=ValueOfSliderSix}" TextAlignment="Center"/>
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <Label Content="Round Lot Size:"/>
+                                        <ComboBox Width="50" Margin="0,3,0,3" SelectedIndex="{Binding Path=RoundLotSize}">
+                                            <ComboBoxItem Name="CBI0" Content="10"/>
+                                            <ComboBoxItem Name="CBI1" Content="50"/>
+                                            <ComboBoxItem Name="CBI2" Content="100"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Name="ChartSettingsTab">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="25"></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                        <ComboBox Name="IndicatorComboBox"  Width="300" SelectedIndex="0">
+                                            <ComboBoxItem Content="Simple Moving Average"></ComboBoxItem>
+                                            <ComboBoxItem Content="Weighted Moving Average"></ComboBoxItem>
+                                            <ComboBoxItem Content="Exponential Moving Average"></ComboBoxItem>
+                                            <ComboBoxItem Content="Moving Average Convergence-Divergence"></ComboBoxItem>
+                                        </ComboBox>
+                                        <Button VerticalContentAlignment="Center" Content="+" Width="25" Margin="5,0,0,0" Click="AddIndicatorButton_Click" />
+                                    </StackPanel>
+                                    <StackPanel Name="IndicatorStackPanel" Grid.Row="1" Orientation="Vertical">
+                                    </StackPanel>
+                                </Grid>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

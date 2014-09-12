@@ -1,0 +1,414 @@
+%%-----------------------------------------------------------------------
+% Loading the packages and classes
+%%-----------------------------------------------------------------------
+
+\documentclass[12pt,oneside,a4paper,final]{book}%
+\usepackage{a4}%                        %% Verwendet mehr Platz auf einer A4 Seite als Option a4paper in book
+\usepackage[english,ngerman]{babel}%    %% Babel Sprachen
+\usepackage[latin1]{inputenc}%          %% input encoder fï¿½r umlaute usw.
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}%                   %% AMS Symbole
+\usepackage{amsmath}%                   %% AMS Math Funktionen
+\usepackage{amsfonts}%
+\usepackage[Sonny]{fncychap}%           %% Chapter Style
+%\usepackage[english,noprefix]{nomencl}%  %% Nomenclature (Symbolverzeichnis)
+\usepackage{makeidx}%                   %% Index
+\usepackage{graphicx}%                  %% Graphiken
+%\usepackage[acronym]{glossaries}
+\graphicspath{{img/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
+\usepackage{psfrag}%                    %% Tex-Schriftarten und Formeln in EPS-Grafiken
+\usepackage{color}
+\usepackage{nicefrac} 
+\usepackage{ifthen}
+\usepackage{fancyhdr}
+\usepackage{subfig}
+%\usepackage[xindy, acronym, toc]{glossaries}
+%\usepackage{cite}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{eurosym}
+\usepackage{capt-of}
+\usepackage[chapter]{glossaries}
+\usepackage[ampersand]{easylist}
+\usepackage{newverbs}
+\usepackage{listings}
+\usepackage{pdflscape}
+\input{tex/acronyms}
+
+%\usepackage[authordate,natbib,backend=biber,useprefix=true]{biblatex-chicago}
+%\usepackage[style=authoryear,bibstyle=authoryear,minnames=1,maxnames=3,urldate=comp]{biblatex}
+%\usepackage{natbib}
+
+% autocite geht nur bei numerischen zitierstilen (alphabetic wird nicht mit Fußnote gemacht normalerweise)
+\usepackage[%autocite=footnote,
+	backend=bibtex,
+	style=alphabetic,
+	bibstyle=alphabetic,
+	natbib=true,
+	url=true]
+	{biblatex}
+%\let\cite\autocite
+\addbibresource{tex/bib_file.bib}
+
+%%-----------------------------------------------------------------------
+% Using the Hyperref-Package for PDF-Online Version
+%%-----------------------------------------------------------------------
+
+\def\usehyperref{1}
+
+\ifnum\usehyperref=1
+\usepackage[pdftex=true,
+  pdftitle={Diplomarbeit},
+  pdfauthor={Noctua},
+  bookmarksopen,
+  breaklinks,
+  hidelinks%
+]{hyperref}%
+\fi
+%\usepackage[hidelinks]{hyperref}
+%
+%  colorlinks,
+%  citecolor=blue,
+%  linkcolor=blue,
+
+%%-----------------------------------------------------------------------
+% Rearranging Nomenclature
+%%-----------------------------------------------------------------------
+
+
+%\renewcommand{\nomname}{List of symbols}
+%\renewcommand{\nompreamble}{The following list only contains symbols
+%  that are used continuously throughout the text. Local symbols are
+%  not listed.}
+\renewcommand{\nomgroup}[1]{
+ \ifthenelse{\equal{#1}{A}}{\item[\textbf{General symbols}\bigskip]}{
+ \ifthenelse{\equal{#1}{B}}{\item[\bigskip\bigskip\textbf{Chapter 2}\bigskip]}{
+ \ifthenelse{\equal{#1}{C}}{\item[\bigskip\bigskip\textbf{Chapter 3}\bigskip]}{
+ \ifthenelse{\equal{#1}{D}}{\item[\bigskip\bigskip\textbf{Chapter 4}\bigskip]}{
+ \ifthenelse{\equal{#1}{E}}{\item[\bigskip\bigskip\textbf{Chapter 5}\bigskip]}{
+ \ifthenelse{\equal{#1}{F}}{\item[\bigskip\bigskip\textbf{Appendix}\bigskip]}{
+ }}}}}}}
+%\makenomenclature
+
+
+
+%%-----------------------------------------------------------------------
+% Makes Bibliography available in Winedt
+%%-----------------------------------------------------------------------
+
+%GATHER{bib_kiefer.bib}
+
+
+%%-----------------------------------------------------------------------
+% Definition of possible environments
+%%-----------------------------------------------------------------------
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{acknowledgement}{Acknowledgement}[chapter]
+\newtheorem{algorithm}{Algorithm}[chapter]
+\newtheorem{axiom}{Axiom}[chapter]
+\newtheorem{case}{Case}[chapter]
+\newtheorem{claim}{Claim}[chapter]
+\newtheorem{conclusion}{Conclusion}[chapter]
+\newtheorem{condition}{Condition}[chapter]
+\newtheorem{conjecture}{Conjecture}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{criterion}{Criterion}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{notation}{Notation}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{solution}{Solution}[chapter]
+\newtheorem{summary}{Summary}[chapter]
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+
+
+
+
+%%-----------------------------------------------------------------------
+% Marking of overfull boxes and increasing of tolerances
+%%-----------------------------------------------------------------------
+
+% Fï¿½r die Final-Version die nï¿½chste Zeile auskommentieren um schawarze Balken (TU-Logo im Titelblatt) zu ignorieren!
+%\overfullrule=10pt%                     %% Markiert ï¿½berfï¿½llte Boxen. z.b. hbox overfull (Evtl. nicht im pdf sichtbar!!!!)
+%\hfuzz=1pt%                             %% Toleranz bei hbox overfull erhï¿½ht 1pt entspr. ca. 1/3 mm
+
+
+%%-----------------------------------------------------------------------
+% Counter
+%%-----------------------------------------------------------------------
+
+
+\setcounter{secnumdepth}{3}%
+\setcounter{tocdepth}{3}%
+
+
+
+% Clear Header Style on the Last Empty Odd pages
+\makeatletter
+\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else%
+    \hbox{}%
+    \thispagestyle{empty}%              % Empty header styles
+    \newpage%
+    \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+
+%%-----------------------------------------------------------------------
+% Avoid indents
+%%-----------------------------------------------------------------------
+
+\setlength{\parindent}{0pt}
+
+%%-----------------------------------------------------------------------
+%% Hyphenation for german abstract
+%%-----------------------------------------------------------------------
+
+\hyphenation{Fa-mi-lie
+             Ski-bil-dung
+             Ar-beits-wal-ze
+             neg-lec-ted
+             se-par-ate
+             di-men-sio-nal
+             her-r\"uhren
+             N\"a-herungs-l\"os-ungen
+             wissen-schaft-licher
+             Regelungs-technik
+             re-con-fi-gur-abili-ty
+             ma-nage-ment
+             manu-facturing
+             not-wendigen
+             Han-dels-stra-te-gien
+             Aver-ages
+             View-Model
+             Ob-er-flä-che
+             Win-Forms
+             }
+
+
+% Define F-Sharpting
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{turqusnumbers}{rgb}{0.17,0.57,0.69}
+\definecolor{redstrings}{rgb}{0.5,0,0}
+
+
+\lstdefinelanguage{FSharp}
+                {morekeywords={let, new, match, with, rec, open, module, namespace, type, of, member, and, for, in, do, begin, end, fun, function, try, mutable, if, then, else},
+    keywordstyle=\color{bluekeywords},
+    sensitive=false,
+    morecomment=[l][\color{greencomments}]{///},
+    morecomment=[l][\color{greencomments}]{//},
+    morecomment=[s][\color{greencomments}]{{(*}{*)}},
+    morestring=[b]",
+    stringstyle=\color{redstrings},
+    tabsize=4
+    }
+    
+\lstdefinestyle{sharpc}{language=[Sharp]C,
+  basicstyle=\small,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)},
+  commentstyle=\color{greencomments},
+  keywordstyle=\color{bluekeywords},
+  stringstyle=\color{redstrings},
+  tabsize=3
+  }
+    
+%activate automatic line breaks
+\lstset{breaklines=true}
+\lstset{aboveskip=8pt,belowskip=12pt}
+%activate automatic line numbers
+\lstset{
+numbers=left, % Ort der Zeilennummern
+stepnumber=5, % Abstand zwischen den Zeilennummern  
+firstnumber=1,     
+numberfirstline=true
+}
+% Design 4 CodeSnippets
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{
+\parbox{\textwidth}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}\vskip-4pt}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{frame=lrb,xleftmargin=0.08in,xrightmargin=-0.07in}
+
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+% for appendix
+\usepackage{pgfpages} 
+
+% INLINE LISTINGS
+\def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]}
+
+
+%%-----------------------------------------------------------------------
+% Colored grafix
+% 1 = color
+% 0 = grey
+%%-----------------------------------------------------------------------
+
+
+\def\colorsw{1}
+
+%%-----------------------------------------------------------------------
+% Additional remarks
+% 1 = with remarks
+% 0 = without remarks
+%%-----------------------------------------------------------------------
+
+
+\def\addnotes{0}
+
+
+%%-----------------------------------------------------------------------
+% Define month
+%%-----------------------------------------------------------------------
+
+\def\monthdis{Mai 2013}
+
+\makeglossaries
+%%-----------------------------------------------------------------------
+% Document
+%%-----------------------------------------------------------------------
+
+
+\begin{document}%
+\selectlanguage{ngerman}%
+\renewcommand{\indexname}{Index}%
+%\topmargin15.0mm
+\include{tex/title}
+\frontmatter%   %% front matter will be numbered in small Roman letters
+
+%%-----------------------------------------------------------------------
+
+
+%% include eid
+\include{tex/eid}%
+\include{tex/prefacea}%
+\selectlanguage{ngerman}%
+\include{tex/abstractd}%
+\selectlanguage{english}%
+\include{tex/abstracte}%
+\selectlanguage{ngerman}%
+
+
+
+%\newfontfamily\listingsfont[Scale=0.7]{Arial}
+
+
+%%-----------------------------------------------------------------------
+% Define Header for Content chapter
+%%-----------------------------------------------------------------------
+
+
+\makeatletter
+\def\tableofcontents{\chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}
+  \@starttoc{toc}}
+\makeatother
+\tableofcontents
+
+\listoffigures
+
+\lstlistoflistings %\listoftables
+
+\markboth{Contents}{Contents}
+
+
+%\addcontentsline{toc}{chapter}{\numberline{}\listfigurename}%
+%\listoffigures
+%\listoftables%
+%\addcontentsline{toc}{chapter}{\numberline{}\listtablename}%
+
+
+
+
+
+\mainmatter%   %% main part will be numbered in Arabic letter
+
+
+% include chapters
+\include{tex/Gruppe}
+\include{tex/1-einleitung}%
+% gesamte MB:
+%\include{tex/chapter2}%
+\include{tex/2-ziele}
+\include{tex/3-varianten}
+\include{tex/4-grundlagen}%
+\include{tex/5-durchfuehrung}%
+\include{tex/6-ergebnis}
+\include{tex/7-erweiterung}%
+
+%\include{tex/nomenclature}
+%\markboth{\nomname}{\nomname}%
+%\addcontentsline{toc}{chapter}{\numberline{}\nomname}%
+%\printnomenclature
+
+% Use of the sorted IEEE style, with changes:
+% "dashification" was disabled
+
+
+\cleardoublepage
+
+% IEEE Style
+%\bibliographystyle{sty/IEEEtranS}
+
+% GATHER
+%\input "literatur/bib.bib"
+%\phantomsection{}
+%\addcontentsline{toc}{chapter}{\bibname}
+%\pagestyle{myheadings}\markboth{\bibname}{\bibname}
+
+
+%%% generate index
+%\clearpage%
+%\markboth{\indexname}{\indexname}%
+%\printindex%
+%\addcontentsline{toc}{chapter}{\numberline{}\indexname}%
+
+%% include appendix
+%\pgfpagesuselayout{2 on 1}[a4paper,landscape,border shrink=5mm]
+\begin{appendix}
+\input{tex/appendix}%
+\end{appendix}
+%\deftranslation[to=German]{Glossary}{Glossar}
+\printglossary[type=\acronymtype,title=Glossar]
+\addcontentsline{toc}{chapter}{Glossar}
+
+% IEEE Style
+%\bibliographystyle{sty/IEEEtranS}
+%\bibliographystyle{alpha}
+%\bibliography{tex/bib_file}
+% GATHER
+%\input "literatur/bib.bib"
+\printbibliography
+\phantomsection{}
+\addcontentsline{toc}{chapter}{\bibname}
+\pagestyle{myheadings}\markboth{\bibname}{\bibname}
+
+
+%%% generate index
+%\clearpage%
+%\markboth{\indexname}{\indexname}%
+%\printindex%
+%\addcontentsline{toc}{chapter}{\numberline{}\indexname}%
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End Dokument %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

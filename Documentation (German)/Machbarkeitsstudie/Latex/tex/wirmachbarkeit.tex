@@ -1,0 +1,138 @@
+% !TeX root = ../../Noctua_Diplomarbeit.tex
+
+% Wirtschaftliche Machbarkeit
+
+\chapter{Wirtschaftliche Machbarkeit} \label{chapter:wirtschaftlichemachbarkeit}
+
+\section{Aufwandsabschätzung}
+
+\subsection{Personalaufwand}
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/FunctionPointsAnalysis.JPG}
+	\caption{Function-Points-Analyse zu Noctua.}
+	\label{fig:FunctionPointsAnalysis}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/IBM_FPS_Analysis.png}
+	\caption{IBM Umrechnung von Function-Points in Personenmonate aufgrund von Erfahrungswerten.}
+	\label{fig:IBM_FPS_Analysis}
+\end{figure}
+
+
+Aus der Abbildung \ref{fig:FunctionPointsAnalysis} ist ersichtlich, dass die Function-Points-Analyse ca. 90 Punkte ergibt.
+Anhand der Tabelle aus Abbildung \ref{fig:IBM_FPS_Analysis} ergibt sich für 90 Function-Points eine ungefähre Projektdauer von 3 Personenmonaten.
+Dies entspricht bei einer Umrechnung von 40 Stunden pro Woche einer Gesamtstundenanzahl von 480 Arbeitsstunden. Diese wiederum geteilt durch die
+Anzahl der Projektteammitglieder ergibt das eine Workload von ca. 160 Stunden pro Projektteammigtlied.\\
+\\
+Bei einem Stundensatz von \EUR{50,00} pro Arbeitsstunde ergibt dies ein benötigtes Kapital von \EUR{24.000,00} für das gesamte Projekt Noctua. 
+
+\subsection{Materialaufwand}
+
+Da es sich bei diesem Projekt um ein reines Softwareprojekt handelt, bezieht sich der Materialaufwand ausschließlich auf die Lizenzkosten für die verwendete Software. Verbrauchsmaterial kommt in diesem Projekt nicht zum Einsatz.\\
+\\
+Die Lizenzenkosten belaufen sich auf folgendes:
+\begin{itemize}
+	\item 3 * \EUR{1.528,00} für eine Microsoft Visual Studio Professional Lizenz für jeden unserer Computer. Diese dient als Entwicklungsumgebung.
+	\item 1 * ca. \EUR{191,00} für eine Microsoft Visio Standard 2010 Lizenz, zur Modellierung von Diagrammen.
+	\item 3 * ca. \EUR{92,00} für eine Windows 7 Home Premium Lizenz für jeden unserer Computer.
+	\item 1 * ca. \EUR{345,00} für eine Microsoft Project Standard 2010 Lizenz, zur Planung des Projekts.
+	\item 1 * ca. \EUR{65,00} für eine 2-9 Personen Lizenz von SmartGit mit 1 Jahr Support. Dies wird als \gls{git}-Client benutzt.
+\end{itemize}
+Dies ergibt einen Gesamtmaterialaufwand von ca. \EUR{5.461,00}.
+\subsection{Investitionskapital}
+
+Der aller wichtigste Teil des Investitionskapitals ist ein Laptop für jedes der Projektteammitglieder, um die Programmierarbeit überhaupt zu ermöglichen.
+Die Abschreibung dafür beläuft sich laut der \gls{afa} für Laptops ab \EUR{400,00} auf ca. \EUR{1.500,00}.\\
+\\
+Zusätzlich fallen Kosten für den Arbeitsraum an. Man kann für drei Personen von einem 30 Quadratmeter großen Büroraum inklusive WC-Einrichtungen ausgehen.
+Inklusive Heizung fallen hierfür ca. \EUR{13,00}/m$^2$/Monat an. Das beläuft sich dann auf ca. \EUR{4.680,00}/Jahr. Zusätzlich kann man ca. \EUR{500,00}/Jahr
+für Strom und Wasser annehmen.\\
+\\
+Dadurch beläuft sich das gesamte benötigte Investitionskapital auf ca. \EUR{6.680,00} für die gesamte Projektdauer.
+
+\section{Nutzen}
+
+Der Algorithmus kann in bestehende Tradingsoftware intergriert werden, um dadurch die Entscheidungen in Form von Orders über einen Online-Broker an die Börse weiterzuleiten.\\
+	Angenommen, es wird mithilfe des Algorithmus ein Fond mit einem angestellten Trader eröffnet. Der Trader erhält ein Bruttogehalt von \EUR{3.200} im Monat und eine Provision von 10\% des erwirtschafteten Umsatzes. Daraus ist festzustellen, wie viel Kapital der Fond verwalten müsste, damit es sich auszahlt, diesen Trader einzustellen und ab welcher Größe zusätzlich ein Programmierer wirtschaftlich ist, um den Algorithmus weiter zu entwickeln und zu verbessern.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/nutzen_bea_full.png}
+	\caption[Break Even Point Analyse bei Vollzeit]{Break Even Point Analyse bei 8\% Gewinn mit vollzeitbeschäftigtem Trader und zusätzlichem Programmierer}
+	\label{fig:nutzen_bea_full}
+\end{figure}
+
+In der Abbildung \ref{fig:nutzen_bea_full} ist ersichtlich, dass der Fonds für einen profitablen Betrieb bei einem durchschnittlichen jährlichen Gewinn von \emph{8\%} mindestens ein Volumen von \EUR{1.185.185,2} verwalten müsste, um einen Gewinn zu erwirtschaften. Wenn zusätzlich noch ein Programmierer zur Weiterentwicklung angestellt werden soll muss das Volumen auf \EUR{2.296.296,33} steigen. Dabei werden \emph{20\%} des Gewinns als Provision berechnet und zusätzlich noch \emph{2\%} unabhängig vom Gewinn. Die entsprechenden Umsätze liegen bei \EUR{42.666,67} und \EUR{82.666,67}.\\
+	Diese Berechnungen gelten für Vollzeitanstellungen für den alleinigen Einsatz des Algorithmus. Angestrebt wird jedoch eine weitgehende Autonomie des Algorithmus, wodurch die Zeit, die zum Überwachen und Steuern aufgewendet werden muss, weit geringer ist. Geht man davon aus, dass der Trader mit diesem Handelsalgorithmus nur $1/3$ seiner Zeit verbringt und der Programmierer nur die Hälfte, ergeben sich Break Even Points bei \EUR{395.061,73} mit einem Trader und \EUR{950.617,29} mit dem zusätzlichen Programmierer.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=0.80\textwidth]{graphics/wirmachbarkeit/nutzen_bea_part.png}
+	\caption[Break Even Point Analyse bei Teilzeit]{Break Even Point Analyse bei 8\% Gewinn mit teilzeitbeschäftigtem Trader und zusätzlichem Programmierer}
+	\label{fig:nutzen_bea_part}
+\end{figure}
+
+Die Auswahl der Papiere, die der Algorithmus automatisiert handeln soll, muss vom Trader vorgenommen werden, weshalb es kein maximales oder minimales empfohlenes Volumen gibt. Dies liegt daran, dass die Risikobewertung und die dementsprechende Streuung manuell vorgenommen wird. Die Ergebnisse der \gls{bts} können hier als Anhaltspunkt verwendet werden, wobei sich die Risikobewertung aber jedenfalls von Aktie zu Aktie unterscheidet.\\
+\\
+Zusätzlich zu dem direkten finanziellen Nutzen entstehenden ebenfalls latente Vorteile durch die Fortbildung der Projektteammitglieder.
+
+\section{Prüfen der Risiken}
+\subsection{Personenausfall}
+Eintrittswahrscheinlichkeit:  gering \\
+Auswirkungen:  								hoch   \\
+
+In dem unerwarteten Fall, dass ein Teammitglied längerfristig ausfällt, muss es möglich sein, die Arbeitsaufgaben dementsprechend neu aufteilen zu können.
+Folgende Fälle könnten auftreten:
+\begin{itemize}
+	\item Streit im Team
+	\item Ausfall durch Krankheit oder Tod eines Teammitglieds
+	\item Austritt eines Teammitglieds aus dem Projekt
+	\item Der Auftraggeber könnte aufgrund von Unklarheiten den Projektabbruch initiieren. 
+	\item Es kann passieren, dass von Seite des Auftragsgebers plötzlich kein Interesse an der Umsetzung des Produktes mehr gegeben ist, und es dadurch zu extremem Zeitverzug kommt, was bis zum Abbruch führen kann.
+	\item Interessensverlusst eines Teammitglieds und damit verbundene minderwertigere Arbeit 
+\end{itemize}
+
+Folgende präventive Maßnahmen werden eingeführt:
+\begin{itemize}
+	\item Regeln für den Umgang innerhalb des Projekts
+	\item Ausreichendes Interesse jedes Mitglieds und keine leistungstechnischen Probleme 
+	\item Gutes Verhältnis zu den Auftraggebern
+\end{itemize}
+
+\subsection{Zeitliche Risiken}
+
+Eintrittswahrscheinlichkeit:  gering \\
+Auswirkungen:  								mittel \\
+
+Die Aufwands- und Zeitabschätzung basiert auf dem derzeitigen Lastenheft des Auftraggebers und stellt eine zeitgerechte Fertigstellung sicher. Sollten sich jedoch die Anforderungen des Kunden während des Projekts ändern, so wird sich das mit großer Wahrscheinlichkeit verzögernd auf den Fertigstellungstermin auswirken. Die mit dem Kunden vereinbarte Funktionsanalyse und die Meilensteine mit gemeinsam festgelegten Qualitätskriterien sollten jedoch diesem Risiko entgegenwirken.
+
+\subsection{Technische Risiken}
+\label{section:Technische Risiken}
+\textbf{Datenverlust}\\
+Eintrittswahrscheinlichkeit:  gering \\
+Auswirkungen:  								mittel \\
+
+Aufgrund der nicht auszuschließenden Gefahr des Datenverlusts, muss dafür gesorgt werden, die Sicherheit der Daten sowie auch die Verfügbarkeit dieser zu garantieren. Dieses Problem wird mithilfe eines \gls{git} gelöst durch diesen Server ist es möglich, die Versionen der Software immer zugänglich zu machen und zusätzlich die Daten auf den Computern der Projektmitgliedern zu speichern. \\ \\
+
+\textbf{Hardwareausfall} \\
+Eintrittswahrscheinlichkeit: gering \\
+Auswirkung: mittel \\
+
+Es kann ohne jede Vorwarnung immer und überall ein Hardwareausfall passieren, das kann selbst verschuldet, aber auch unverschuldet passieren. Um mit einem solchen Ausfall zurecht zu kommen, besitzt das Projektteam einen Ersatzlaptop, um das gezielte Arbeiten auch nach dem 
+Ausfall garantieren zu können. \\ \\
+
+\textbf{Versionsverlust} \\
+Eintrittswahrscheinlichkeit: sehr gering \\
+Auswirkung: mittel \\
+
+Bei den Versuchen mit dem Algorithmus wird andauernd etwas in der Datei verändert. Bei dieser Tätigkeit kann es passieren das die Zusammenhänge zwischen einer oder mehreren Versionen des Algorithmus verloren gehen. Bei einem solchen Verlust kann auch das grundlegende Verständnis für die jeweilige Version verloren gehen.\\
+Folgende präventive Maßnahmen werden eingeführt:
+\begin{itemize}
+	\item Verwendung eines \gls{git} für die automatische Versionierung
+	\item Zwingende Benutzung der Bugtrackingsoftware
+	\item Kommunikation im Team über die Änderungen am Algorithmus
+\end{itemize}

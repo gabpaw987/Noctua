@@ -1,0 +1,12 @@
+\lstset{style=sharpc}
+\subsection{C\# Tupel}
+
+Ein Tupel ist prinzipiell eine Ansammlung von Werten. Dabei kann es beliebig viele Werte mit verschiedenen Datentypen haben. Eben diese Anzahl und die dazugehörigen Datentypen müssen allerdings schon im Vorhinein festgelegt werden, wenn das Tupel erzeugt wird. Ein \inline{Tuple} in C\# könnte bspw. so aussehen \cite{cs-tuple}:
+
+\begin{lstlisting} [label=Erstellung eines Tuples,caption=Erstellung eines Tuples]
+Tuple<int, bool> tuple = new Tuple<int, bool>(1, true);
+\end{lstlisting}
+
+Dabei handelt es sich um ein sehr einfaches \inline{Tuple}, das lediglich einen Integer-Wert zu einem dazugehörigen Boolean-Wert speichert. Ein \inline{Tuple} ist eine Klasse, in der direkt Werte gespeichert werden. Deshalb muss er einen separaten Ort im Heap allokieren. \cite{cs-tuple} Dies bedeutet, dass bspw. ein Tupel mit zwei Werten in der Erstellung wesentlich länger benötigt als ein \inline{KeyValuePair}, es aber später in der Nutzung eine deutlich höhere Performance aufweist. \cite{tuple-performance} Außerdem können durch diese Tatsache die Datentypen der Felder des Tupels nach dessen Erstellung absolut nicht mehr geändert werden, was das \inline{Tuple} eigentlich mehr einer \inline{struct} ähneln lässt. \cite{cs-tuple}\\
+\\
+In der Praxis werden selten einzelne Tupel verwendet. Es ist allerdings oft von Vorteil eine Liste aus Tupeln zu erzeugen, wenn man quasi eine \inline{Map} (bzw. ein \inline{Dictionary}) mit mehreren Werten oder anderen Datentypen benötigt. So können z.B. Aktienpreis-Bars als Tupel aus einem \inline{TimeStamp} und Feldern für Open, High, Low und Close realisiert werden. Daraus kann dann eine Liste erstellt werden, um die Bars adäquat speichern zu können.

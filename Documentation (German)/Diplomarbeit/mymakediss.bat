@@ -1,0 +1,4 @@
+pdflatex Noctua_Diplomarbeit.tex
+bibtex Noctua_Diplomarbeit.tex
+makeindex Noctua_Diplomarbeit.tex
+pdflatex Noctua_Diplomarbeit.tex
