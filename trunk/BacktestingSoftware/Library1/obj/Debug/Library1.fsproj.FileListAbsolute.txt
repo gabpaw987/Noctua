@@ -1,6 +1,0 @@
-C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\BacktestingSoftware\Library1\bin\Debug\Library1.XML
-C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\BacktestingSoftware\Library1\bin\Debug\Library1.dll
-C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\BacktestingSoftware\Library1\bin\Debug\Library1.pdb
-C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\BacktestingSoftware\Library1\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\BacktestingSoftware\Library1\obj\Debug\Library1.dll
-C:\Users\Josefs\Documents\Schule\PPM\noctua\trunk\BacktestingSoftware\Library1\obj\Debug\Library1.pdb
